@@ -1,0 +1,161 @@
+<div
+  fxLayout="row"
+  fxLayoutAlign="space-between center"
+  class="pa-8 mt-16 app-document-header"
+  [ngClass]="_classInput"
+  [class.bg-l-green]="isMain && allReady"
+  [class.bg-l-gray]="isMain && !allReady"
+  fxLayoutGap="24">
+  <div fxLayoutAlign="flex-start stretch" fxLayoutGap="24">
+    <div class="pl-36" *ngFor="let i of nestIteration"></div>
+    <div *ngIf="!isMain" class="mb-8 flex-align-self-center">
+      <mat-icon svgIcon="icon-corner" class="icon icon-hide-show icon-xmedium fill-black-30"> </mat-icon>
+    </div>
+    <div fxLayoutAlign="start center" fxLayoutGap="24">
+      <div
+        fxLayoutAlign="start center"
+        fxLayoutGap="4"
+        *ngIf="!customIcon || forNoticeLetter || forLitigation || forAsset || forDoc">
+        <h6 class="my-0" *ngIf="forNoticeLetter">
+          <mat-icon
+            svgIcon="icon-notify"
+            class="icon default-cursor icon-hide-show icon-xmedium"
+            [class.fill-krungthai-green]="readyForNotice"
+            [class.fill-gold]="!readyForNotice">
+          </mat-icon>
+        </h6>
+        <h6 class="my-0" *ngIf="forAsset">
+          <mat-icon
+            svgIcon="icon-Asset"
+            class="icon default-cursor icon-hide-show icon-xmedium"
+            [class.fill-krungthai-green]="readyForAsset"
+            [class.fill-gold]="!readyForAsset">
+          </mat-icon>
+        </h6>
+        <h6 class="my-0" *ngIf="forLitigation">
+          <mat-icon
+            svgIcon="icon-court"
+            class="icon default-cursor icon-hide-show icon-xmedium"
+            [class.fill-krungthai-green]="readyForLitigation"
+            [class.fill-gold]="!readyForLitigation">
+          </mat-icon>
+        </h6>
+        <h6 class="my-0" *ngIf="forDoc">
+          <mat-icon
+            svgIcon="icon-Doc-circle"
+            class="icon default-cursor icon-hide-show icon-xmedium"
+            [class.fill-red]="readyForDoc === null"
+            [class.fill-krungthai-green]="readyForDoc"
+            [class.fill-gold]="readyForDoc === false"
+            [ngClass]="iconClass">
+          </mat-icon>
+        </h6>
+      </div>
+      <div *ngIf="customIcon">
+        <h6 class="my-0">
+          <mat-icon
+            [svgIcon]="customIcon || ''"
+            [class]="classIcon"
+            [class.fill-krungthai-green]="ready"
+            [class.fill-gold]="!ready">
+          </mat-icon>
+        </h6>
+      </div>
+      <h6 class="my-0" [ngClass]="classTitle">{{ title }}</h6>
+    </div>
+    <div *ngIf="showDropdown" fxLayoutAlign="start center" fxLayoutGap="24">
+      <spig-dropdown
+        [config]="configDropdown"
+        [options]="dropdownOptions"
+        [formControl]="dropdownControl"
+        (selectedOption)="dropdownSelected($event)"
+        placeholder="รายการ 1"
+        [classInput]="classInput"
+        [classIcon]="
+          !hideDropdownIcon
+            ? ('icon icon-small ' + readyForLitigation && readyForNotice) || readyForAsset
+              ? 'fill-krungthai-green'
+              : 'fill-gold'
+            : 'display-none'
+        ">
+      </spig-dropdown>
+      <h6 class="my-0 text-color-gray">
+        {{ dropdownOptions.length === 0 ? 0 : currentDropdownValue + 1 }} จาก {{ dropdownOptions.length }} รายการ
+      </h6>
+    </div>
+    <div *ngIf="!detailsAtFlexEnd" fxLayoutAlign="start center" fxLayoutGap="4">
+      <div *ngFor="let detail of details" fxLayoutAlign="start center" fxLayoutGap="24" class="header-detail">
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="8">
+          <label>{{ detail.name }}: </label>
+          <h6 *ngIf="!detail?.hasDecimal">{{ detail.value }}</h6>
+        </div>
+        <div class="vertical-divider"></div>
+        <div *ngIf="detail?.hasDecimal" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="8">
+          <h6>{{ detail.value | numberDecimal }}</h6>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="32">
+    <div *ngIf="detailsAtFlexEnd" fxLayoutAlign="end center" fxLayoutGap="4">
+      <div *ngFor="let detail of details" fxLayoutAlign="start center" fxLayoutGap="24" class="header-detail">
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="8">
+          <label>{{ detail.name }}: </label>
+          <h6 *ngIf="!detail?.hasDecimal">{{ detail.value }}</h6>
+        </div>
+        <div class="vertical-divider"></div>
+        <div *ngIf="detail?.hasDecimal" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="8">
+          <h6>{{ detail.value | numberDecimal }}</h6>
+        </div>
+      </div>
+    </div>
+    <div
+      class="expand-button"
+      (click)="expandPanel()"
+      [class.completed]="
+        ((!forLitigation || readyForLitigation) &&
+          (!forNoticeLetter || readyForNotice) &&
+          (!forAsset || readyForAsset) &&
+          (!forDoc || readyForDoc) &&
+          (!forGeneral || ready) &&
+          (forNoticeLetter || forLitigation || forAsset || forDoc || forGeneral)) ||
+        ready
+      "
+      [class.incompleted]="
+        !(
+          (!forLitigation || readyForLitigation) &&
+          (!forNoticeLetter || readyForNotice) &&
+          (!forAsset || readyForAsset) &&
+          (!forGeneral || ready) &&
+          (!forDoc || readyForDoc) &&
+          (forNoticeLetter || forLitigation || forAsset || forGeneral || forDoc)
+        )
+      "
+      [class.black]="!forNoticeLetter && !forLitigation && !forAsset && !forDoc && !forGeneral">
+      <mat-icon
+        [svgIcon]="!!expanded ? 'icon-Slide-Hide' : 'icon-Expand'"
+        class="icon icon-hide-show icon-xmedium"
+        [class.fill-krungthai-green]="
+          (!forLitigation || readyForLitigation) &&
+          (!forNoticeLetter || readyForNotice) &&
+          (!forAsset || readyForAsset) &&
+          (!forDoc || readyForDoc) &&
+          (!forGeneral || ready) &&
+          (forNoticeLetter || forLitigation || readyForAsset || ready)
+        "
+        [class.fill-gold]="
+          (forLitigation && !readyForLitigation) ||
+          (forNoticeLetter && !readyForNotice) ||
+          (forAsset && !readyForAsset) ||
+          (forDoc && !readyForDoc) ||
+          (forGeneral && !ready) ||
+          (!forLitigation && !forNoticeLetter && !readyForAsset && !ready)
+        "
+        [class.fill-black]="!forNoticeLetter && !forLitigation && !forAsset && !forDoc && !forGeneral">
+      </mat-icon>
+      <span class="ml-6">{{
+        !!expanded ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate)
+      }}</span>
+    </div>
+  </div>
+</div>

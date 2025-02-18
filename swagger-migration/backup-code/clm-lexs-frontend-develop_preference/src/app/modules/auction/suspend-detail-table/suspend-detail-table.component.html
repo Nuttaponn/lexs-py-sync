@@ -1,0 +1,54 @@
+<div class="data-table-content">
+  <div class="table-scroll section" table-scroll>
+    <table mat-table id="withdrawn-table" [dataSource]="tableDagtaSource">
+      <ng-container matColumnDef="selection" sticky>
+        <th class="selected-first" mat-header-cell *matHeaderCellDef columnElevationLeft>
+          <mat-checkbox
+            (change)="$event ? toggleAllRows() : null"
+            [checked]="selection.hasValue() && isAllSelected()"
+            [indeterminate]="selection.hasValue() && !isAllSelected()">
+          </mat-checkbox>
+        </th>
+        <td mat-cell *matCellDef="let element" columnElevationLeft>
+          <ng-container *ngIf="canSuspend(element); else elseTemplate">
+            <mat-checkbox
+              (click)="$event.stopPropagation()"
+              (change)="$event ? onCheckboxChange(element) : null"
+              [checked]="selection.isSelected(element.number)">
+            </mat-checkbox>
+          </ng-container>
+          <ng-template #elseTemplate>
+            <mat-checkbox [indeterminate]="true" [disabled]="true"></mat-checkbox>
+          </ng-template>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="orderNo">
+        <th mat-header-cell class="text-center ordernumber-first" *matHeaderCellDef>
+          {{ 'COMMON.LABEL_NO' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element; index as i" class="new-line text-center">
+          {{ element.number }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="bidDate">
+        <th mat-header-cell *matHeaderCellDef>วันขาย</th>
+        <td mat-cell *matCellDef="let element" class="new-line">
+          {{ (element.bidDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>ผลการขายทอดตลาด</th>
+        <td mat-cell *matCellDef="let element">{{ element.status || '-' }}</td>
+      </ng-container>
+      <ng-container matColumnDef="remark">
+        <th mat-header-cell *matHeaderCellDef class="text-center">{{ 'COMMON.LABEL_REMARKS' | translate }}</th>
+        <td mat-cell *matCellDef="let element" class="text-center">
+          {{ element.remark || '-' }}
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="tableColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: tableColumns"></tr>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,47 @@
+<div [formGroup]="dataForm">
+  <div class="dialog-content min-xl" fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="24px">
+    <div fxFlex="20">{{ 'COMMON.LABEL_REASON' | translate }}</div>
+    <div fxLayout="column" fxLayoutGap="16px" fxFlex class="reason-content">
+      <ng-container *ngIf="!isViewMode">
+        <mat-form-field class="input-full-field">
+          <mat-label>{{ 'COMMON.LABEL_REASON' | translate }}</mat-label>
+          <textarea
+            class="input-full-field"
+            type="text"
+            matInput
+            cdkTextareaAutosize
+            #autosize="cdkTextareaAutosize"
+            cdkAutosizeMinRows="13"
+            required
+            autocomplete="off"
+            formControlName="reason"
+            [maxlength]="1000"></textarea>
+        </mat-form-field>
+        <spig-error-msg
+          [control]="getFormControl('reason')"
+          [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'"></spig-error-msg>
+      </ng-container>
+      <ng-container *ngIf="isViewMode">
+        <span class="thin-letter">{{ 'COMMON.LABEL_REASON' | translate }}</span>
+        <span>{{ heirInformation.reason || '' }}</span
+        ><br />
+      </ng-container>
+    </div>
+  </div>
+  <div fxLayout="row">
+    <div fxFlex="23"></div>
+    <div fxLayout="column" fxLayoutGap="16px" fxFlex class="reason-content">
+      <app-upload-multi-file-content
+        [readonly]="isViewMode"
+        [list]="documentUpload"
+        [uploadMultiInfo]="uploadMultiInfo"
+        [column]="docColumn"
+        [labelAcceptFile]="''"
+        (uploadFileEvent)="onUploadFileEvent($event)">
+      </app-upload-multi-file-content>
+      <span *ngIf="imageError" class="fill-red">
+        {{ 'UPLOAD_FILE.ERROR_FILE_UPLOAD_REQUIRED' | translate }}
+      </span>
+    </div>
+  </div>
+</div>

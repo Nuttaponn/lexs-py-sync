@@ -1,0 +1,673 @@
+<div class="wrap-title" mat-dialog-title fxLayout-="row" fxLayoutAlign="space-between center">
+  <div fxLayout-="row" fxLayoutAlign="start center" fxLayoutGap="14px">
+    <mat-icon svgIcon="icon-Window" class="icon icon-md"></mat-icon>
+    <strong id="dialog-title-text" class="dialog-title-margin dialog-title">
+      {{ 'USER.USER_PERMISSION' | translate }}: {{ this.data.roleName }} {{ this.data.subRoleName }}</strong
+    >
+  </div>
+</div>
+
+<mat-dialog-content id="contentCssClasses" class="dialog-content">
+  <hr class="mb-30" />
+
+  <!-- dashboard -->
+  <div class="pb-20" fxLayoutGap="20" fxFlexFill>
+    <div fxFlex="15">
+      <h5>
+        {{ 'USER.PERMISSION_DASHBOARD' | translate }}
+      </h5>
+    </div>
+    <div fxFlex="70">
+      <div fxLayout="row wrap" fxLayoutAlign="left">
+        <div class="item" fxFlex="50%" *ngFor="let item of list?.dashBoard || dashBoard">
+          <div class="elm-form" fxLayout="row">
+            <input
+              class="elm-radio-check elm-check"
+              [checked]="item?.checked"
+              type="checkbox"
+              [ngClass]="{
+                inactive: mode === MODE.VIEW && item?.checked,
+                disabled: mode === MODE.VIEW && !item?.checked,
+              }"
+              [disabled]="mode === MODE.VIEW" />
+            <label class="elm-check-label" [ngClass]="{ disabled: mode === MODE.VIEW }">{{ item.item }}</label>
+          </div>
+        </div>
+      </div>
+      <div class="elm-form" *ngIf="mode !== MODE.VIEW && !isUserAdmin">
+        <input class="elm-radio-check elm-check" type="checkbox" />
+        <label class="elm-check-label"> {{ 'USER.SELECT_ALL' | translate }}</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- task -->
+  <div class="pb-20" fxLayoutGap="20" fxFlexFill>
+    <div fxFlex="15">
+      <h5>{{ 'USER.PERMISSION_ONSITE' | translate }}</h5>
+    </div>
+    <div fxFlex="70">
+      <div fxLayout="row wrap" fxLayoutAlign="left">
+        <div class="item" fxFlex="50%" *ngFor="let item of list?.transferTask">
+          <div class="elm-form" fxLayout="row">
+            <input
+              class="elm-radio-check elm-check"
+              [checked]="item?.checked"
+              type="checkbox"
+              [ngClass]="{
+                inactive: mode === MODE.VIEW && item?.checked,
+                disabled: mode === MODE.VIEW && !item?.checked,
+              }"
+              [disabled]="mode === MODE.VIEW" />
+            <label class="elm-check-label" [ngClass]="{ disabled: mode === MODE.VIEW }">{{ item.item }}</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- exution warrant -->
+  <div class="pb-20" fxLayoutGap="20" fxFlexFill>
+    <div fxFlex="15">
+      <h5>{{ 'USER.PERMISSION_WAIT_ASSIGN' | translate }}</h5>
+    </div>
+    <div fxFlex="70">
+      <div fxLayout="row wrap" fxLayoutAlign="left">
+        <div class="item" fxFlex="50%" *ngFor="let item of list?.excutionWarrant">
+          <div class="elm-form" fxLayout="row">
+            <input
+              class="elm-radio-check elm-check"
+              [checked]="item?.checked"
+              type="checkbox"
+              [ngClass]="{
+                inactive: mode === MODE.VIEW && item?.checked,
+                disabled: mode === MODE.VIEW && !item?.checked,
+              }"
+              [disabled]="mode === MODE.VIEW" />
+            <label class="elm-check-label" [ngClass]="{ disabled: mode === MODE.VIEW }">{{ item.item }}</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- customer -->
+
+  <div class="pb-20" fxLayoutGap="20" fxFlexFill>
+    <div fxFlex="15">
+      <h5>{{ 'USER.PERMISSION_DEBT' | translate }}</h5>
+    </div>
+    <div fxFlex="70">
+      <div fxLayout="row wrap" fxLayoutAlign="left">
+        <div class="item" fxFlex="50%" *ngFor="let item of list?.customer">
+          <div class="elm-form" fxLayout="row">
+            <input
+              class="elm-radio-check elm-check"
+              [checked]="item?.checked"
+              [ngClass]="{ inactive: mode === MODE.VIEW && item?.checked }"
+              [disabled]="mode === MODE.VIEW"
+              type="checkbox" />
+            <label class="elm-check-label" [ngClass]="{ disabled: mode === MODE.VIEW }">
+              {{ item.item }}
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="elm-form" *ngIf="mode !== MODE.VIEW && !isUserAdmin">
+        <input class="elm-radio-check elm-check" type="checkbox" id="checkAllCustomer" />
+        <label class="elm-check-label"> {{ 'USER.SELECT_ALL' | translate }}</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- lawsuit -->
+
+  <div class="pb-20" fxLayoutGap="20" fxFlexFill>
+    <div fxFlex="15">
+      <h5>
+        {{ 'USER.PERMISSION_CASE' | translate }}
+      </h5>
+    </div>
+    <div fxFlex="70">
+      <div fxLayout="row wrap" fxLayoutAlign="left">
+        <div class="item" fxFlex="50%" *ngFor="let item of list?.law">
+          <div fxLayoutAlign="left" class="item-label">
+            <div class="elm-form" fxLayout="row">
+              <input
+                class="elm-radio-check elm-check"
+                [checked]="item?.checked"
+                [ngClass]="{
+                  inactive: mode === MODE.VIEW && item?.checked,
+                  disabled: mode === MODE.VIEW && !item?.checked,
+                }"
+                [disabled]="mode === MODE.VIEW"
+                type="checkbox" />
+              <label class="elm-check-label" [ngClass]="{ disabled: mode === MODE.VIEW }">{{ item.item }}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="elm-form" *ngIf="mode !== MODE.VIEW && !isUserAdmin">
+        <input class="elm-radio-check elm-check" type="checkbox" />
+        <label class="elm-check-label"> {{ 'USER.SELECT_ALL' | translate }}</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- WRITE_EXECUTION_WARRANT -->
+
+  <div class="pb-20" fxLayoutGap="20" fxFlexFill>
+    <div fxFlex="15">
+      <h5>{{ 'USER.PERMISSION_WARRANT_EXECUTION' | translate }}</h5>
+    </div>
+    <div fxFlex="70">
+      <div fxLayout="row wrap" fxLayoutAlign="left">
+        <div class="item" fxFlex="50%" *ngFor="let item of list?.writeExecutionWarrant">
+          <div fxLayoutAlign="left" class="item-label">
+            <div class="elm-form" fxLayout="row">
+              <input
+                class="elm-radio-check elm-check"
+                [checked]="item?.checked"
+                [ngClass]="{
+                  inactive: mode === MODE.VIEW && item?.checked,
+                  disabled: mode === MODE.VIEW && !item?.checked,
+                }"
+                [disabled]="mode === MODE.VIEW"
+                type="checkbox" />
+              <label class="elm-check-label" [ngClass]="{ disabled: mode === MODE.VIEW }">{{ item.item }}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- withdrawmnWriteOfExecution -->
+
+  <div class="pb-20" fxLayoutGap="20" fxFlexFill>
+    <div fxFlex="15">
+      <h5>{{ 'USER.PERMISSION_WITHDRAW_LEGAL_ACTION' | translate }}</h5>
+    </div>
+    <div fxFlex="70">
+      <div fxLayout="row wrap" fxLayoutAlign="left">
+        <div class="item" fxFlex="50%" *ngFor="let item of list?.withdrawmnWriteOfExecution">
+          <div fxLayoutAlign="left" class="item-label">
+            <div class="elm-form" fxLayout="row">
+              <input
+                class="elm-radio-check elm-check"
+                [checked]="item?.checked"
+                [ngClass]="{
+                  inactive: mode === MODE.VIEW && item?.checked,
+                  disabled: mode === MODE.VIEW && !item?.checked,
+                }"
+                [disabled]="mode === MODE.VIEW"
+                type="checkbox" />
+              <label class="elm-check-label" [ngClass]="{ disabled: mode === MODE.VIEW }">{{ item.item }}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- deferment  -->
+
+  <div class="pb-20" fxLayoutGap="20" fxFlexFill>
+    <div fxFlex="15">
+      <h5>{{ 'USER.PERMISSION_DELAY_LEGAL_ENFORCEMENT' | translate }}</h5>
+    </div>
+    <div fxFlex="70">
+      <div fxLayout="row wrap" fxLayoutAlign="left">
+        <div class="item" fxFlex="50%" *ngFor="let item of list?.defermentOfExecution">
+          <div fxLayoutAlign="left" class="item-label">
+            <div class="elm-form" fxLayout="row">
+              <input
+                class="elm-radio-check elm-check"
+                [checked]="item?.checked"
+                [ngClass]="{
+                  inactive: mode === MODE.VIEW && item?.checked,
+                  disabled: mode === MODE.VIEW && !item?.checked,
+                }"
+                [disabled]="mode === MODE.VIEW"
+                type="checkbox" />
+              <label class="elm-check-label" [ngClass]="{ disabled: mode === MODE.VIEW }">{{ item.item }}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEIZURE_PROPERTY  -->
+
+  <div class="pb-20" fxLayoutGap="20" fxFlexFill>
+    <div fxFlex="15">
+      <h5>{{ 'USER.PERMISSION_FORECLOSURE_OF_MORTGAGE_PROPERTY' | translate }}</h5>
+    </div>
+    <div fxFlex="70">
+      <div fxLayout="row wrap" fxLayoutAlign="left">
+        <div class="item" fxFlex="50%" *ngFor="let item of list?.seizureProperty">
+          <div fxLayoutAlign="left" class="item-label">
+            <div class="elm-form" fxLayout="row">
+              <input
+                class="elm-radio-check elm-check"
+                [checked]="item?.checked"
+                [ngClass]="{
+                  inactive: mode === MODE.VIEW && item?.checked,
+                  disabled: mode === MODE.VIEW && !item?.checked,
+                }"
+                [disabled]="mode === MODE.VIEW"
+                type="checkbox" />
+              <label class="elm-check-label" [ngClass]="{ disabled: mode === MODE.VIEW }">{{ item.item }}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CANCEL_SEIZURE_PROPERTY  -->
+
+  <div class="pb-20" fxLayoutGap="20" fxFlexFill>
+    <div fxFlex="15">
+      <h5>{{ 'USER.PERMISSION_CANCELLATION_SEIZURES' | translate }}</h5>
+    </div>
+    <div fxFlex="70">
+      <div fxLayout="row wrap" fxLayoutAlign="left">
+        <div class="item" fxFlex="50%" *ngFor="let item of list?.cancelSeizureProperty">
+          <div fxLayoutAlign="left" class="item-label">
+            <div class="elm-form" fxLayout="row">
+              <input
+                class="elm-radio-check elm-check"
+                [checked]="item?.checked"
+                [ngClass]="{
+                  inactive: mode === MODE.VIEW && item?.checked,
+                  disabled: mode === MODE.VIEW && !item?.checked,
+                }"
+                [disabled]="mode === MODE.VIEW"
+                type="checkbox" />
+              <label class="elm-check-label" [ngClass]="{ disabled: mode === MODE.VIEW }">{{ item.item }}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WITHDRAWN_SEIZURE_PROPERTY  -->
+
+  <div class="pb-20" fxLayoutGap="20" fxFlexFill>
+    <div fxFlex="15">
+      <h5>{{ 'USER.PERMISSION_WITHDRAWAL_CONFISCATION' | translate }}</h5>
+    </div>
+    <div fxFlex="70">
+      <div fxLayout="row wrap" fxLayoutAlign="left">
+        <div class="item" fxFlex="50%" *ngFor="let item of list?.withdrawmnSeizureProperty">
+          <div fxLayoutAlign="left" class="item-label">
+            <div class="elm-form" fxLayout="row">
+              <input
+                class="elm-radio-check elm-check"
+                [checked]="item?.checked"
+                [ngClass]="{
+                  inactive: mode === MODE.VIEW && item?.checked,
+                  disabled: mode === MODE.VIEW && !item?.checked,
+                }"
+                [disabled]="mode === MODE.VIEW"
+                type="checkbox" />
+              <label class="elm-check-label" [ngClass]="{ disabled: mode === MODE.VIEW }">{{ item.item }}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- money -->
+  <div class="pb-20" fxLayoutGap="20" fxLayout="row">
+    <div fxFlex="15">
+      <h5>{{ 'USER.PERMISSION_MONEY' | translate }}</h5>
+    </div>
+    <div fxFlex="35">
+      <h5>{{ 'USER.EXPENSE' | translate }}</h5>
+    </div>
+    <div fxFlex></div>
+  </div>
+  <div class="pb-20" fxLayoutGap="20" fxFlexFill>
+    <div fxFlex="15"></div>
+    <div fxFlex="70">
+      <div fxLayout="row wrap" fxLayoutAlign="left">
+        <div class="item" fxFlex="50%" *ngFor="let item of list?.expenses">
+          <div class="elm-form" fxLayout="row">
+            <input
+              class="elm-radio-check elm-check"
+              [checked]="item?.checked"
+              [ngClass]="{
+                inactive: mode === MODE.VIEW && item?.checked,
+                disabled: mode === MODE.VIEW && !item?.checked,
+              }"
+              [disabled]="mode === MODE.VIEW"
+              type="checkbox" />
+            <label class="elm-check-label" [ngClass]="{ disabled: mode === MODE.VIEW }">{{ item.item }}</label>
+          </div>
+        </div>
+      </div>
+      <div class="elm-form" *ngIf="mode !== MODE.VIEW && !isUserAdmin">
+        <input class="elm-radio-check elm-check" type="checkbox" />
+        <label class="elm-check-label"> {{ 'USER.SELECT_ALL' | translate }}</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="pb-20" fxLayoutGap="20" fxLayout="row">
+    <div fxFlex="15"></div>
+    <div fxFlex="35">
+      <h5>{{ 'USER.INCOME' | translate }}</h5>
+    </div>
+    <div fxFlex></div>
+  </div>
+  <div class="pb-20" fxLayoutGap="20" fxLayout="row">
+    <div fxFlex="15"></div>
+    <div fxFlex="70">
+      <div fxLayout="row wrap" fxLayoutAlign="left">
+        <div class="item" fxFlex="50%" *ngFor="let item of list?.income">
+          <div fxLayoutAlign="left" class="item-label">
+            <div class="elm-form" fxLayout="row">
+              <input
+                class="elm-radio-check elm-check"
+                [checked]="item?.checked"
+                [ngClass]="{
+                  inactive: mode === MODE.VIEW && item?.checked,
+                  disabled: mode === MODE.VIEW && !item?.checked,
+                }"
+                [disabled]="mode === MODE.VIEW"
+                type="checkbox" />
+              <label class="elm-check-label" [ngClass]="{ disabled: mode === MODE.VIEW }">{{ item.item }}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="elm-form" *ngIf="mode !== MODE.VIEW && !isUserAdmin">
+        <input class="elm-radio-check elm-check" type="checkbox" />
+        <label class="elm-check-label"> {{ 'USER.SELECT_ALL' | translate }}</label>
+      </div>
+    </div>
+  </div>
+  <div class="pb-20" fxLayoutGap="20" fxLayout="row">
+    <div fxFlex="15"></div>
+    <div fxFlex="35">
+      <h5>
+        {{ 'USER.ADVANCE_TRANSFER' | translate }}
+      </h5>
+    </div>
+    <div fxFlex></div>
+  </div>
+  <div class="pb-20" fxLayoutGap="20" fxLayout="row">
+    <div fxFlex="15"></div>
+    <div fxFlex="70">
+      <div fxLayout="row wrap" fxLayoutAlign="left">
+        <div class="item" fxFlex="50%" *ngFor="let item of list?.transfer">
+          <div class="elm-form" fxLayout="row">
+            <input
+              class="elm-radio-check elm-check"
+              [checked]="item?.checked"
+              [ngClass]="{
+                inactive: mode === MODE.VIEW && item?.checked,
+                disabled: mode === MODE.VIEW && !item?.checked,
+              }"
+              [disabled]="mode === MODE.VIEW"
+              type="checkbox" />
+            <label class="elm-check-label" [ngClass]="{ disabled: mode === MODE.VIEW }">
+              {{ item.item }}
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="elm-form" *ngIf="mode !== MODE.VIEW && !isUserAdmin">
+        <input class="elm-radio-check elm-check" type="checkbox" />
+        <label class="elm-check-label">
+          {{ 'USER.SELECT_ALL' | translate }}
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- auction -->
+
+  <div fxLayoutGap="20" fxLayout="row" class="pb-20">
+    <div fxFlex="15">
+      <h5>{{ 'USER.AUCTION_CIVIL_CASE' | translate }}</h5>
+    </div>
+    <div fxFlex="70">
+      <div fxLayout="row wrap" fxLayoutAlign="left">
+        <div class="item" fxFlex="50%" *ngFor="let item of list?.auction">
+          <div class="elm-form" fxLayout="row">
+            <input
+              class="elm-radio-check elm-check"
+              [checked]="item?.checked"
+              [ngClass]="{
+                inactive: mode === MODE.VIEW && item?.checked,
+                disabled: mode === MODE.VIEW && !item?.checked,
+              }"
+              [disabled]="mode === MODE.VIEW"
+              type="checkbox" />
+            <label class="elm-check-label" [ngClass]="{ disabled: mode === MODE.VIEW }">
+              {{ item.item }}
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INVESTIGATES_PROPERTY -->
+
+  <div fxLayoutGap="20" fxLayout="row" class="pb-20">
+    <div fxFlex="15">
+      <h5>{{ 'USER.INVESTIGTE' | translate }}</h5>
+    </div>
+    <div fxFlex="70">
+      <div fxLayout="row wrap" fxLayoutAlign="left">
+        <div class="item" fxFlex="50%" *ngFor="let item of list?.investigate">
+          <div class="elm-form" fxLayout="row">
+            <input
+              class="elm-radio-check elm-check"
+              [checked]="item?.checked"
+              [ngClass]="{
+                inactive: mode === MODE.VIEW && item?.checked,
+                disabled: mode === MODE.VIEW && !item?.checked,
+              }"
+              [disabled]="mode === MODE.VIEW"
+              type="checkbox" />
+            <label class="elm-check-label" [ngClass]="{ disabled: mode === MODE.VIEW }">
+              {{ item.item }}
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- notice-->
+
+  <div fxLayoutGap="20" fxLayout="row" class="pb-20">
+    <div fxFlex="15">
+      <h5>{{ 'USER.NOTICE' | translate }}</h5>
+    </div>
+    <div fxFlex="70">
+      <div fxLayout="row wrap" fxLayoutAlign="left">
+        <div class="item" fxFlex="50%" *ngFor="let item of list?.notice">
+          <div class="elm-form" fxLayout="row">
+            <input
+              class="elm-radio-check elm-check"
+              [checked]="item?.checked"
+              [ngClass]="{
+                inactive: mode === MODE.VIEW && item?.checked,
+                disabled: mode === MODE.VIEW && !item?.checked,
+              }"
+              [disabled]="mode === MODE.VIEW"
+              type="checkbox" />
+            <label class="elm-check-label" [ngClass]="{ disabled: mode === MODE.VIEW }">
+              {{ item.item }}
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- transfer asset -->
+
+  <div fxLayoutGap="20" fxLayout="row" class="pb-20">
+    <div fxFlex="15">
+      <h5>{{ 'USER.TRANSFER_OF_OWNERSHIP' | translate }}</h5>
+    </div>
+    <div fxFlex="70">
+      <div fxLayout="row wrap" fxLayoutAlign="left">
+        <div class="item" fxFlex="50%" *ngFor="let item of list?.transferAsset">
+          <div class="elm-form" fxLayout="row">
+            <input
+              class="elm-radio-check elm-check"
+              [checked]="item?.checked"
+              [ngClass]="{
+                inactive: mode === MODE.VIEW && item?.checked,
+                disabled: mode === MODE.VIEW && !item?.checked,
+              }"
+              [disabled]="mode === MODE.VIEW"
+              type="checkbox" />
+            <label class="elm-check-label" [ngClass]="{ disabled: mode === MODE.VIEW }">
+              {{ item.item }}
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- report -->
+
+  <div fxLayoutGap="20" fxLayout="row" class="pb-20">
+    <div fxFlex="15">
+      <h5>{{ 'USER.PERMISSION_REPORT' | translate }}</h5>
+    </div>
+    <div fxFlex="70">
+      <div fxLayout="row wrap" fxLayoutAlign="left">
+        <div class="item" fxFlex="50%" *ngFor="let item of list?.report">
+          <div class="elm-form" fxLayout="row">
+            <input
+              class="elm-radio-check elm-check"
+              [checked]="item?.checked"
+              [ngClass]="{
+                inactive: mode === MODE.VIEW && item?.checked,
+                disabled: mode === MODE.VIEW && !item?.checked,
+              }"
+              [disabled]="mode === MODE.VIEW"
+              type="checkbox" />
+            <label class="elm-check-label" [ngClass]="{ disabled: mode === MODE.VIEW }">
+              {{ item.item }}
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Task -->
+
+  <div fxLayoutGap="20" fxLayout="row" class="pb-20">
+    <div fxFlex="15">
+      <h5>{{ 'USER.PERMISSION_TASK' | translate }}</h5>
+    </div>
+    <div fxFlex="70">
+      <div fxLayout="row wrap" fxLayoutAlign="left">
+        <div class="item" fxFlex="50%" *ngFor="let item of list?.uam">
+          <div class="elm-form" fxLayout="row">
+            <input
+              class="elm-radio-check elm-check"
+              [checked]="item?.checked"
+              [ngClass]="{
+                inactive: mode === MODE.VIEW && item?.checked,
+                disabled: mode === MODE.VIEW && !item?.checked,
+              }"
+              [disabled]="mode === MODE.VIEW"
+              type="checkbox" />
+            <label class="elm-check-label" [ngClass]="{ disabled: mode === MODE.VIEW }">
+              {{ item.item }}
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- config -->
+
+  <div fxLayoutGap="20" fxLayout="row" class="pb-20">
+    <div fxFlex="15">
+      <h5>{{ 'USER.PERMISSION_SETTING' | translate }}</h5>
+    </div>
+    <div fxFlex="70">
+      <div fxLayout="row wrap" fxLayoutAlign="left">
+        <div class="item" fxFlex="50%" *ngFor="let item of list?.config">
+          <div class="elm-form" fxLayout="row">
+            <input
+              class="elm-radio-check elm-check"
+              [checked]="item?.checked"
+              [ngClass]="{
+                inactive: mode === MODE.VIEW && item?.checked,
+                disabled: mode === MODE.VIEW && !item?.checked,
+              }"
+              [disabled]="mode === MODE.VIEW"
+              type="checkbox" />
+            <label class="elm-check-label" [ngClass]="{ disabled: mode === MODE.VIEW }">
+              {{ item.item }}
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- general -->
+
+  <div fxLayoutGap="20" fxLayout="row" class="pb-20">
+    <div fxFlex="15">
+      <h5>{{ 'USER.PERMISSION_COMMON' | translate }}</h5>
+    </div>
+    <div fxFlex="70">
+      <div fxLayout="row wrap" fxLayoutAlign="left">
+        <div class="item" fxFlex="50%" *ngFor="let item of list?.common">
+          <div class="elm-form" fxLayout="row">
+            <input
+              class="elm-radio-check elm-check"
+              [checked]="item?.checked"
+              [ngClass]="{
+                inactive: mode === MODE.VIEW && item?.checked,
+                disabled: mode === MODE.VIEW && !item?.checked,
+              }"
+              [disabled]="mode === MODE.VIEW"
+              type="checkbox" />
+            <label class="elm-check-label" [ngClass]="{ disabled: mode === MODE.VIEW }">
+              {{ item.item }}
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions class="footer justify-content-end">
+  <button
+    type="button"
+    mat-dialog-close
+    mat-flat-button
+    color="primary"
+    class="medium-button w-132"
+    id="btn-dialog-active"
+    cdkFocusInitial>
+    <mat-icon svgIcon="icon-Selected" class="icon icon-md"></mat-icon>
+    {{ 'COMMON.BUTTON_ACKNOWLEDGE' | translate }}
+  </button>
+</mat-dialog-actions>
+
+<ng-template #dataNotFound>
+  <app-message-empty [message]="'DOC_PREP.NOT_FOUND_DOC'"></app-message-empty>
+</ng-template>

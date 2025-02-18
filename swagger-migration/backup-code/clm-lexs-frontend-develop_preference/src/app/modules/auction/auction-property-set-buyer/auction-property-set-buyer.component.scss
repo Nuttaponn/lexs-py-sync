@@ -1,0 +1,26 @@
+::ng-deep auction-property-set-buyer {
+  .mat-expansion-panel-content {
+    font-size: 16px !important;
+  }
+
+  /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version. */
+  .mat-checkbox-layout .mat-checkbox-label {
+    font-size: 16px !important;
+  }
+}
+
+.ordernumber-first {
+  width: 35px !important;
+  max-width: 35px !important;
+}
+
+.action-first {
+  width: 60px !important;
+  max-width: 60px !important;
+}
+
+.action-btn {
+  width: 160px !important;
+  max-width: 160px !important;
+  height: 56px !important;
+}

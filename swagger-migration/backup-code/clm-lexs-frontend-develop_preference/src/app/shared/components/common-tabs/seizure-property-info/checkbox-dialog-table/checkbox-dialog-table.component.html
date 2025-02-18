@@ -1,0 +1,138 @@
+<div class="dialog-content">
+  <div class="sub-content">
+    <mat-icon svgIcon="icon-Window" class="icon icon-small-xl"></mat-icon
+    ><label class="detail ml-10">{{
+      isViewMode
+        ? ('LAWSUIT.DEFERMENT.DATE_EXECUTION_NUMBER' | translate)
+        : !hasCheckbox
+          ? ('LAWSUIT.DEFERMENT.SUSPEND_SALES_APPOINTMENT_DETAIL' | translate)
+          : ('LAWSUIT.DEFERMENT.APPOINTMENT_SUSPEND_SALES' | translate)
+    }}</label>
+  </div>
+  <div class="mt-24">
+    <div class="blackCaseNo">
+      <label
+        >{{ 'COMMON.LABEL_BLACK_CASE_NO' | translate }}: <label class="labelValue">{{ blackCaseNo }}</label></label
+      >
+    </div>
+    <div class="redCaseNo">
+      <label
+        >{{ 'COMMON.LABEL_RED_CASE_NO_2' | translate }}: <label class="labelValue">{{ redCaseNo }}</label></label
+      >
+    </div>
+  </div>
+  <div *ngIf="!isViewMode" class="mt-24">
+    <app-message-banner type="warn-normal" [icon]="'icon-Error'" [message]="messageBanner"></app-message-banner>
+  </div>
+  <div class="table-scroll section mt-24" table-scroll>
+    <table class="collateral-table" multiTemplateDataRows mat-table [dataSource]="auctionInfos">
+      <ng-container matColumnDef="selection">
+        <th mat-header-cell *matHeaderCellDef style="width: 10px" class="text-center">
+          <mat-checkbox
+            *ngIf="hasCheckbox"
+            (change)="selectAll()"
+            [checked]="isAllSelected()"
+            [indeterminate]="isIndeterminate()"></mat-checkbox>
+        </th>
+        <td mat-cell *matCellDef="let element; let i = dataIndex" class="text-center">
+          <ng-container *ngIf="element.enabled; else showIcon">
+            <mat-checkbox
+              *ngIf="isGreaterCurrentDate(element.bidDate) && isNotAucResult(element.aucResult)"
+              [ngClass]="auctionInfos[i].checked ? 'lg-checkbox-checked' : 'lg-checkbox-unchecked'"
+              [checked]="auctionInfos[i].checked"
+              [disabled]="checkDisable(i)"
+              (change)="onCheck(element, i)"></mat-checkbox>
+            <ng-container *ngIf="!isGreaterCurrentDate(element.bidDate) || !isNotAucResult(element.aucResult)">
+              <ng-container *ngIf="!isGreaterCurrentDate(element.bidDate); else isNotAucResult">
+                <app-tooltip
+                  [params]="[
+                    {
+                      content: 'LAWSUIT.DEFERMENT.TOOLTIP_SELECT_GREATER_CURRENT' | translate,
+                    },
+                  ]"
+                  [icon]="['icon-Dismiss-Circle', 'icon-Dismiss-Circle']"
+                  [iconClass]="['icon-xmedium', 'greaterCurrent']"
+                  [isDeferment]="true"></app-tooltip>
+              </ng-container>
+              <ng-template #isNotAucResult>
+                <app-tooltip
+                  [params]="[
+                    {
+                      content: 'LAWSUIT.DEFERMENT.TOOLTIP_SELECT_NOT_AUCTION_RESULT' | translate,
+                    },
+                  ]"
+                  [icon]="['icon-Dismiss-Circle', 'icon-Dismiss-Circle']"
+                  [iconClass]="['icon-xmedium', 'greaterCurrent']"
+                  [isDeferment]="true"></app-tooltip>
+              </ng-template>
+            </ng-container>
+          </ng-container>
+          <ng-template #showIcon>
+            <app-tooltip
+              [params]="[
+                {
+                  content:
+                    !element.checked && !isGreaterCurrentDate(element.bidDate)
+                      ? ('LAWSUIT.DEFERMENT.TOOLTIP_CANNOT_SELECT_APPOINTMENT_MORE_THAN_CURRENT_DATE' | translate)
+                      : ('LAWSUIT.DEFERMENT.TOOLTIP_CANNOT_SELECT_APPOINTMENT' | translate),
+                },
+              ]"
+              [icon]="
+                !element.checked && !isGreaterCurrentDate(element.bidDate)
+                  ? ['icon-Dismiss-Circle', 'icon-Dismiss-Circle']
+                  : ['icon-Pause-Circle-Grey', 'icon-Pause-Circle-Grey']
+              "
+              [iconClass]="['icon-xmedium']"
+              [isDeferment]="true"></app-tooltip>
+          </ng-template>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="aucRound">
+        <th class="text-center" mat-header-cell *matHeaderCellDef>
+          {{ 'LAWSUIT.DEFERMENT.DIALOG_TABLE_HEADER_APPOINT' | translate }}
+        </th>
+        <td class="text-center" mat-cell *matCellDef="let element">{{ element.aucRound || '-' }}</td>
+      </ng-container>
+      <ng-container matColumnDef="bidDate">
+        <th mat-header-cell *matHeaderCellDef>{{ 'AUCTION_DETAIL.DATE_SELLING' | translate }}</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.bidDate ? (element.bidDate | buddhistEra: 'DD/MM/yyyy') : '-' }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="aucResult">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'LAWSUIT.DEFERMENT.DIALOG_TABLE_HEADER_AUCTION_RESULT' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.aucResultName || '-' }}</td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="tableColumnssale"></tr>
+      <tr mat-row *matRowDef="let row; columns: tableColumnssale"></tr>
+    </table>
+  </div>
+  <ng-container [ngTemplateOutlet]="dataNotFound" *ngIf="auctionInfos.length === 0"> </ng-container>
+  <ng-template #dataNotFound>
+    <app-message-empty [message]="'DOC_PREP.NOT_FOUND_DOC'"></app-message-empty>
+  </ng-template>
+
+  <ng-container *ngIf="!isCheckbox && submitClicked">
+    <p class="error-msg">{{ 'LAWSUIT.DEFERMENT.ERROR_MSG_REQUIRED_APPOINTMENT' | translate }}</p>
+  </ng-container>
+
+  <div class="mt-20" fxLayoutAlign="end">
+    <ng-container *ngIf="isViewMode || !hasCheckbox; else buttonAction">
+      <button mat-flat-button color="primary" class="medium-aw-button" (click)="backButtonClicked()">
+        <mat-icon svgIcon="icon-Selected" class="icon icon-small-xl mr-5"></mat-icon
+        >{{ 'COMMON.BUTTON_ACKNOWLEDGE' | translate }}
+      </button>
+    </ng-container>
+    <ng-template #buttonAction>
+      <button mat-flat-button color="white" class="medium-aw-button mr-10" (click)="backButtonClicked()">
+        {{ 'COMMON.BUTTON_CANCEL' | translate }}
+      </button>
+      <button mat-flat-button color="primary" class="medium-aw-button" (click)="onSubmit()">
+        <mat-icon svgIcon="icon-Selected" class="icon icon-small-xl mr-5"></mat-icon
+        >{{ 'LAWSUIT.DEFERMENT.APPOINTMENT_SUSPEND_SALES' | translate }}
+      </button>
+    </ng-template>
+  </div>
+</div>

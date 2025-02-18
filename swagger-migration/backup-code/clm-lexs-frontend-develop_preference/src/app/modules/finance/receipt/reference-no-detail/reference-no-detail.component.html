@@ -1,0 +1,225 @@
+<app-action-bar
+  (backButtonHandler)="onBack()"
+  [hasCancelButton]="false"
+  [hasSaveButton]="false"
+  [hasRejectButton]="false"
+  [hasPrimaryButton]="false"
+  [showNavBarInformation]="true">
+  <ng-container navBarInformationTemplate>
+    <mat-icon svgIcon="icon-Checklist" class="icon icon-xmedium default-cursor"></mat-icon>
+    <span class="ml-8 bold">รายละเอียดการโอนเงินของ Reference No. </span>
+  </ng-container>
+</app-action-bar>
+<div class="content-below-action-bar-area">
+  <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="16" class="mt-36 mb-16 mr-24 ml-24">
+    <h2 class="title">
+      Reference No.
+      <span class="divider-vertical"></span>
+      {{ refInfo?.referenceNo || '-' }}
+    </h2>
+    <div>
+      <button mat-flat-button type="button" color="primary" class="medium-aw-button" (click)="onNewTask()">
+        <mat-icon class="icon icon-medium" svgIcon="icon-Add-Document"></mat-icon>
+        สร้างหนังสือรับเงิน
+      </button>
+    </div>
+  </div>
+  <div class="content-container p-16 pt-24 pb-24">
+    <div fxLayout="column" fxLayoutGap="24" class="mb-24">
+      <div fxLayout="row">
+        <div fxFlex="33" fxLayout="column" fxLayoutGap="8">
+          <span class="thin-letter">วันที่ตั้ง Suspense A/C</span>
+          <span>{{
+            refInfo?.suspenseAccountDate ? (refInfo?.suspenseAccountDate | buddhistEra: 'DD/MM/yyyy') : '-'
+          }}</span>
+        </div>
+        <div fxFlex="33" fxLayout="column" fxLayoutGap="8">
+          <span class="thin-letter">ศาล</span>
+          <span>{{ refInfo?.courtName }}</span>
+        </div>
+        <div fxFlex="33" fxLayout="column" fxLayoutGap="8">
+          <span class="thin-letter">Ref2/Ref1</span>
+          <span>{{ refInfo?.ref2 }}/{{ refInfo?.ref1 }}</span>
+        </div>
+      </div>
+      <div fxLayout="row">
+        <div fxFlex="33" fxLayout="column" fxLayoutGap="8">
+          <span class="thin-letter">จำนวนเงินตามรายการโอนเงิน</span>
+          <span>{{ refInfo?.payAmount | numberDecimal }}</span>
+        </div>
+        <div fxFlex="33" fxLayout="column" fxLayoutGap="8">
+          <span class="thin-letter">จำนวนเงินที่ชำระแล้ว (รวมฉบับร่าง)</span>
+          <span>{{ refInfo?.paidAmount | numberDecimal }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="data-table-content">
+      <div class="table-scroll" table-scroll>
+        <table mat-table [dataSource]="bookings || []" id="ref-table">
+          <ng-container matColumnDef="no" sticky>
+            <th mat-header-cell *matHeaderCellDef class="text-center">
+              {{ 'COMMON.LABEL_NO' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let element; let i = index" class="text-center">
+              {{ i + 1 }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="receiveNo" sticky>
+            <th mat-header-cell *matHeaderCellDef columnElevationLeft>เลขที่หนังสือ</th>
+            <td mat-cell *matCellDef="let element" columnElevationLeft (click)="onStartTask(element)">
+              <span class="link">{{ element.receiveNo }}</span>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="createDate">
+            <th mat-header-cell *matHeaderCellDef>วันที่สร้าง</th>
+            <td mat-cell *matCellDef="let element">
+              {{ (element.advancePaymentDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="payer">
+            <th mat-header-cell *matHeaderCellDef>ผูัจ่ายเงิน</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.payerDesc || '-' }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="branch">
+            <th mat-header-cell *matHeaderCellDef>หน่วยงานที่รับ Credit Note</th>
+            <td
+              mat-cell
+              *matCellDef="let element; let i = index"
+              class="branch-cell"
+              [class.expanded]="branchExpanded[i]">
+              <div *ngIf="element.branches?.length <= 2">
+                <div *ngFor="let branch of element.branches">
+                  <span>{{ branch.branchCode }}</span>
+                  <app-tooltip [params]="[{ title: branch.branchCode, content: branch.branchName }]"></app-tooltip>
+                </div>
+              </div>
+              <div *ngIf="element.branches?.length > 2">
+                <div *ngFor="let branch of element.branches; let branchIndex = index">
+                  <div *ngIf="branchIndex === 0 || (branchIndex !== 0 && branchExpanded[i])">
+                    <span>{{ branch.branchCode }}</span>
+                    <app-tooltip [params]="[{ title: branch.branchCode, content: branch.branchName }]"></app-tooltip>
+                  </div>
+                </div>
+                <div (click)="onBranchExpand(i)">
+                  <div class="description cursor-pointer" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="4px">
+                    <mat-icon
+                      class="icon icon-xs icon-hide-show fill-blue mt-4"
+                      [svgIcon]="branchExpanded[i] ? 'icon-Slide-Hide' : 'icon-Expand'"></mat-icon>
+                    <span>
+                      {{
+                        (branchExpanded[i] ? 'COMMON.ICON_EXPANSION_HIDE' : 'COMMON.ICON_EXPANSION_SHOW') | translate
+                      }}
+                      {{ element.branches?.length - 1 }} {{ 'FINANCE.RECEIVE_DETAIL.BRANCH' | translate }}</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="paidType">
+            <th mat-header-cell *matHeaderCellDef>วิธีการรับเงิน</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.paidTypeDesc || '-' }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="paidAmount">
+            <th mat-header-cell *matHeaderCellDef class="text-right">จำนวนเงินที่นำ<br />มาชำระ (บาท)</th>
+            <td mat-cell *matCellDef="let element" class="text-right">
+              {{ (element.clearingAmount | numberDecimal) || '-' }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="refundAmount">
+            <th mat-header-cell *matHeaderCellDef class="text-right">คืนเงิน (บาท)</th>
+            <td mat-cell *matCellDef="let element" class="text-right">
+              {{ (element.refundAmount | numberDecimal) || '-' }}
+            </td>
+          </ng-container>
+          <!-- SLA Column -->
+          <ng-container matColumnDef="daysSla">
+            <th mat-header-cell *matHeaderCellDef class="text-right">{{ 'FINANCE.SLA' | translate }}</th>
+            <td mat-cell *matCellDef="let element" class="text-right" [ngClass]="element | slaStatus: 'STYLE' : ''">
+              {{ element | slaStatus: 'DISPLAY' }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="user">
+            <th mat-header-cell *matHeaderCellDef>ผู้รับผิดชอบงาน</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.makerId ?? '' }}-{{ element.makerName ?? '' }}<br />
+              {{ (element.createDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+              {{ ' : ' }}
+              {{ (element.createDate | buddhistEra: 'HH:mm') || '-' }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="receiveStatus" stickyEnd>
+            <th mat-header-cell *matHeaderCellDef columnElevationRight class="text-center">สถานะหนังสือ</th>
+            <td mat-cell *matCellDef="let element" columnElevationRight class="text-center">
+              <div [class]="'status-label full-width ' + (element.receiveStatus | financeStatusBtn: 'RECEIPT_STATUS')">
+                {{ element.receiveStatusDesc ?? '-' }}
+              </div>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="action" stickyEnd>
+            <th mat-header-cell *matHeaderCellDef class="text-center">
+              {{ 'COMMON.LABEL_COMMAND' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let element" class="text-center">
+              <button
+                *ngIf="element.updatedBy !== currentUser?.userId || element.receiveStatus === 'PENDING_APPROVE'"
+                class="medium-aw-button"
+                type="button"
+                mat-stroked-button
+                color="primary"
+                (click)="onStartTask(element)">
+                {{ 'COMMON.BUTTON_VIEW_DETAIL' | translate }}
+              </button>
+              <button
+                *ngIf="element.updatedBy === currentUser?.userId && element.receiveStatus === 'PENDING_EDIT'"
+                class="medium-aw-button"
+                type="button"
+                mat-flat-button
+                color="primary"
+                (click)="onStartTask(element)">
+                {{ 'COMMON.BUTTON_EDIT' | translate }}
+              </button>
+              <button
+                *ngIf="
+                  element.updatedBy === currentUser?.userId &&
+                  element.receiveStatus !== 'PENDING_APPROVE' &&
+                  element.receiveStatus !== 'PENDING_EDIT'
+                "
+                class="medium-aw-button"
+                type="button"
+                mat-flat-button
+                color="primary"
+                (click)="onStartTask(element)">
+                บันทึกรายการ
+              </button>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="auditLog" stickyEnd>
+            <th mat-header-cell *matHeaderCellDef class="text-center">Audit<br />Log</th>
+            <td mat-cell *matCellDef="let element" class="text-center">
+              <div (click)="goToAuditLog(element)" class="text-center cursor-pointer">
+                <mat-icon svgIcon="icon-Activity" class="icon fill-blue icon-medium default-cursor"></mat-icon>
+              </div>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="tableColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: tableColumns"></tr>
+        </table>
+        <div *ngIf="bookings.length === 0">
+          <app-message-empty [message]="'COMMON.SEARCH_EMPTY'"></app-message-empty>
+        </div>
+      </div>
+      <spig-paginator
+        *ngIf="bookings.length > 0"
+        [result]="pageResultConfig"
+        [action]="pageActionConfig"
+        (pageEvent)="pageEvent($event)">
+      </spig-paginator>
+    </div>
+  </div>
+</div>

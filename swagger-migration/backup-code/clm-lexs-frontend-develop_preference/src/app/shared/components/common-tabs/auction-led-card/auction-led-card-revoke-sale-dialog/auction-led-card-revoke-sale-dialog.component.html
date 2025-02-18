@@ -1,0 +1,10 @@
+<div>
+  <app-message-banner
+    type="warn-normal"
+    [message]="'กรุณาเลือกอย่างน้อย 1 รายการในชุดทรัพย์ที่ต้องการเพิกถอนการขาย'"></app-message-banner>
+  <app-auction-detail-led-collateral-table
+    [data]="data"
+    [collateralColumns]="collateralColumns"
+    actionCode="R2E11_LEXS2_552"
+    (onUpdateSelectItem)="onUpdateSelectItem($event)"></app-auction-detail-led-collateral-table>
+</div>

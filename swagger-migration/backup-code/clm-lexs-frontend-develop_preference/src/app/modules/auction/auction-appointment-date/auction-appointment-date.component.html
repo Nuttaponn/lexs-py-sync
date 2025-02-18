@@ -1,0 +1,63 @@
+<app-action-bar (backButtonHandler)="onBack()" [showNavBarInformation]="true">
+  <ng-container navBarInformationTemplate>
+    <mat-icon svgIcon="icon-List-Multiple" class="icon icon-xmedium default-cursor"></mat-icon
+    ><span class="ml-8">{{ 'AUCTION_DETAIL.AUCTION_DETAIL' | translate }}</span>
+  </ng-container>
+</app-action-bar>
+
+<div class="body-container action-bar-margin">
+  <ng-container>
+    <div class="m-25">
+      <app-message-banner *ngIf="messageBanner" type="black-info" [message]="messageBanner"></app-message-banner>
+    </div>
+    <div class="margin-title mr-24 mt-40">
+      <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10" class="mt-24">
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+          <div>
+            <h3>
+              ประกาศขายทอดตลาด{{ auctionBiddingResultResponseData?.ledName }} ครั้งที่
+              {{ auctionBiddingResultResponseData?.aucLedSeq }}
+            </h3>
+          </div>
+          <ng-container>
+            <span class="divider-vertical mr-20"></span>
+            <h3>
+              {{
+                ('AUCTION_DETAIL.DATE_SELLING' | translate) +
+                  ' ' +
+                  (auctionBiddingResultResponseData?.bidDate | buddhistEra: 'DD/MM/yyyy')
+              }}
+            </h3>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+    <div class="content-container margin-zero">
+      <div class="inner-container-padding-24">
+        <div fxLayout="row" fxLayoutAlign="space-between center">
+          <div class="title-text">
+            <h5 class="mt-12 mb-12 mr-12">{{ 'PROPERTY.PROPERTY_LIST' | translate }}</h5>
+          </div>
+          <div fxLayout="row">
+            <div class="description" (click)="isOpened = !isOpened">
+              <mat-icon
+                [svgIcon]="isOpened ? 'icon-Slide-Hide' : 'icon-Expand'"
+                class="icon icon-xmedium icon-hide-show fill-blue mr-5">
+              </mat-icon
+              >{{ isOpened ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate) }}
+            </div>
+          </div>
+        </div>
+      </div>
+      <mat-accordion>
+        <mat-expansion-panel [expanded]="isOpened" hideToggle>
+          <ng-container>
+            <app-auction-appointment-date-table
+              *ngIf="auctionBiddingResultResponseData"
+              [data]="auctionBiddingResultResponseData"></app-auction-appointment-date-table>
+          </ng-container>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </ng-container>
+</div>

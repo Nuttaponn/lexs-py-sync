@@ -1,0 +1,143 @@
+<ng-container *ngIf="auctionLEDCard.length > 0">
+  <div class="mt-16 mb-16" *ngFor="let data of auctionLEDCard; let i = index">
+    <div class="content-container ml-0 mr-0">
+      <div class="inner-container-padding pt-0 pb-0 pr-0 pl-0">
+        <mat-accordion class="accordion-headers-align">
+          <mat-card appearance="outlined" class="bg-blue-00 mat-elevation-z0">
+            <div class="title-content bg-blue-00 pt-12 pb-12 pl-12 pr-12 bd-8">
+              <div fxLayout="row" fxLayoutAlign="space-between center">
+                <div fxLayout="row">
+                  <mat-icon svgIcon="icon-Stack" class="icon icon-medium"></mat-icon>
+                  <div class="mr-8 ml-8">
+                    <h5 class="d-inline">{{ data.ledName }}</h5>
+                    <span
+                      *ngIf="(!isOpenedList[i] && data.totalAnnounces) || 0 > 0"
+                      class="ml-10"
+                      matBadge="{{ data.totalAnnounces }}"
+                      matBadgeOverlap="false"></span>
+                  </div>
+                </div>
+                <div fxLayout="row">
+                  <div class="description pr-6" (click)="isOpenedList[i] = !isOpenedList[i]">
+                    <mat-icon
+                      [svgIcon]="isOpenedList[i] ? 'icon-Slide-Hide' : 'icon-Expand'"
+                      class="icon icon-hide-show fill-blue pr-6">
+                    </mat-icon
+                    >{{
+                      isOpenedList[i]
+                        ? ('COMMON.ICON_EXPANSION_HIDE' | translate)
+                        : ('COMMON.ICON_EXPANSION_SHOW' | translate)
+                    }}
+                  </div>
+                </div>
+              </div>
+              <div fxLayout="row" fxLayoutAlign="start center" class="mt-15">
+                <span class="mr-8 font-card">{{ 'COURT.COURT_NAME' | translate }}:</span>
+                <h6>{{ data.courtName }}</h6>
+                <div class="divider-vertical align-margin"></div>
+
+                <span class="mr-8 font-card">{{ 'COMMON.LABEL_BLACK_CASE_NO' | translate }}:</span>
+                <h6>{{ data.blackCaseNo }}</h6>
+                <div class="divider-vertical align-margin"></div>
+
+                <span class="mr-8 font-card">{{ 'COMMON.LABEL_RED_CASE_NO_2' | translate }}:</span>
+                <h6 class="fill-red">{{ data.redCaseNo }}</h6>
+              </div>
+            </div>
+          </mat-card>
+        </mat-accordion>
+
+        <mat-expansion-panel [expanded]="isOpenedList[i]" hideToggle>
+          <ng-template matExpansionPanelContent>
+            <mat-tab-group
+              class="tab-group-container mt-0"
+              mat-align-tabs="start"
+              [(selectedIndex)]="tabIndex[i]"
+              (selectedTabChange)="onTabChanged($event, i)">
+              <!-- รายการยึดทรัพย์ -->
+              <mat-tab label="{{ 'AUCTION_LED_CARD.SEIZED_CALLATERALS.SEIZED_CALLATERALS_LABEL' | translate }}">
+                <ng-template matTabContent>
+                  <app-auction-led-card-seized-callaterals
+                    [ledId]="data.ledId"
+                    [litigationCaseId]="data.litigationCaseId"></app-auction-led-card-seized-callaterals>
+                </ng-template>
+              </mat-tab>
+
+              <!-- วางค่าใช้จ่ายเพิ่มเติม -->
+              <mat-tab label="{{ 'AUCTION_LED_CARD.EXPENSE.EXPENSE_LABEL' | translate }}">
+                <ng-template matTabContent>
+                  <app-auction-led-card-expense
+                    [ledInfo]="data"
+                    [litigationId]="litigationId"></app-auction-led-card-expense>
+                </ng-template>
+              </mat-tab>
+
+              <!-- ใบประกาศขายทอดตลาด -->
+              <mat-tab>
+                <ng-template matTabLabel *ngIf="tabIndex[i] === 2 || data.totalAnnounces === 0">
+                  <span>{{ 'AUCTION_LED_CARD.ANNOUNCEMENT.ANNOUNCEMENT_LABEL' | translate }}</span>
+                </ng-template>
+                <ng-template matTabLabel *ngIf="(tabIndex[i] !== 2 && data.totalAnnounces) || 0 > 0">
+                  <span class="bg-color-red" matBadge="{{ data.totalAnnounces }}" matBadgeOverlap="false">{{
+                    'AUCTION_LED_CARD.ANNOUNCEMENT.ANNOUNCEMENT_LABEL' | translate
+                  }}</span>
+                </ng-template>
+                <ng-template matTabContent>
+                  <app-auction-led-card-announcement
+                    [ledInfo]="data"
+                    [totalProcessAnnounces]="data.totalAnnounces || 0"
+                    [initTab]="
+                      currentActiveLed?.activeLedId === data.ledId ? currentActiveLed?.activeLedSubTab || 0 : 0
+                    "></app-auction-led-card-announcement>
+                </ng-template>
+              </mat-tab>
+
+              <!-- โอนกรรมสิทธิ์ -->
+              <mat-tab>
+                <ng-template matTabLabel>
+                  <span>{{ 'AUCTION_LED_CARD.OWNERSHIP_TRANSFER.LABEL' | translate }}</span>
+                </ng-template>
+                <ng-template matTabContent>
+                  <app-auction-led-card-ownership-transfer [ledInfo]="data"></app-auction-led-card-ownership-transfer>
+                </ng-template>
+              </mat-tab>
+
+              <!-- เพิกถอนการขาย -->
+              <!-- TODO: Remark due to not implement in current project plan -->
+              <!-- <mat-tab>
+            <ng-template matTabLabel *ngIf="tabIndex[i] === 3">
+              <span>{{ 'AUCTION_LED_CARD.REVOKE_SALE.REVOKE_SALE_LABEL' | translate }}</span>
+            </ng-template>
+
+            <ng-template matTabLabel *ngIf="tabIndex[i] !== 3">
+              <span class="bg-color-red">{{
+                'AUCTION_LED_CARD.REVOKE_SALE.REVOKE_SALE_LABEL' | translate }}</span>
+            </ng-template>
+
+            <ng-template matTabContent>
+              <app-auction-led-card-revoke-sale></app-auction-led-card-revoke-sale>
+            </ng-template>
+          </mat-tab> -->
+
+              <!-- ตัดบัญชีชำระหนี้ -->
+              <mat-tab>
+                <ng-template matTabLabel>
+                  <span>{{ 'AUCTION_LED_CARD.DEBT_PAYMENT_ACCOUNT.DEBT_PAYMENT_ACCOUNT' | translate }}</span>
+                </ng-template>
+                <ng-template matTabContent>
+                  <app-auction-led-card-debt-payment [ledInfo]="data"></app-auction-led-card-debt-payment>
+                </ng-template>
+              </mat-tab>
+            </mat-tab-group>
+          </ng-template>
+        </mat-expansion-panel>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="auctionLEDCard.length === 0" [ngTemplateOutlet]="dataNotFound"></ng-container>
+
+<ng-template #dataNotFound>
+  <app-message-empty [message]="'AUCTION_LED_CARD.NOT_FOUND'"></app-message-empty>
+</ng-template>

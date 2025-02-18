@@ -1,0 +1,66 @@
+[
+  {
+    "userId": "510830",
+    "title": "นางสาว",
+    "name": "ดาวหทัย",
+    "surname": "สันติวัฒนากุล",
+    "category": "KTB",
+    "roleCode": "BC"
+  },
+  {
+    "userId": "570911",
+    "title": "นางสาว",
+    "name": "ณิชกมล",
+    "surname": "ณ สงขลา",
+    "category": "KTB",
+    "roleCode": "KLAW_USER"
+  },
+  {
+    "userId": "571031",
+    "title": "นาย",
+    "name": "ตฤณ",
+    "surname": "ศรีบุญเรือง",
+    "category": "KTB",
+    "roleCode": "KLAW_USER"
+  },
+  {
+    "userId": "572105",
+    "title": "นางสาว",
+    "name": "ชิสา",
+    "surname": "ภาสวัฒน์รญา",
+    "category": "KTB",
+    "roleCode": "KLAW_USER"
+  },
+  {
+    "userId": "572364",
+    "title": "นางสาว",
+    "name": "ศริญญา",
+    "surname": "ธนวรรณวิวัฒน์",
+    "category": "KTB",
+    "roleCode": "KLAW_USER"
+  },
+  {
+    "userId": "630146",
+    "title": "นาง",
+    "name": "ปนัดดา",
+    "surname": "เหม็งทะเหล็ก",
+    "category": "KTB",
+    "roleCode": "BC"
+  },
+  {
+    "userId": "640129",
+    "title": "นาย",
+    "name": "ปิยวัฒน์",
+    "surname": "ปัญญาฤทธิ์",
+    "category": "KTB",
+    "roleCode": "ADMIN"
+  },
+  {
+    "userId": "Kzn011",
+    "title": "นาง",
+    "name": "ปอแก้ว",
+    "surname": "บุญปั้น",
+    "category": "KTB",
+    "roleCode": "STRAREGY_AMD"
+  }
+]

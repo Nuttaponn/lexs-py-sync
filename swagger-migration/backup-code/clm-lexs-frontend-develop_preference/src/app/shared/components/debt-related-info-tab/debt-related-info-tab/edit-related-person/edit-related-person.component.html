@@ -1,0 +1,145 @@
+<div class="container">
+  <div [formGroup]="dataForm">
+    <div fxLayout="column" fxFlexFill fxLayoutGap="36" class="mt-16">
+      <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+        <div fxLayout="column" fxFlex="23.5">
+          <h5>{{ 'LAWSUIT.LABEL_PERSON_TYPE' | translate }}</h5>
+        </div>
+        <div fxLayout="column" fxFlex>
+          <mat-radio-group (ngModelChange)="onSelectPersonType($event)" class="full-width" formControlName="personType">
+            <div fxLayout="row" class="full-width">
+              <div fxFlex="50">
+                <mat-radio-button value="INDIVIDUAL">{{ 'CUSTOMER.INDIVIDUAL' | translate }}</mat-radio-button>
+              </div>
+              <div fxFlex="50">
+                <mat-radio-button value="JURISTIC">{{ 'CUSTOMER.JURISTIC' | translate }}</mat-radio-button>
+              </div>
+            </div>
+          </mat-radio-group>
+          <spig-error-msg [control]="getFormControl('personType')" [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'">
+          </spig-error-msg>
+        </div>
+      </div>
+      <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+        <div fxLayout="column" fxFlex="23.5">
+          <h5>{{ 'CUSTOMER.RELATED_PERSON_INFO' | translate }}</h5>
+        </div>
+        <div fxLayout="column" fxFlex>
+          <div class="mb-16" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+            <div fxLayout="column" fxFlex="50">
+              <spig-dropdown
+                [options]="personRelationOptions"
+                (selectedOption)="onSelectedRelation($event)"
+                [required]="true"
+                formControlName="personRelation"
+                classInput="input-normal"
+                [config]="personRelationConfig"
+                fxFlex>
+              </spig-dropdown>
+              <spig-error-msg [control]="getFormControl('personRelation')" [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'">
+              </spig-error-msg>
+            </div>
+            <div fxLayout="column" fxFlex="50">
+              <spig-dropdown
+                *ngIf="deathPersons.length !== 0 && isShowDeathDropdown"
+                [options]="deathPersons"
+                [required]="true"
+                formControlName="deathPerson"
+                classInput="input-normal"
+                [config]="deathPersonsConfig"
+                fxFlex>
+              </spig-dropdown>
+              <spig-error-msg
+                *ngIf="deathPersons.length !== 0 && isShowDeathDropdown"
+                [control]="getFormControl('deathPerson')"
+                [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'">
+              </spig-error-msg>
+            </div>
+          </div>
+          <div class="mb-16" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+            <div fxLayout="column" fxFlex="50">
+              <spig-dropdown
+                [options]="personTitleOptions"
+                (selectedOption)="onSelectedTitle($event)"
+                formControlName="personTitle"
+                classInput="input-normal"
+                [config]="personTitleConfig"
+                fxFlex>
+              </spig-dropdown>
+              <spig-error-msg [control]="getFormControl('personTitle')" [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'">
+              </spig-error-msg>
+            </div>
+            <div fxFlex="50"></div>
+          </div>
+          <div *ngIf="selectIndividual" class="mb-16" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+            <div fxLayout="column" fxFlex="50">
+              <mat-form-field>
+                <mat-label>{{ 'LAWSUIT.LABEL_INPUT_FIRSTNAME' | translate }}</mat-label>
+                <input matInput type="text" formControlName="firstName" autocomplete="off" />
+              </mat-form-field>
+              <spig-error-msg [control]="getFormControl('firstName')" [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'">
+              </spig-error-msg>
+            </div>
+            <div fxLayout="column" fxFlex="50">
+              <mat-form-field>
+                <mat-label>{{ 'LAWSUIT.LABEL_INPUT_LASTNAME' | translate }}</mat-label>
+                <input matInput type="text" formControlName="lastName" autocomplete="off" />
+              </mat-form-field>
+              <spig-error-msg [control]="getFormControl('lastName')" [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'">
+              </spig-error-msg>
+            </div>
+          </div>
+          <div *ngIf="!selectIndividual" class="mb-16" fxLayout="row" fxLayoutAlign="start center">
+            <div fxLayout="column" fxFlex>
+              <mat-form-field>
+                <mat-label>{{ 'LAWSUIT.LABEL_INPUT_NAME' | translate }}</mat-label>
+                <input matInput type="text" formControlName="name" autocomplete="off" />
+              </mat-form-field>
+              <spig-error-msg [control]="getFormControl('name')" [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'">
+              </spig-error-msg>
+            </div>
+          </div>
+          <div class="mb-16" fxLayout="row" fxLayoutAlign="start center">
+            <div fxLayout="column" fxFlex>
+              <mat-form-field>
+                <mat-label>{{
+                  (!selectIndividual ? 'LAWSUIT.LABEL_INPUT_TAX_ID' : 'COMMON.LABEL_NATIONAL_ID') | translate
+                }}</mat-label>
+                <input
+                  type="text"
+                  appNumberOnly
+                  maxlength="13"
+                  formControlName="personCitizen"
+                  autocomplete="off"
+                  matInput />
+              </mat-form-field>
+              <spig-error-msg [control]="getFormControl('personCitizen')" [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'">
+              </spig-error-msg>
+            </div>
+          </div>
+          <div class="mb-16" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+            <div fxFlex="50">
+              <div fxLayout="column" fxFlex>
+                <spig-datepicker
+                  formControlName="personBirthday"
+                  [required]="true"
+                  classInput="full-width"
+                  [label]="
+                    !selectIndividual
+                      ? 'LAWSUIT.NOTI_REGISTRATION_RELATED_PERSON'
+                      : 'LAWSUIT.NOTI_BIRTHDAY_RELATED_PERSON'
+                  ">
+                </spig-datepicker>
+                <spig-error-msg
+                  [control]="getFormControl('personBirthday')"
+                  [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'">
+                </spig-error-msg>
+              </div>
+            </div>
+            <div fxFlex="50"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

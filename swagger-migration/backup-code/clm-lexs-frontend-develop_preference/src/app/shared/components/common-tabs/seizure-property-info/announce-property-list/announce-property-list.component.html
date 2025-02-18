@@ -1,0 +1,126 @@
+<div *ngIf="showHeader" class="header" fxLayout="row" fxLayoutAlign="space-between center">
+  <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16">
+    <div class="info-icon">
+      <mat-icon svgIcon="icon-Information" class="icon-small"></mat-icon>
+    </div>
+    <h6>{{ headerText }}</h6>
+    <span>{{ 'LAWSUIT.AMOUNT_OF_PROPERTY_SET' | translate }}: </span>
+    <h6>{{ dataSource.filteredData.length }}</h6>
+  </div>
+
+  <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16">
+    <div (click)="onEdit()" *ngIf="canEdit">
+      <mat-icon svgIcon="icon-Edit" class="icon icon-medium ml-4"> </mat-icon>
+      <span class="bold">
+        {{ 'COMMON.BUTTON_EDIT' | translate }}
+      </span>
+    </div>
+    <div class="description" (click)="headerExpanded = !headerExpanded">
+      <mat-icon
+        [svgIcon]="headerExpanded ? 'icon-Slide-Hide' : 'icon-Expand'"
+        class="icon icon-hide-show fill-blue ml-4">
+      </mat-icon>
+      <span class="bold">
+        {{ headerExpanded ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate) }}
+      </span>
+    </div>
+  </div>
+</div>
+<div *ngIf="!showHeader || (showHeader && headerExpanded)">
+  <div class="table-scroll section" table-scroll>
+    <table mat-table [dataSource]="pagedData" #seizureListTable>
+      <ng-container matColumnDef="no">
+        <th mat-header-cell *matHeaderCellDef class="text-center">
+          {{ 'COMMON.LABEL_NO' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element; let rowNo = index" class="text-center">
+          <ng-container>
+            <div>
+              <label [for]="rowNo"></label>
+            </div>
+          </ng-container>
+          <ng-container>
+            {{ (pageIndex - 1) * pageSize + (rowNo + 1) }}
+          </ng-container>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="fsubbidnum">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'PROPERTY.PROPERTY_SET_NUMBER' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <span class="link" (click)="collateralAuctionDetail(element)">
+            {{ 'LAWSUIT.DEFERMENT.ASSETS_NUMBER' | translate }} {{ element.fsubbidnum || '-' }}
+          </span>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="totalDeeds">
+        <th mat-header-cell *matHeaderCellDef class="text-right">
+          {{ 'PROPERTY.PROPERTY_TOTAL' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" class="text-right">
+          <span>
+            {{ element.totalDeeds || '-' }}
+          </span>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="blackCaseNo">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'COMMON.LABEL_BLACK_CASE_NO_RED_CASE_NO' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <span> {{ element.blackCaseNo || '-' }} </span><br />
+          <span class="fill-red">
+            {{ element.redCaseNo || '-' }}
+          </span>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="saletypedesc">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'PROPERTY.SALES_TYPE' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <span>
+            {{ element.saletypedesc || '-' }}
+          </span>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="appoint">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'LAWSUIT.DEFERMENT.DATE_EXECUTION_NUMBER' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element; let i = index">
+          <ng-container *ngIf="hasExtendDeferment && getAucRound(element.auctionInfos) === '-'; else showLink">
+            <button
+              type="button"
+              mat-flat-button
+              color="primary"
+              class="medium-fw-button"
+              (click)="openAddNoteDialog(element, i)">
+              {{
+                (hasCheckbox(element) ? 'LAWSUIT.DEFERMENT.BTN_ASSIGN_DATE_EXECUTION' : 'COMMON.BUTTON_VIEW_DETAIL')
+                  | translate
+              }}
+            </button>
+          </ng-container>
+          <ng-template #showLink>
+            <span class="link" (click)="openAddNoteDialog(element, i)">
+              {{ getAucRound(element.auctionInfos) }}
+            </span>
+          </ng-template>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="columns"></tr>
+      <tr mat-row *matRowDef="let row; columns: columns" [class.hidden]="row.hide"></tr>
+    </table>
+  </div>
+  <ng-container [ngTemplateOutlet]="dataNotFound" *ngIf="dataSource.filteredData.length === 0"> </ng-container>
+  <app-paginator
+    #paginator
+    [pageSize]="pageSize"
+    [length]="dataSource.data.length"
+    (page)="onPaging($event)"></app-paginator>
+</div>
+<ng-template #dataNotFound>
+  <app-message-empty [message]="'DOC_PREP.NOT_FOUND_DOC'"></app-message-empty>
+</ng-template>

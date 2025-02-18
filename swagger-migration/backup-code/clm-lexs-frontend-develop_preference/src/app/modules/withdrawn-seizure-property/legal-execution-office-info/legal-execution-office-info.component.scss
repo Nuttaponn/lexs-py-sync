@@ -1,0 +1,45 @@
+@import '/src/styles/colors';
+@import '/src/styles/typography';
+.wrap-tooltip {
+  display: flex;
+  align-items: center;
+}
+
+td {
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+}
+
+.mat-column-col5 {
+  white-space: pre-wrap;
+  min-width: 400px !important;
+}
+
+.title-bar-color {
+  color: #121212cc !important;
+}
+
+.wsp-title {
+  .total-label {
+    font-size: $font-sub-description;
+    .total-number {
+      font-size: $font-description;
+      font-weight: bold;
+    }
+  }
+}
+
+.bg-l-gray {
+  width: 100%;
+  height: 72px;
+  background: map_get($ktb-palette-biz-gray, 50);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+::ng-deep app-legal-execution-office-info {
+  .padding-zero .mat-expansion-panel-body {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}

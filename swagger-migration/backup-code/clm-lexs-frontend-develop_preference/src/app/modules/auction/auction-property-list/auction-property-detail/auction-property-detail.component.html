@@ -1,0 +1,40 @@
+<app-action-bar (backButtonHandler)="onBack()" [showNavBarInformation]="true">
+  <ng-container navBarInformationTemplate>
+    <mat-icon svgIcon="icon-List-Property" class="icon icon-xmedium default-cursor"></mat-icon
+    ><span class="ml-8"
+      >{{ ('PROPERTY.PROPERTY_SET_NUMBER' | translate) + ' ' + fsubbidnum }}
+      <span
+        *ngIf="npaStatus"
+        class="status-label ml-10"
+        [ngClass]="{
+          'status-pending': npaStatus === 'PENDING' || npaStatus === 'ADJUST',
+          'status-success': npaStatus === 'PURCHASE',
+          'status-info': npaStatus === 'NOT_PURCHASE' || npaStatus === 'NOT_PURCHASE_NON_PLEDGE_ASSETS',
+        }">
+        <mat-icon
+          *ngIf="npaStatus === 'PURCHASE'"
+          svgIcon="icon-Mark"
+          class="icon icon-small-xl fill-krungthai-green mr-4"></mat-icon>
+        <label *ngIf="npaStatus === 'PURCHASE'"> อนุมัติซื้อทรัพย์ </label>
+        <label *ngIf="npaStatus === 'PENDING'"> รอผลพิจารณาจาก NPA </label>
+        <label *ngIf="npaStatus === 'ADJUST'"> รอแก้ไขประกาศ </label>
+        <label *ngIf="npaStatus === 'NOT_PURCHASE'"> อนุมัติไม่ซื้อทรัพย์ </label>
+        <label *ngIf="npaStatus === 'NOT_PURCHASE_NON_PLEDGE_ASSETS'"> อนุมัติไม่ซื้อ (ทรัพย์นอกจำนอง) </label>
+      </span>
+    </span>
+  </ng-container>
+</app-action-bar>
+
+<div class="body-container action-bar-margin">
+  <div class="content-container margin-zero mt-55">
+    <ng-container *ngIf="data">
+      <app-auction-property
+        [npaStatus]="npaStatus"
+        [isOpened]="isOpened"
+        [data]="data"
+        [actionCode]="actionCode"
+        [fsubbidNumDefault]="fsubbidnum"
+        [collateralColumns]="collateralUnmatchedColumns"></app-auction-property>
+    </ng-container>
+  </div>
+</div>

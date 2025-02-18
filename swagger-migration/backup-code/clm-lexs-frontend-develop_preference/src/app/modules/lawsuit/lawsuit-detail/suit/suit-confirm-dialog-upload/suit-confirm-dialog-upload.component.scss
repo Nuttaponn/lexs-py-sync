@@ -1,0 +1,12 @@
+@import '/src/styles/colors';
+@import '/src/styles/typography';
+
+.content {
+  min-width: 500px;
+  padding-top: 24px;
+
+  .label-info {
+    font-size: $font-sub-description;
+    color: map-get($ktb-palette-biz-black, 70);
+  }
+}

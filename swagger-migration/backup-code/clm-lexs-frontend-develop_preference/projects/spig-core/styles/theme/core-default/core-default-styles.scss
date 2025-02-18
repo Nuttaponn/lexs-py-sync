@@ -1,0 +1,16 @@
+/* for override variables used in this library (e.g. for Bootstrap theming */
+@import "./variables";
+
+/* For based styles */
+@import "../../global/mixins";
+@import "../../global/iconography";
+@import "../../global/typography";
+
+/* for Angular Material */
+@import "./mat-theming";
+
+@import "../../global/customStyles";
+
+/* for customized styles in this library */
+@import "./iconography";
+@import "./customStyles";

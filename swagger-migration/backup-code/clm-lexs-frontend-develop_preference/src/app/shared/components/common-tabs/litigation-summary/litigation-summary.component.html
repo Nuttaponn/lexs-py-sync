@@ -1,0 +1,790 @@
+<div fxLayout="column" fxLayoutGap="10px">
+  <br />
+  <div fxLayout="row" fxLayoutGap="10px">
+    <div fxFlex="20">
+      <spig-dropdown
+        [config]="ddlLawsuit"
+        [options]="ddlLawsuitOptions"
+        [formControl]="ddlLawsuitCtrl"
+        [classInput]="'input-normal bg-white elevation-e1'"
+        (selectedOption)="ddlOnChanges($event)"></spig-dropdown>
+    </div>
+    <p>
+      {{ selectIndex }} {{ 'COMMON.LABEL_FROM' | translate }} {{ ddlLawsuitNotAllOptions.length }}
+      {{ 'COMMON.LABEL_LAWSUIT' | translate }}
+    </p>
+  </div>
+  <div class="card-container">
+    <mat-accordion class="accordion-headers-align">
+      <div fxLayout="row" fxLayoutAlign="space-between center" class="title-content">
+        <div class="title-text">
+          <h5>{{ 'LAWSUIT.TAB_LITIGATION_GENERAL' | translate }}</h5>
+        </div>
+        <div fxLayout="row">
+          <div class="description" (click)="isOpened1 = !isOpened1">
+            <mat-icon [svgIcon]="isOpened1 ? 'icon-Slide-Hide' : 'icon-Expand'" class="icon icon-hide-show fill-blue">
+            </mat-icon
+            >{{ isOpened1 ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate) }}
+          </div>
+        </div>
+      </div>
+
+      <mat-expansion-panel [expanded]="isOpened1" hideToggle>
+        <div fxLayout="row" fxLayoutGap="12px">
+          <div fxLayout="column" fxLayoutGap="30px" fxFlex="25">
+            <div fxLayout="column">
+              <div class="label">{{ 'COMMON.LABEL_OFFICE_LAWYER' | translate }}</div>
+              <div class="sub-label">
+                {{
+                  (litigationDetail.lawyerOfficeCode | emptyFormat) +
+                    (litigationDetail.lawyerOfficeName ? ' - ' : '') +
+                    (litigationDetail.lawyerOfficeName | emptyFormat)
+                }}
+              </div>
+            </div>
+          </div>
+          <div fxLayout="column" fxLayoutGap="30px" fxFlex="25">
+            <div fxLayout="column">
+              <div class="label">
+                {{ 'LAWSUIT.TAB_LITIGATION_GENERAL_LAWYER' | translate }}
+              </div>
+              <div class="sub-label">
+                {{
+                  (litigationDetail.lawyerId | emptyFormat) +
+                    (litigationDetail.lawyerName ? ' - ' : '') +
+                    (litigationDetail.lawyerName | emptyFormat)
+                }}
+              </div>
+            </div>
+          </div>
+          <div fxLayout="column" fxLayoutGap="30px" fxFlex="25">
+            <div fxLayout="column">
+              <div class="label">{{ 'LAWSUIT.LABEL_NOTICE_LETTER_DATE' | translate }}</div>
+              <div class="sub-label">{{ (litigationDetail.noticeLetterDate | buddhistEra: 'DD/MM/yyyy') || '-' }}</div>
+            </div>
+          </div>
+          <div fxLayout="column" fxLayoutGap="30px" fxFlex="25">
+            <div fxLayout="column">
+              <div class="label">{{ 'LAWSUIT.LABEL_NEWS_ANNOUNCEMENT_DATE' | translate }}</div>
+              <div class="sub-label">
+                {{ (litigationDetail.newsAnnouncementDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+  <ng-container *ngIf="hasLitigationCase">
+    <div class="card-container" *ngIf="!!!isSelectAllSuit">
+      <mat-accordion class="accordion-headers-align">
+        <div fxLayout="row" fxLayoutAlign="space-between center" class="title-content">
+          <div class="title-text">
+            <h5>{{ 'LAWSUIT.TAB_LITIGATION_CIVIL_CASE' | translate }}</h5>
+          </div>
+          <div fxLayout="row">
+            <div class="description" (click)="isOpened2 = !isOpened2">
+              <mat-icon [svgIcon]="isOpened2 ? 'icon-Slide-Hide' : 'icon-Expand'" class="icon icon-hide-show fill-blue">
+              </mat-icon
+              >{{ isOpened2 ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate) }}
+            </div>
+          </div>
+        </div>
+
+        <mat-expansion-panel [expanded]="isOpened2" hideToggle>
+          <div fxLayout="row" fxLayoutGap="12px">
+            <div fxLayout="column" fxLayoutGap="30px" fxFlex="25">
+              <div fxLayout="column">
+                <div class="label">{{ 'COMMON.LABEL_OFFICE_LAWYER' | translate }}</div>
+                <div class="sub-label">
+                  {{
+                    (litigationCase.lawyerOfficeCode | emptyFormat) +
+                      (litigationCase.lawyerOfficeName ? ' - ' : '') +
+                      (litigationCase.lawyerOfficeName | emptyFormat)
+                  }}
+                </div>
+              </div>
+            </div>
+            <div fxLayout="column" fxLayoutGap="30px" fxFlex="25">
+              <div fxLayout="column">
+                <div class="label">
+                  {{ 'LAWSUIT.TAB_LITIGATION_GENERAL_LAWYER' | translate }}
+                </div>
+                <div class="sub-label">
+                  {{
+                    (litigationCase.lawyerId | emptyFormat) +
+                      (litigationCase.lawyerName ? ' - ' : '') +
+                      (litigationCase.lawyerName | emptyFormat)
+                  }}
+                </div>
+              </div>
+            </div>
+            <div fxLayout="column" fxLayoutGap="30px" fxFlex="25"></div>
+            <div fxLayout="column" fxLayoutGap="30px" fxFlex="25"></div>
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+      <mat-accordion class="accordion-headers-align" *ngIf="litigationCaseCivil">
+        <div fxLayout="column" fxLayoutGap="10px">
+          <div fxLayout="row" fxLayoutAlign="space-between center" class="title-content">
+            <div fxLayout="row" fxLayoutAlign="space-between center">
+              <mat-icon svgIcon="icon-Building-Court" class="icon icon-medium"></mat-icon>&nbsp;&nbsp;&nbsp;
+              <h6>{{ 'LAWSUIT.TAB_LITIGATION_CIVIL_COURT' | translate }}</h6>
+              &nbsp;&nbsp;&nbsp;
+              <div>
+                <h6>
+                  {{ 'COMMON.LABEL_BLACK_CASE_NO' | translate }}
+                  {{ (litigationCaseCivil.blackCaseNo | emptyFormat) || '-' }}
+                </h6>
+              </div>
+              <div class="divider-vertical"></div>
+              <div class="fill-red">
+                <h6>
+                  {{ 'COMMON.LABEL_RED_CASE_NO' | translate }}
+                  {{ (litigationCaseCivil.redCaseNo | emptyFormat) || '-' }}
+                </h6>
+              </div>
+            </div>
+            <div fxLayout="row" *ngIf="isOpened2">
+              <div class="description" (click)="isOpened3 = !isOpened3">
+                <mat-icon
+                  [svgIcon]="isOpened3 ? 'icon-Slide-Hide' : 'icon-Expand'"
+                  class="icon icon-hide-show fill-blue">
+                </mat-icon
+                >{{
+                  isOpened3 ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate)
+                }}
+              </div>
+            </div>
+          </div>
+          <mat-divider></mat-divider>
+          <mat-expansion-panel [expanded]="isOpened2 && isOpened3" hideToggle>
+            <div fxLayoutGap="12px" fxLayout="column">
+              <div fxLayout="row" fxLayoutGap="12px">
+                <div fxLayout="column" fxLayoutGap="30px" fxFlex="25">
+                  <div fxLayout="column">
+                    <div class="label">
+                      {{ 'COMMON.LABEL_COURT' | translate }}
+                    </div>
+                    <div class="sub-label">
+                      {{
+                        (litigationCaseCivil.courtCode | emptyFormat) +
+                          (litigationCase.courtName ? ' - ' : '') +
+                          (litigationCaseCivil.courtName | emptyFormat)
+                      }}
+                    </div>
+                  </div>
+                </div>
+                <div fxLayout="column" fxLayoutGap="30px" fxFlex="25">
+                  <div fxLayout="column">
+                    <div class="label">
+                      {{ 'LAWSUIT.TAB_LITIGATION_LAWSUIT_CAPITAL' | translate }}
+                    </div>
+                    <div class="sub-label">
+                      {{ (litigationCaseCivil.capitalAmount | numberDecimal) || '-' }}
+                    </div>
+                  </div>
+                </div>
+                <div fxLayout="column" fxLayoutGap="30px" fxFlex="25">
+                  <div fxLayout="column">
+                    <div class="label">
+                      {{ 'COMMON.LABEL_CASE_DATE' | translate }}
+                    </div>
+                    <div class="sub-label">
+                      {{ (litigationCaseCivil.caseDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                    </div>
+                  </div>
+                </div>
+                <div fxLayout="column" fxLayoutGap="30px" fxFlex="25">
+                  <div fxLayout="column">
+                    <div class="label">
+                      {{ 'LAWSUIT.TAB_LITIGATION_JUDGE_TYPE' | translate }}
+                    </div>
+                    <div class="sub-label">
+                      {{ (litigationCaseCivil.courtDecreeStatus | emptyFormat) || '-' }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div fxLayout="row" fxLayoutGap="12px">
+                <div fxLayout="column" fxLayoutGap="30px" fxFlex="25">
+                  <div fxLayout="column">
+                    <div class="label">
+                      {{ 'LAWSUIT.TAB_LITIGATION_JUDGE_DATE' | translate }}
+                    </div>
+                    <div class="sub-label">
+                      {{ (litigationCaseCivil.courtDecreeDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                    </div>
+                  </div>
+                </div>
+                <div fxLayout="column" fxLayoutGap="30px" fxFlex="25">
+                  <div fxLayout="column">
+                    <div class="label">
+                      {{ 'LAWSUIT.TAB_LITIGATION_LAWSUIT_DIRECTIVE_DATE' | translate }}
+                    </div>
+                    <div class="sub-label">
+                      {{ (litigationCaseCivil.courtDecreeDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                    </div>
+                  </div>
+                </div>
+                <div fxLayout="column" fxLayoutGap="30px" fxFlex="25">
+                  <div fxLayout="column">
+                    <div class="label">
+                      {{ 'LAWSUIT.TAB_LITIGATION_LAWSUIT_DIRECTIVE_RESULT' | translate }}
+                    </div>
+                    <div class="sub-label">
+                      {{ (litigationCaseCivil.courtDecreeResult | emptyFormat) || '-' }}
+                    </div>
+                  </div>
+                </div>
+                <div fxLayout="column" fxLayoutGap="30px" fxFlex="25">
+                  <div fxLayout="column">
+                    <div class="label">
+                      {{ 'LAWSUIT.TAB_LITIGATION_APPEAL_DUE_DATE' | translate }}
+                    </div>
+                    <div class="sub-label">
+                      {{ (litigationCaseCivil.appealDueDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </mat-expansion-panel>
+        </div>
+      </mat-accordion>
+      <mat-accordion class="accordion-headers-align" *ngIf="litigationCaseAppeal">
+        <div fxLayout="column" fxLayoutGap="10px">
+          <div fxLayout="row" fxLayoutAlign="space-between center" class="title-content">
+            <div fxLayout="row" fxLayoutAlign="space-between center">
+              <mat-icon svgIcon="icon-Building-Court" class="icon icon-medium"></mat-icon>&nbsp;&nbsp;&nbsp;
+              <h6>{{ 'LAWSUIT.TAB_LITIGATION_COURT_OF_APPEAL' | translate }}</h6>
+              &nbsp;&nbsp;&nbsp;
+              <div>
+                <h6>
+                  คดีหมายเลขดำ
+                  {{ (litigationCaseAppeal.blackCaseNo | emptyFormat) || '-' }}
+                </h6>
+              </div>
+              <div class="divider-vertical"></div>
+              <div class="fill-red">
+                <h6>
+                  คดีหมายเลขแดง
+                  {{ (litigationCaseAppeal.redCaseNo | emptyFormat) || '-' }}
+                </h6>
+              </div>
+            </div>
+            <div fxLayout="row" *ngIf="isOpened2">
+              <div class="description" (click)="isOpened4 = !isOpened4">
+                <mat-icon
+                  [svgIcon]="isOpened4 ? 'icon-Slide-Hide' : 'icon-Expand'"
+                  class="icon icon-hide-show fill-blue">
+                </mat-icon
+                >{{
+                  isOpened4 ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate)
+                }}
+              </div>
+            </div>
+          </div>
+          <mat-divider></mat-divider>
+          <mat-expansion-panel [expanded]="isOpened2 && isOpened4" hideToggle>
+            <div fxLayoutGap="12px" fxLayout="column">
+              <div fxLayout="row" fxLayoutGap="12px">
+                <div fxLayout="column" fxLayoutGap="30px" fxFlex="25">
+                  <div fxLayout="column">
+                    <div class="label">
+                      {{ 'LAWSUIT.TAB_LITIGATION_APPEAL_DATE' | translate }}
+                    </div>
+                    <div class="sub-label">
+                      {{ (litigationCaseAppeal.appealDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                    </div>
+                  </div>
+                </div>
+                <div fxLayout="column" fxLayoutGap="30px" fxFlex="25">
+                  <div fxLayout="column">
+                    <div class="label">
+                      {{ 'LAWSUIT.TAB_LITIGATION_APPELLANT' | translate }}
+                    </div>
+                    <div class="sub-label">
+                      {{ (litigationCaseAppeal.appealSide | emptyFormat) || '-' }}
+                    </div>
+                  </div>
+                </div>
+                <div fxLayout="column" fxLayoutGap="30px" fxFlex="25">
+                  <div fxLayout="column">
+                    <div class="label">
+                      {{ 'LAWSUIT.TAB_LITIGATION_BANK_APPEAL_DATE' | translate }}
+                    </div>
+                    <div class="sub-label">
+                      {{ (litigationCaseAppeal.appealDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                    </div>
+                  </div>
+                </div>
+                <div fxLayout="column" fxLayoutGap="30px" fxFlex="25">
+                  <div fxLayout="column">
+                    <div class="label">
+                      {{ 'LAWSUIT.TAB_LITIGATION_APPEAL_JUDGE_TYPE' | translate }}
+                    </div>
+                    <div class="sub-label">
+                      {{ (litigationCaseAppeal.courtDecreeStatus | emptyFormat) || '-' }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div fxLayout="row" fxLayoutGap="12px">
+                <div fxLayout="column" fxLayoutGap="30px" fxFlex="25">
+                  <div fxLayout="column">
+                    <div class="label">
+                      {{ 'LAWSUIT.TAB_LITIGATION_APPEAL_JUDGE_DATE' | translate }}
+                    </div>
+                    <div class="sub-label">
+                      {{ (litigationCaseAppeal.courtDecreeDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                    </div>
+                  </div>
+                </div>
+                <div fxLayout="column" fxLayoutGap="30px" fxFlex="25">
+                  <div fxLayout="column">
+                    <div class="label">
+                      {{ 'LAWSUIT.TAB_LITIGATION_APPEAL_DIRECTIVE_DATE' | translate }}
+                    </div>
+                    <div class="sub-label">
+                      {{ (litigationCaseAppeal.courtDecreeDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                    </div>
+                  </div>
+                </div>
+                <div fxLayout="column" fxLayoutGap="30px" fxFlex="25">
+                  <div fxLayout="column">
+                    <div class="label">
+                      {{ 'LAWSUIT.TAB_LITIGATION_APPEAL_DIRECTIVE_RESULT' | translate }}
+                    </div>
+                    <div class="sub-label">
+                      {{ (litigationCaseAppeal.courtDecreeResult | emptyFormat) || '-' }}
+                    </div>
+                  </div>
+                </div>
+                <div fxLayout="column" fxLayoutGap="30px" fxFlex="25">
+                  <div fxLayout="column">
+                    <div class="label">
+                      {{ 'LAWSUIT.TAB_LITIGATION_SUPREME_DUE_DATE' | translate }}
+                    </div>
+                    <div class="sub-label">
+                      {{ (litigationCaseAppeal.appealDueDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </mat-expansion-panel>
+        </div>
+      </mat-accordion>
+      <mat-accordion class="accordion-headers-align" *ngIf="litigationCaseSupreme">
+        <div fxLayout="column" fxLayoutGap="10px">
+          <div fxLayout="row" fxLayoutAlign="space-between center" class="title-content">
+            <div fxLayout="row" fxLayoutAlign="space-between center">
+              <mat-icon svgIcon="icon-Building-Court" class="icon icon-medium"></mat-icon>&nbsp;&nbsp;&nbsp;
+              <h6>{{ 'LAWSUIT.TAB_LITIGATION_SUPREME' | translate }}</h6>
+              &nbsp;&nbsp;&nbsp;
+              <div>
+                <h6>
+                  คดีหมายเลขดำ
+                  {{ (litigationCaseSupreme.blackCaseNo | emptyFormat) || '-' }}
+                </h6>
+              </div>
+              <div class="divider-vertical"></div>
+              <div class="fill-red">
+                <h6>
+                  คดีหมายเลขแดง
+                  {{ (litigationCaseSupreme.redCaseNo | emptyFormat) || '-' }}
+                </h6>
+              </div>
+            </div>
+            <div fxLayout="row" *ngIf="isOpened2">
+              <div class="description" (click)="isOpened5 = !isOpened5">
+                <mat-icon
+                  [svgIcon]="isOpened5 ? 'icon-Slide-Hide' : 'icon-Expand'"
+                  class="icon icon-hide-show fill-blue">
+                </mat-icon
+                >{{
+                  isOpened5 ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate)
+                }}
+              </div>
+            </div>
+          </div>
+          <mat-divider></mat-divider>
+          <mat-expansion-panel [expanded]="isOpened2 && isOpened5" hideToggle>
+            <div fxLayoutGap="12px" fxLayout="column">
+              <div fxLayout="row" fxLayoutGap="12px">
+                <div fxLayout="column" fxLayoutGap="30px" fxFlex="25">
+                  <div fxLayout="column">
+                    <div class="label">
+                      {{ 'LAWSUIT.TAB_LITIGATION_SUPREME_DATE' | translate }}
+                    </div>
+                    <div class="sub-label">
+                      {{ (litigationCaseSupreme.appealDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                    </div>
+                  </div>
+                </div>
+                <div fxLayout="column" fxLayoutGap="30px" fxFlex="25">
+                  <div fxLayout="column">
+                    <div class="label">
+                      {{ 'LAWSUIT.TAB_LITIGATION_SUPREME_APPELLANT' | translate }}
+                    </div>
+                    <div class="sub-label">
+                      {{ (litigationCaseSupreme.appealSide | emptyFormat) || '-' }}
+                    </div>
+                  </div>
+                </div>
+                <div fxLayout="column" fxLayoutGap="30px" fxFlex="25">
+                  <div fxLayout="column">
+                    <div class="label">
+                      {{ 'LAWSUIT.TAB_LITIGATION_BANK_SUPREME_DATE' | translate }}
+                    </div>
+                    <div class="sub-label">
+                      {{ (litigationCaseSupreme.appealDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                    </div>
+                  </div>
+                </div>
+                <div fxLayout="column" fxLayoutGap="30px" fxFlex="25">
+                  <div fxLayout="column">
+                    <div class="label">
+                      {{ 'LAWSUIT.TAB_LITIGATION_SUPREME_JUDGE_TYPE' | translate }}
+                    </div>
+                    <div class="sub-label">
+                      {{ (litigationCaseSupreme.courtDecreeStatus | emptyFormat) || '-' }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div fxLayout="row" fxLayoutGap="12px">
+                <div fxLayout="column" fxLayoutGap="30px" fxFlex="25">
+                  <div fxLayout="column">
+                    <div class="label">
+                      {{ 'LAWSUIT.TAB_LITIGATION_SUPREME_JUDGE_DATE' | translate }}
+                    </div>
+                    <div class="sub-label">
+                      {{ (litigationCaseSupreme.courtDecreeDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                    </div>
+                  </div>
+                </div>
+                <div fxLayout="column" fxLayoutGap="30px" fxFlex="25">
+                  <div fxLayout="column">
+                    <div class="label">
+                      {{ 'LAWSUIT.TAB_LITIGATION_SUPREME_DIRECTIVE_DATE' | translate }}
+                    </div>
+                    <div class="sub-label">
+                      {{ (litigationCaseSupreme.courtDecreeDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                    </div>
+                  </div>
+                </div>
+                <div fxLayout="column" fxLayoutGap="30px" fxFlex="25">
+                  <div fxLayout="column">
+                    <div class="label">
+                      {{ 'LAWSUIT.TAB_LITIGATION_SUPREME_DIRECTIVE_RESULT' | translate }}
+                    </div>
+                    <div class="sub-label">
+                      {{ (litigationCaseSupreme.courtDecreeResult | emptyFormat) || '-' }}
+                    </div>
+                  </div>
+                </div>
+                <div fxLayout="column" fxLayoutGap="30px" fxFlex="25"></div>
+              </div>
+            </div>
+          </mat-expansion-panel>
+        </div>
+      </mat-accordion>
+    </div>
+  </ng-container>
+  <!-- สถานะการติดตาม -->
+  <div class="card-container">
+    <mat-accordion class="accordion-headers-align">
+      <div fxLayout="row" fxLayoutAlign="space-between center" class="title-content">
+        <div class="title-text">
+          <div fxLayout="row" class="title-text">
+            <h5>{{ 'LAWSUIT.TAB_LITIGATION_TRACKING_STATUS' | translate }}</h5>
+            &nbsp;&nbsp;&nbsp;
+            <button
+              id="btn-lg-sum-savetracking"
+              mat-stroked-button
+              class="xsmall-aw-button overflow-ellipsis"
+              fxFlex
+              (click)="savetracking()">
+              <mat-icon svgIcon="icon-save-primary" class="icon icon-small-xm btn-icon"></mat-icon
+              >{{ 'LAWSUIT.TAB_LITIGATION_TRACKING_BUTTON' | translate }}
+            </button>
+          </div>
+        </div>
+        <div fxLayout="row">
+          <div class="description" (click)="isOpened6 = !isOpened6">
+            <mat-icon [svgIcon]="isOpened6 ? 'icon-Slide-Hide' : 'icon-Expand'" class="icon icon-hide-show fill-blue">
+            </mat-icon
+            >{{ isOpened6 ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate) }}
+          </div>
+        </div>
+      </div>
+
+      <mat-expansion-panel [expanded]="isOpened6" hideToggle>
+        <table mat-table [dataSource]="dataSource">
+          <ng-container matColumnDef="no">
+            <th mat-header-cell *matHeaderCellDef class="text-center">
+              {{ 'COMMON.LABEL_NO' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let element; let i = index" class="text-center">
+              {{ i + 1 }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="track_name">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'LAWSUIT.HEAD_COLUMN_TRACKING_NAME' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.userId + ' - ' + element.userName }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="track_date">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'LAWSUIT.HEAD_COLUMN_TRACKING_DATE' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.followupDate | buddhistEra: 'DD/MM/yyyy' }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'LAWSUIT.HEAD_COLUMN_TRACKING_STATUS_CURRENT' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let element">
+              <div class="status-label status-normal">
+                {{ element.litigationStatus }}
+              </div>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="track_status">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'LAWSUIT.HEAD_COLUMN_TRACKING_STATUS' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let element">
+              <div class="status-label status-normal">
+                {{ element.followupStatus }}
+              </div>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+              <ng-container
+                [ngTemplateOutlet]="dataNotFound"
+                [ngTemplateOutletContext]="{
+                  value: ('LAWSUIT.HEAD_COLUMN_TRACKING_STATUS' | translate),
+                }">
+              </ng-container>
+            </td>
+          </tr>
+        </table>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+  <!-- สำนักงานทนายความ และทนายความ -->
+  <div class="card-container">
+    <mat-accordion class="accordion-headers-align">
+      <div fxLayout="row" fxLayoutAlign="space-between center" class="title-content">
+        <div class="title-text">
+          <h5>{{ 'LAWSUIT.TAB_LAWYER' | translate }}</h5>
+        </div>
+        <div fxLayout="row">
+          <div class="description" (click)="isOpened7 = !isOpened7">
+            <mat-icon [svgIcon]="isOpened7 ? 'icon-Slide-Hide' : 'icon-Expand'" class="icon icon-hide-show fill-blue">
+            </mat-icon
+            >{{ isOpened7 ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate) }}
+          </div>
+        </div>
+      </div>
+
+      <mat-expansion-panel [expanded]="isOpened7" hideToggle>
+        <div fxLayoutGap="12px" fxLayout="column">
+          <div fxLayout="row" fxLayoutGap="12px">
+            <div fxLayout="column" fxLayoutGap="30px" fxFlex="25">
+              <div fxLayout="column">
+                <div class="label">
+                  {{ 'LAWSUIT.TAB_LAWYER_OFFICE' | translate }}
+                </div>
+                <div class="sub-label">
+                  {{
+                    (litigationDetail.firstLawyerOfficeCode | emptyFormat) +
+                      ' - ' +
+                      (litigationDetail.firstLawyerOfficeName | emptyFormat)
+                  }}
+                </div>
+              </div>
+            </div>
+            <div fxLayout="column" fxLayoutGap="30px" fxFlex="25">
+              <div fxLayout="column">
+                <div class="label">
+                  {{ 'LAWSUIT.TAB_LAWYER_NAME' | translate }}
+                </div>
+                <div class="sub-label">
+                  {{
+                    (litigationDetail.firstLawyerId | emptyFormat) +
+                      ' - ' +
+                      (litigationDetail.firstLawyerName | emptyFormat)
+                  }}
+                </div>
+              </div>
+            </div>
+            <div fxLayout="column" fxLayoutGap="30px" fxFlex="25">
+              <div fxLayout="column">
+                <div class="label">
+                  {{ 'LAWSUIT.TAB_LAWYER_APPROVE' | translate }}
+                </div>
+                <div class="sub-label">
+                  {{ (litigationDetail.litigationDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                </div>
+              </div>
+            </div>
+            <div fxLayout="column" fxLayoutGap="30px" fxFlex="25">
+              <div fxLayout="column">
+                <div class="label">
+                  {{ 'LAWSUIT.TAB_LAWYER_ASSIGN' | translate }}
+                </div>
+                <div class="sub-label">
+                  {{ (litigationDetail.litigationDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div fxLayout="row" fxLayoutGap="12px">
+            <div fxLayout="column" fxLayoutGap="30px" fxFlex="25">
+              <div fxLayout="column">
+                <div class="label">
+                  {{ 'LAWSUIT.TAB_LAWYER_OFFICE_CURRENT' | translate }}
+                </div>
+                <div class="sub-label">
+                  {{
+                    (litigationDetail.lawyerOfficeCode | emptyFormat) +
+                      ' - ' +
+                      (litigationDetail.lawyerOfficeName | emptyFormat)
+                  }}
+                </div>
+              </div>
+            </div>
+            <div fxLayout="column" fxLayoutGap="30px" fxFlex="25">
+              <div fxLayout="column">
+                <div class="label">
+                  {{ 'LAWSUIT.TAB_LAWYER_CURRENT' | translate }}
+                </div>
+                <div class="sub-label">
+                  {{
+                    (litigationDetail.lawyerId | emptyFormat) + ' - ' + (litigationDetail.lawyerName | emptyFormat)
+                  }}
+                </div>
+              </div>
+            </div>
+            <div fxLayout="column" fxLayoutGap="30px" fxFlex="25"></div>
+            <div fxLayout="column" fxLayoutGap="30px" fxFlex="25"></div>
+          </div>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+  <!-- หน่วยงานผู้ดูแล -->
+  <div class="card-container">
+    <mat-accordion class="accordion-headers-align">
+      <div fxLayout="row" fxLayoutAlign="space-between center" class="title-content">
+        <div class="title-text">
+          <h5>{{ 'LAWSUIT.TAB_CC_CARE' | translate }}</h5>
+        </div>
+        <div fxLayout="row">
+          <div class="description" (click)="isOpened8 = !isOpened8">
+            <mat-icon [svgIcon]="isOpened8 ? 'icon-Slide-Hide' : 'icon-Expand'" class="icon icon-hide-show fill-blue">
+            </mat-icon
+            >{{ isOpened8 ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate) }}
+          </div>
+        </div>
+      </div>
+
+      <mat-expansion-panel [expanded]="isOpened8" hideToggle>
+        <table mat-table [dataSource]="lexsUser">
+          <ng-container matColumnDef="no">
+            <th mat-header-cell *matHeaderCellDef class="text-center">
+              {{ 'COMMON.LABEL_NO' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let element; let i = index" class="text-center">
+              {{ i + 1 }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="costcenter">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'LAWSUIT.HEAD_COLUMN_CC_CARE' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let element">
+              {{
+                element.originalOrganizationCode +
+                  (element.originalOrganizationName ? ' - ' + element.originalOrganizationName : '')
+              }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="emp_name">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'LAWSUIT.HEAD_COLUMN_CC_CARE_EMP_NAME' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let element">
+              <div fxLayout="column" fxLayoutGap="10px">
+                <span>
+                  {{ element.userId + ' - ' + element.title + element.name + ' ' + element.surname }}
+                </span>
+                <div>{{ element.email }}</div>
+              </div>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="tel">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'LAWSUIT.HEAD_COLUMN_CC_CARE_TEL' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let element">
+              {{ (element.mobileNumber | emptyFormat) || '-' }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="leader">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'LAWSUIT.HEAD_COLUMN_CC_CARE_TEAM_LEADER' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let element">
+              <div fxLayout="column" fxLayoutGap="10px">
+                <ng-container
+                  *ngIf="element.supervisorId && element.supervisorName && element.supervisorEmail; else noValue">
+                  <p>{{ element.supervisorId + (element.supervisorName ? ' - ' + element.supervisorName : '') }}</p>
+                  <div>{{ element.supervisorEmail }}</div>
+                </ng-container>
+              </div>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="tel_leader">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'LAWSUIT.HEAD_COLUMN_CC_CARE_TEL_TEAM_LEADER' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let element">
+              {{ (element.supervisorMobileNumber | emptyFormat) || '-' }}
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns_cc"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns_cc"></tr>
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" [attr.colspan]="displayedColumns_cc.length">
+              <ng-container
+                [ngTemplateOutlet]="dataNotFound"
+                [ngTemplateOutletContext]="{
+                  value: ('LAWSUIT.HEAD_COLUMN_CC_CARE' | translate),
+                }">
+              </ng-container>
+            </td>
+          </tr>
+        </table>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+</div>
+
+<ng-template let-value="value" #dataNotFound>
+  <app-message-empty message="{{ 'COMMON.LABEL_PREFIX_NOT_FOUND' | translate }}{{ value }}"></app-message-empty>
+</ng-template>
+
+<ng-template #noValue>-</ng-template>

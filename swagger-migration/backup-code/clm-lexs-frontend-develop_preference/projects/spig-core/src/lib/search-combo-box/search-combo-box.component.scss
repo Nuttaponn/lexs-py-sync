@@ -1,0 +1,23 @@
+@import '../../../styles/theme/core-default/variables';
+
+::ng-deep .cdk-virtual-scroll-content-wrapper {
+  background-color: $white;
+  border-radius: 8px;
+}
+
+::ng-deep cdk-virtual-scroll-viewport {
+  background-color: $white;
+  border-radius: 8px;
+}
+
+.search-combo-box-container .combo-box-form {
+  mat-form-field {
+    &.border-black-40 {
+
+      /* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
+      ::ng-deep .mat-mdc-text-field-wrapper {
+        border: 1px solid map-get($ktb-palette-biz-black, 40);
+      }
+    }
+  }
+}

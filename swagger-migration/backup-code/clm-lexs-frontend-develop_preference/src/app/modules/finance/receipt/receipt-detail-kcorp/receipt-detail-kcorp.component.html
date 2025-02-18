@@ -1,0 +1,145 @@
+<app-action-bar
+  (backButtonHandler)="onBack()"
+  [hasCancelButton]="false"
+  [hasSaveButton]="false"
+  [hasRejectButton]="false"
+  [hasPrimaryButton]="false"
+  [showNavBarInformation]="true">
+  <ng-container navBarInformationTemplate>
+    <mat-icon svgIcon="icon-Finance-2" class="icon icon-xmedium default-cursor"></mat-icon>
+    <span class="ml-8 bold">รายละเอียดการโอนเงิน</span>
+  </ng-container>
+</app-action-bar>
+<div class="content-below-action-bar-area">
+  <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16" class="mt-36 mb-16 mr-24 ml-24">
+    <h2 class="title">
+      วันที่โอน
+      <span class="divider-vertical"></span>
+      {{ refundInfo?.transferDate | buddhistEra: 'DD/MM/yyyy' }}
+    </h2>
+    <!-- //check again -->
+    <div
+      class="status-label"
+      [ngClass]="{
+        'status-normal': refundInfo?.statusCode === 'NOT_FOUND',
+        'status-info': refundInfo?.statusCode === 'PENDING',
+        'status-pending': refundInfo?.statusCode === 'PARTIAL',
+        'status-success': refundInfo?.statusCode === 'SUCCESS',
+      }">
+      {{ refundInfo?.statusName }}
+    </div>
+  </div>
+  <div class="content-container p-16 pt-24 pb-24">
+    <div fxLayout="column" fxLayoutGap="24" class="mb-24">
+      <div fxLayout="row">
+        <div fxFlex="33" fxLayout="column" fxLayoutGap="8">
+          <span class="thin-letter">Wash Account</span>
+          <span>{{ refundInfo?.washAccountNo }}</span>
+        </div>
+        <div fxFlex="33" fxLayout="column" fxLayoutGap="8">
+          <span class="thin-letter">จำนวนเงินตามบัญชี Wash Account (บาท)</span>
+          <span>{{ refundInfo?.washAccountAmount | numberDecimal }}</span>
+        </div>
+        <div fxFlex="33" fxLayout="column" fxLayoutGap="8">
+          <span class="thin-letter">จำนวนเงินตามรายการโอนเงิน (บาท)</span>
+          <span>{{ refundInfo?.transferAmount | numberDecimal }}</span>
+        </div>
+      </div>
+      <div fxLayout="row">
+        <div fxFlex="33" fxLayout="column" fxLayoutGap="8">
+          <span class="thin-letter">จำนวนรายการ</span>
+          <span>{{ refundInfo?.transferUnit | number }}</span>
+        </div>
+        <div fxFlex="33" fxLayout="column" fxLayoutGap="8">
+          <span class="thin-letter">วิธีการรับเงิน</span>
+          <span>
+            <app-tooltip
+              class="mr-2"
+              [params]="[{ title: 'รหัสหัวบัญชี', content: refundInfo?.paidTypeCode }]"></app-tooltip>
+            {{ refundInfo?.paidType }}
+          </span>
+        </div>
+        <div fxFlex="33" fxLayout="column" fxLayoutGap="8">
+          <span class="thin-letter">หน่วยงานผู้ดูแล</span>
+          <span>{{ refundInfo?.organizationCode }}-{{ refundInfo?.organizationName }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="data-table-content">
+      <div class="table-scroll" table-scroll>
+        <table mat-table [dataSource]="refs || []" id="ref-table">
+          <ng-container matColumnDef="no" sticky>
+            <th mat-header-cell *matHeaderCellDef class="text-center">
+              {{ 'COMMON.LABEL_NO' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let element; let i = index" class="text-center">
+              {{ i + 1 }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="referenceNo" sticky>
+            <th mat-header-cell *matHeaderCellDef columnElevationLeft>Reference No.</th>
+            <td mat-cell *matCellDef="let element" columnElevationLeft>
+              <span class="link" (click)="goToRefNo(element)">{{ element.referenceNo }}</span>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="suspenseAccountDate">
+            <th mat-header-cell *matHeaderCellDef>วันที่ตั้ง Suspense <br />A/C</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.suspenseAccountDate | buddhistEra: 'DD/MM/yyyy' }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="courtName">
+            <th mat-header-cell *matHeaderCellDef>ศาล</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.courtName }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="transferAmount">
+            <th mat-header-cell *matHeaderCellDef class="text-right">จำนวนเงินตาม<br />รายการโอน</th>
+            <td mat-cell *matCellDef="let element" class="text-right">
+              {{ element.washAccountAmount | numberDecimal }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="paidAmount">
+            <th mat-header-cell *matHeaderCellDef class="text-right">จำนวนเงินที่ชำระแล้ว <br />(รวมฉบับร่าง)</th>
+            <td mat-cell *matCellDef="let element" class="text-right">
+              {{ element.paidAmount | numberDecimal }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="ref">
+            <th mat-header-cell *matHeaderCellDef class="text-right">Ref2/<br />Ref1</th>
+            <td mat-cell *matCellDef="let element" class="text-right">
+              {{ element.ref2 }} <br />
+              {{ element.ref1 }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="assignId">
+            <th mat-header-cell *matHeaderCellDef>ผู้รับงาน</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.assignId }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="receiveStatus" stickyEnd>
+            <th mat-header-cell *matHeaderCellDef columnElevationRight class="text-center">สถานะหนังสือรับเงิน</th>
+            <td mat-cell *matCellDef="let element" columnElevationRight class="text-center">
+              <div [class]="'status-label full-width ' + (element.receiveStatus | financeStatusBtn: 'RECEIPT_STATUS')">
+                {{ element.receiveStatusDesc }}
+              </div>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="tableColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: tableColumns"></tr>
+        </table>
+        <div *ngIf="refs.length === 0">
+          <app-message-empty [message]="'COMMON.SEARCH_EMPTY'"></app-message-empty>
+        </div>
+      </div>
+      <spig-paginator
+        *ngIf="refs.length > 0"
+        [result]="pageResultConfig"
+        [action]="pageActionConfig"
+        (pageEvent)="pageEvent($event)">
+      </spig-paginator>
+    </div>
+  </div>
+</div>

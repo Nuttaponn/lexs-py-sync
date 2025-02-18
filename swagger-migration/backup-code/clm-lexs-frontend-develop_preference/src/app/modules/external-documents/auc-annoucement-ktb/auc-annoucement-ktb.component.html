@@ -1,0 +1,27 @@
+<mat-tab-group
+  class="tab-group-container"
+  [(selectedIndex)]="tabIndex"
+  mat-align-tabs="start"
+  (selectedTabChange)="onTabChanged($event)">
+  <mat-tab label="0">
+    <ng-template mat-tab-label>{{ 'EXTERNAL_DOCUMENTS.AUC_ANNOUCEMENT_KTB_PROCESS_TAB_INFO' | translate }}</ng-template>
+    <ng-template matTabContent>
+      <app-auc-annoucement-ktb-process></app-auc-annoucement-ktb-process>
+    </ng-template>
+  </mat-tab>
+  <mat-tab label="1">
+    <ng-template mat-tab-label>{{ 'EXTERNAL_DOCUMENTS.AUC_ANNOUCEMENT_KTB_NEW_TAB_INFO' | translate }}</ng-template>
+    <ng-template matTabContent>
+      <app-auc-annoucement-ktb-new></app-auc-annoucement-ktb-new>
+      <!-- https://www.figma.com/design/9UWKGzKpDYhItOTzNA45Wh/MVP-3---Auction-%5BDT%5D?node-id=1141-636099&t=qD9UUCbfBErLez0a-0 -->
+    </ng-template>
+  </mat-tab>
+  <mat-tab label="2">
+    <ng-template mat-tab-label>{{
+      'EXTERNAL_DOCUMENTS.AUC_ANNOUCEMENT_KTB_FINISHED_TAB_INFO' | translate
+    }}</ng-template>
+    <ng-template matTabContent>
+      <app-auc-annoucement-ktb-finished></app-auc-annoucement-ktb-finished>
+    </ng-template>
+  </mat-tab>
+</mat-tab-group>

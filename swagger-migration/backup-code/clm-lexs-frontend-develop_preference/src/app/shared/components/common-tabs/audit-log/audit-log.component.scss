@@ -1,0 +1,43 @@
+@import '/src/styles/colors';
+@import '/src/styles/mixins';
+
+.audit-log-info-card {
+  @include mat-card-content-box;
+
+  .table-content {
+    padding: 16px 0;
+  }
+}
+
+.mat-mdc-card-header {
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mat-column-seq {
+  width: 5%;
+}
+
+.mat-column-userId {
+  width: 10%;
+  white-space: pre-wrap;
+}
+
+.mat-column-action {
+  width: 20%;
+  white-space: pre-wrap;
+}
+
+.mat-column-objectType {
+  width: 15%;
+  white-space: pre-wrap;
+}
+
+.mat-column-details {
+  white-space: pre-wrap;
+}
+
+.mat-column-timestamp {
+  width: 15%;
+  white-space: pre-wrap;
+}

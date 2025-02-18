@@ -1,0 +1,111 @@
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@use '@angular/material' as mat;
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+
+// typography config levels
+$headline-1-level: mat.m2-define-typography-level($font-size: 36px, $letter-spacing: normal);
+$headline-2-level: mat.m2-define-typography-level($font-size: 30px, $letter-spacing: normal);
+$headline-3-level: mat.m2-define-typography-level($font-size: 24px, $letter-spacing: normal);
+$headline-4-level: mat.m2-define-typography-level($font-size: 20px, $letter-spacing: normal);
+$headline-5-level: mat.m2-define-typography-level($font-size: 18px, $letter-spacing: normal);
+$headline-6-level: mat.m2-define-typography-level($font-size: 16px, $letter-spacing: normal);
+$body-1-level: mat.m2-define-typography-level($font-size: 16px, $letter-spacing: normal);
+$body-2-level: mat.m2-define-typography-level($font-size: 16px, $letter-spacing: normal);
+$button-level: mat.m2-define-typography-level($font-size: 16px, $letter-spacing: normal);
+
+$general-typography: mat.m2-define-typography-config($font-family: $general-font-family,
+    $headline-1: $headline-1-level,
+    $headline-2: $headline-2-level,
+    $headline-3: $headline-3-level,
+    $headline-4: $headline-4-level,
+    $headline-5: $headline-5-level,
+    $headline-6: $headline-6-level,
+    $subtitle-1: null,
+    $subtitle-2: null,
+    $body-1: $body-1-level,
+    $body-2: $body-2-level,
+    $caption: null,
+    $button: $button-level,
+    $overline: null);
+
+@include mat.core();
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$form-typography: mat.m2-define-typography-config($font-family: $form-font-family,
+    $headline-1: $headline-1-level,
+    $headline-2: $headline-2-level,
+    $headline-3: $headline-3-level,
+    $headline-4: $headline-4-level,
+    $headline-5: $headline-5-level,
+    $headline-6: $headline-6-level,
+    $subtitle-1: null,
+    $subtitle-2: null,
+    $body-1: $body-1-level,
+    $body-2: $body-2-level,
+    $caption: null,
+    $button: $button-level,
+    $overline: null);
+
+@include mat.form-field-typography($form-typography);
+@include mat.autocomplete-typography($form-typography);
+@include mat.checkbox-typography($general-typography);
+@include mat.datepicker-typography($form-typography);
+@include mat.input-typography($form-typography);
+@include mat.radio-typography($form-typography);
+@include mat.select-typography($form-typography);
+@include mat.slide-toggle-typography($form-typography);
+@include mat.slider-typography($form-typography);
+@include mat.table-typography($form-typography);
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$mat-palette-primary: mat.m2-define-palette($palette-primary);
+$mat-palette-accent: mat.m2-define-palette($palette-accent, A200, A100, A400);
+
+// Create the theme object (a Sass map containing all of the palettes).
+$mat-theme: mat.m2-define-light-theme((color: (primary: $mat-palette-primary, accent: $mat-palette-accent), typography: $general-typography ));
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+
+// $my-app-typography: mat.define-typography-config($font-family: $regular-font-family,
+//     $headline-1: mat.define-typography-level($font-family: $heading-font-family, $font-size: 112px),
+//     $headline-2: mat.define-typography-level($font-family: $heading-font-family, $font-size: 56px),
+//     $headline-3: mat.define-typography-level($font-family: $heading-font-family, $font-size: 45px, $line-height: 48px),
+//     $headline-4: mat.define-typography-level($font-family: $heading-font-family, $font-size: 34px, $line-height: 40px),
+//     $headline-5: mat.define-typography-level($font-family: $heading-font-family, $font-size: 24px, $line-height: 32px),
+//     $headline-6: mat.define-typography-level($font-family: $heading-font-family, $font-size: 20px, $line-height: 32px),
+//     $subtitle-1: mat.define-typography-level($font-family: $heading-font-family, $font-size: 18px, $line-height: 28px),
+//     $subtitle-2: mat.define-typography-level($font-family: $heading-font-family, $font-size: 18px, $line-height: 24px),
+//     $body-2: mat.define-typography-level($font-size: 16px),
+//     $body-1: mat.define-typography-level($font-size: 16px),
+//     $button: mat.define-typography-level($font-size: 16px),
+//   );
+
+// $my-app-light-theme: mat.define-light-theme(( // rest remains same
+//       typography: $my-app-typography // <-- added
+//     ));
+
+@include mat.typography-hierarchy($general-typography);
+
+@include mat.all-component-themes($mat-theme);
+
+/* You can add global styles to this file, and also import other style files */
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: $body-font, $body-font-fallback, sans-serif;
+}

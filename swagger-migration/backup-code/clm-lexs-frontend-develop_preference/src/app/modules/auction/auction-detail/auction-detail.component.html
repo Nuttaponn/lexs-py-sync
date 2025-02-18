@@ -1,0 +1,145 @@
+<ng-container *ngIf="displaySaleResult">
+  <div *ngIf="messageBanner" class="m-25">
+    <app-message-banner type="black-info" [message]="messageBanner"></app-message-banner>
+  </div>
+  <div class="margin-title ml-24 mr-24">
+    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10" class="mt-24">
+      <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+        <div>
+          <!-- <h3>{{auctionResultCollateral?.col1}}</h3> -->
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<!-- ทนายความผู้รับผิดชอบ -->
+<ng-container *ngIf="displayResponsibleLawyer">
+  <app-responsible-lawyer
+    [dataForm]="dataLawyerForm"
+    [data]="litigationCaseShortDetail"
+    [mode]="modeResponsibleLawyer"
+    [labelLawyer]="'ฝ่ายงานขายทอดตลาด'"
+    [isOpened]="isExpandResponsibleLawyer"
+    (onOpenExpansion)="getReponsibleLawyerInfo()"></app-responsible-lawyer>
+</ng-container>
+
+<!-- รายละเอียดมติที่ประชุมคณะกรรมการซื้อขายทรัพย์สินพร้อมขาย -->
+<ng-container *ngIf="displayResultDetail">
+  <app-auction-collateral-for-sale [data]="auctionResultCollateral"></app-auction-collateral-for-sale>
+</ng-container>
+
+<!-- รายละเอียดทั่วไป -->
+<ng-container *ngIf="displayGeneralDetail">
+  <app-genaral-detail
+    [isAnnouncement]="isAnnouncement"
+    [dataForm]="dataGeneralForm"
+    [mode]="isViewMode"
+    [isOpened]="isExpandGeneralDetail"></app-genaral-detail>
+</ng-container>
+
+<!-- รายละเอียดทรัพย์ -->
+<ng-container *ngIf="displayCollateralDetail">
+  <app-auction-property-list
+    [isOpened]="isExpandCollateralDetail"
+    [dataForm]="dataPropertyForm"></app-auction-property-list>
+</ng-container>
+
+<div class="content-container" *ngIf="displayPropertyDetail">
+  <ng-container *ngIf="dataPropertyForm">
+    <app-auction-property
+      [isOpened]="isExpandCollateralDetail"
+      [data]="dataPropertyForm"
+      [actionCode]="actionCode"
+      [collateralColumns]="collateralUnmatchedColumns"></app-auction-property>
+  </ng-container>
+</div>
+
+<!-- มติที่ประชุมคณะกรรมการซื้อขายทรัพย์สินพร้อมขาย -->
+<ng-container *ngIf="displaySaleResolution && collaterals">
+  <app-auction-group-collateral
+    [aucRef]="aucRef"
+    [tableColumnsList]="tableColumns"
+    [tableConfig]="tableConfig"
+    [actionCode]="auctionCode"
+    [title]="'AUCTION_DETAIL.NPA.TITLE_NPA'"
+    [data]="collaterals"
+    [isOpened]="isExpandSaleResolution"></app-auction-group-collateral>
+</ng-container>
+
+<!-- รายละเอียดแคชเชียร์เช็คสั่งจ่ายวางหลักประกัน -->
+<ng-container *ngIf="displayAuctionCollateralCheuque">
+  <app-auction-cashier-cheque
+    [title]="'AUCTION_DETAIL.CASHIER_CHEQUE_COLLATERAL.TITLE'"
+    [hasEditMode]="hasEditModeCheuque"
+    [expanded]="taskCode === TaskCode.R2E09_06_7C"
+    [sectionName]="'COLLATERAL'"></app-auction-cashier-cheque>
+</ng-container>
+
+<!-- รายละเอียดแคชเชียร์เช็คอากร -->
+<ng-container *ngIf="displayAuctionDutyStamp">
+  <app-auction-cashier-cheque
+    [expanded]="taskCode === TaskCode.R2E09_06_12C"
+    [title]="'AUCTION_DETAIL.CASHIER_CHEQUE_STAMP_DUTY.TITLE'"
+    [hasEditMode]="hasEditModeCheuque"
+    [sectionName]="'STAMP'"></app-auction-cashier-cheque>
+</ng-container>
+
+<!-- รายละเอียดแคชเชียร์เช็ควางเงินเพิ่มตามหมายศาล -->
+<ng-container *ngIf="displayOnRequest">
+  <app-auction-cashier-cheque
+    [title]="'รายละเอียดแคชเชียร์เช็ควางเงินเพิ่มตามหมายศาล'"
+    [expanded]="actionMenu === AuctionMenuI.CASHIER || taskCode === TaskCode.R2E09_06_03"
+    [hasEditMode]="hasEditModeCheuque"
+    [sectionName]="'ON_REQUEST'"></app-auction-cashier-cheque>
+</ng-container>
+
+<!-- อัปโหลดเอกสารจากการซื้อทรัพย์ -->
+<ng-container *ngIf="displayDocumentProp">
+  <app-auction-seizure-document
+    [isViewMode]="actionMenu !== AuctionMenuI.UPLOAD_DOC && taskCode !== TaskCode.R2E09_08_01_3_1"
+    [expanded]="actionMenu === AuctionMenuI.UPLOAD_DOC || taskCode === TaskCode.R2E09_08_01_3_1">
+  </app-auction-seizure-document>
+</ng-container>
+
+<!-- รายละเอียดการติดตามเอกสารและตรวจรับรองบัญชีรับจ่าย -->
+<ng-container *ngIf="displayFollowAccountDoc">
+  <app-auction-follow-account-doc
+    [isEditMode]="!isViewMode || isForceAccDocFollowupEditMode"
+    [isOpened]="
+      !isViewMode ||
+      isForceAccDocFollowupEditMode ||
+      [TaskCode.R2E09_09_01_13_1, TaskCode.R2E09_09_03_14_1].includes(taskCode)
+    "></app-auction-follow-account-doc>
+</ng-container>
+
+<!-- ผลการขายทอดตลาด -->
+<ng-container *ngIf="displaySaleResult">
+  <app-auction-result [formGroup]="auctionResultForm" [isView]="mode === 'VIEW'"></app-auction-result>
+</ng-container>
+
+<!-- เอกสารส่งให้หน่วยงานดูแลลูกหนี้ -->
+<ng-container *ngIf="displayDocument"></ng-container>
+
+<!-- ผลการชำระเงิน -->
+<ng-container *ngIf="displayPaymentResult">
+  <!-- <app-auciton-payment-result></app-auciton-payment-result> -->
+</ng-container>
+
+<!-- รายละเอียดที่เกี่ยวข้องกับการตัดหักบัญชีชำระหนี้ -->
+<ng-container *ngIf="displayDebtSettlementAcc">
+  <app-debt-settlement-accounts
+    [dataForm]="dataDebtSettlementForm"
+    (updateDebtSettlement)="updateDebtSettlement($event)"
+    [data]="dataDebtSettlement"></app-debt-settlement-accounts>
+</ng-container>
+
+<!-- รายละเอียดการตัดหักบัญชีชำระหนี้ -->
+<ng-container *ngIf="displayDebtSettlementAccDetail">
+  <app-debt-settlement-accounts-detail [dataForm]="dataDebtSettlementForm" [updated]="updatedDebt">
+  </app-debt-settlement-accounts-detail>
+</ng-container>
+
+<ng-container *ngIf="displayRevoke">
+  <app-auction-revoke></app-auction-revoke>
+</ng-container>

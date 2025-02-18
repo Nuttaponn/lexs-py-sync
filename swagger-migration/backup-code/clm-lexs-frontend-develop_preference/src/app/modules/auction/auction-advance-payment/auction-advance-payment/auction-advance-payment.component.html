@@ -1,0 +1,106 @@
+<div class="content-container">
+  <div class="inner-container-padding">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+      <div class="title-text">
+        <h5 class="mt-12 mb-12 mr-12">{{ 'ADVANCE_PAYMENT.TITLE' | translate }}</h5>
+      </div>
+      <div fxLayout="row">
+        <div class="description" (click)="isPaymentDetailOpened = !isPaymentDetailOpened">
+          <mat-icon
+            [svgIcon]="isPaymentDetailOpened ? 'icon-Slide-Hide' : 'icon-Expand'"
+            class="icon icon-hide-show icon-xmedium fill-blue mr-5">
+          </mat-icon
+          >{{
+            isPaymentDetailOpened
+              ? ('COMMON.ICON_EXPANSION_HIDE' | translate)
+              : ('COMMON.ICON_EXPANSION_SHOW' | translate)
+          }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <mat-accordion>
+    <mat-expansion-panel [expanded]="isPaymentDetailOpened">
+      <mat-divider class="no-margin"></mat-divider>
+      <div class="mb-16 mt-24 mr-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+        <div fxLayout="column" fxFlex="15">
+          <h6>{{ 'ADVANCE_PAYMENT.LABEL_ADVANCE_PAYMENT_TYPE' | translate }}</h6>
+        </div>
+        <div fxLayout="column" fxFlex="30" fxLayoutGap="12px">
+          <span class="thin-letter">{{ 'ADVANCE_PAYMENT.LABEL_ADVANCE_PAYMENT_TYPE' | translate }}</span>
+          <div class="label-normal" *ngIf="selectedPaymentOptionsValue.value === 'SUMMON_FOR_SURCHARGE_E_FILING'">
+            {{ 'ADVANCE_PAYMENT.LABEL_SUMMON_FOR_SURCHARGE_E_FILING' | translate }}
+          </div>
+          <div class="label-normal" *ngIf="selectedPaymentOptionsValue.value === 'SUMMON_FOR_SURCHARGE_CASHIER_CHEQUE'">
+            {{ 'ADVANCE_PAYMENT.LABEL_SUMMON_FOR_SURCHARGE_CASHIER_CHEQUE' | translate }}
+          </div>
+          <div class="label-normal" *ngIf="selectedPaymentOptionsValue.value === 'WRIT_OF_EXECUTE_E_FILING'">
+            {{ 'ADVANCE_PAYMENT.LABEL_WRIT_OF_EXECUTE_E_FILING' | translate }}
+          </div>
+          <div class="label-normal" *ngIf="selectedPaymentOptionsValue.value === 'WRIT_OF_EXECUTE_CASHIER_CHEQUE'">
+            {{ 'ADVANCE_PAYMENT.LABEL_WRIT_OF_EXECUTE_CASHIER_CHEQUE' | translate }}
+          </div>
+        </div>
+      </div>
+      <div class="mt-8" *ngIf="selectedPaymentOptionsValue.value === 'SUMMON_FOR_SURCHARGE_E_FILING'">
+        <app-auction-increadsed-limit></app-auction-increadsed-limit>
+      </div>
+      <div class="mt-8" *ngIf="selectedPaymentOptionsValue.value === 'SUMMON_FOR_SURCHARGE_CASHIER_CHEQUE'">
+        <app-auction-increadsed-limit-non-efiling></app-auction-increadsed-limit-non-efiling>
+      </div>
+      <div class="mt-8" *ngIf="selectedPaymentOptionsValue.value === 'WRIT_OF_EXECUTE_E_FILING'">
+        <app-auction-officer-order></app-auction-officer-order>
+      </div>
+      <div class="mt-8" *ngIf="selectedPaymentOptionsValue.value === 'WRIT_OF_EXECUTE_CASHIER_CHEQUE'">
+        <app-auction-officer-order-non-efiling></app-auction-officer-order-non-efiling>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>
+
+<ng-container *ngIf="onCheckContentAndStatus()">
+  <div class="content-container">
+    <div class="inner-container-padding">
+      <div class="mb-24" fxLayout="row" fxLayoutAlign="space-between center">
+        <div class="title-text">
+          <h5 class="pt-12">{{ 'ADVANCE_PAYMENT.LABEL_ADVANCE_PAYMENT_UPLOAD' | translate }}</h5>
+        </div>
+      </div>
+      <mat-divider class="no-margin"></mat-divider>
+      <div
+        *ngIf="status === 'R2E35-02-E09-02-7B_PENDING_RECEIPT_UPDATE'"
+        class="mt-24"
+        fxLayout="row"
+        fxLayoutAlign="start start"
+        fxLayoutGap="16px">
+        <div fxLayout="column" fxFlex="15">
+          <h6>{{ 'COMMON.LABEL_REASON_CONSIDERATION' | translate }}</h6>
+        </div>
+        <div fxLayout="column" fxFlex="70">
+          <ng-container>
+            <mat-label class="thin-letter view-mode-label">{{ 'COMMON.LABEL_REASON_REVISION' | translate }}</mat-label>
+            <div class="mt-8">
+              <span>{{ dataUploadNonEFiling?.reviseReason || '-' }}</span>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+      <div class="mt-24" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+        <div fxLayout="column" fxFlex="15">
+          <h6>{{ 'ADVANCE_PAYMENT.LABEL_ADVANCE_PAYMENT_RECEIPT' | translate }}</h6>
+        </div>
+        <div fxLayout="column" fxFlex="86">
+          <app-upload-multi-file-content
+            [uploadMultiInfo]="uploadMultiInfo"
+            [readonly]="isViewMode"
+            [list]="documentUpload"
+            [column]="documentColumns"
+            [labelAcceptFile]="!isEmptyLabelAcceptFile ? 'COMMON.REQUIRED_UPLOAD_FILE_PDF_30_MB' : ''"
+            (uploadFileEvent)="onUploadFileContent($event)"></app-upload-multi-file-content>
+          <spig-error-msg [control]="onUploadImageId" [customErrorMsg]="'UPLOAD_FILE.ERROR_FILE_UPLOAD_REQUIRED'">
+          </spig-error-msg>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>

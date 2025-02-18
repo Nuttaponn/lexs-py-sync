@@ -1,0 +1,10 @@
+@import '/src/styles/colors';
+@import '/src/styles/mixins';
+
+.case-info-card {
+  @include mat-card-content-box;
+}
+
+.status_margin {
+  padding: 2px 12px !important;
+}

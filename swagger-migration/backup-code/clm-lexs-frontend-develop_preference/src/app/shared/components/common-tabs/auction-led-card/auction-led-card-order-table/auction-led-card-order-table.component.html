@@ -1,0 +1,60 @@
+<div class="table-scroll" table-scroll>
+  <table mat-table [dataSource]="dataSource">
+    <ng-container [matColumnDef]="columns[0].value" sticky>
+      <th mat-header-cell *matHeaderCellDef class="text-center">{{ columns[0].name }}</th>
+      <td mat-cell *matCellDef="let element; let i = index" class="text-center">
+        {{ i + 1 }}
+      </td>
+    </ng-container>
+    <ng-container [matColumnDef]="columns[1].value">
+      <th mat-header-cell *matHeaderCellDef>{{ columns[1].name }}</th>
+      <td mat-cell *matCellDef="let element">
+        <span class="link">
+          {{ element[columns[1].value] | buddhistEra: 'DD/MM/yyyy' }}
+        </span>
+      </td>
+    </ng-container>
+    <ng-container [matColumnDef]="columns[2].value">
+      <th mat-header-cell *matHeaderCellDef>{{ columns[2].name }}</th>
+      <td mat-cell *matCellDef="let element">
+        {{ element[columns[2].value] }}
+      </td>
+    </ng-container>
+    <ng-container [matColumnDef]="columns[3].value">
+      <th mat-header-cell *matHeaderCellDef>{{ columns[3].name }}</th>
+      <td mat-cell *matCellDef="let element">
+        {{ element[columns[3].value] }}
+      </td>
+    </ng-container>
+    <ng-container [matColumnDef]="columns[4].value">
+      <th mat-header-cell *matHeaderCellDef>{{ columns[4].name }}</th>
+      <td mat-cell *matCellDef="let element">
+        {{ element[columns[4].value] }}
+      </td>
+    </ng-container>
+    <ng-container [matColumnDef]="columns[5].value">
+      <th mat-header-cell *matHeaderCellDef>{{ columns[5].name }}</th>
+      <td mat-cell *matCellDef="let element">
+        {{ element[columns[5].value] }}
+      </td>
+    </ng-container>
+    <ng-container [matColumnDef]="columns[6].value">
+      <th mat-header-cell *matHeaderCellDef class="text-center">{{ columns[6].name }}</th>
+      <td mat-cell *matCellDef="let element" class="text-center">
+        <div class="status-label status-pending">
+          {{ element[columns[6].value] }}
+        </div>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="columnNames"></tr>
+    <tr mat-row *matRowDef="let row; columns: columnNames"></tr>
+  </table>
+</div>
+
+<app-paginator
+  *ngIf="dataSource.data.length > 0"
+  #paginator
+  [pageSize]="pageSize"
+  [length]="dataSource.data.length"
+  (page)="onPaging($event)">
+</app-paginator>

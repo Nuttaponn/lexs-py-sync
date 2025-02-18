@@ -1,0 +1,138 @@
+<mat-card appearance="outlined">
+  <mat-card-content>
+    <div fxLayout="row" fxLayoutAlign="space-between center" class="pt-16">
+      <div fxFlex="60">
+        <h5>{{ 'LAWSUIT.LITIGATION_MEMO' | translate }}</h5>
+      </div>
+      <div fxFlex fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="20">
+        <button
+          *ngIf="canAddMemo"
+          mat-flat-button
+          color="primary"
+          class="xsmall-aw-button overflow-ellipsis"
+          (click)="onClickAddMemo()">
+          <mat-icon svgIcon="icon-Plus" class="icon icon-small-xl"></mat-icon>
+          {{ 'LAWSUIT.MEMO.ADD_LITIGATION_MEMO' | translate }}
+        </button>
+
+        <div [formGroup]="searchCtrl" fxFlex>
+          <mat-form-field class="no-label input-sm-icon input-full-field">
+            <input
+              type="text"
+              matInput
+              [placeholder]="placeholder | translate"
+              autocomplete="off"
+              (keyup)="onKeyup($event)"
+              (focus)="placeholder = ''"
+              (blur)="placeholder = 'LAWSUIT.MEMO.SEARCH_LITIGATION_MEMO'"
+              formControlName="searchText" />
+            <mat-icon matSuffix class="icon icon-small-xl" svgIcon="icon-Search" (click)="onSearchFilter()"> </mat-icon>
+          </mat-form-field>
+          <spig-error-msg
+            [control]="searchCtrl.get('searchText')"
+            [customErrorMsg]="'SEARCH_CONTROL.ERROR_SEARCH_CONDITION'">
+          </spig-error-msg>
+        </div>
+      </div>
+    </div>
+    <br />
+
+    <div class="table-content">
+      <ng-container
+        *ngIf="
+          litigationMemoInfo && litigationMemoInfo.memoList && litigationMemoInfo.memoList.length > 0;
+          else searchEmpty
+        "
+        [ngTemplateOutlet]="mainTable"
+        [ngTemplateOutletContext]="{ list: litigationMemoInfo.memoList || [] }">
+      </ng-container>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<ng-template #mainTable let-dataSource="list">
+  <div class="section">
+    <table mat-table [dataSource]="dataSource">
+      <ng-container matColumnDef="no">
+        <th mat-header-cell *matHeaderCellDef class="text-center">{{ 'COMMON.LABEL_NO' | translate }}</th>
+        <td mat-cell *matCellDef="let element; let i = index" class="text-center">{{ i + 1 }}</td>
+      </ng-container>
+      <ng-container matColumnDef="memoDetail">
+        <th mat-header-cell *matHeaderCellDef>{{ 'LAWSUIT.MEMO.MEMO_DETAIL' | translate }}</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.description || '-' }}
+        </td>
+      </ng-container>
+
+      <!-- ชื่อผู้บันทึก -->
+      <ng-container matColumnDef="recorderDetail">
+        <th mat-header-cell *matHeaderCellDef>{{ 'LAWSUIT.MEMO.RECORDER_NAME' | translate }}</th>
+        <td mat-cell *matCellDef="let element">
+          {{ (element.userId || '') + ' - ' + (element.fullName || '') }}
+        </td>
+      </ng-container>
+
+      <!-- วันที่บันทึก/\nวันที่แก้ไข -->
+      <ng-container matColumnDef="dates">
+        <th mat-header-cell *matHeaderCellDef>{{ 'LAWSUIT.MEMO.ADD_AND_EDIT_DATES' | translate }}</th>
+        <td mat-cell *matCellDef="let element">
+          <div fxLayout="column" fxLayoutAlign="space-around">
+            <div>{{ (element.createdDt | buddhistEra: 'DD/MM/yyyy') || '-' }}</div>
+            <div>{{ (element.lastUpdate | buddhistEra: 'DD/MM/yyyy') || '-' }}</div>
+          </div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="cmd">
+        <th class="text-center" mat-header-cell *matHeaderCellDef>
+          {{ 'COMMON.LABEL_COMMAND' | translate }}
+        </th>
+        <td class="text-center" mat-cell *matCellDef="let element; let i = index">
+          <u *ngIf="canAddMemo" class="cur-pointer fill-red" (click)="onRemoveData(i, element)">
+            {{ 'COMMON.BUTTON_DELETE' | translate }}</u
+          >
+          &nbsp;
+          <u *ngIf="canAddMemo" class="cur-pointer fill-blue" (click)="onEditData(i, element)">
+            {{ 'COMMON.BUTTON_EDIT' | translate }}</u
+          >
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </div>
+</ng-template>
+
+<ng-template #searchEmpty>
+  <div>
+    <table mat-table>
+      <ng-container matColumnDef="no">
+        <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_NO' | translate }}</th>
+      </ng-container>
+      <ng-container matColumnDef="memoDetail">
+        <th mat-header-cell *matHeaderCellDef>{{ 'LAWSUIT.MEMO.MEMO_DETAIL' | translate }}</th>
+      </ng-container>
+
+      <!-- ชื่อผู้บันทึก -->
+      <ng-container matColumnDef="recorderDetail">
+        <th mat-header-cell *matHeaderCellDef>{{ 'LAWSUIT.MEMO.RECORDER_NAME' | translate }}</th>
+      </ng-container>
+
+      <!-- วันที่บันทึก/\nวันที่แก้ไข -->
+      <ng-container matColumnDef="dates">
+        <th mat-header-cell *matHeaderCellDef>{{ 'LAWSUIT.MEMO.ADD_AND_EDIT_DATES' | translate }}</th>
+      </ng-container>
+
+      <!-- <ng-container matColumnDef="cmd" stickyEnd>
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'COMMON.LABEL_COMMAND' | translate }}
+        </th>
+      </ng-container> -->
+
+      <tr mat-header-row *matHeaderRowDef="displayedNoDataColumns"></tr>
+    </table>
+  </div>
+  <div>
+    <app-message-empty [message]="'LAWSUIT.MEMO.NOT_FOUND_MEMO'"></app-message-empty>
+  </div>
+</ng-template>

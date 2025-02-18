@@ -1,0 +1,204 @@
+<div class="action-bar-wrapper">
+  <div class="action-bar-container" fxLayout="row" fxLayoutAlign="center center">
+    <div fxFlex="grow" class="left-section">
+      <!-- BACK BUTTON AND TITLE SECTION -->
+      <div class="element-inline ml-24">
+        <div>
+          <button
+            id="btn-navigation-back"
+            *ngIf="hasBackButton"
+            mat-raised-button
+            type="button"
+            [disabled]="disabledBackButton"
+            [ngClass]="disabledBackButton ? 'button-disable' : 'back-button'"
+            (click)="back()"
+            [disableRipple]="true">
+            <div fxLayout="row" fxLayoutAlign="start center">
+              <mat-icon class="back-arrow" svgIcon="icon-Arrow-Left"></mat-icon>
+              {{ backButtonText || 'COMMON.BUTTON_BACK' | translate }}
+            </div>
+          </button>
+        </div>
+        <div *ngIf="hasBackButton && showNavBarInformation" class="vertical-separator"></div>
+        <div *ngIf="showNavBarInformation" class="selected-content">
+          <ng-content select="[navBarInformationTemplate]"></ng-content>
+        </div>
+
+        <!-- BREADCRUMB NAVIGATIION -->
+        <div
+          class="nav-breadcumb-wrapper"
+          *ngIf="routerData && routerData['header'] && routerData['header'].type === 'breadcrumb'">
+          <div class="nav-breadcrumb-container">
+            <ng-container *ngFor="let item of routerData['header']?.items; let _isLast = last; let _index = index">
+              <mat-icon svgIcon="icon-Direction-Right" class="icon icon-xmedium" *ngIf="_index > 0"></mat-icon>
+              <span *ngIf="!_isLast" class="elm-breadcrumb" (click)="onNavigatePage(item.path)">
+                {{ item.text | translate }}
+              </span>
+              <span *ngIf="_isLast" class="elm-breadcrumb-active">
+                <mat-icon [svgIcon]="item.icon" class="icon icon-xmedium"></mat-icon>
+                {{ item.text | translate }}
+              </span>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUB BUTTON SECTION -->
+    <div *ngFor="let item of subButtonList?.slice(0, maxSubButton)">
+      <button
+        id="sub-btn-{{ item.name }}"
+        mat-raised-button
+        type="button"
+        [disabled]="item.disabled"
+        class="overflow-ellipsis"
+        [ngClass]="item.disabled ? 'button-disable' : item.class || 'primary-button-outline neutral'"
+        (click)="subBtnClick(item.name)"
+        [disableRipple]="true">
+        <mat-icon [svgIcon]="item.icon" class="icon icon-xmedium mr-10"></mat-icon>{{ item.text | translate }}
+      </button>
+    </div>
+    <div *ngIf="subButtonList && subButtonList.length > maxSubButton" class="btn-menu-wrapper">
+      <button
+        id="more-btn"
+        mat-raised-button
+        type="button"
+        [disabled]="false"
+        class="primary-button-outline neutral"
+        [ngClass]="isMoreExpanded ? 'more active' : 'more inactive'"
+        [disableRipple]="true"
+        (click)="isMoreExpanded = !isMoreExpanded">
+        <mat-icon svgIcon="icon-Option" class="icon icon-xmedium"></mat-icon>
+      </button>
+      <div class="btn-menu">
+        <div class="slide" [ngClass]="{ show: isMoreExpanded }">
+          <div
+            *ngFor="let item of subButtonList?.slice(maxSubButton)"
+            class="slide-row show-hover"
+            (click)="subBtnClick(item.name)">
+            <div class="{{ item.class }}">
+              <mat-icon [svgIcon]="item.icon" class="icon icon-xmedium"></mat-icon
+              ><span>{{ item.text | translate }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      *ngIf="subButtonList && subButtonList.length > 0 && hasMainActionButton"
+      class="sub-btn-separator element-inline"></div>
+
+    <!-- MAIN ACTION SECTION -->
+    <button
+      id="btn-navigation-cancel"
+      *ngIf="hasCancelButton"
+      mat-raised-button
+      type="button"
+      [disabled]="disabledCancelButton"
+      [ngClass]="disabledCancelButton ? 'button-disable' : 'secondary-button'"
+      (click)="cancel()"
+      [disableRipple]="true">
+      <mat-icon *ngIf="cancelButtonIcon" [svgIcon]="cancelButtonIcon" class="icon icon-sm mr-8"></mat-icon>
+
+      {{ cancelButtonText || 'COMMON.BUTTON_CANCEL' | translate }}
+    </button>
+
+    <button
+      id="btn-navigation-delete"
+      *ngIf="hasDeleteButton"
+      mat-raised-button
+      type="button"
+      [disabled]="disabledDeleteButton"
+      [class]="deleteButtonClasses"
+      [ngClass]="{
+        'button-disable': disabledDeleteButton,
+        'primary-button-outline': !disabledDeleteButton && !deleteButtonPositive,
+        'primary-button positive': deleteButtonPositive,
+      }"
+      [class.negative]="!deleteButtonPositive"
+      [class.positive]="deleteButtonPositive"
+      (click)="delete()"
+      [disableRipple]="true">
+      <mat-icon [svgIcon]="deleteButtonIcon || 'icon-Bin'" class="icon icon-sm mr-8"></mat-icon
+      >{{ deleteButtonText | translate }}
+    </button>
+
+    <button
+      id="btn-navigation-edit"
+      *ngIf="hasEditButton"
+      mat-raised-button
+      type="button"
+      [disabled]="disabledEditButton"
+      [ngClass]="{
+        'button-disable': disabledEditButton,
+        'primary-button-outline neutral': !disabledEditButton && !editButtonPrimary,
+        'primary-button positive': editButtonPrimary,
+      }"
+      (click)="edit()"
+      [disableRipple]="true">
+      <mat-icon [svgIcon]="editButtonIcon || 'icon-Edit'" class="icon icon-sm mr-8"></mat-icon
+      >{{ editButtonText | translate }}
+    </button>
+
+    <!-- for deferment excution  -->
+    <button
+      id="btn-navigation-edit"
+      *ngIf="hasDefermantExeButton"
+      mat-raised-button
+      type="button"
+      [disabled]="disabledDefermantExeButton"
+      [ngClass]="{
+        'button-disable': disabledDefermantExeButton,
+        'primary-button-outline neutral': !disabledDefermantExeButton && !defermantExeButtonPrimary,
+        'primary-button positive': defermantExeButtonPrimary,
+      }"
+      (click)="defermentExecution()"
+      [disableRipple]="true">
+      <mat-icon [svgIcon]="defermantExeButtonIcon || 'icon-Edit'" class="icon icon-sm mr-8"></mat-icon
+      >{{ defermantExeButtonText | translate }}
+    </button>
+
+    <button
+      id="btn-navigation-save"
+      *ngIf="hasSaveButton"
+      mat-raised-button
+      type="button"
+      [disabled]="disabledSaveButton"
+      [ngClass]="disabledSaveButton ? 'button-disable' : 'secondary-button'"
+      (click)="save()"
+      [disableRipple]="true">
+      <mat-icon svgIcon="icon-save-primary" class="icon icon-sm mr-8"></mat-icon>{{ saveButtonText | translate }}
+    </button>
+
+    <button
+      id="btn-navigation-reject"
+      *ngIf="hasRejectButton"
+      mat-raised-button
+      type="button"
+      [disabled]="disabledRejectButton"
+      [ngClass]="
+        disabledRejectButton
+          ? 'button-disable'
+          : rejectNormalBtnStyle
+            ? 'primary-button normal'
+            : 'primary-button negative'
+      "
+      (click)="reject()"
+      [disableRipple]="true">
+      <mat-icon [svgIcon]="rejectButtonIcon" class="icon icon-sm mr-8"></mat-icon>{{ rejectButtonText | translate }}
+    </button>
+
+    <button
+      id="btn-navigation-primary"
+      *ngIf="hasPrimaryButton"
+      mat-raised-button
+      type="button"
+      [disabled]="disabledPrimaryButton"
+      [ngClass]="disabledPrimaryButton ? 'button-disable' : 'primary-button positive'"
+      (click)="primaryAction()"
+      [disableRipple]="true">
+      <mat-icon [svgIcon]="primaryButtonIcon" class="icon icon-sm mr-8"></mat-icon
+      >{{ (!displayPrimaryButtonTextString ? primaryButtonText : primaryButtonTextString) | translate }}
+    </button>
+  </div>
+</div>

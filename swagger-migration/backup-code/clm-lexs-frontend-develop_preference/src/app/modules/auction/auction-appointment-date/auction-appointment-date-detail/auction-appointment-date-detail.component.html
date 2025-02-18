@@ -1,0 +1,38 @@
+<app-action-bar (backButtonHandler)="onBack()" [showNavBarInformation]="true">
+  <ng-container navBarInformationTemplate>
+    <mat-icon svgIcon="icon-List-Multiple" class="icon icon-xmedium default-cursor"></mat-icon
+    ><span class="ml-8">{{ 'AUCTION_DETAIL.AUCTION_DETAIL' | translate }}</span>
+  </ng-container>
+</app-action-bar>
+
+<div class="body-container action-bar-margin">
+  <ng-container>
+    <div class="m-25">
+      <app-message-banner *ngIf="messageBanner" type="black-info" [message]="messageBanner"></app-message-banner>
+    </div>
+    <div class="margin-title ml-24 mr-24 mt-45">
+      <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10" class="mt-24">
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+          <div>
+            <h3>
+              {{ ('PROPERTY.PROPERTY_SET_NUMBER' | translate) + ' ' + auctionBiddingDeedGroupResponse?.fsubbidnum }}
+            </h3>
+          </div>
+          <ng-container>
+            <span class="divider-vertical mr-20"></span>
+            <h3>
+              {{
+                ('AUCTION_DETAIL.DATE_SELLING' | translate) +
+                  ' ' +
+                  (auctionBiddingDeedGroupResponse?.bidDate | buddhistEra: 'DD/MM/yyyy')
+              }}
+            </h3>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+
+    <app-auction-appointment-data [defaultExpandAuctionResult]="true" [isViewModeAuctionPaymentResult]="true">
+    </app-auction-appointment-data>
+  </ng-container>
+</div>

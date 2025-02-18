@@ -1,0 +1,157 @@
+@import '/src/styles/colors';
+@import '/src/styles/table-alignment';
+
+::ng-deep app-document-account {
+  .mat-expansion-panel-body {
+    padding: 0px !important;
+  }
+}
+
+::ng-deep app-document-account table {
+  table-layout: fixed;
+}
+
+::ng-deep app-document-account .detail-row-wrapper thead {
+  visibility: hidden;
+  height: 0;
+  overflow: hidden;
+
+  tr,
+  th {
+    height: 0;
+  }
+
+  th {
+    line-height: 0;
+    border-width: 0 !important;
+  }
+}
+
+::ng-deep app-document-account table button.mat-mdc-unelevated-button.medium-button,
+::ng-deep app-document-account table button.mat-mdc-outlined-button,
+::ng-deep app-document-account table button.mat-stroked-button.medium-button {
+  width: 100% !important;
+}
+
+::ng-deep app-document-account mat-radio-group.readonly {
+  cursor: not-allowed;
+
+  /* TODO(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version.*/
+  mat-radio-button {
+    pointer-events: none !important;
+  }
+}
+
+.detail-table-div:not(.commitment) {
+  box-shadow: inset 0 4px 4px -4px map-get($ktb-palette-biz-black, 20);
+}
+
+.detail-row,
+.detail-row-wrapper {
+  height: 0;
+}
+
+.detail-row-wrapper:not(.commitment) table {
+  background-color: $white;
+}
+
+.detail-row-wrapper {
+  border-bottom: none;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.detail-table tr {
+  background-color: $gray-almost-white;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.visibility-hidden {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.medium-button.fill-green {
+  background-color: $krungthai-green;
+  color: $white;
+}
+
+// original copy
+::ng-deep app-document-account tr.has-original-copy,
+::ng-deep app-document-account .detail-table tr.has-original-copy {
+  background-color: map_get($ktb-palette-green, 50) !important;
+
+  /* FIXED(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version.*/
+  .mat-mdc-radio-button.mat-accent.mat-mdc-radio-checked .mdc-radio__outer-circle {
+    border-color: $krungthai-green;
+  }
+
+  /* FIXED(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version.*/
+  .mat-mdc-radio-button.mat-accent .mdc-radio__inner-circle {
+    color: $krungthai-green;
+    background-color: $krungthai-green;
+  }
+
+  /* TODO(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version.*/
+  .mat-mdc-radio-button.mat-accent .mat-radio-ripple .mat-ripple-element {
+    background-color: rgba(39, 148, 0, 0.26);
+  }
+}
+
+::ng-deep app-document-account tr.no-original-copy,
+::ng-deep app-document-account tr.bg-red-50,
+::ng-deep app-document-account .detail-table tr.no-original-copy {
+  background-color: map_get($ktb-palette-red, 50) !important;
+
+  /* FIXED(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version.*/
+  .mat-mdc-radio-button.mat-accent.mat-mdc-radio-checked .mdc-radio__outer-circle {
+    border-color: $krungthai-red;
+  }
+
+  /* FIXED(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version.*/
+  .mat-mdc-radio-button.mat-accent .mdc-radio__inner-circle {
+    color: $krungthai-red;
+    background-color: $krungthai-red;
+  }
+
+  /* TODO(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version.*/
+  .mat-mdc-radio-button.mat-accent .mat-radio-ripple .mat-ripple-element {
+    background-color: rgba(208, 8, 44, 0.26);
+  }
+}
+
+// order, expand button
+.cell-xxs {
+  @include table-width(3, 50px);
+}
+
+// radio, commitment count
+.cell-xs {
+  @include table-width(5, 100px);
+}
+
+// storage name
+.cell-s {
+  @include table-width(12, 220px);
+}
+
+// button
+.cell-m {
+  @include table-width(20, 240px);
+}
+
+// document name
+.cell-l {
+  @include table-width(22, 360px);
+}
+
+.break-word {
+  word-break: break-word;
+}
+
+.reasons {
+  margin: 20px;
+}

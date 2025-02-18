@@ -1,0 +1,117 @@
+<app-action-bar
+  (backButtonHandler)="onBack()"
+  [backButtonText]="actionBar.backText || ''"
+  [showNavBarInformation]="true"
+  [hasPrimaryButton]="actionBar.hasPrimary"
+  [primaryButtonText]="actionBar.primaryText || ''"
+  [primaryButtonIcon]="actionBar.primaryIcon || 'icon-Selected'"
+  [hasCancelButton]="actionBar.hasCancel"
+  [cancelButtonText]="actionBar.cancelText || ''"
+  (cancelButtonHandler)="cancel()"
+  [cancelButtonIcon]="actionBar.cancelButtonIcon || ''"
+  (primaryButtonHandler)="onSubmit()">
+  <ng-container navBarInformationTemplate>
+    <ng-container>
+      <mat-icon svgIcon="icon-Note-Edit" class="icon icon-xmedium default-cursor"></mat-icon>
+    </ng-container>
+    {{ title }}
+  </ng-container>
+</app-action-bar>
+
+<ng-container *ngIf="isSteperTask">
+  <div class="content-below-action-bar-area">
+    <mat-horizontal-stepper
+      labelPosition="bottom"
+      class="stepper"
+      (selectionChange)="onStepChange($event)"
+      #stepperAuc
+      ngClass="{{ 'last-edited-step-' + stepperAuc.selectedIndex }}">
+      <ng-container *ngFor="let item of steps; let i = index">
+        <mat-step
+          [aria-label]="'' + i"
+          [state]="'' + i"
+          completed="false"
+          [aria-labelledby]="stepperAuc.selectedIndex ? '' : 'disableclick'">
+          <ng-template matStepLabel>
+            <div class="mat-step-custom-click" (click)="onStepperClick(i); $event.stopPropagation()">
+              <h6>{{ item.label }}</h6>
+            </div>
+          </ng-template>
+        </mat-step>
+      </ng-container>
+    </mat-horizontal-stepper>
+    <div>
+      <div class="pl-24 pr-24">
+        <app-message-banner *ngIf="messageBanner" type="black-info" [message]="messageBanner"></app-message-banner>
+      </div>
+      <div class="content-container">
+        <div class="inner-container-padding">
+          <app-auction-header
+            [title]="'รายละเอียดบัญชีส่วนได้ใช้แทน'"
+            [isMain]="true"
+            (expand)="isOpened = !isOpened"
+            [expanded]="isOpened">
+          </app-auction-header>
+        </div>
+        <mat-accordion>
+          <mat-expansion-panel [expanded]="isOpened" hideToggle>
+            <mat-divider class="no-margin"></mat-divider>
+            <div fxLayout="row" class="pt-24">
+              <div fxLayout="column" fxFlex="15">
+                <h6>รายการชุดทรัพย์ที่ เกี่ยวข้อง</h6>
+              </div>
+              <div fxLayout="column" fxFlex="30">
+                <ng-container *ngIf="!isUploadReadOnly">
+                  <spig-dropdown
+                    [required]="true"
+                    classInput="input-normal icon"
+                    [config]="setConfig"
+                    (selectedOption)="selectOption()"
+                    [formControl]="assetCtr"
+                    [options]="setOptions"></spig-dropdown>
+                  <spig-error-msg [control]="assetCtr" [customErrorMsg]="'กรุณาระบุข้อมูลช่องนี้'"></spig-error-msg>
+                </ng-container>
+                <ng-container *ngIf="isUploadReadOnly">
+                  <span class="thin-letter">{{ 'AUCTION_SEIZURE_DOC.LABEL_ASSETS_RELATED' | translate }}</span>
+                  <ul class="mt-5 mb-5">
+                    <li *ngFor="let item of assetCtr.value">
+                      <div class="sub-label">{{ item?.name }}</div>
+                    </li>
+                  </ul>
+                </ng-container>
+              </div>
+            </div>
+            <div fxLayout="row" class="pt-24">
+              <div fxLayout="column" fxFlex="15">
+                <h6>{{ 'COMMON.LABEL_DOCUMENT_LIST' | translate }}</h6>
+              </div>
+              <div fxLayout="column" fxFlex="85">
+                <app-upload-multi-file-content
+                  [uploadMultiInfo]="uploadMultiInfo"
+                  [list]="documentUpload"
+                  [column]="documentColumns"
+                  (uploadFileEvent)="uploadFileEvent($event)"
+                  [readonly]="isUploadReadOnly"
+                  [labelAcceptFile]="isUploadReadOnly ? '' : 'COMMON.REQUIRED_UPLOAD_FILE_PDF_JPG_JPEG_30_MB'">
+                </app-upload-multi-file-content>
+                <spig-error-msg
+                  [control]="requireDoc"
+                  [customErrorMsg]="'UPLOAD_FILE.ERROR_FILE_UPLOAD_REQUIRED'"></spig-error-msg>
+              </div>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>
+      <app-auction-seizure-document
+        [showSeizureDoc]="false"
+        (uploadDoc)="uploadDoc($event)"
+        [isViewMode]="true"
+        [title]="'รายการเอกสารประกอบชุดทรัพย์ที่เกี่ยวข้อง'"
+        [_relatedDeedGroupIDs]="relatedDeedGroupIDs"
+        [from]="'UPLOAD_DOC'"
+        [isSubmitted]="isSubmitted"
+        [expanded]="stepperAuc?.selectedIndex === 1 && relatedDeedGroupIDs.length > 0"
+        *ngIf="stepperAuc?.selectedIndex === 1 && relatedDeedGroupIDs.length > 0"></app-auction-seizure-document>
+    </div>
+  </div>
+</ng-container>

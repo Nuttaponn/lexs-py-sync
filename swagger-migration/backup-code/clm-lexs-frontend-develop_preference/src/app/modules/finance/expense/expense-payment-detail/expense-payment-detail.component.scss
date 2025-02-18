@@ -1,0 +1,75 @@
+@import '/src/styles/colors';
+
+.container {
+  padding: 24px;
+
+  .header {
+    padding: 20px 0 20px 0;
+
+    .title {
+      h4 {
+        display: flex;
+        margin: 0;
+      }
+    }
+  }
+
+  .accordion-headers-title {
+    padding: 10px;
+    background-color: map-get($ktb-palette-blue, 50);
+  }
+
+  .box-input {
+    display: flex;
+    align-items: center;
+    background-color: map-get($ktb-palette-biz-gray, 200);
+    border: 1px solid map-get($ktb-palette-biz-gray, 50);
+    border-radius: 8px;
+    height: 40px;
+    padding: 0 12px;
+  }
+}
+
+.table-scroll {
+
+  .action-delete,
+  .action-edit {
+    color: map-get($ktb-palette-precious-blue, 50);
+    cursor: pointer;
+  }
+}
+
+:host ::ng-deep {
+  .tax-expansion-panel {
+    margin-top: 0;
+    background-color: map-get($ktb-palette-blue, 50);
+  }
+
+  /* FIXED(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version. */
+  .radio-green.mat-mdc-radio-checked .mdc-radio__outer-circle {
+    border-color: $krungthai-green !important;
+    z-index: 0;
+  }
+
+  /* FIXED(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version. */
+  .radio-green .mdc-radio__outer-circle {
+    z-index: 10;
+  }
+
+  /* FIXED(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version. */
+  .radio-red.mat-mdc-radio-checked .mdc-radio__outer-circle {
+    border-color: $krungthai-red !important;
+    border-width: 5px;
+    z-index: 10;
+  }
+}
+
+::ng-deep app-expense-payment-detail {
+  .mat-expansion-panel-content {
+    font-size: 16px !important;
+  }
+
+  p::first-line {
+    white-space: normal;
+  }
+}

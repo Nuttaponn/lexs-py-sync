@@ -1,0 +1,100 @@
+<app-document-header
+  [title]="title"
+  [details]="[]"
+  [isMain]="true"
+  [readyForLitigation]="true"
+  [forAsset]="forAsset"
+  [readyForAsset]="readyForAsset"
+  [readyForNotice]="true"
+  [expanded]="isShow"
+  [forLitigation]="false"
+  [readyForDoc]="true"
+  [forNoticeLetter]="false"
+  [classInput]="'bg-l-gray'"
+  (expand)="expandPanel()">
+</app-document-header>
+<mat-accordion class="expansion-info">
+  <mat-expansion-panel [expanded]="isShow" class="pt-10">
+    <div class="table-content">
+      <div class="table-scroll">
+        <table mat-table [dataSource]="documents">
+          <ng-container matColumnDef="index" sticky>
+            <th mat-header-cell *matHeaderCellDef class="text-center">{{ 'COMMON.LABEL_NO' | translate }}</th>
+            <td mat-cell *matCellDef="let element; let i = index" class="text-center">{{ i + 1 }}</td>
+          </ng-container>
+          <ng-container matColumnDef="documentName" sticky>
+            <th mat-header-cell *matHeaderCellDef>{{ 'DOC_PREP.DOC_NAME' | translate }}</th>
+            <td mat-cell *matCellDef="let element">
+              <span class="mr-8">{{ element?.documentTemplate?.documentName }}</span>
+              <ng-container *ngIf="element.attributes?.['set']">
+                <br />
+                {{ element.attributes?.['set'] ? 'ชุดที่ ' + element.attributes?.['set'] : '' }}
+              </ng-container>
+              <mat-icon
+                svgIcon="icon-Box-Bag-Circle"
+                *ngIf="element?.documentTemplate?.forAsset"
+                [class.fill-krungthai-green]="element?.readyForAsset"
+                [class.fill-gold]="!element?.readyForAsset"
+                class="icon icon-hide-show icon-md">
+              </mat-icon>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="litigationId">
+            <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_LITIGATION_ID' | translate }}</th>
+            <td mat-cell *matCellDef="let element">
+              <span>{{ element.litigationId }}</span>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="documentDate">
+            <th mat-header-cell *matHeaderCellDef>{{ 'DOC_PREP.LABEL_UPLOAD_DATE' | translate }}</th>
+            <td mat-cell *matCellDef="let element">
+              <span> {{ (element?.documentDate | buddhistEra: 'DD/MM/yyyy') || '-' }}</span>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="storeOrganization">
+            <th mat-header-cell *matHeaderCellDef class="detail-table-head cell-s">
+              {{ 'DOC_PREP.STORE_ORAGANIZE_NAME_' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let doc">
+              <span>{{ doc.uploadUserId || doc.storeOrganization || '-' }}</span
+              ><br />
+              <span>{{ doc.storeOrganizationName || '' }}</span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="ownOrganization">
+            <th mat-header-cell *matHeaderCellDef class="detail-table-head cell-s">
+              {{ 'DOC_PREP.OWE_ORAGANIZE_NAME_' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let doc">
+              <span>{{ doc.uploadUserId || doc.storeOrganization || '-' }}</span
+              ><br />
+              <span>{{ doc.storeOrganizationName || '' }}</span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="imageName">
+            <th mat-header-cell *matHeaderCellDef class="detail-table-head cell-s">
+              {{ 'DOC_PREP.LABEL_COPY' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let element; let i = index">
+              <span
+                [class.link]="element?.imageId && element?.imageName"
+                (click)="element?.imageId ? openDoc(element) : ''">
+                {{ element?.imageName || '-' }}
+              </span>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="docLitigationColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: docLitigationColumns"></tr>
+        </table>
+        <ng-container [ngTemplateOutlet]="dataNotFound" *ngIf="documents?.length === 0"> </ng-container>
+      </div>
+      <ng-template let-value="value" #dataNotFound>
+        <app-message-empty message="{{ 'COMMON.LABEL_PREFIX_NOT_FOUND' | translate }}{{ value }}"></app-message-empty>
+      </ng-template>
+    </div>
+  </mat-expansion-panel>
+</mat-accordion>

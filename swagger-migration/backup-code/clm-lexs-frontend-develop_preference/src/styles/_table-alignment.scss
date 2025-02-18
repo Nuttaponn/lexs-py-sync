@@ -1,0 +1,6 @@
+// Table Alignment
+@mixin table-width($percent, $min-width) {
+  // | 64 | 24 | 16 | TABLE AREA | 16 | 24 |
+  width: calc((100vw - 144px) * $percent/100);
+  min-width: $min-width;
+}

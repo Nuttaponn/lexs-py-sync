@@ -1,0 +1,25 @@
+<div>
+  <app-message-banner type="warn-normal" [icon]="'icon-Error'" [message]="messageBanner"></app-message-banner>
+</div>
+<div class="mt-20">
+  <div class="mb-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+    <h6 fxLayout="column" fxFlex="20">{{ 'COMMON.LABEL_REASON' | translate }}</h6>
+    <div fxLayout="column" fxFlex="">
+      <mat-form-field class="input-full-field">
+        <mat-label>ระบุเหตุผล</mat-label>
+        <textarea
+          class="input-full-field"
+          type="text"
+          matInput
+          cdkTextareaAutosize
+          #autosize="cdkTextareaAutosize"
+          cdkAutosizeMinRows="13"
+          required
+          autocomplete="off"
+          [formControl]="reason"
+          [maxlength]="500"></textarea>
+      </mat-form-field>
+      <spig-error-msg [control]="reason" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED_2'"></spig-error-msg>
+    </div>
+  </div>
+</div>

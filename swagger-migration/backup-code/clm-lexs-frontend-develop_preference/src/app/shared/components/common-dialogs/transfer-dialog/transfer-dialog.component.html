@@ -1,0 +1,81 @@
+<div>
+  <div class="mb-1em">
+    <app-message-banner
+      [message]="taskCount + ' ' + ('TRANSFER_DIALOG.TRANSFER_SELECTED_TASKS' | translate)"
+      type="info">
+    </app-message-banner>
+  </div>
+  <form class="mb-1em" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="12px" (submit)="submitSearch()">
+    <div fxLayout="column" fxFlex="60">
+      <mat-form-field class="no-label input-sm-icon">
+        <input
+          type="text"
+          matInput
+          [placeholder]="'TRANSFER_DIALOG.TRANSFER_SEARCH_USERS' | translate"
+          autocomplete="off"
+          [formControl]="searchInput"
+          name="userSearch" />
+        <mat-icon matSuffix class="icon icon-small" svgIcon="icon-Search" (click)="submitSearch()"></mat-icon>
+      </mat-form-field>
+      <spig-error-msg [control]="searchInput" [customErrorMsg]="'SEARCH_CONTROL.ERROR_SEARCH_CONDITION'">
+      </spig-error-msg>
+    </div>
+    <div fxFlex="40">
+      <spig-dropdown
+        classInput="input-xsm icon"
+        [formControl]="roleFilterControl"
+        [config]="roleFilterConfig"
+        [options]="roleFilterOptions"
+        (selectedOption)="onRoleFilterSelect($event)">
+      </spig-dropdown>
+    </div>
+  </form>
+  <ng-container *ngIf="dataSource.length > 0; then userTable"></ng-container>
+  <ng-container>
+    <div class="pt-20" fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="12px">
+      <div class="color-red" fxFlex="50" *ngIf="isSubmited && selection.selected.length === 0">
+        <ng-container>
+          {{ 'SEARCH_CONTROL.DIALOG_ALERT_TABLE_SELECTED' | translate }}
+        </ng-container>
+      </div>
+      <div class="color-biz-black-70" fxFlex="50" fxLayout="row" fxLayoutAlign="end center">
+        {{ 'PAGINATION.RESULT' | translate }}: {{ dataSource.length }}
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #userTable>
+  <div class="table-fixed">
+    <table mat-table [dataSource]="dataSource">
+      <ng-container matColumnDef="radio">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let element">
+          <mat-radio-button
+            type="radio"
+            [value]="element.userId"
+            [checked]="selection.selected[0] === element.userId"
+            (change)="onSelectUser($event, element)"></mat-radio-button>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="userId">
+        <th mat-header-cell *matHeaderCellDef>{{ 'TASK.HEAD_COLUMN_USER_ID' | translate }}</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.userId }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_FULL_NAME' | translate }}</th>
+        <td mat-cell *matCellDef="let element">{{ element.title }}{{ element.name }} {{ element.surname }}</td>
+      </ng-container>
+      <ng-container matColumnDef="roleName">
+        <th mat-header-cell *matHeaderCellDef>{{ 'TASK.HEAD_COLUMN_LEXS_ROLE' | translate }}</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.roleName }}
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </div>
+</ng-template>

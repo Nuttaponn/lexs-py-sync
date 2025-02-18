@@ -1,0 +1,186 @@
+<div *ngIf="financialCreditNoteResponse">
+  <ng-container [ngTemplateOutlet]="dataLayoutByLitigationId"> </ng-container>
+</div>
+
+<ng-template #dataLayoutByLitigationId>
+  <div fxLayout="row" fxLayoutAlign="space-between center">
+    <div class="flex-display">
+      <mat-icon svgIcon="icon-Arrow-Revert" class="icon icon-xmedium pr-12"></mat-icon>
+      <h6>
+        {{ 'SUMMARY_RIEMBURSEMENT.LIST_OF_MONEY_FORWARDED_TO_LGID' | translate }}
+      </h6>
+    </div>
+
+    <div>
+      <ng-container [ngTemplateOutlet]="!isExpandedAllRows ? expandAllRowsBtn : hideAllRowsBtn"></ng-container>
+      <ng-template #expandAllRowsBtn>
+        <div
+          class="status-label size-xl status-normal cur-pointer h-56 mb-8"
+          fxLayout="row"
+          fxLayoutAlign="space-between center"
+          fxLayoutGap="5px"
+          (click)="manageAllRows(true)">
+          <mat-icon svgIcon="icon-View" class="icon icon-medium icon-fill-white"></mat-icon>
+          <span class="bold">
+            {{ 'SUMMARY_RIEMBURSEMENT.SHOW_DETAIL' | translate }}
+          </span>
+        </div>
+      </ng-template>
+      <ng-template #hideAllRowsBtn>
+        <div
+          class="status-label size-xl status-normal cur-pointer h-56 pb-8"
+          fxLayout="row"
+          fxLayoutAlign="space-between center"
+          fxLayoutGap="5px"
+          (click)="manageAllRows(false)">
+          <mat-icon svgIcon="icon-hide" class="icon icon-medium icon-fill-white"></mat-icon>
+          <span class="bold">
+            {{ 'SUMMARY_RIEMBURSEMENT.HIDE_DETAIL' | translate }}
+          </span>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+  <ng-container
+    [ngTemplateOutlet]="summaryTable"
+    [ngTemplateOutletContext]="{
+      list: financialCreditNoteResponse.financialCreditNoteList || [],
+    }">
+  </ng-container>
+</ng-template>
+
+<ng-template #summaryTable let-dataSource="list">
+  <div class="table-scroll" table-scroll>
+    <table mat-table multiTemplateDataRows [dataSource]="dataSource">
+      <ng-container matColumnDef="order" sticky>
+        <th class="text-center" mat-header-cell *matHeaderCellDef columnElevationLeft>
+          {{ 'COMMON.LABEL_NO' | translate }}
+        </th>
+        <td class="text-center" mat-cell *matCellDef="let element" columnElevationLeft>
+          {{ element.seq }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="transactionDate">
+        <th class="text-right" mat-header-cell *matHeaderCellDef>
+          {{ 'SUMMARY_RIEMBURSEMENT.CREDIT_NOTE_TABLE.TRANSACTION_DATE' | translate }}
+        </th>
+        <td class="text-right" mat-cell *matCellDef="let element">
+          {{ (element.approveDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="receivingDepartmentForCreditNote">
+        <th class="text-left" mat-header-cell *matHeaderCellDef>
+          {{ 'SUMMARY_RIEMBURSEMENT.CREDIT_NOTE_TABLE.RECEIVING_DEPARTMENT_FOR_CREDIT_NOTE' | translate }}
+        </th>
+        <td class="text-left" mat-cell *matCellDef="let element">
+          {{ element.creditNoteReceiverOrgCode || '-' }} -{{ element.creditNoteReceiverOrgName || '-' }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="refundAmountSent">
+        <th class="text-right" mat-header-cell *matHeaderCellDef>
+          {{ 'SUMMARY_RIEMBURSEMENT.CREDIT_NOTE_TABLE.REFUND_AMOUNT_SENT' | translate }}
+        </th>
+        <td class="text-right" mat-cell *matCellDef="let element">
+          {{ (element.sendAmount | numberDecimal) || '-' }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="refBranchAC">
+        <th class="text-left" mat-header-cell *matHeaderCellDef>
+          {{ 'SUMMARY_RIEMBURSEMENT.CREDIT_NOTE_TABLE.REF_BRANCH_A_C' | translate }}
+        </th>
+        <td class="text-left" mat-cell *matCellDef="let element">
+          {{ element.refBranchAccount }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="transferredBranch">
+        <th class="text-left" mat-header-cell *matHeaderCellDef>
+          {{ 'SUMMARY_RIEMBURSEMENT.CREDIT_NOTE_TABLE.TRANSFERRED_BRANCH' | translate }}
+        </th>
+        <td class="text-left" mat-cell *matCellDef="let element">
+          {{ element.transferredBranchCode || '-' }} {{ '-' }}{{ element.transferredBranchName || '-' }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="document">
+        <th class="text-left" mat-header-cell *matHeaderCellDef>
+          {{ 'SUMMARY_RIEMBURSEMENT.CREDIT_NOTE_TABLE.DOCUMENT' | translate }}
+        </th>
+        <td class="text-left" mat-cell *matCellDef="let element">
+          <div class="link label-link" (click)="onDownLoad(element)">
+            {{ 'Credit Note' }}
+          </div>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="status" stickyEnd>
+        <th class="text-center min-w-130" columnElevationRight mat-header-cell *matHeaderCellDef>
+          {{ 'SUMMARY_RIEMBURSEMENT.CREDIT_NOTE_TABLE.STATUS' | translate }}
+        </th>
+        <td class="text-center" columnElevationRight mat-cell *matCellDef="let element">
+          <div fxLayout="row" fxLayoutAlign="center center">
+            <span class="status-label size-small status-normal">{{ element.receiveStatusName }}</span>
+          </div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="remark" stickyEnd>
+        <th class="text-center min-w-130" mat-header-cell *matHeaderCellDef>
+          {{ 'COMMON.LABEL_REMARKS' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let row" class="text-center">
+          <button
+            *ngIf="!row.expanded; else hideBtn"
+            mat-stroked-button
+            type="button"
+            class="medium-aw-button mat-primary border-blue remark-style"
+            (click)="toggleRow(row)">
+            <span>
+              <!-- ดูหมายเหตุ -->
+              {{ 'SUMMARY_RIEMBURSEMENT.SHOW_DETAIL_BTN' | translate }}
+            </span>
+            <mat-icon svgIcon="icon-Direction-Down" class="icon icon-hide-show fill-blue"></mat-icon>
+          </button>
+          <ng-template #hideBtn>
+            <button
+              mat-stroked-button
+              type="button"
+              class="medium-aw-button mat-primary border-blue remark-style"
+              (click)="toggleRow(row)">
+              <span>
+                <!-- ซ่อนหมายเหตุ -->
+                {{ 'SUMMARY_RIEMBURSEMENT.HIDE_DETAIL_BTN' | translate }}
+              </span>
+              <mat-icon svgIcon="icon-Direction-Up" class="icon icon-hide-show fill-blue"></mat-icon>
+            </button>
+          </ng-template>
+        </td>
+        <td mat-footer-cell *matFooterCellDef></td>
+      </ng-container>
+
+      <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+      <ng-container matColumnDef="expandedDetail">
+        <td class="example-detail-td" mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
+          <div fxLayout="column" [fxLayoutGap]="element.expanded ? '2px' : '0px'">
+            <div class="example-element-detail" [@detailExpand]="element.expanded ? 'expanded' : 'collapsed'">
+              <div class="content-form">
+                <div class="detail">
+                  {{ element.creditNoteDescription || '-' }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr
+        class="example-element-row"
+        mat-row
+        *matRowDef="let row; columns: displayedColumns"
+        [class.example-expanded-row]="row.expanded"></tr>
+
+      <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+    </table>
+  </div>
+  <div *ngIf="dataSource?.length === 0">
+    <app-message-empty [message]="'COMMON.SEARCH_EMPTY'"></app-message-empty>
+  </div>
+</ng-template>

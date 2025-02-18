@@ -1,0 +1,86 @@
+<div class="container">
+  <div
+    class="mb-16"
+    fxLayout="row"
+    fxLayoutAlign="start start"
+    fxLayoutGap="16px"
+    *ngFor="let item of remarksList; let first = first">
+    <div fxLayout="column" fxFlex="25">
+      <ng-container *ngIf="first">
+        <span class="bold">
+          {{
+            (financeType === 'ADVANCE'
+              ? 'FINANCE.REMARKS_PAYMENT_DIALOG.LABEL_REMARKS_ADVANCE'
+              : 'COMMON.LABEL_REMARKS'
+            ) | translate
+          }}
+        </span>
+      </ng-container>
+    </div>
+    <div fxLayout="column" fxFlex="75">
+      <div>
+        <span class="thin-letter">
+          <ng-container *ngIf="(item.createdBy | uppercase) === 'SYSTEM'; else userCreated">
+            {{ 'FINANCE.REMARKS_PAYMENT_DIALOG.CREATED_BY_SYSTEM' | translate }} :
+            {{ item?.createdDate ? (item?.createdDate | buddhistEra: 'DD/MM/yyyy HH:mm') : '' }}
+          </ng-container>
+          <ng-template #userCreated>
+            {{ 'FINANCE.REMARKS_PAYMENT_DIALOG.CREATED_BY' | translate }} {{ item?.roleName }}-{{
+              item?.subRoleName
+            }}
+            ({{ item?.createdByName }} : {{ item?.createdBy }}) :
+            {{ item?.createdDate ? (item?.createdDate | buddhistEra: 'DD/MM/yyyy HH:mm') : '' }}
+          </ng-template>
+        </span>
+      </div>
+      <div class="break-all">{{ item?.note }}</div>
+    </div>
+  </div>
+  <ng-container *ngIf="isViewMode && remarksList?.length === 0">
+    <app-message-empty [message]="'FINANCE.REMARKS_PAYMENT_DIALOG.REMARKS_PAYMENT_NOT_FOUND'"></app-message-empty>
+  </ng-container>
+  <div *ngIf="!isViewMode" class="mb-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+    <div fxLayout="column" fxFlex="25">
+      <ng-container *ngIf="remarksList?.length === 0">
+        <span class="bold">
+          {{
+            (financeType === 'ADVANCE'
+              ? 'FINANCE.REMARKS_PAYMENT_DIALOG.LABEL_REMARKS_ADVANCE'
+              : 'COMMON.LABEL_REMARKS'
+            ) | translate
+          }}
+        </span>
+      </ng-container>
+    </div>
+    <div fxLayout="column" fxFlex="70">
+      <ng-container>
+        <mat-form-field fxFlex class="border-black-40">
+          <mat-label>
+            {{
+              (financeType === 'ADVANCE'
+                ? 'FINANCE.REMARKS_PAYMENT_DIALOG.TEXTAREA_PLACEHOLDER_ADVANCE'
+                : 'FINANCE.REMARKS_PAYMENT_DIALOG.TEXTAREA_PLACEHOLDER'
+              ) | translate
+            }}
+          </mat-label>
+          <textarea
+            class="input-full-field"
+            type="text"
+            matInput
+            cdkTextareaAutosize
+            #autosize="cdkTextareaAutosize"
+            cdkAutosizeMinRows="12"
+            autocomplete="off"
+            [formControl]="note"
+            [maxlength]="financeType === 'RECEIPT' ? 500 : 1000"></textarea>
+        </mat-form-field>
+        <spig-error-msg
+          class="mt-8"
+          [control]="note"
+          [customErrorMsg]="
+            financeType === 'ADVANCE' ? 'กรุณาระบุความคิดเห็น' : 'COMMON.ERROR_MSG_REQUIRED'
+          "></spig-error-msg>
+      </ng-container>
+    </div>
+  </div>
+</div>

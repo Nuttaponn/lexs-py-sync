@@ -1,0 +1,60 @@
+.flex-row-place-center {
+  display: flex;
+  flex-direction: row;
+  place-items: center;
+}
+
+.checkbox-send-channel {
+  position: absolute;
+  display: inline-flex;
+}
+
+.mat-column-documentDate {
+  width: 15%;
+}
+
+.mat-column-documentAction {
+  width: 15%;
+}
+
+button.medium-aw-button.full-width {
+  width: 100% !important;
+}
+
+::ng-deep app-seizure-result-detail {
+  .border-blue {
+    border-color: #00a6e6 !important;
+  }
+}
+::ng-deep app-seizure-result-detail {
+  .mat-expansion-panel-body {
+    padding: 0 !important;
+  }
+  .centerBox {
+    .elm-check + label::before,
+    .elm-check + label::after {
+      top: 4px;
+      left: 7px;
+    }
+  }
+}
+
+.min-width-85px {
+  min-width: 85px;
+}
+
+.min-width-115px {
+  min-width: 115px;
+}
+
+.min-width-135px {
+  min-width: 135px;
+}
+
+.min-width-352px {
+  min-width: 352px;
+}
+
+.fn-16 {
+  font-size: 16px !important;
+}

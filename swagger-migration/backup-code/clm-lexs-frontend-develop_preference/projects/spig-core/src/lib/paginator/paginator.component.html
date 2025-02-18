@@ -1,0 +1,34 @@
+<div class="paginator-container">
+  <ng-container *ngIf="displayResult">
+    <div *ngIf="resultTotalItems === 0">
+      {{resultTitle | translate}}: {{resultFromIndex}} {{resultFromLable | translate}} {{resultTotalItems}}
+    </div>
+    <div *ngIf="resultTotalItems !== 0">
+      {{resultTitle | translate}}: {{resultFromIndex}}-{{resultToIndex}} {{resultFromLable | translate}}
+      {{resultTotalItems}}
+    </div>
+  </ng-container>
+  <div class="page-action">
+    <div class="previous" [ngClass]="actionCurrentPage !== 1 ? 'cur-pointer' : 'cur-text'"
+      [class.disabled]="actionCurrentPage === 1">
+      <mat-icon svgIcon="icon-Direction-Left" class="icon-sm fill-black-100"
+        [ngClass]="actionCurrentPage !== 1 ? 'cur-pointer' : 'cur-text'" [class.fill-black-50]="actionCurrentPage === 1"
+        (click)="onPrevious()">
+      </mat-icon><span (click)="onPrevious()">{{actionPreviousLabel | translate}}</span>
+    </div>
+    <div class="page">
+      <div *ngFor="let page of listPage; let i = index">
+        <div class="page-number" [class.cur-pointer]="page !== '...'"
+          [class.current-page]="page === actionCurrentPage.toString()" (click)="onPage(page)">
+          {{page}}</div>
+      </div>
+    </div>
+    <div class="next" [ngClass]="actionCurrentPage !== actionTotalPages ? 'cur-pointer' : 'cur-text'"
+      [class.disabled]="actionCurrentPage === actionTotalPages">
+      <span (click)="onNext()">{{actionNextLabel | translate}}</span>
+      <mat-icon svgIcon="icon-Direction-Right" class="icon-sm fill-black-100"
+        [ngClass]="actionCurrentPage !== actionTotalPages ? 'cur-pointer' : 'cur-text'"
+        [class.fill-black-50]="actionCurrentPage === actionTotalPages" (click)="onNext()"></mat-icon>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,19 @@
+::ng-deep app-investigate-property-detail {
+  app-case-details {
+    .no-margin-left {
+      margin-left: 0px !important;
+    }
+  }
+
+  .no-padding .mat-expansion-panel-body {
+    padding: 0px;
+  }
+
+  .content-container {
+    margin: 24px 0px;
+  }
+}
+
+.width-btn-sh {
+  width: 70px;
+}

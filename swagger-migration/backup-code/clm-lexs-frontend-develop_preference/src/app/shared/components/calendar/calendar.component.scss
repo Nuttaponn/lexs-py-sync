@@ -1,0 +1,73 @@
+@import '/src/styles/colors';
+
+table.calendar {
+  border-collapse: collapse;
+  table-layout: fixed;
+
+  td.calendar-cell {
+    background-color: map-get($ktb-palette-biz-gray, 100);
+    border: 1px solid map-get($ktb-palette-biz-gray, 300);
+    padding: 8px;
+    height: 160px;
+    width: 14.29%;
+    vertical-align: top;
+    cursor: pointer;
+
+    .date-number {
+      width: 24px;
+      height: 24px;
+      border-radius: 12px;
+      font-size: 18px;
+      color: map_get($ktb-palette-biz-gray, 600);
+      text-align: center;
+    }
+
+    &.today .date-number {
+      border: 1px solid $krungthai-blue;
+    }
+
+    &.selected {
+      outline: 1px solid $krungthai-blue !important;
+      background-color: map_get($ktb-palette-blue, 50) !important;
+
+      .date-number {
+        color: $white !important;
+        background-color: $krungthai-blue !important;
+      }
+    }
+
+    .status-label {
+      white-space: initial;
+      text-align: left;
+    }
+  }
+
+  td.calendar-cell.current-month {
+    background-color: $white;
+
+    .date-number {
+      color: map_get($ktb-palette-biz-gray, 900);
+    }
+  }
+  td.calendar-cell.holiday {
+    background-color: #f5f5f5;
+
+    .date-number {
+      color: map_get($ktb-palette-biz-gray, 600);
+    }
+  }
+
+  th.calendar-header {
+    background-color: map_get($ktb-palette-blue, 80);
+    color: $white;
+    font-family: KrungthaiFastBold;
+    font-size: 16px;
+    height: 50px;
+    border: 1px solid map_get($ktb-palette-blue, 80);
+  }
+}
+
+::ng-deep .mat-calendar-body-cell-content,
+::ng-deep .mat-calendar-body-label {
+  font-family: KrungthaiFastRegular;
+}

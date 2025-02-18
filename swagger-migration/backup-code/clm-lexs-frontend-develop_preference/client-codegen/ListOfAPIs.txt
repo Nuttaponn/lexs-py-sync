@@ -1,0 +1,15 @@
+https://lexsdev.krungthai/ktb/rest/lexs/configuration/v3/api-docs
+https://lexsdev.krungthai/ktb/rest/lexs/customer/v3/api-docs
+https://lexsdev.krungthai/ktb/rest/lexs/master-data/v3/api-docs
+https://lexsdev.krungthai/ktb/rest/lexs/litigation/v3/api-docs
+https://lexsdev.krungthai/ktb/rest/lexs/user/v3/api-docs
+https://lexsdev.krungthai/ktb/rest/lexs/document/v3/api-docs
+https://lexsdev.krungthai/ktb/rest/lexs/financial/v3/api-docs
+https://lexsdev.krungthai/ktb/rest/lexs/notification/v3/api-docs
+https://lexsdev.krungthai/ktb/rest/lexs/report/v3/api-docs
+https://lexsdev.krungthai/ktb/rest/lexs/seizure/v3/api-docs
+https://lexsdev.krungthai/ktb/rest/lexs/withdraw-seizure/v3/api-docs
+https://lexsdev.krungthai/ktb/rest/lexs/auction/v3/api-docs
+https://lexsdev.krungthai/ktb/rest/lexs/asset-investigation/v3/api-docs
+https://lexsdev.krungthai/ktb/rest/lexs/preference/v3/api-docs
+

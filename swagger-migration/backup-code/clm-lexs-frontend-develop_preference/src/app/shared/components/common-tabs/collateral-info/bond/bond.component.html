@@ -1,0 +1,164 @@
+<div fxLayout class="space-around content mt-20" [formGroup]="control" *ngIf="control">
+  <div fxLayout="column" fxFlex="20">
+    <div class="collateral-info header mx-width-pct-60">
+      {{ 'CUSTOMER.BOND_INFO_ACCOUNT' | translate }}
+    </div>
+  </div>
+  <div fxLayout="column" fxFlex>
+    <div fxLayout fxLayoutAlign="space-between ">
+      <ng-container *ngIf="mode === MODE.ADD || mode === MODE.EDIT">
+        <div fxFlex="49" fxLayout="column">
+          <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+            <mat-label>{{ 'CUSTOMER.BOND_AGENCY' | translate }}</mat-label>
+            <input
+              type="text"
+              maxlength="40"
+              matInput
+              formControlName="issuer"
+              [placeholder]="'CUSTOMER.BOND_AGENCY' | translate" />
+          </mat-form-field>
+          <spig-error-msg [control]="getControl('issuer')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+          </spig-error-msg>
+        </div>
+        <div fxFlex="49" fxLayout="column">
+          <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+            <mat-label>{{ 'CUSTOMER.BOND_NO' | translate }}</mat-label>
+            <input
+              type="text"
+              maxlength="40"
+              matInput
+              formControlName="bondNo"
+              [placeholder]="'CUSTOMER.BOND_NO' | translate" />
+          </mat-form-field>
+          <spig-error-msg [control]="getControl('bondNo')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+          </spig-error-msg>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="mode === MODE.VIEW">
+        <div fxFlex="49">
+          <div class="collateral-info title">
+            {{ 'CUSTOMER.BOND_AGENCY' | translate }}
+          </div>
+          <div class="collateral-info detail">
+            {{ getControl('issuer')?.value || '-' }}
+          </div>
+        </div>
+        <div fxFlex="49">
+          <div class="collateral-info title">
+            {{ 'CUSTOMER.BOND_NO' | translate }}
+          </div>
+          <div class="collateral-info detail">
+            {{ getControl('bondNo')?.value || '-' }}
+          </div>
+        </div>
+      </ng-container>
+    </div>
+    <div fxLayout fxLayoutAlign="space-between " class="mt-20">
+      <ng-container *ngIf="mode === MODE.ADD || mode === MODE.EDIT">
+        <div fxFlex="49" fxLayout="column">
+          <spig-dropdown
+            [classInput]="'input-s icon border-black-40'"
+            formControlName="collateralSubTypeCode"
+            [config]="configCollSubType"
+            [options]="collSubTypeOptions">
+          </spig-dropdown>
+        </div>
+        <div fxFlex="49">
+          <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+            <mat-label>{{ 'CUSTOMER.BOND_TOTAL' | translate }}</mat-label>
+            <input
+              type="text"
+              maxlength="10"
+              matInput
+              formControlName="unitAmount"
+              [placeholder]="'CUSTOMER.BOND_TOTAL' | translate" />
+          </mat-form-field>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="mode === MODE.VIEW">
+        <div fxFlex="49">
+          <div class="collateral-info title">
+            {{ 'CUSTOMER.BOND_TYPE' | translate }}
+          </div>
+          <div class="collateral-info detail">
+            {{ getControl('collateralSubTypeDesc')?.value || '-' }}
+          </div>
+        </div>
+        <div fxFlex="49">
+          <div class="collateral-info title">
+            {{ 'CUSTOMER.BOND_TOTAL' | translate }}
+          </div>
+          <div class="collateral-info detail">
+            {{ (getControl('unitAmount')?.value | number) || '-' }}
+          </div>
+        </div>
+      </ng-container>
+    </div>
+    <div fxLayout fxLayoutAlign="space-between center " class="mt-20">
+      <ng-container *ngIf="mode === MODE.ADD || mode === MODE.EDIT">
+        <div fxFlex="49" fxLayout="column">
+          <spig-datepicker
+            [classInput]="'input-s icon border-black-40'"
+            formControlName="issueDate"
+            [required]="true"
+            [label]="'CUSTOMER.BOND_DATE'"
+            class="display-grid"></spig-datepicker>
+          <spig-error-msg [control]="getControl('issueDate')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+          </spig-error-msg>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="mode === MODE.VIEW">
+        <div fxFlex="49">
+          <div class="collateral-info title">
+            {{ 'CUSTOMER.BOND_DATE' | translate }}
+          </div>
+          <div class="collateral-info detail">
+            {{ getControl('issueDate')?.value || '-' }}
+          </div>
+        </div>
+      </ng-container>
+    </div>
+    <div fxLayout fxLayoutAlign="space-between center " class="mt-20">
+      <ng-container *ngIf="mode === MODE.ADD || mode === MODE.EDIT">
+        <div fxFlex="49">
+          <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+            <mat-label>{{ 'CUSTOMER.PRICE_UNIT' | translate }}</mat-label>
+            <input
+              type="text"
+              matInput
+              formControlName="priceValue"
+              appNumberOnly="integer"
+              maxlength="8"
+              [placeholder]="'CUSTOMER.PRICE_UNIT' | translate" />
+          </mat-form-field>
+        </div>
+        <div fxFlex="49">
+          <spig-datepicker
+            [classInput]="'input-s icon border-black-40'"
+            formControlName="dueDate"
+            [label]="'CUSTOMER.DUE_DATE'"
+            class="display-grid">
+          </spig-datepicker>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="mode === MODE.VIEW">
+        <div fxFlex="49">
+          <div class="collateral-info title">
+            {{ 'CUSTOMER.PRICE_UNIT' | translate }}
+          </div>
+          <div class="collateral-info detail">
+            {{ (getControl('priceValue')?.value | numberDecimal) || '-' }}
+          </div>
+        </div>
+        <div fxFlex="49">
+          <div class="collateral-info title">
+            {{ 'CUSTOMER.DUE_DATE' | translate }}
+          </div>
+          <div class="collateral-info detail">
+            {{ getControl('dueDate')?.value || '-' }}
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,1193 @@
+<!-- สำนักงานบังคับคดีแพ่ง -->
+<div class="content-container">
+  <div class="inner-container-padding-24">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+      <div class="title-text">
+        <h5 class="mt-12 mb-12 mr-12">
+          {{ withdrawSeizuresLedData.withdrawSeizureLed?.ledName }}
+        </h5>
+      </div>
+    </div>
+  </div>
+  <mat-divider class="mr-24"></mat-divider>
+  <div class="inner-container-padding-24">
+    <div class="mt-8" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+      <div fxLayout="column" fxFlex="14">
+        <h6>{{ 'WITHDRAWN_SEIZURE_PROPERTY.LABEL_DETAIL' | translate }}</h6>
+      </div>
+      <div fxLayout="column" fxFlex="35">
+        <span class="thin-letter">{{ 'COMMON.LABEL_LEGAL_EXECUTION_DEPARTMENT_NAME' | translate }}</span>
+        <div>
+          {{ withdrawSeizuresLedData.withdrawSeizureLed?.ledName }}
+        </div>
+      </div>
+      <div fxLayout="column" fxFlex="35">
+        <span class="thin-letter">{{ 'COMMON.LABEL_COURT' | translate }}</span>
+        <div>{{ withdrawSeizuresLedData.withdrawSeizureLed?.civilCourtName }}</div>
+      </div>
+    </div>
+    <div class="mt-8" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+      <div fxLayout="column" fxFlex="14">
+        <h6>{{ 'WITHDRAWN_SEIZURE_PROPERTY.LABEL_LED_REF_NO_DETAIL' | translate }}</h6>
+      </div>
+      <div fxLayout="column" fxFlex="35">
+        <span class="thin-letter">{{ 'WITHDRAWN_SEIZURE_PROPERTY.LABEL_LED_REF_NO' | translate }}</span>
+        <div>{{ withdrawSeizuresLedData.withdrawSeizureLed?.ledRefNo }}</div>
+      </div>
+      <div fxLayout="column" fxFlex="35">
+        <span class="thin-letter">{{ 'WITHDRAWN_SEIZURE_PROPERTY.LABEL_LED_REF_NO_DATE' | translate }}</span>
+        <div>{{ (withdrawSeizuresLedData.withdrawSeizureLed?.ledRefNoDate | buddhistEra: 'DD/MM/yyyy') || '-' }}</div>
+      </div>
+    </div>
+    <ng-container *ngIf="mode === 'EDIT' && hasSavePermission && taskCode === 'R2E06-05-E'; else viewTemplate">
+      <div class="mt-8" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+        <div fxLayout="column" fxFlex="14">
+          <h6>{{ 'WITHDRAWN_SEIZURE_PROPERTY.BUTTON_SAVE_RESULT' | translate }}</h6>
+        </div>
+        <div fxLayout="column" fxFlex="40">
+          <div fxFlex="49" fxLayout="column">
+            <spig-datepicker
+              class="date-picker-block"
+              [max]="currentDate"
+              [classInput]="'input-s icon'"
+              [label]="'WITHDRAWN_SEIZURE_PROPERTY.LABEL_RESULT_DATE'"
+              [required]="true"
+              [defaultDate]="withdrawSeizuresLedData.withdrawSeizureLed?.resultDate || ''"
+              [formControl]="withdrawDateCtrl"></spig-datepicker>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <ng-template #viewTemplate>
+      <ng-container *ngIf="withdrawSeizuresLedData?.withdrawSeizureLed?.resultDate">
+        <div class="mt-8" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+          <div fxLayout="column" fxFlex="14">
+            <h6>{{ 'WITHDRAWN_SEIZURE_PROPERTY.BUTTON_SAVE_RESULT' | translate }}</h6>
+          </div>
+          <div fxLayout="column" fxFlex="40">
+            <span class="thin-letter">{{ 'WITHDRAWN_SEIZURE_PROPERTY.LABEL_RESULT_DATE' | translate }}</span>
+            <ng-container *ngIf="withdrawSeizuresLedData?.withdrawSeizureLed?.resultDate; else elseResultDateTemplate">
+              <div>
+                {{ (withdrawSeizuresLedData.withdrawSeizureLed?.resultDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+              </div>
+            </ng-container>
+            <ng-template #elseResultDateTemplate>
+              <div>-</div>
+            </ng-template>
+          </div>
+        </div>
+      </ng-container>
+    </ng-template>
+  </div>
+</div>
+
+<ng-container *ngIf="isTaskCOrTaskD; else taskETemplate">
+  <ng-container *ngIf="propertyDataSources.length > 0">
+    <ng-container *ngFor="let group of propertyDataSources">
+      <app-withdrawn-seizure-property-asset-list
+        [title]="group.groupName"
+        [assetColumns]="assetColumns"
+        [collateralColumns]="collateralColumns"
+        [lgPersonColumn]="lgPersonColumn"
+        [asset]="group.asset || []"
+        [collaterals]="group.collaterals || []"
+        [contactPersons]="group.contactPersons || []"
+        [consentDocuments]="group.consentDocuments || []"
+        [config]="tableConfig"></app-withdrawn-seizure-property-asset-list>
+    </ng-container>
+  </ng-container>
+</ng-container>
+
+<ng-template #taskETemplate>
+  <!-- รายการที่ต้องบันทึก -->
+  <div class="content-container">
+    <div class="inner-container-padding-24">
+      <div fxLayout="row" fxLayoutAlign="space-between center">
+        <div class="title-text">
+          <h5 class="mt-12 mb-12 mr-12">{{ 'WITHDRAWN_SEIZURE_PROPERTY.LABEL_SAVE_LIST' | translate }}</h5>
+        </div>
+        <div fxLayout="row">
+          <div class="description" (click)="isOpened = !isOpened">
+            <mat-icon
+              [svgIcon]="isOpened ? 'icon-Slide-Hide' : 'icon-Expand'"
+              class="icon icon-xmedium icon-hide-show fill-blue mr-5">
+            </mat-icon
+            >{{ isOpened ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate) }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <mat-accordion>
+      <mat-expansion-panel [expanded]="isOpened">
+        <app-upload-multi-file-content
+          [taskCode]="taskCode"
+          [mode]="mode"
+          [uploadMultiInfo]="uploadMultiInfo"
+          [labelAcceptFile]="isReadOnly ? '' : 'UPLOAD_FILE.LABEL_HINT_DOCUMENT_PDF_JPG_JPEG_2'"
+          [list]="documentUpload"
+          [column]="documentColumns"
+          (uploadFileEvent)="uploadFileEvent($event)"
+          [readonly]="isReadOnly">
+        </app-upload-multi-file-content>
+        <div>
+          <span class="error-msg sub-desc mt-8" *ngIf="withdrawnSeizurePropertyService.isErrorLedDoc">{{
+            'UPLOAD_FILE.ERROR_FILE_UPLOAD_REQUIRED' | translate
+          }}</span>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+
+  <div
+    class="content-container"
+    *ngFor="
+      let seizureGroup of withdrawSeizuresLedData.withdrawSeizureLed?.withdrawSeizureLedGroups;
+      index as seizureGroupIndex
+    ">
+    <div *ngIf="seizureGroup.collaterals || seizureGroup.assets">
+      <div class="inner-container-padding-24">
+        <div fxLayout="row" fxLayoutAlign="space-between center">
+          <div class="title-text mt-12 mb-12">
+            <ng-container>
+              <h5>
+                {{ 'WITHDRAWN_SEIZURE_PROPERTY.LABEL_COLLATERALS_SEIZED_LIST_OF_CONTACT' | translate }}
+                {{ getMainContact(seizureGroup.contacts || [])?.firstName }}
+                {{ getMainContact(seizureGroup.contacts || [])?.lastName }}
+              </h5>
+            </ng-container>
+          </div>
+          <div fxLayout="row">
+            <div class="description" (click)="isTableOpened[seizureGroupIndex] = !isTableOpened[seizureGroupIndex]">
+              <mat-icon
+                [svgIcon]="isTableOpened[seizureGroupIndex] ? 'icon-Slide-Hide' : 'icon-Expand'"
+                class="icon icon-hide-show icon-xmedium fill-blue mr-5">
+              </mat-icon
+              >{{
+                isTableOpened[seizureGroupIndex]
+                  ? ('COMMON.ICON_EXPANSION_HIDE' | translate)
+                  : ('COMMON.ICON_EXPANSION_SHOW' | translate)
+              }}
+            </div>
+          </div>
+        </div>
+      </div>
+      <mat-accordion>
+        <mat-expansion-panel [expanded]="isTableOpened[seizureGroupIndex]">
+          <!-- ทรัพย์จำนอง -->
+          <ng-container *ngIf="seizureGroup.collaterals && seizureGroup.collaterals.length > 0">
+            <div
+              fxLayout="row"
+              fxLayoutAlign="space-between center"
+              class="pa-8 mt-16 app-document-header bg-l-gray"
+              fxLayoutGap="24">
+              <div fxLayoutAlign="flex-start stretch" fxLayoutGap="24">
+                <!-- <div class="pl-36" *ngFor="let i of nestIteration"></div> -->
+                <div fxLayoutAlign="start center" fxLayoutGap="24">
+                  <h6 class="my-0 title-bar-color">
+                    {{ 'WITHDRAWN_SEIZURE_PROPERTY.COLLATERAL.GROUP_TABLE_TITLE' | translate }}
+                  </h6>
+                </div>
+              </div>
+              <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="32">
+                <div class="wsp-title">
+                  <span class="text-end total-label">
+                    {{ 'WITHDRAWN_SEIZURE_PROPERTY.LABEL_ALL_WITH_COLON' | translate }}
+                    <span class="total-number bold">{{ seizureGroup.collaterals.length }}</span>
+                  </span>
+                </div>
+                <div class="expand-button mr-16" (click)="expanded[seizureGroupIndex] = !expanded[seizureGroupIndex]">
+                  <mat-icon
+                    [svgIcon]="expanded[seizureGroupIndex] ? 'icon-Slide-Hide' : 'icon-Expand'"
+                    class="icon icon-hide-show icon-xmedium title-bar-color">
+                  </mat-icon>
+                  <span class="ml-6">{{
+                    expanded[seizureGroupIndex]
+                      ? ('COMMON.ICON_EXPANSION_HIDE' | translate)
+                      : ('COMMON.ICON_EXPANSION_SHOW' | translate)
+                  }}</span>
+                </div>
+              </div>
+            </div>
+            <mat-expansion-panel class="padding-zero" [expanded]="expanded[seizureGroupIndex]">
+              <div class="mt-24" fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="16px">
+                <div fxLayout="column" fxFlex="14">
+                  <h5>{{ 'WITHDRAWN_SEIZURE_PROPERTY.COLLATERAL.GROUP_TABLE_TITLE' | translate }}</h5>
+                </div>
+                <div fxLayout="column" fxFlex="40"></div>
+                <div fxLayout="row">
+                  <h6 *ngIf="isReadOnly || isTaskCode">
+                    <a>{{ 'WITHDRAWN_SEIZURE_PROPERTY.LABEL_WITHDRAWN_SUCCESS' | translate }}</a>
+                    {{ successCount[seizureGroupIndex] }} &nbsp; &nbsp; | &nbsp; &nbsp;
+                    <a>{{ 'WITHDRAWN_SEIZURE_PROPERTY.LABEL_WITHDRAWN_UNSUCCESS' | translate }}</a>
+                    {{ unsuccessCount[seizureGroupIndex] }}
+                  </h6>
+                </div>
+                <div fxLayout="row" *ngIf="isReadOnly && isTaskCode">
+                  <h6><a>ทั้งหมด</a> {{ groupCount[seizureGroupIndex] }}</h6>
+                </div>
+              </div>
+              <ng-container *ngIf="!isReadOnly && mode === 'EDIT' && hasSavePermission">
+                <div class="mt-24" fxLayout="row" fxLayoutAlign="space-between center">
+                  <div fxLayout="row" fxLayoutGap="16px">
+                    <ng-container>
+                      <button
+                        #trigger="matMenuTrigger"
+                        mat-flat-button
+                        color="primary"
+                        class="long-button"
+                        [matMenuTriggerFor]="actionMenu"
+                        (click)="handleMenuTriggerClick(trigger)">
+                        คำสั่ง ({{
+                          selections[seizureGroupIndex].selected && selections[seizureGroupIndex].selected.length
+                            ? selections[seizureGroupIndex].selected.length
+                            : 0
+                        }})
+                        <mat-icon svgIcon="icon-Direction-Down" class="icon icon-md fill-white-100 ml-50"></mat-icon>
+                      </button>
+                      <mat-menu class="deb-menu-item" #actionMenu="matMenu" xPosition="before">
+                        <div class="pt-12 pb-12 pl-16 pr-16">
+                          <div
+                            class="cursor-pointer"
+                            fxLayout="row"
+                            fxLayoutAlign="start center"
+                            fxLayoutGap="16px"
+                            (click)="onSubmit(seizureGroupIndex, 'onSuccess', 'S', 'col')">
+                            <div>{{ 'WITHDRAWN_SEIZURE_PROPERTY.LABEL_WITHDRAWN_SUCCESS' | translate }}</div>
+                          </div>
+                        </div>
+                        <div class="pt-12 pb-12 pl-16 pr-16">
+                          <div
+                            class="cursor-pointer"
+                            fxLayout="row"
+                            fxLayoutAlign="start center"
+                            fxLayoutGap="16px"
+                            (click)="onSubmit(seizureGroupIndex, 'onUnSuccess', 'U', 'col')">
+                            <div>{{ 'WITHDRAWN_SEIZURE_PROPERTY.LABEL_WITHDRAWN_UNSUCCESS' | translate }}</div>
+                          </div>
+                        </div>
+                      </mat-menu>
+                    </ng-container>
+                    <button
+                      type="button"
+                      mat-stroked-button
+                      class="long-button mat-gray"
+                      (click)="onWithdrawalCheck(seizureGroupIndex, 'AllSuccess', 'S', 'col')">
+                      <mat-icon svgIcon="icon-Selected" class="icon icon-md fill-black-70"> </mat-icon>
+                      {{ 'WITHDRAWN_SEIZURE_PROPERTY.LABEL_ALL_WITHDRAWN_SUCCESS' | translate }}
+                    </button>
+                    <button
+                      type="button"
+                      mat-stroked-button
+                      class="long-button mat-gray"
+                      (click)="onWithdrawalCheck(seizureGroupIndex, 'AllUnsuccess', 'U', 'col')">
+                      <mat-icon svgIcon="icon-Dismiss-Circle" class="icon icon-md fill-black-70"> </mat-icon>
+                      {{ 'WITHDRAWN_SEIZURE_PROPERTY.LABEL_ALL_WITHDRAWN_UNSUCCESS' | translate }}
+                    </button>
+                  </div>
+                  <div fxLayout="row">
+                    <h6>
+                      <a>{{ 'WITHDRAWN_SEIZURE_PROPERTY.LABEL_WITHDRAWN_SUCCESS' | translate }}</a>
+                      {{ successCount[seizureGroupIndex] }}
+                      <span class="divider-vertical"></span>
+                      <a>{{ 'WITHDRAWN_SEIZURE_PROPERTY.LABEL_WITHDRAWN_UNSUCCESS' | translate }}</a>
+                      {{ unsuccessCount[seizureGroupIndex] }}
+                    </h6>
+                  </div>
+                </div>
+              </ng-container>
+              <div class="mt-24" fxLayout="row">
+                <div class="data-table-content" fxFlex="100">
+                  <div
+                    class="table-scroll"
+                    table-scroll
+                    *ngIf="
+                      collateralDataSources[seizureGroupIndex] && collateralDataSources[seizureGroupIndex].filteredData
+                    ">
+                    <table mat-table [dataSource]="collateralDataSources[seizureGroupIndex].filteredData.slice(0, 10)">
+                      <ng-container matColumnDef="selection" sticky>
+                        <th mat-header-cell *matHeaderCellDef>
+                          <mat-checkbox
+                            (change)="$event ? toggleAllRows(seizureGroupIndex) : null"
+                            [checked]="selections[seizureGroupIndex].hasValue() && isAllSelected(seizureGroupIndex)"
+                            [indeterminate]="
+                              selections[seizureGroupIndex].hasValue() && !isAllSelected(seizureGroupIndex)
+                            ">
+                          </mat-checkbox>
+                        </th>
+                        <td mat-cell *matCellDef="let row" class="new-line">
+                          <mat-checkbox
+                            (click)="$event.stopPropagation()"
+                            (change)="$event ? onCheckboxChange(row, seizureGroupIndex) : null"
+                            [checked]="selections[seizureGroupIndex].isSelected(row.collateralId)">
+                          </mat-checkbox>
+                        </td>
+                      </ng-container>
+                      <ng-container matColumnDef="orderNumber" sticky>
+                        <th mat-header-cell class="text-center" *matHeaderCellDef>
+                          {{ 'COMMON.LABEL_NO' | translate }}
+                        </th>
+                        <td mat-cell class="text-center" *matCellDef="let element; index as i">
+                          {{ (pageIndex - 1) * pageSize + i + 1 }}
+                        </td>
+                      </ng-container>
+                      <ng-container matColumnDef="collateralId" sticky>
+                        <th class="text-left" mat-header-cell *matHeaderCellDef columnElevationLeft>
+                          เลขที่หลักประกัน
+                        </th>
+                        <td class="text-left" mat-cell *matCellDef="let element" columnElevationLeft>
+                          <div>
+                            <span>
+                              {{ element.collateralId }}
+                            </span>
+                          </div>
+                          <ng-container *ngIf="element.status === LEXS_STATUS.SOLD">
+                            <div class="status-label status-failed m-auto">ไม่สามารถถอน<br />ยึดทรัพย์ได้</div>
+                          </ng-container>
+                        </td>
+                      </ng-container>
+                      <ng-container matColumnDef="collateralTypeDesc">
+                        <th class="text-left" mat-header-cell *matHeaderCellDef>ประเภททรัพย์</th>
+                        <td class="text-left" mat-cell *matCellDef="let element">
+                          {{ element.collateralType || '-' }}
+                        </td>
+                      </ng-container>
+                      <ng-container matColumnDef="collateralSubTypeDesc">
+                        <th class="text-left" mat-header-cell *matHeaderCellDef>ประเภทย่อย</th>
+                        <td class="text-left" mat-cell *matCellDef="let element">
+                          {{ element.collateralSubType || '-' }}
+                        </td>
+                      </ng-container>
+                      <ng-container matColumnDef="documentNo">
+                        <th class="text-left" mat-header-cell *matHeaderCellDef>เลขที่เอกสารสิทธิ์</th>
+                        <td class="text-left" mat-cell *matCellDef="let element">
+                          {{ element.documentNo || '-' }}
+                        </td>
+                      </ng-container>
+                      <ng-container matColumnDef="collateralDetails">
+                        <th mat-header-cell *matHeaderCellDef>รายละเอียดทรัพย์</th>
+                        <td mat-cell *matCellDef="let element">
+                          {{ element.collateralDetails || '-' }}
+                        </td>
+                      </ng-container>
+                      <ng-container matColumnDef="ownerId">
+                        <!-- <th mat-header-cell *matHeaderCellDef>เจ้าของกรรมสิทธิ์</th>
+                      <td mat-cell *matCellDef="let element">
+                        <label>{{ element.owners? joinOwnersString(element.owners) : '' }}</label>
+                      </td> -->
+                        <th class="text-left" mat-header-cell *matHeaderCellDef>เจ้าของกรรมสิทธิ์</th>
+                        <td class="text-left" mat-cell *matCellDef="let element">
+                          <span>{{
+                            element.owners || element.ownerId || element.ownerFullName || element.ownerName | ownerName
+                          }}</span>
+                        </td>
+                      </ng-container>
+                      <ng-container matColumnDef="totalAppraisalValue">
+                        <th mat-header-cell *matHeaderCellDef class="new-line text-right">
+                          <div fxLayout="row" fxLayoutAlign="end start">
+                            <div fxLayout="row" fxLayoutAlign="end start" fxFlex="5">
+                              {{ 'SEIZURE_PROPERTY.SEIZURE_LIST_INFO.TOTAL_APPRAISAL_VALUE' | translate }}
+                            </div>
+                            <div fxLayout="row" fxLayoutAlign="center end">
+                              <app-tooltip
+                                [iconClass]="'icon-small  icon-fill-white mt-10'"
+                                [params]="[
+                                  { content: 'ราคาประเมินของธนาคาร: ' + 'ทรัพย์จำนอง' },
+                                  { content: 'ราคาประเมินราชการ: ' + 'ทรัพย์นอกจำนอง' },
+                                ]">
+                              </app-tooltip>
+                            </div>
+                          </div>
+                        </th>
+                        <td mat-cell *matCellDef="let element" class="text-right">
+                          <span>{{ element.totalAppraisalValue | numberDecimal }}</span>
+                        </td>
+                      </ng-container>
+                      <ng-container matColumnDef="ledRefNo">
+                        <th class="text-left" mat-header-cell *matHeaderCellDef>เลขที่เก็บ</th>
+                        <td class="text-left" mat-cell *matCellDef="let element">
+                          <span>{{ element.ledRefNo || '-' }}</span>
+                        </td>
+                      </ng-container>
+                      <ng-container matColumnDef="ledName">
+                        <th class="text-left" mat-header-cell *matHeaderCellDef>สำนักงานบังคับคดี</th>
+                        <td class="text-left" mat-cell *matCellDef="let element">
+                          {{ element.ledName || '-' }}
+                        </td>
+                      </ng-container>
+                      <ng-container matColumnDef="status" stickyEnd>
+                        <th mat-header-cell *matHeaderCellDef columnElevationRight class="text-center">
+                          สถานะทรัพย์ <br />
+                          (LEXS)
+                        </th>
+                        <td mat-cell *matCellDef="let element" columnElevationRight class="text-center">
+                          <div fxLayout="row" fxLayoutAlign="center center">
+                            <ng-container *ngIf="!element.status || element.status === '-'">
+                              <span>-</span>
+                            </ng-container>
+                            <ng-container *ngIf="element.status === LEXS_STATUS.PLEDGE">
+                              <div class="status-label status-normal m-auto">ไม่ถูกยึด / อายัด / ขาย</div>
+                            </ng-container>
+                            <ng-container *ngIf="element.status === LEXS_STATUS.SEIZURED">
+                              <div class="status-label status-success m-auto">ยึดทรัพย์แล้ว</div>
+                            </ng-container>
+
+                            <ng-container *ngIf="element.status === LEXS_STATUS.ON_SALE">
+                              <div class="status-label status-pending m-auto">อยู่ระหว่างขายทอดตลาด</div>
+                            </ng-container>
+
+                            <ng-container *ngIf="element.status === LEXS_STATUS.PENDING_SALE">
+                              <div class="status-label status-pending m-auto">รอประกาศขายทอดตลาดใหม่</div>
+                            </ng-container>
+                            <ng-container *ngIf="element.status === LEXS_STATUS.SOLD">
+                              <div class="status-label status-success m-auto">
+                                <mat-icon
+                                  svgIcon="icon-Mark"
+                                  class="icon icon-small-xl fill-krungthai-green mr-4"></mat-icon
+                                >ขายทอดตลาดแล้ว
+                              </div>
+                            </ng-container>
+                          </div>
+                        </td>
+                      </ng-container>
+                      <ng-container matColumnDef="statusOther" stickyEnd>
+                        <th mat-header-cell *matHeaderCellDef class="text-center">ผลการถอน<br />ยึดทรัพย์</th>
+                        <td mat-cell *matCellDef="let element" class="text-center">
+                          <div class="wrap-tooltip" fxLayoutAlign="space-around center">
+                            <label
+                              [ngClass]="
+                                element.withdrawSeizureResult === 'S'
+                                  ? 'background-seizured'
+                                  : element.withdrawSeizureResult === 'U'
+                                    ? 'background-u'
+                                    : 'background-n'
+                              ">
+                              <span
+                                class="status-label"
+                                [class.status-pending]="
+                                  element.withdrawSeizureResult === 'P' || !element.withdrawSeizureResult
+                                "
+                                [class.status-success]="element.withdrawSeizureResult === 'S'"
+                                [class.status-failed]="element.withdrawSeizureResult === 'U'">
+                                <mat-icon
+                                  *ngIf="element.withdrawSeizureResult === 'S'"
+                                  svgIcon="icon-Mark"
+                                  class="icon-xmedium fill-green"></mat-icon>
+                                {{
+                                  element.withdrawSeizureResult
+                                    ? getResultMapper(element.withdrawSeizureResult)
+                                    : getResultMapper('P')
+                                }}
+                              </span>
+                            </label>
+                            <ng-container *ngIf="element.withdrawSeizureResult === 'U'">
+                              <app-tooltip
+                                [iconClass]="['icon-small', 'fill-blue']"
+                                [position]="'top-right'"
+                                [params]="[{ content: element | seizureReason }]">
+                              </app-tooltip>
+                            </ng-container>
+                          </div>
+                        </td>
+                      </ng-container>
+                      <tr mat-header-row *matHeaderRowDef="tableColDisplay"></tr>
+                      <tr mat-row *matRowDef="let row; columns: tableColDisplay"></tr>
+                    </table>
+                  </div>
+                  <div>
+                    <app-paginator
+                      [pageSize]="10"
+                      [length]="seizureGroup.collaterals.length || 0"
+                      (page)="onPageChange($event, seizureGroupIndex)"></app-paginator>
+                  </div>
+                </div>
+              </div>
+            </mat-expansion-panel>
+          </ng-container>
+
+          <!-- เอกสารทรัพย์จำนอง -->
+          <ng-container *ngIf="documentListConstactUpload && checkList(documentListConstactUpload[seizureGroupIndex])">
+            <div
+              fxLayout="row"
+              fxLayoutAlign="space-between center"
+              class="pa-8 mt-16 app-document-header bg-l-gray"
+              fxLayoutGap="24">
+              <div fxLayoutAlign="flex-start stretch" fxLayoutGap="24">
+                <!-- <div class="pl-36" *ngFor="let i of nestIteration"></div> -->
+                <div fxLayoutAlign="start center" fxLayoutGap="24">
+                  <h6 class="my-0 title-bar-color">{{ 'เอกสารทรัพย์จำนอง' | translate }}</h6>
+                </div>
+              </div>
+              <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="32">
+                <div class="wsp-title">
+                  <span class="text-end total-label">
+                    {{ 'WITHDRAWN_SEIZURE_PROPERTY.LABEL_ALL_WITH_COLON' | translate }}
+                    <span class="total-number">{{ documentListConstactUpload[seizureGroupIndex].length }}</span>
+                  </span>
+                </div>
+                <div
+                  class="expand-button mr-16"
+                  (click)="expandedDoc[seizureGroupIndex] = !expandedDoc[seizureGroupIndex]">
+                  <mat-icon
+                    [svgIcon]="expandedDoc[seizureGroupIndex] ? 'icon-Slide-Hide' : 'icon-Expand'"
+                    class="icon icon-hide-show icon-xmedium title-bar-color">
+                  </mat-icon>
+                  <span class="ml-6">{{
+                    expandedDoc[seizureGroupIndex]
+                      ? ('COMMON.ICON_EXPANSION_HIDE' | translate)
+                      : ('COMMON.ICON_EXPANSION_SHOW' | translate)
+                  }}</span>
+                </div>
+              </div>
+            </div>
+            <mat-expansion-panel class="padding-zero" [expanded]="expandedDoc[seizureGroupIndex]">
+              <div class="mt-24" fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="16px">
+                <!-- <div fxFlex="14">
+                <h6>เอกสารทรัพย์จำนอง</h6>
+              </div> -->
+                <div fxFlex>
+                  <app-upload-multi-file-content
+                    [isAsset]="false"
+                    [uploadMultiInfo]="uploadListDocumentContactMultiInfo"
+                    [list]="documentListConstactUpload[seizureGroupIndex]"
+                    [column]="documentListContactColumns"
+                    [readonly]="true">
+                  </app-upload-multi-file-content>
+                </div>
+              </div>
+            </mat-expansion-panel>
+          </ng-container>
+
+          <!-- ทรัพย์นอกจำนอง -->
+          <ng-container *ngIf="seizureGroup.assets && seizureGroup.assets.length > 0">
+            <div
+              fxLayout="row"
+              fxLayoutAlign="space-between center"
+              class="pa-8 mt-16 app-document-header bg-l-gray"
+              fxLayoutGap="24">
+              <div fxLayoutAlign="flex-start stretch" fxLayoutGap="24">
+                <!-- <div class="pl-36" *ngFor="let i of nestIteration"></div> -->
+                <div fxLayoutAlign="start center" fxLayoutGap="24">
+                  <h6 class="my-0 title-bar-color">{{ 'WITHDRAWN_SEIZURE_PROPERTY.ASSET.GROUP_TITLE' | translate }}</h6>
+                </div>
+              </div>
+              <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="32">
+                <div class="wsp-title">
+                  <span class="text-end total-label">
+                    {{ 'WITHDRAWN_SEIZURE_PROPERTY.LABEL_ALL_WITH_COLON' | translate }}
+                    <span class="total-number">{{ seizureGroup.assets.length }}</span>
+                  </span>
+                </div>
+                <div
+                  class="expand-button mr-16"
+                  (click)="expandedOther[seizureGroupIndex] = !expandedOther[seizureGroupIndex]">
+                  <mat-icon
+                    [svgIcon]="expandedOther[seizureGroupIndex] ? 'icon-Slide-Hide' : 'icon-Expand'"
+                    class="icon icon-hide-show icon-xmedium title-bar-color">
+                  </mat-icon>
+                  <span class="ml-6">{{
+                    expandedOther[seizureGroupIndex]
+                      ? ('COMMON.ICON_EXPANSION_HIDE' | translate)
+                      : ('COMMON.ICON_EXPANSION_SHOW' | translate)
+                  }}</span>
+                </div>
+              </div>
+            </div>
+            <mat-expansion-panel class="padding-zero" [expanded]="expandedOther[seizureGroupIndex]">
+              <div class="mt-24" fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="16px">
+                <div fxLayout="column" fxFlex="14">
+                  <h5>{{ 'WITHDRAWN_SEIZURE_PROPERTY.ASSET.GROUP_TITLE' | translate }}</h5>
+                </div>
+                <div fxLayout="column" fxFlex="40"></div>
+                <div fxLayout="row">
+                  <h6 *ngIf="isReadOnly || isTaskCode">
+                    <a>{{ 'WITHDRAWN_SEIZURE_PROPERTY.LABEL_WITHDRAWN_SUCCESS' | translate }}</a>
+                    {{ successCountAsset[seizureGroupIndex] }} &nbsp; &nbsp; | &nbsp; &nbsp;
+                    <a>{{ 'WITHDRAWN_SEIZURE_PROPERTY.LABEL_WITHDRAWN_UNSUCCESS' | translate }}</a>
+                    {{ unsuccessCountAsset[seizureGroupIndex] }}
+                  </h6>
+                </div>
+                <div fxLayout="row" *ngIf="isReadOnly && isTaskCode">
+                  <h6>
+                    <a>{{ 'WITHDRAWN_SEIZURE_PROPERTY.LABEL_ALL' | translate }}</a>
+                    {{ groupCountAsset[seizureGroupIndex] }}
+                  </h6>
+                </div>
+              </div>
+              <ng-container *ngIf="!isReadOnly && mode === 'EDIT' && hasSavePermission">
+                <div class="mt-24" fxLayout="row" fxLayoutAlign="space-between center">
+                  <div fxLayout="row" fxLayoutGap="16px">
+                    <ng-container>
+                      <button
+                        #trigger="matMenuTrigger"
+                        mat-flat-button
+                        color="primary"
+                        class="long-button"
+                        [matMenuTriggerFor]="actionMenu"
+                        (click)="handleMenuTriggerClickAsset(trigger)">
+                        คำสั่ง ({{
+                          selectionsAsset[seizureGroupIndex].selected &&
+                          selectionsAsset[seizureGroupIndex].selected.length
+                            ? selectionsAsset[seizureGroupIndex].selected.length
+                            : 0
+                        }})
+                        <mat-icon svgIcon="icon-Direction-Down" class="icon icon-md fill-white-100 ml-50"></mat-icon>
+                      </button>
+                      <mat-menu class="deb-menu-item" #actionMenu="matMenu" xPosition="before">
+                        <div class="pt-12 pb-12 pl-16 pr-16">
+                          <div
+                            class="cursor-pointer"
+                            fxLayout="row"
+                            fxLayoutAlign="start center"
+                            fxLayoutGap="16px"
+                            (click)="onSubmit(seizureGroupIndex, 'onSuccess', 'S', 'ncol')">
+                            <div>{{ 'WITHDRAWN_SEIZURE_PROPERTY.LABEL_WITHDRAWN_SUCCESS' | translate }}</div>
+                          </div>
+                        </div>
+                        <div class="pt-12 pb-12 pl-16 pr-16">
+                          <div
+                            class="cursor-pointer"
+                            fxLayout="row"
+                            fxLayoutAlign="start center"
+                            fxLayoutGap="16px"
+                            (click)="onSubmit(seizureGroupIndex, 'onUnSuccess', 'U', 'ncol')">
+                            <div>{{ 'WITHDRAWN_SEIZURE_PROPERTY.LABEL_WITHDRAWN_UNSUCCESS' | translate }}</div>
+                          </div>
+                        </div>
+                      </mat-menu>
+                    </ng-container>
+                    <button
+                      type="button"
+                      mat-stroked-button
+                      class="long-button mat-gray"
+                      (click)="onWithdrawalCheck(seizureGroupIndex, 'AllSuccess', 'S', 'ncol')">
+                      <mat-icon svgIcon="icon-Selected" class="icon icon-md fill-black-70"> </mat-icon>
+                      {{ 'WITHDRAWN_SEIZURE_PROPERTY.LABEL_ALL_WITHDRAWN_SUCCESS' | translate }}
+                    </button>
+                    <button
+                      type="button"
+                      mat-stroked-button
+                      class="long-button mat-gray"
+                      (click)="onWithdrawalCheck(seizureGroupIndex, 'AllUnsuccess', 'U', 'ncol')">
+                      <mat-icon svgIcon="icon-Dismiss-Circle" class="icon icon-md fill-black-70"> </mat-icon>
+                      {{ 'WITHDRAWN_SEIZURE_PROPERTY.LABEL_ALL_WITHDRAWN_UNSUCCESS' | translate }}
+                    </button>
+                  </div>
+                  <div fxLayout="row">
+                    <h6>
+                      <a>{{ 'WITHDRAWN_SEIZURE_PROPERTY.LABEL_WITHDRAWN_SUCCESS' | translate }}</a>
+                      {{ successCountAsset[seizureGroupIndex] }}
+                      <span class="divider-vertical"></span>
+                      <a>{{ 'WITHDRAWN_SEIZURE_PROPERTY.LABEL_WITHDRAWN_UNSUCCESS' | translate }}</a>
+                      {{ unsuccessCountAsset[seizureGroupIndex] }}
+                    </h6>
+                  </div>
+                </div>
+              </ng-container>
+              <div class="mt-24" fxLayout="row">
+                <div class="data-table-content" fxFlex="100">
+                  <div
+                    class="table-scroll"
+                    table-scroll
+                    *ngIf="assetDataSources[seizureGroupIndex] && assetDataSources[seizureGroupIndex].filteredData">
+                    <table mat-table [dataSource]="assetDataSources[seizureGroupIndex].filteredData.slice(0, 10)">
+                      <ng-container matColumnDef="selection" sticky>
+                        <th mat-header-cell *matHeaderCellDef>
+                          <mat-checkbox
+                            (change)="$event ? toggleAllRowsAsset(seizureGroupIndex) : null"
+                            [checked]="
+                              selectionsAsset[seizureGroupIndex].hasValue() && isAllSelectedAsset(seizureGroupIndex)
+                            "
+                            [indeterminate]="
+                              selectionsAsset[seizureGroupIndex].hasValue() && !isAllSelectedAsset(seizureGroupIndex)
+                            ">
+                          </mat-checkbox>
+                        </th>
+                        <td mat-cell *matCellDef="let row" class="new-line">
+                          <mat-checkbox
+                            (click)="$event.stopPropagation()"
+                            (change)="$event ? onCheckboxChangeAsset(row, seizureGroupIndex) : null"
+                            [checked]="
+                              selectionsAsset[seizureGroupIndex].isSelected(row.assetId.toString())
+                            "></mat-checkbox>
+                        </td>
+                      </ng-container>
+                      <ng-container matColumnDef="orderNumber" sticky>
+                        <th mat-header-cell class="text-center" *matHeaderCellDef>
+                          {{ 'COMMON.LABEL_NO' | translate }}
+                        </th>
+                        <td mat-cell class="text-center" *matCellDef="let element; index as i">
+                          {{ (pageIndexAsset - 1) * pageSizeAsset + i + 1 }}
+                        </td>
+                      </ng-container>
+                      <!-- <ng-container matColumnDef="col1" sticky>
+                      <th mat-header-cell *matHeaderCellDef columnElevationLeft>เลขที่หลักประกัน</th>
+                      <td mat-cell *matCellDef="let element" columnElevationLeft>
+                        {{ element.collateralId }}
+                      </td>
+                    </ng-container> -->
+                      <ng-container matColumnDef="collateralTypeDesc">
+                        <th mat-header-cell *matHeaderCellDef>
+                          {{ 'WITHDRAWN_SEIZURE_PROPERTY.ASSET.LABEL_TYPE' | translate }}
+                        </th>
+                        <td mat-cell *matCellDef="let element">{{ element.assetTypeDesc }}</td>
+                      </ng-container>
+                      <ng-container matColumnDef="collateralSubTypeDesc">
+                        <th mat-header-cell *matHeaderCellDef>
+                          {{ 'WITHDRAWN_SEIZURE_PROPERTY.ASSET.LABEL_SUB_TYPE' | translate }}
+                        </th>
+                        <td mat-cell *matCellDef="let element">{{ element.assetSubTypeDesc }}</td>
+                      </ng-container>
+                      <ng-container matColumnDef="documentNo">
+                        <th mat-header-cell *matHeaderCellDef>
+                          {{ 'WITHDRAWN_SEIZURE_PROPERTY.ASSET.LABEL_DOCUMENT_NO' | translate }}
+                        </th>
+                        <td mat-cell *matCellDef="let element">
+                          <div>
+                            <span>{{ element.documentNo || '-' }}</span>
+                          </div>
+                          <ng-container *ngIf="element.collateralCaseLexStatus === LEXS_STATUS.SOLD">
+                            <div class="status-label status-failed m-auto">
+                              {{ 'WITHDRAWN_SEIZURE_PROPERTY.ASSET.LABEL_STATUS_SOLD' | translate }}
+                            </div>
+                          </ng-container>
+                        </td>
+                      </ng-container>
+                      <ng-container matColumnDef="collateralDetails">
+                        <th mat-header-cell *matHeaderCellDef>
+                          {{ 'WITHDRAWN_SEIZURE_PROPERTY.ASSET.LABEL_DETAIL' | translate }}
+                        </th>
+                        <td mat-cell *matCellDef="let element">
+                          {{ element.collateralDetails }}
+                        </td>
+                      </ng-container>
+                      <!-- <ng-container matColumnDef="col6">
+                      <th mat-header-cell *matHeaderCellDef>เจ้าของกรรมสิทธิ์</th>
+                      <td mat-cell *matCellDef="let element">
+                        <label>{{ element.owners? joinOwnersString(element.owners) : '' }}</label>
+                      </td>
+                    </ng-container> -->
+                      <ng-container matColumnDef="ownerId">
+                        <th class="text-left" mat-header-cell *matHeaderCellDef>
+                          {{ 'WITHDRAWN_SEIZURE_PROPERTY.ASSET.LABEL_OWNER' | translate }}
+                        </th>
+                        <td class="text-left" mat-cell *matCellDef="let element">
+                          <span>{{
+                            element.owners || element.ownerId || element.ownerFullName || element.ownerName | ownerName
+                          }}</span>
+                        </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="totalAppraisalValue">
+                        <th mat-header-cell *matHeaderCellDef class="new-line text-right">
+                          <div fxLayout="row" fxLayoutAlign="end start">
+                            <div fxLayout="row" fxLayoutAlign="end start" fxFlex="5">
+                              {{ 'SEIZURE_PROPERTY.SEIZURE_LIST_INFO.TOTAL_APPRAISAL_VALUE' | translate }}
+                            </div>
+                            <div fxLayout="row" fxLayoutAlign="center end">
+                              <app-tooltip
+                                [iconClass]="'icon-small  icon-fill-white mt-10'"
+                                [params]="[
+                                  { content: 'ราคาประเมินของธนาคาร: ' + 'ทรัพย์จำนอง' },
+                                  { content: 'ราคาประเมินราชการ: ' + 'ทรัพย์นอกจำนอง' },
+                                ]">
+                              </app-tooltip>
+                            </div>
+                          </div>
+                        </th>
+                        <td mat-cell *matCellDef="let element" class="text-right">
+                          {{ element.totalAppraisalValue | numberDecimal }}
+                        </td>
+                      </ng-container>
+                      <ng-container matColumnDef="ledRefNo">
+                        <th class="text-left" mat-header-cell *matHeaderCellDef>เลขที่เก็บ</th>
+                        <td class="text-left" mat-cell *matCellDef="let element">
+                          <span>{{ element.ledRefNo || '-' }}</span>
+                        </td>
+                      </ng-container>
+                      <ng-container matColumnDef="ledName">
+                        <th mat-header-cell *matHeaderCellDef>สำนักงานบังคับคดี</th>
+                        <td mat-cell *matCellDef="let element">
+                          {{ element.ledName }}
+                        </td>
+                      </ng-container>
+                      <ng-container matColumnDef="obligationStatus">
+                        <th mat-header-cell *matHeaderCellDef class="text-center min-width-135px">
+                          {{ 'สถานะทรัพย์ที่สืบพบ' | translate }}
+                        </th>
+                        <td mat-cell *matCellDef="let element" class="text-center min-width-135px">
+                          <div class="status-label status-normal m-auto">
+                            {{ element.obligationStatus || 'ไม่มี' }}
+                          </div>
+                        </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="status" stickyEnd>
+                        <th mat-header-cell *matHeaderCellDef columnElevationRight class="text-center">
+                          สถานะทรัพย์ <br />
+                          (LEXS)
+                        </th>
+                        <td mat-cell *matCellDef="let element" columnElevationRight class="text-center">
+                          <label
+                            class="status-label"
+                            [class.status-normal]="element.collateralCaseLexStatus === 'PLEDGE'"
+                            [class.status-pending]="
+                              element.collateralCaseLexStatus === 'ON_SALE' ||
+                              element.collateralCaseLexStatus === 'PENDING_SALE'
+                            "
+                            [class.status-success]="
+                              element.collateralCaseLexStatus === 'SEIZURED' ||
+                              element.collateralCaseLexStatus === 'SOLD'
+                            ">
+                            <ng-container *ngIf="element.collateralCaseLexStatus === 'SOLD'">
+                              <mat-icon
+                                svgIcon="icon-Mark"
+                                class="icon icon-small-xl fill-krungthai-green mr-4"></mat-icon>
+                            </ng-container>
+                            <span>{{ 'COLLATERAL_LEXS_STATUS.' + element.collateralCaseLexStatus | translate }}</span>
+                          </label>
+                        </td>
+                      </ng-container>
+                      <ng-container matColumnDef="statusOther" stickyEnd>
+                        <th mat-header-cell *matHeaderCellDef class="text-center">ผลการถอน<br />ยึดทรัพย์</th>
+                        <td mat-cell *matCellDef="let element" class="text-center">
+                          <div class="wrap-tooltip" fxLayoutAlign="space-around center">
+                            <label
+                              [ngClass]="
+                                element.withdrawSeizureResult === 'S'
+                                  ? 'background-seizured'
+                                  : element.withdrawSeizureResult === 'U'
+                                    ? 'background-u'
+                                    : 'background-n'
+                              ">
+                              <span
+                                class="status-label"
+                                [class.status-pending]="
+                                  element.withdrawSeizureResult === 'P' || !element.withdrawSeizureResult
+                                "
+                                [class.status-success]="element.withdrawSeizureResult === 'S'"
+                                [class.status-failed]="element.withdrawSeizureResult === 'U'">
+                                <mat-icon
+                                  *ngIf="element.withdrawSeizureResult === 'S'"
+                                  svgIcon="icon-Mark"
+                                  class="icon-xmedium fill-green"></mat-icon>
+                                {{
+                                  element.withdrawSeizureResult
+                                    ? getResultMapper(element.withdrawSeizureResult)
+                                    : getResultMapper('P')
+                                }}
+                              </span>
+                            </label>
+                            <ng-container *ngIf="element.withdrawSeizureResult === 'U'">
+                              <app-tooltip
+                                [iconClass]="['icon-small', 'fill-blue']"
+                                [position]="'top-right'"
+                                [params]="[{ content: element | seizureReason }]">
+                              </app-tooltip>
+                            </ng-container>
+                          </div>
+                        </td>
+                      </ng-container>
+                      <tr mat-header-row *matHeaderRowDef="tableAssetDisplay"></tr>
+                      <tr mat-row *matRowDef="let row; columns: tableAssetDisplay"></tr>
+                    </table>
+                  </div>
+                  <div>
+                    <app-paginator
+                      [pageSize]="10"
+                      [length]="seizureGroup.assets.length || 0"
+                      (page)="onPageChangeAsset($event, seizureGroupIndex)"></app-paginator>
+                  </div>
+                </div>
+              </div>
+            </mat-expansion-panel>
+          </ng-container>
+
+          <!-- เอกสารทรัพย์นอกจำนอง -->
+          <ng-container
+            *ngIf="documentListConstactUploadAsset && checkList(documentListConstactUploadAsset[seizureGroupIndex])">
+            <div
+              fxLayout="row"
+              fxLayoutAlign="space-between center"
+              class="pa-8 mt-16 app-document-header bg-l-gray"
+              fxLayoutGap="24">
+              <div fxLayoutAlign="flex-start stretch" fxLayoutGap="24">
+                <!-- <div class="pl-36" *ngFor="let i of nestIteration"></div> -->
+                <div fxLayoutAlign="start center" fxLayoutGap="24">
+                  <h6 class="my-0 title-bar-color">{{ 'เอกสารทรัพย์นอกจำนอง' | translate }}</h6>
+                </div>
+              </div>
+              <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="32">
+                <div class="wsp-title">
+                  <span class="text-end total-label">
+                    {{ 'WITHDRAWN_SEIZURE_PROPERTY.LABEL_ALL_WITH_COLON' | translate }}
+                    <span class="total-number">{{ documentListConstactUploadAsset[seizureGroupIndex].length }}</span>
+                  </span>
+                </div>
+                <div
+                  class="expand-button mr-16"
+                  (click)="expandedDocOther[seizureGroupIndex] = !expandedDocOther[seizureGroupIndex]">
+                  <mat-icon
+                    [svgIcon]="expandedDocOther[seizureGroupIndex] ? 'icon-Slide-Hide' : 'icon-Expand'"
+                    class="icon icon-hide-show icon-xmedium title-bar-color">
+                  </mat-icon>
+                  <span class="ml-6">{{
+                    expandedDocOther[seizureGroupIndex]
+                      ? ('COMMON.ICON_EXPANSION_HIDE' | translate)
+                      : ('COMMON.ICON_EXPANSION_SHOW' | translate)
+                  }}</span>
+                </div>
+              </div>
+            </div>
+            <mat-expansion-panel class="padding-zero" [expanded]="expandedDocOther[seizureGroupIndex]">
+              <div class="mt-24" fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="16px">
+                <!-- <div fxFlex="14">
+                <h6>เอกสารทรัพย์นอกจำนอง</h6>
+              </div> -->
+                <div fxFlex>
+                  <app-upload-multi-file-content
+                    [isAsset]="true"
+                    [uploadMultiInfo]="uploadListDocumentContactMultiInfo"
+                    [list]="documentListConstactUploadAsset[seizureGroupIndex]"
+                    [column]="documentListContactColumns"
+                    [readonly]="true">
+                  </app-upload-multi-file-content>
+                </div>
+              </div>
+            </mat-expansion-panel>
+          </ng-container>
+
+          <!-- ผู้ติดต่อที่เกี่ยวข้อง -->
+          <ng-container *ngIf="seizureGroup.contacts && seizureGroup.contacts.length > 0">
+            <div
+              fxLayout="row"
+              fxLayoutAlign="space-between center"
+              class="pa-8 mt-16 app-document-header bg-l-gray"
+              fxLayoutGap="24">
+              <div fxLayoutAlign="flex-start stretch" fxLayoutGap="24">
+                <!-- <div class="pl-36" *ngFor="let i of nestIteration"></div> -->
+                <div fxLayoutAlign="start center" fxLayoutGap="24">
+                  <ng-container *ngIf="isReadOnly || this.taskCode === 'R2E06-05-E'; else editModeContactTitleTemplate">
+                    <h6 class="my-0 title-bar-color">{{ 'ผู้ติดต่อที่เกี่ยวข้อง' | translate }}</h6>
+                  </ng-container>
+                  <ng-template #editModeContactTitleTemplate>
+                    <h6 class="my-0 title-bar-color">{{ 'เลือกผู้ติดต่อ' | translate }}</h6>
+                  </ng-template>
+                </div>
+              </div>
+              <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="32">
+                <div class="wsp-title">
+                  <span class="text-end total-label">
+                    {{ 'WITHDRAWN_SEIZURE_PROPERTY.LABEL_ALL_WITH_COLON' | translate }}
+                    <span class="total-number bold">{{ seizureGroup.contacts.length }}</span>
+                  </span>
+                </div>
+                <div
+                  class="expand-button mr-16"
+                  (click)="expandedContact[seizureGroupIndex] = !expandedContact[seizureGroupIndex]">
+                  <mat-icon
+                    [svgIcon]="expandedContact[seizureGroupIndex] ? 'icon-Slide-Hide' : 'icon-Expand'"
+                    class="icon icon-hide-show icon-xmedium title-bar-color">
+                  </mat-icon>
+                  <span class="ml-6">{{
+                    expandedContact[seizureGroupIndex]
+                      ? ('COMMON.ICON_EXPANSION_HIDE' | translate)
+                      : ('COMMON.ICON_EXPANSION_SHOW' | translate)
+                  }}</span>
+                </div>
+              </div>
+            </div>
+            <mat-expansion-panel class="padding-zero" [expanded]="expandedContact[seizureGroupIndex]">
+              <div class="mt-24" fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="16px">
+                <!-- <div fxFlex="14">
+                <ng-container *ngIf="isReadOnly || this.taskCode === 'R2E06-05-E'; else editModeContactTitleTemplate">
+                  <h6>ผู้ติดต่อที่เกี่ยวข้อง</h6>
+                </ng-container>
+                <ng-template #editModeContactTitleTemplate>
+                  <h6>เลือกผู้ติดต่อ</h6>
+                </ng-template>
+              </div> -->
+                <div fxFlex>
+                  <div class="data-table-content">
+                    <div class="table-scroll">
+                      <table
+                        mat-table
+                        *ngIf="
+                          contactDatSources[seizureGroupIndex] && contactDatSources[seizureGroupIndex].filteredData
+                        "
+                        [dataSource]="contactDatSources[seizureGroupIndex].filteredData.slice(0, 10) || []">
+                        <ng-container matColumnDef="colContactIndex">
+                          <th mat-header-cell class="text-center" *matHeaderCellDef>
+                            {{ 'COMMON.LABEL_NO' | translate }}
+                          </th>
+                          <td mat-cell *matCellDef="let element; index as i" class="new-line text-center">
+                            {{ (pageIndex - 1) * pageSize + i + 1 }}
+                          </td>
+                        </ng-container>
+                        <ng-container matColumnDef="colContact0">
+                          <th mat-header-cell *matHeaderCellDef>ชื่อ-นามสกุล</th>
+                          <td mat-cell *matCellDef="let element" class="new-line">
+                            {{
+                              element.firstName && element.lastName ? element.firstName + ' ' + element.lastName : '-'
+                            }}
+                          </td>
+                        </ng-container>
+                        <ng-container matColumnDef="colContact1">
+                          <th mat-header-cell *matHeaderCellDef>ความสัมพันธ์</th>
+                          <td mat-cell *matCellDef="let element">{{ element.relation || '-' }}</td>
+                        </ng-container>
+                        <ng-container matColumnDef="colContact2">
+                          <th mat-header-cell *matHeaderCellDef>
+                            หมายเลขประจำตัวประชาชน/<br />หมายเลขประจำตัวผู้เสียภาษี
+                          </th>
+                          <td mat-cell *matCellDef="let element">
+                            {{ element.identificationNo || '-' }}
+                          </td>
+                        </ng-container>
+                        <ng-container matColumnDef="colContact3">
+                          <th mat-header-cell *matHeaderCellDef>หมายเลขโทรศัพท์</th>
+                          <td mat-cell *matCellDef="let element">
+                            {{ (element.telephoneNo | phone) || '-' }}
+                          </td>
+                        </ng-container>
+                        <ng-container matColumnDef="colContact4">
+                          <th mat-header-cell *matHeaderCellDef class="text-right">
+                            ค่าธรรมเนียมถอนการ<br />ยึดทรัพย์ (บาท)
+                          </th>
+                          <td mat-cell *matCellDef="let element; index as i" class="text-center">
+                            <ng-container
+                              *ngIf="!isReadOnly && mode === 'EDIT' && hasSavePermission; else elseTemplate">
+                              <mat-form-field>
+                                <input
+                                  matInput
+                                  [mask]="'separator.2'"
+                                  [thousandSeparator]="','"
+                                  [readonly]="mode !== 'EDIT' || !hasSavePermission"
+                                  [(ngModel)]="sourceContact[seizureGroupIndex][i].paidFeeAmount" />
+                              </mat-form-field>
+                            </ng-container>
+                            <ng-template #elseTemplate>
+                              {{
+                                element.paidFeeAmount && element.paidFeeAmount > 0
+                                  ? (element.paidFeeAmount | numberDecimal)
+                                  : '-'
+                              }}
+                            </ng-template>
+                          </td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="tableColContactDisplay"></tr>
+                        <tr mat-row *matRowDef="let row; columns: tableColContactDisplay"></tr>
+                      </table>
+                    </div>
+                    <!-- <div *ngIf="!isReadOnly">
+                    <app-paginator [pageSize]="10" [length]="seizureGroup.contacts?.length || 0"
+                      (page)="onPageChange($event, seizureGroupIndex)"></app-paginator>
+                  </div> -->
+                  </div>
+                </div>
+              </div>
+            </mat-expansion-panel>
+          </ng-container>
+
+          <!-- เอกสารของผู้ติดต่อที่ต้องอัปโหลด -->
+          <ng-container *ngIf="dataGroup && dataGroup.length > 0">
+            <div
+              fxLayout="row"
+              fxLayoutAlign="space-between center"
+              class="pa-8 mt-16 app-document-header bg-l-gray"
+              fxLayoutGap="24">
+              <div fxLayoutAlign="flex-start stretch" fxLayoutGap="24">
+                <!-- <div class="pl-36" *ngFor="let i of nestIteration"></div> -->
+                <div fxLayoutAlign="start center" fxLayoutGap="24">
+                  <h6 class="my-0 title-bar-color">
+                    {{ isReadOnly ? 'เอกสารที่เกี่ยวข้อง' : 'เอกสารของผู้ติดต่อที่ต้องอัปโหลด' }}
+                  </h6>
+                </div>
+              </div>
+              <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="32">
+                <div *ngIf="isReadOnly" class="wsp-title">
+                  <span class="text-end total-label">
+                    {{ 'WITHDRAWN_SEIZURE_PROPERTY.LABEL_ALL_WITH_COLON' | translate }}
+                    <span class="total-number">{{ dataGroup.length }}</span>
+                  </span>
+                </div>
+                <div
+                  class="expand-button mr-16"
+                  (click)="expandedContactDoc[seizureGroupIndex] = !expandedContactDoc[seizureGroupIndex]">
+                  <mat-icon
+                    [svgIcon]="expandedContactDoc[seizureGroupIndex] ? 'icon-Slide-Hide' : 'icon-Expand'"
+                    class="icon icon-hide-show icon-xmedium title-bar-color">
+                  </mat-icon>
+                  <span class="ml-6">{{
+                    expandedContactDoc[seizureGroupIndex]
+                      ? ('COMMON.ICON_EXPANSION_HIDE' | translate)
+                      : ('COMMON.ICON_EXPANSION_SHOW' | translate)
+                  }}</span>
+                </div>
+              </div>
+            </div>
+            <mat-expansion-panel class="padding-zero" [expanded]="expandedContactDoc[seizureGroupIndex]">
+              <div class="mt-24" fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="16px">
+                <div fxFlex>
+                  <app-upload-multi-file-content
+                    [uploadMultiInfo]="uploadMultiInfo"
+                    [labelAcceptFile]="isReadOnly ? '' : 'UPLOAD_FILE.LABEL_HINT_DOCUMENT_PDF_JPG_JPEG_2'"
+                    [list]="dataGroup[seizureGroupIndex]"
+                    [readonly]="this.mode !== 'EDIT' || !hasSavePermission"
+                    [column]="documentContactColumns"
+                    (uploadFileEvent)="uploadContactFileEvent($event, seizureGroup.withdrawSeizuresGroupId)">
+                  </app-upload-multi-file-content>
+                  <div>
+                    <span class="error-msg sub-desc mt-8" *ngIf="withdrawnSeizurePropertyService.isErrorContactDoc">{{
+                      'UPLOAD_FILE.ERROR_FILE_UPLOAD_REQUIRED' | translate
+                    }}</span>
+                  </div>
+                </div>
+              </div>
+            </mat-expansion-panel>
+          </ng-container>
+
+          <!-- เอกสารที่เกี่ยวข้อง -->
+          <!-- <ng-container *ngIf="documentListConstactUpload[seizureGroupIndex].length > 0">
+            <div fxLayout="row" fxLayoutAlign="space-between center" class="pa-8 mt-16 app-document-header bg-l-gray"
+            fxLayoutGap="24">
+            <div fxLayoutAlign="flex-start stretch" fxLayoutGap="24">
+
+              <div fxLayoutAlign="start center" fxLayoutGap="24">
+                <h6 class="my-0 title-bar-color">{{ 'เอกสารที่เกี่ยวข้อง' | translate }}</h6>
+              </div>
+
+            </div>
+            <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="32">
+              <div class="wsp-title"> <span class="text-end total-label">
+                  ทั้งหมด:
+                  <span class="total-number">{{documentListConstactUpload[seizureGroupIndex].length }}</span>
+                </span>
+              </div>
+              <div class="expand-button mr-16 " (click)="expandPanelDocEx()">
+                <mat-icon [svgIcon]="!!expandedDocEx ? 'icon-Slide-Hide' : 'icon-Expand'"
+                  class="icon icon-hide-show icon-xmedium title-bar-color">
+                </mat-icon>
+                <span class="ml-6">{{
+                  !!expandedDocEx ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' |
+                  translate)
+                  }}</span>
+              </div>
+            </div>
+          </div>
+          <mat-expansion-panel class="padding-zero" [expanded]="expandedDocEx">
+            <div class="mt-24" fxLayout="row" fxLayoutAlign="space-between start">
+
+              <div fxFlex>
+                <app-upload-multi-file-content [uploadMultiInfo]="uploadListDocumentContactMultiInfo"
+                  [list]="documentListConstactUpload[seizureGroupIndex]" [column]="documentListContactColumns"
+                  [readonly]="true">
+                </app-upload-multi-file-content>
+              </div>
+            </div>
+          </mat-expansion-panel>
+          </ng-container> -->
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </div>
+</ng-template>

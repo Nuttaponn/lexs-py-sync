@@ -1,0 +1,226 @@
+<div class="info-container">
+  <h5 class="title">{{ 'TASK.SUBMIT_NOTICE_LETTER.UPDATE_TRACKING_NUMBER' | translate }}</h5>
+  <div>
+    <div class="upload-options">
+      <mat-radio-button type="radio" [checked]="true" (click)="onClickRadioBtn(false)" class="radio-btn">
+        {{ 'TASK.SUBMIT_NOTICE_LETTER.UPDATE_UPLOAD_EXCEL' | translate }}</mat-radio-button
+      >
+      <mat-radio-button type="radio" class="radio-btn" (click)="onClickRadioBtn(true)">
+        {{ 'TASK.SUBMIT_NOTICE_LETTER.UPDATE_FILL_NUMBER' | translate }}</mat-radio-button
+      >
+    </div>
+  </div>
+  <div class="btn-group">
+    <button
+      id="btn-update-trck-download-0"
+      mat-flat-button
+      color="primary"
+      class="btn long-button"
+      (click)="getNoticeLetter()"
+      *ngIf="downloadBtnClicked === false && updateNumberClicked === false">
+      <mat-icon [svgIcon]="'icon-Download'" class="icon icon-medium icon-fill-white"></mat-icon>
+      {{ 'TASK.SUBMIT_NOTICE_LETTER.DOWNLOAD_NOTICE_LETTER' | translate }}
+    </button>
+    <button
+      id="btn-update-trck-download-1"
+      mat-flat-button
+      color="gray"
+      class="btn long-button"
+      (click)="downloadNoticeLetter()"
+      *ngIf="downloadBtnClicked === true && updateNumberClicked === false">
+      {{ 'TASK.SUBMIT_NOTICE_LETTER.DOWNLOAD_NOTICE_LETTER' | translate }}
+    </button>
+    <input
+      type="file"
+      #fileUpload
+      name="fileUpload"
+      accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      class="display-none" />
+    <button
+      id="btn-update-trck-upload"
+      mat-flat-button
+      color="accent"
+      class="btn long-button"
+      (click)="selectDocument()"
+      *ngIf="downloadBtnClicked === true && updateNumberClicked === false">
+      <mat-icon [svgIcon]="'icon-Arrow-Upload'" class="icon icon-medium icon-fill-white"></mat-icon>
+      {{ 'TASK.SUBMIT_NOTICE_LETTER.UPLOAD_TRACKING_NUMBER' | translate }}
+    </button>
+  </div>
+</div>
+
+<mat-card appearance="outlined" class="info-container">
+  <mat-card-title>
+    <h5 class="title">{{ 'TASK.SUBMIT_NOTICE_LETTER.TOTAL_NOTICE_LETTER' | translate }}</h5>
+  </mat-card-title>
+  <mat-divider [inset]="true"></mat-divider>
+  <div *ngFor="let data of getFilteredGroupList(); let groupIndex = index">
+    <div class="section-container" *ngIf="groupIndex + 1 === data.group">
+      <mat-accordion class="accordion-headers-align">
+        <div fxLayout="row" fxLayoutAlign="space-between center" class="title-content">
+          <div class="title-text">
+            <mat-icon [svgIcon]="'icon-License'" class="icon icon-hide-show icon-xmedium"></mat-icon>
+            <h5 class="padding-between link">LG ID: {{ data.litigationId }}</h5>
+          </div>
+          <div fxLayout="row">
+            <div class="description" (click)="isOpenedList[groupIndex] = !isOpenedList[groupIndex]">
+              <mat-icon
+                [svgIcon]="isOpenedList[groupIndex] ? 'icon-Slide-Hide' : 'icon-Expand'"
+                class="icon icon-hide-show fill-blue">
+              </mat-icon
+              >{{
+                isOpenedList[groupIndex]
+                  ? ('COMMON.ICON_EXPANSION_HIDE' | translate)
+                  : ('COMMON.ICON_EXPANSION_SHOW' | translate)
+              }}
+            </div>
+          </div>
+        </div>
+
+        <mat-expansion-panel [expanded]="isOpenedList[groupIndex]" hideToggle>
+          <div *ngFor="let data of getFilteredRowList(groupIndex + 1); let rowIndex = index">
+            <div class="table-content title-content mb-05em">
+              <div class="status-section" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="12px">
+                <div class="title-text status-label">
+                  {{ 'TASK.SUBMIT_NOTICE_LETTER.SEND_TO_DEFENDANT' | translate }} {{ data.personName }}
+                </div>
+                <span class="status-label status-info">{{
+                  'LAWSUIT.MAPPING.RELATION.' + data.relation | translate
+                }}</span>
+              </div>
+            </div>
+            <mat-card-content>
+              <div class="table-content">
+                <div class="table-scroll" *ngIf="trackingStatus && trackingStatus.length > 0">
+                  <div class="table-scroll" table-scroll>
+                    <table mat-table [dataSource]="getFilteredTrackingStatus(groupIndex + 1, rowIndex + 1)">
+                      <ng-container matColumnDef="seq" sticky>
+                        <th mat-header-cell *matHeaderCellDef class="text-center">
+                          {{ 'COMMON.LABEL_NO' | translate }}
+                        </th>
+                        <td mat-cell *matCellDef="let element; let rowNo = index" class="text-center">
+                          {{ rowNo + 1 }}
+                        </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="noticeTrackingNo" sticky>
+                        <th mat-header-cell *matHeaderCellDef columnElevationLeft>
+                          {{ 'TASK.SUBMIT_NOTICE_LETTER.NOTICE_TRACKING_NO' | translate }}
+                        </th>
+                        <td mat-cell *matCellDef="let element" columnElevationLeft>{{ element.noticeNo || '-' }}</td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="addressType">
+                        <th mat-header-cell *matHeaderCellDef>
+                          {{ 'TASK.SUBMIT_NOTICE_LETTER.ADDRESS_TYPE' | translate }}
+                        </th>
+                        <td mat-cell *matCellDef="let element">
+                          {{ 'CUSTOMER.MAPPING.ADDRESS_TYPE.' + element.addressType || '-' | translate }}
+                        </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="addressName">
+                        <th mat-header-cell *matHeaderCellDef>
+                          {{ 'TASK.SUBMIT_NOTICE_LETTER.ADDRESS_NAME' | translate }}
+                        </th>
+                        <td mat-cell *matCellDef="let element">{{ element.addressName || '-' }}</td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="noticeDate">
+                        <th mat-header-cell *matHeaderCellDef>
+                          {{ 'TASK.SUBMIT_NOTICE_LETTER.NOTICE_DATE' | translate }}
+                        </th>
+                        <td mat-cell *matCellDef="let element">
+                          {{ element.noticeDate | buddhistEra: 'DD/MM/yyyy' || '-' }}
+                        </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="noticeDuration">
+                        <th mat-header-cell *matHeaderCellDef>
+                          {{ 'TASK.SUBMIT_NOTICE_LETTER.NOTICE_DURATION' | translate }}
+                        </th>
+                        <td mat-cell *matCellDef="let element">{{ (element.noticeDuration | number) || '-' }}</td>
+                      </ng-container>
+                      <ng-container matColumnDef="noticeDueDate">
+                        <th mat-header-cell *matHeaderCellDef>
+                          {{ 'TASK.SUBMIT_NOTICE_LETTER.NOTICE_DUE_DATE' | translate }}
+                        </th>
+                        <td mat-cell *matCellDef="let element">
+                          {{ element.noticeDueDate | buddhistEra: 'DD/MM/yyyy' || '-' }}
+                        </td>
+                      </ng-container>
+                      <ng-container matColumnDef="trackingStatus" stickyEnd>
+                        <th mat-header-cell *matHeaderCellDef columnElevationRight>
+                          {{ 'TASK.SUBMIT_NOTICE_LETTER.TRACKING_STATUS' | translate }}
+                        </th>
+                        <td mat-cell *matCellDef="let element" columnElevationRight>
+                          <span
+                            class="status-label"
+                            [ngClass]="{
+                              'status-pending':
+                                element.trackingStatusCode === STATUS_CODE_ENUM.Waiting ||
+                                element.trackingStatusCode === STATUS_CODE_ENUM.Inprocess,
+                              'status-success': element.trackingStatusCode === STATUS_CODE_ENUM.Success,
+                              'status-failed':
+                                element.trackingStatusCode === STATUS_CODE_ENUM.Failed ||
+                                element.trackingStatusCode === STATUS_CODE_ENUM.Wrong,
+                            }">
+                            {{ 'TASK.SUBMIT_NOTICE_LETTER.STATUS_CODE.' + element.trackingStatusCode | translate }}
+                          </span>
+                          <app-tooltip
+                            *ngIf="
+                              element.trackingStatusCode === STATUS_CODE_ENUM.Success ||
+                              element.trackingStatusCode === STATUS_CODE_ENUM.Failed ||
+                              element.trackingStatusCode === STATUS_CODE_ENUM.Wrong
+                            "
+                            [params]="
+                              getTrackingStatusToolTip(
+                                element || '',
+                                element.deliveryDateTime | buddhistEra: 'DD/MM/yyyy' || '-'
+                              )
+                            "
+                            [hyperlink]="getHyperLinkTooltip(element || '')"
+                            [iconClass]="['icon-small', 'fill-blue', 'ml-05em']"></app-tooltip>
+                        </td>
+                      </ng-container>
+                      <ng-container matColumnDef="barcode" stickyEnd>
+                        <th mat-header-cell *matHeaderCellDef>{{ 'TASK.SUBMIT_NOTICE_LETTER.BARCODE' | translate }}</th>
+                        <td mat-cell *matCellDef="let element">
+                          <div *ngIf="element.barcode || updateNumberClicked; else barcode_null">
+                            <mat-form-field class="no-label input-container">
+                              <input
+                                type="text"
+                                matInput
+                                placeholder="{{ 'หมายเลขติดตาม' | translate }}"
+                                [readonly]="!this.lawsuitService.hasEdit"
+                                [ngClass]="{ 'mt1-em': barCode.errors?.['pattern'] === true }"
+                                [(ngModel)]="element.barcode"
+                                pattern="^[A-Z]{2}[0-9]{9}[T][H]$"
+                                value="{{ element.barcode }}"
+                                (ngModelChange)="onModelChanged()"
+                                #barCode="ngModel"
+                                maxlength="13" />
+                            </mat-form-field>
+                            <div class="invalid" *ngIf="barCode.errors?.['pattern']">กรุณาตรวจสอบความถูกต้อง</div>
+                          </div>
+                          <ng-template #barcode_null>
+                            <div class="status-label status-pending text-center">
+                              {{ 'TASK.SUBMIT_NOTICE_LETTER.PENDING_UPLOAD_TRACKING' | translate }}
+                            </div>
+                          </ng-template>
+                        </td>
+                      </ng-container>
+
+                      <tr mat-header-row *matHeaderRowDef="noticeLetterColumns"></tr>
+                      <tr mat-row *matRowDef="let row; columns: noticeLetterColumns"></tr>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </mat-card-content>
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </div>
+</mat-card>

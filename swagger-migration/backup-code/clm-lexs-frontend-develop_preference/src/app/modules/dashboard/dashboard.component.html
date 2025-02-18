@@ -1,0 +1,356 @@
+<div class="ml-24 mr-24">
+  <div class="content-container" *ngIf="dashboardPermissions.document">
+    <div class="mb-36" fxLayout="row" fxLayoutAlign="space-between center">
+      <h6>{{ 'DASHBOARD.TITLE_CUSTOMER_DOCUMENT' | translate }}</h6>
+      <button
+        *ngIf="!dashboardStatuses['customerDocument'].error && !dashboardStatuses['customerDocument'].empty"
+        mat-stroked-button
+        class="medium-aw-button neutral fs-16"
+        (click)="goToCustomerDetail()">
+        <mat-icon svgIcon="icon-Arrow-Right" class="icon-xmedium"></mat-icon>
+        {{ 'DASHBOARD.BTN_ALL_INFO' | translate }}
+      </button>
+    </div>
+    <div
+      fxLayout="row"
+      fxLayoutGap="32"
+      *ngIf="!dashboardStatuses['customerDocument'].error && !dashboardStatuses['customerDocument'].empty">
+      <div fxFlex="50">
+        <!-- Green bar chart -->
+        <div class="mb-24">
+          <span>{{
+            'DASHBOARD.TITLE_CUSTOMER_LEXS' | translate: { LEXS_DPD: lexsDpd, LITIGATION_DPD: litigationDpd }
+          }}</span>
+        </div>
+        <app-stacked-bar-chart
+          *ngIf="lexsDocumentDatasets"
+          chartId="lexs-chart"
+          [datasets]="lexsDocumentDatasets"
+          [labels]="lexsDocumentLabels"
+          (barClick)="goToCustomerDetail('LEXS', $event)"
+          [hideTooltipForDataPoints]="hideTooltipForDataPointsCustomer"></app-stacked-bar-chart>
+      </div>
+      <div fxFlex="50">
+        <!-- Orange bar chart -->
+        <div class="mb-24">
+          <span>{{ 'DASHBOARD.TITLE_CUSTOMER_LITIGATION' | translate: { LITIGATION_DPD: litigationDpd } }}</span>
+        </div>
+        <app-stacked-bar-chart
+          *ngIf="litigationDocumentDatasets"
+          chartId="litigation-chart"
+          [datasets]="litigationDocumentDatasets"
+          [labels]="litigationDocumentLabels"
+          (barClick)="goToCustomerDetail('LITIGATION', $event)"
+          [hideTooltipForDataPoints]="hideTooltipForDataPointsCustomer"></app-stacked-bar-chart>
+      </div>
+    </div>
+    <div *ngIf="dashboardStatuses['customerDocument'].error">
+      <ng-container *ngTemplateOutlet="fetchFail"></ng-container>
+    </div>
+    <div *ngIf="dashboardStatuses['customerDocument'].empty">
+      <ng-container
+        *ngTemplateOutlet="fetchEmpty; context: { dashboardName: 'DASHBOARD.TITLE_CUSTOMER_DOCUMENT' }"></ng-container>
+    </div>
+  </div>
+
+  <div class="content-container" *ngIf="dashboardPermissions.litigationStatus">
+    <div class="mb-36" fxLayout="row" fxLayoutAlign="space-between center">
+      <h6>{{ 'DASHBOARD.TITLE_LITIGATION_STATUS' | translate }}</h6>
+      <button
+        *ngIf="!dashboardStatuses['litigationStatus'].error && !dashboardStatuses['litigationStatus'].empty"
+        mat-stroked-button
+        class="medium-aw-button neutral fs-16"
+        (click)="goToLitigationDetail('STATUS')">
+        <mat-icon svgIcon="icon-Arrow-Right" class="icon-xmedium"></mat-icon>
+        {{ 'DASHBOARD.BTN_ALL_INFO' | translate }}
+      </button>
+    </div>
+    <div class="chart-container">
+      <!-- Blue doughnut chart -->
+      <app-doughnut-chart-v2
+        *ngIf="
+          litigationStatusData &&
+          !dashboardStatuses['litigationStatus'].error &&
+          !dashboardStatuses['litigationStatus'].empty
+        "
+        [data]="litigationStatusData"
+        [total]="litigationStatusTotal"
+        [labels]="litigationStatusLabels"
+        [colors]="litigationStatusColors"
+        (pieClick)="goToLitigationDetail('STATUS', $event)"
+        (totalClick)="goToLitigationDetail('STATUS')"></app-doughnut-chart-v2>
+      <div *ngIf="dashboardStatuses['litigationStatus'].error">
+        <ng-container *ngTemplateOutlet="fetchFail"></ng-container>
+      </div>
+      <div *ngIf="dashboardStatuses['litigationStatus'].empty">
+        <ng-container
+          *ngTemplateOutlet="
+            fetchEmpty;
+            context: { dashboardName: 'DASHBOARD.TITLE_LITIGATION_STATUS' }
+          "></ng-container>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-container" *ngIf="dashboardPermissions.defermentStatus">
+    <div class="mb-36" fxLayout="row" fxLayoutAlign="space-between center">
+      <h6>
+        {{ 'DASHBOARD.TITLE_LITIGATION_DEFERMENT' | translate }}
+        <app-tooltip
+          class="mr-2"
+          [iconClass]="['icon-xmedium', 'fill-blue']"
+          [params]="[{ title: 'หมายเหตุ', content: 'อ้างอิงสถานะการดำเนินคดีล่าสุดเท่านั้น' }]"></app-tooltip>
+      </h6>
+      <button
+        *ngIf="!dashboardStatuses['deferment'].error && !dashboardStatuses['deferment'].empty"
+        mat-stroked-button
+        class="medium-aw-button neutral fs-16"
+        (click)="goToLitigationDetail('DEFER')">
+        <mat-icon svgIcon="icon-Arrow-Right" class="icon-xmedium"></mat-icon>
+        {{ 'DASHBOARD.BTN_ALL_INFO' | translate }}
+      </button>
+    </div>
+    <div>
+      <!-- Deferment (Prosecution) bar chart -->
+      <div class="mb-24">
+        <span>{{ 'DASHBOARD.SUB_TITLE_LITIGATION_DEFERMENT' | translate }}</span>
+      </div>
+      <app-stacked-bar-chart
+        *ngIf="defermentDatasets && !dashboardStatuses['deferment'].error && !dashboardStatuses['deferment'].empty"
+        chartId="deferment-chart"
+        [datasets]="defermentDatasets"
+        [labels]="defermentLabels"
+        (barClick)="goToLitigationDetail('DEFER', undefined, $event)"
+        [isDefermentChart]="true"></app-stacked-bar-chart>
+      <div *ngIf="dashboardStatuses['deferment'].error">
+        <ng-container *ngTemplateOutlet="fetchFail"></ng-container>
+      </div>
+      <div *ngIf="dashboardStatuses['deferment'].empty">
+        <ng-container
+          *ngTemplateOutlet="
+            fetchEmpty;
+            context: { dashboardName: 'DASHBOARD.TITLE_LITIGATION_DEFERMENT' }
+          "></ng-container>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-container" *ngIf="dashboardPermissions.defermentExecutionStatus">
+    <div class="mb-36" fxLayout="row" fxLayoutAlign="space-between center">
+      <h6>
+        {{ 'DASHBOARD.TITLE_LITIGATION_DEFERMENT_EXECUTION' | translate }}
+        <app-tooltip
+          class="mr-2"
+          [iconClass]="['icon-xmedium', 'fill-blue']"
+          [params]="[{ title: 'หมายเหตุ', content: 'อ้างอิงสถานะการดำเนินคดีล่าสุดเท่านั้น' }]"></app-tooltip>
+      </h6>
+      <button
+        *ngIf="!dashboardStatuses['defermentExecution'].error && !dashboardStatuses['defermentExecution'].empty"
+        mat-stroked-button
+        class="medium-aw-button neutral fs-16"
+        (click)="goToLitigationDetail('DEFER_EXECUTION')">
+        <mat-icon svgIcon="icon-Arrow-Right" class="icon-xmedium"></mat-icon>
+        {{ 'DASHBOARD.BTN_ALL_INFO' | translate }}
+      </button>
+    </div>
+    <div>
+      <!-- Deferment (Execution) bar chart -->
+      <div class="mb-24">
+        <span>{{ 'DASHBOARD.SUB_TITLE_LITIGATION_DEFERMENT_EXECUTION' | translate }}</span>
+      </div>
+      <app-stacked-bar-chart
+        *ngIf="
+          defermentExecutionDatasets &&
+          !dashboardStatuses['defermentExecution'].error &&
+          !dashboardStatuses['defermentExecution'].empty
+        "
+        chartId="deferment-execution-chart"
+        [datasets]="defermentExecutionDatasets"
+        [labels]="defermentExecutionLabels"
+        (barClick)="goToLitigationDetail('DEFER_EXECUTION', undefined, $event)"
+        [isDefermentChart]="true"></app-stacked-bar-chart>
+      <div *ngIf="dashboardStatuses['defermentExecution'].error">
+        <ng-container *ngTemplateOutlet="fetchFail"></ng-container>
+      </div>
+      <div *ngIf="dashboardStatuses['defermentExecution'].empty">
+        <ng-container
+          *ngTemplateOutlet="
+            fetchEmpty;
+            context: { dashboardName: 'DASHBOARD.TITLE_LITIGATION_DEFERMENT_EXECUTION' }
+          "></ng-container>
+      </div>
+    </div>
+  </div>
+  <div class="content-container" *ngIf="dashboardPermissions.collateralStatus">
+    <div class="mb-36" fxLayout="row" fxLayoutAlign="space-between center">
+      <h6>
+        {{ 'DASHBOARD.TITLE_COLLATERAL_STATUS' | translate }}
+        <app-tooltip
+          class="mr-2"
+          [iconClass]="['icon-xmedium', 'fill-blue']"
+          [params]="[
+            {
+              title: 'หมายเหตุ',
+              content: '1. ลูกหนี้ในชั้นบังคับคดี หมายถึง ลูกหนี้ที่ศาลพิพากษาแล้วและไม่ปฏิบัติตามคำพิพากษา',
+            },
+            { content: '2. จำนวนลูกหนี้นับตามสถานะหลักประกันต่างๆ' },
+          ]"></app-tooltip>
+      </h6>
+      <button
+        *ngIf="!dashboardStatuses['collateralStatus'].error && !dashboardStatuses['collateralStatus'].empty"
+        mat-stroked-button
+        class="medium-aw-button neutral fs-16"
+        (click)="goToCollateralDetail()">
+        <mat-icon svgIcon="icon-Arrow-Right" class="icon-xmedium"></mat-icon>
+        {{ 'DASHBOARD.BTN_ALL_INFO' | translate }}
+      </button>
+    </div>
+    <div>
+      <div class="mb-24">
+        <span>{{ 'DASHBOARD.SUB_TITLE_COLLATERAL_STATUS' | translate }}</span>
+      </div>
+      <!-- Collateral Status bar chart -->
+      <app-stacked-bar-chart
+        *ngIf="
+          collateralStatusDatasets &&
+          !dashboardStatuses['collateralStatus'].error &&
+          !dashboardStatuses['collateralStatus'].empty
+        "
+        chartId="collateral-status-chart"
+        [datasets]="collateralStatusDatasets"
+        [labels]="collateralStatusLabels"
+        (barClick)="goToCollateralDetail($event)"></app-stacked-bar-chart>
+      <div *ngIf="dashboardStatuses['collateralStatus'].error">
+        <ng-container *ngTemplateOutlet="fetchFail"></ng-container>
+      </div>
+      <div *ngIf="dashboardStatuses['collateralStatus'].empty">
+        <ng-container
+          *ngTemplateOutlet="
+            fetchEmpty;
+            context: { dashboardName: 'DASHBOARD.TITLE_COLLATERAL_STATUS' }
+          "></ng-container>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-container" *ngIf="dashboardPermissions.accountStatus">
+    <div class="mb-36" fxLayout="row" fxLayoutAlign="space-between center">
+      <h6>
+        {{ 'DASHBOARD.TITLE_ACCOUNT_STATUS' | translate }}
+        <app-tooltip
+          class="mr-2"
+          [iconClass]="['icon-xmedium', 'fill-blue']"
+          [params]="[{ title: 'หมายเหตุ', content: 'จำนวนลูกหนี้นับตามสำนักงานบังคับคดี' }]"></app-tooltip>
+      </h6>
+      <button
+        *ngIf="!dashboardStatuses['accountStatus'].error && !dashboardStatuses['accountStatus'].empty"
+        mat-stroked-button
+        class="medium-aw-button neutral fs-16"
+        (click)="goToLitigationDetail('ACCOUNT_STATUS')">
+        <mat-icon svgIcon="icon-Arrow-Right" class="icon-xmedium"></mat-icon>
+        {{ 'DASHBOARD.BTN_ALL_INFO' | translate }}
+      </button>
+    </div>
+    <div>
+      <!-- Account Status bar chart -->
+      <app-stacked-bar-chart
+        *ngIf="
+          accountStatusDatasets &&
+          !dashboardStatuses['accountStatus'].error &&
+          !dashboardStatuses['accountStatus'].empty
+        "
+        chartId="account-status-chart"
+        [datasets]="accountStatusDatasets"
+        [labels]="accountStatusLabels"
+        (barClick)="goToLitigationDetail('ACCOUNT_STATUS', undefined, $event)"></app-stacked-bar-chart>
+      <div *ngIf="dashboardStatuses['accountStatus'].error">
+        <ng-container *ngTemplateOutlet="fetchFail"></ng-container>
+      </div>
+      <div *ngIf="dashboardStatuses['accountStatus'].empty">
+        <ng-container
+          *ngTemplateOutlet="fetchEmpty; context: { dashboardName: 'DASHBOARD.TITLE_ACCOUNT_STATUS' }"></ng-container>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-container" *ngIf="dashboardPermissions.finance">
+    <div class="mb-36" fxLayout="row" fxLayoutAlign="space-between center">
+      <h6>{{ 'DASHBOARD.TITLE_FINANCE_KTBLAW' | translate }}</h6>
+      <button
+        *ngIf="
+          (!dashboardStatuses['finance'].error || !dashboardStatuses['financeAuto'].error) &&
+          (!dashboardStatuses['finance'].empty || !dashboardStatuses['financeAuto'].empty)
+        "
+        mat-stroked-button
+        class="medium-aw-button neutral fs-16"
+        (click)="goToFinanceDetail()">
+        <mat-icon svgIcon="icon-Arrow-Right" class="icon-xmedium"></mat-icon>
+        {{ 'DASHBOARD.BTN_ALL_INFO' | translate }}
+      </button>
+    </div>
+    <div class="mb-24 overflow-hidden">
+      <div class="mb-16">
+        <span>{{ 'DASHBOARD.SUB_TITLE_FINANCE_KTBLAW_NORMAL' | translate }}</span>
+      </div>
+      <app-arrow-chart
+        *ngIf="!dashboardStatuses['finance'].error && !dashboardStatuses['finance'].empty && financeStatusData"
+        chartId="finance-status"
+        [data]="financeStatusData"
+        [colors]="financeStatusColors"
+        [labels]="financeStatusLabels"
+        (arrowClick)="goToFinanceDetail('NORMAL', $event)"></app-arrow-chart>
+      <div *ngIf="dashboardStatuses['finance'].error">
+        <ng-container *ngTemplateOutlet="fetchFail"></ng-container>
+      </div>
+      <div *ngIf="dashboardStatuses['finance'].empty">
+        <ng-container
+          *ngTemplateOutlet="
+            fetchEmpty;
+            context: { dashboardName: 'DASHBOARD.SUB_TITLE_FINANCE_KTBLAW_NORMAL' }
+          "></ng-container>
+      </div>
+    </div>
+    <div class="overflow-hidden">
+      <div class="mb-16">
+        <span>{{ 'DASHBOARD.SUB_TITLE_FINANCE_KTBLAW_AUTO' | translate }}</span>
+      </div>
+      <app-arrow-chart
+        *ngIf="
+          !dashboardStatuses['financeAuto'].empty && !dashboardStatuses['financeAuto'].empty && financeStatusAutoData
+        "
+        chartId="finance-status-auto"
+        [data]="financeStatusAutoData"
+        [colors]="financeStatusAutoColors"
+        [labels]="financeStatusAutoLabels"
+        (arrowClick)="goToFinanceDetail('AUTO', $event)"></app-arrow-chart>
+      <div *ngIf="dashboardStatuses['financeAuto'].error">
+        <ng-container *ngTemplateOutlet="fetchFail"></ng-container>
+      </div>
+      <div *ngIf="dashboardStatuses['financeAuto'].empty">
+        <ng-container
+          *ngTemplateOutlet="
+            fetchEmpty;
+            context: { dashboardName: 'DASHBOARD.SUB_TITLE_FINANCE_KTBLAW_AUTO' }
+          "></ng-container>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #fetchFail>
+  <div class="text-center margin-auto">
+    <mat-icon svgIcon="icon-Error" class="fill-red"></mat-icon><br />
+    <div class="pt-16">
+      <span>{{ 'DASHBOARD.FETCH_ERROR' | translate }}</span>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #fetchEmpty let-dashboardName="dashboardName">
+  <div class="text-center margin-auto">
+    <mat-icon svgIcon="icon-Error" class="fill-red"></mat-icon><br />
+    <div class="pt-16">
+      <span>{{ 'COMMON.LABEL_NO_DATA' | translate }}{{ dashboardName | translate }}</span>
+    </div>
+  </div>
+</ng-template>

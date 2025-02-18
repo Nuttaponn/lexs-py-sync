@@ -1,0 +1,44 @@
+<app-action-bar
+  (backButtonHandler)="onBack()"
+  [backButtonText]="actionBar.backText || ''"
+  [showNavBarInformation]="true"
+  [hasPrimaryButton]="actionBar.hasPrimary"
+  [primaryButtonText]="actionBar.primaryText || ''"
+  [primaryButtonIcon]="actionBar.primaryIcon || 'icon-Selected'"
+  (primaryButtonHandler)="onSubmit()">
+  <ng-container navBarInformationTemplate>
+    <mat-icon svgIcon="icon-Task-List" class="icon icon-xmedium default-cursor"></mat-icon>
+    <span class="ml-8">{{ 'AUCTION.TITLE_AUCTION_R2E09_4' | translate }}</span>
+  </ng-container>
+</app-action-bar>
+
+<div class="content-below-action-bar-area">
+  <div class="m-25">
+    <app-message-banner type="black-info" [message]="'MATCHING_PROPERTY.ANNOUNCEMENT_MSG_BANNER'"></app-message-banner>
+  </div>
+  <div class="margin-title ml-24 mr-24">
+    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10" class="mt-24">
+      <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+        <div>
+          <h3>
+            {{ 'MATCHING_PROPERTY.PREFIX_LED_ORIGINAL_NAME' | translate }}{{ anouncementDetail?.ledOriginalName }}
+          </h3>
+        </div>
+        <div
+          [ngClass]="{
+            'status-pending': [AUCTION_STATUS.MATCHING].includes(auctionStatusCode),
+            'status-success': [AUCTION_STATUS.ADJUST_SUBMIT, AUCTION_STATUS.NPA_SUBMIT].includes(auctionStatusCode),
+            'status-info': [AUCTION_STATUS.NOT_PROCEED].includes(auctionStatusCode),
+          }"
+          class="status-label">
+          {{ 'MATCHING_PROPERTY.ANNOUNCEMENT_STATUS' | translate }}: {{ anouncementDetail?.aucStatusName }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <app-auc-announcement-lexs-pending
+    [tableColumns]="defaultColumnConfig"
+    [data]="data"
+    [anouncementDetail]="anouncementDetail"
+    (onUpdateSelectItem)="updateSelectedItem($event)"></app-auc-announcement-lexs-pending>
+</div>

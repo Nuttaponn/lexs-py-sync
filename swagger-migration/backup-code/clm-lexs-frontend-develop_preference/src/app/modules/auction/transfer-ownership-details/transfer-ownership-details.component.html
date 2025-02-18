@@ -1,0 +1,279 @@
+<div class="content-container">
+  <div class="inner-container-padding-24">
+    <app-auction-header
+      [title]="'OWNERSHIP.TRANSFER_PROPERTY_DETAIL' | translate"
+      [isMain]="true"
+      [expanded]="isOpened"
+      (expand)="isOpened = !isOpened">
+    </app-auction-header>
+  </div>
+  <mat-accordion>
+    <mat-expansion-panel [expanded]="isOpened" hideToggle class="mt-0">
+      <mat-divider class="no-margin"></mat-divider>
+      <ng-container>
+        <div class="pt-24" [formGroup]="form">
+          <div
+            class="sub-expansion no-pad-buttom"
+            *ngFor="let data of cashDetail; let i = index; let f = first"
+            [class.mt-16]="!f">
+            <app-auction-header
+              [title]="'ครั้งที่ ' + data.orderNo"
+              [titleClass]="'bold text-gray-700'"
+              [isMain]="false"
+              [isMainSub]="true"
+              [expanded]="data.expand"
+              [showIcon]="true"
+              iconName="icon-Warning-Circle"
+              [ready]="data.statusName === 'FINISHED'"
+              [iconClass]="data.statusName === 'FINISHED' ? 'fill-krungthai-green' : 'fill-gold'"
+              [details]="data?.details || []"
+              [numcash]="i"
+              (expand)="data.expand = !data.expand">
+            </app-auction-header>
+            <mat-accordion>
+              <mat-expansion-panel class="expansion-inside" [expanded]="data.expand" hideToggle>
+                <div
+                  fxLayout="row"
+                  class="mb-35 mt-30 align-items-initial"
+                  *ngIf="data.statusName === 'CORRECT_PENDING'">
+                  <div fxFlex="15">
+                    <h6>
+                      {{ 'OWNERSHIP.REASON_CONSIDERATION' | translate }}
+                    </h6>
+                  </div>
+                  <div fxFlex="40">
+                    <span class="thin-letter">
+                      {{ 'OWNERSHIP.REASON_EDIT_BACK' | translate }}
+                    </span>
+                    <div class="label-normal">{{ data.rejectReason || '-' }}</div>
+                  </div>
+                </div>
+                <div fxLayout="row" class="mb-35 mt-30 align-items-initial">
+                  <div fxFlex="15">
+                    <h6>
+                      {{ 'OWNERSHIP.ORDER_PAY' | translate }}
+                    </h6>
+                  </div>
+                  <div fxFlex="40">
+                    <span class="thin-letter">
+                      {{ 'OWNERSHIP.ORDER_LOCATION' | translate }}
+                    </span>
+                    <div class="label-normal">{{ data?.departmentOfLandName || '-' }}</div>
+                  </div>
+                </div>
+                <div fxLayout="row" class="mb-35 mt-30 align-items-initial">
+                  <div fxFlex="15">
+                    <h6>
+                      {{ 'OWNERSHIP.ASSIGNED' | translate }}
+                    </h6>
+                  </div>
+                  <div fxFlex="25" class="mr-16" *ngIf="data.statusCode !== 'SUCCESS'">
+                    <span class="thin-letter">
+                      {{ 'OWNERSHIP.ASSIGNED_LAWYER' | translate }}
+                    </span>
+                    <div class="label-normal">{{ data.assignedLawyerId }} - {{ data.assignedLawyerName }}</div>
+                  </div>
+                  <div fxFlex="25" class="mr-16" *ngIf="data.statusCode === 'SUCCESS'">
+                    <span class="thin-letter">
+                      {{ 'OWNERSHIP.ASSIGNED_LAWYER1' | translate }}
+                    </span>
+                    <div>{{ data.assignedLawyerId }} - {{ data.assignedLawyerName }}</div>
+                  </div>
+                  <div fxFlex="25" *ngIf="data.statusCode !== 'SUCCESS'">
+                    <span class="thin-letter">
+                      {{ 'OWNERSHIP.ORGANIZE' | translate }}
+                    </span>
+                    <div class="label-normal">{{ data.assignedLawyerResponseUnit || '-' }}</div>
+                  </div>
+                  <div fxFlex="25">
+                    <span class="thin-letter">
+                      {{ 'OWNERSHIP.MOBILE' | translate }}
+                    </span>
+                    <div class="label-normal">{{ (data.assignedLawyerMobileNo | phone) || '-' }}</div>
+                  </div>
+                </div>
+                <div fxLayout="row" class="mb-35 mt-30 align-items-initial">
+                  <div fxFlex="15">
+                    <h6 [innerHTML]="'OWNERSHIP.RECIEVER_CASH' | translate"></h6>
+                  </div>
+                  <div fxFlex="25" class="mr-16" *ngIf="data.statusCode !== 'SUCCESS'">
+                    <div *ngIf="!isViewMode && i === lastestOrder">
+                      <spig-dropdown
+                        [required]="true"
+                        classInput="input-normal icon"
+                        [config]="checkConfig"
+                        (selectedOption)="selectedOption($event)"
+                        formControlName="receivedByLawyerId"
+                        [options]="checkOptions"></spig-dropdown>
+                      <spig-error-msg [control]="form.get('receivedByLawyerId')"></spig-error-msg>
+                    </div>
+                    <div *ngIf="isViewMode || i !== lastestOrder">
+                      <span class="thin-letter">
+                        {{ 'OWNERSHIP.RECIEVER_CASH1' | translate }}
+                      </span>
+                      <div class="label-normal">{{ data.receivedByLawyerId }} - {{ data.receivedByLawyerName }}</div>
+                    </div>
+                  </div>
+                  <div fxFlex="25" class="mr-16" *ngIf="data.statusCode === 'SUCCESS'">
+                    <span class="thin-letter">
+                      {{ 'OWNERSHIP.DIRECTOR' | translate }}
+                    </span>
+                    <div>{{ data.receivedByLawyerId }} - {{ data.receivedByLawyerName }}</div>
+                  </div>
+                  <div fxFlex="25">
+                    <span class="thin-letter">
+                      {{ 'OWNERSHIP.ORGANIZE' | translate }}
+                    </span>
+                    <div class="label-normal">{{ form.get('receivedByLawyerResponseUnit')?.value || '-' }}</div>
+                  </div>
+                  <div fxFlex="25" *ngIf="data.statusCode !== 'SUCCESS'">
+                    <span class="thin-letter">
+                      {{ 'OWNERSHIP.MOBILE' | translate }}
+                    </span>
+                    <div class="label-normal">{{ (form.get('receivedByLawyerMobileNo')?.value | phone) || '-' }}</div>
+                  </div>
+                </div>
+                <div fxLayout="row" class="mb-35 mt-30">
+                  <div fxFlex="15" class="nonmargin">
+                    <h6 [innerHTML]="'OWNERSHIP.REASON_BOOK' | translate"></h6>
+                  </div>
+                  <div class="label-normal" fxFlex="35">
+                    {{ 'OWNERSHIP.NOTE' | translate }}
+                  </div>
+                </div>
+                <div fxLayout="row" class="mb-35 mt-30 align-items-initial">
+                  <div fxFlex="15">
+                    <h6>
+                      {{ 'OWNERSHIP.LIST_CASH' | translate }}
+                    </h6>
+                  </div>
+                  <div fxFlex="25" class="mr-16" *ngIf="data.statusCode !== 'SUCCESS'">
+                    <div *ngIf="!isViewMode && i === lastestOrder">
+                      <spig-dropdown
+                        [required]="true"
+                        classInput="input-normal icon"
+                        [config]="branchConfig"
+                        formControlName="branchCode"
+                        [options]="branchOptions"></spig-dropdown>
+                      <spig-error-msg [control]="form.get('branchCode')"></spig-error-msg>
+                    </div>
+                    <div *ngIf="isViewMode || i !== lastestOrder">
+                      <span class="thin-letter">
+                        {{ 'OWNERSHIP.BRANCH' | translate }}
+                      </span>
+                      <div class="label-normal">{{ data.branchName || '-' }}</div>
+                    </div>
+                  </div>
+                  <div fxFlex="25" class="mr-16" *ngIf="data.statusCode === 'SUCCESS'">
+                    <span class="thin-letter">
+                      {{ 'OWNERSHIP.BRANCH' | translate }}
+                    </span>
+                    <div class="label-normal">{{ data.branchName || '-' }}</div>
+                  </div>
+                  <div fxFlex="25">
+                    <span class="thin-letter">
+                      {{ 'OWNERSHIP.DATE_CHCHIER' | translate }}
+                    </span>
+                    <div class="label-normal">{{ (data.receiveCashierDate | buddhistEra: 'DD/MM/yyyy') || '-' }}</div>
+                  </div>
+                </div>
+                <div fxLayout="row" class="mb-35 mt-30 align-items-initial">
+                  <div fxFlex="15"></div>
+                  <div fxFlex="85">
+                    <div class="table-scroll" table-scroll>
+                      <table
+                        class="collateral-table"
+                        multiTemplateDataRows
+                        mat-table
+                        [dataSource]="data?.dataSource || []">
+                        <ng-container matColumnDef="order">
+                          <th class="text-center" mat-header-cell *matHeaderCellDef>
+                            {{ 'COMMON.LABEL_NO' | translate }}
+                          </th>
+                          <td class="text-center" mat-cell *matCellDef="let element; let i = dataIndex">1</td>
+                        </ng-container>
+                        <ng-container matColumnDef="saleday">
+                          <th mat-header-cell *matHeaderCellDef>
+                            {{ 'OWNERSHIP.ASSET_NO' | translate }}
+                          </th>
+                          <td mat-cell *matCellDef="let element">
+                            <div class="link" (click)="onClickProperty()">
+                              {{ element.orderNo || '-' }}
+                            </div>
+                          </td>
+                        </ng-container>
+                        <ng-container matColumnDef="salesresults">
+                          <th mat-header-cell *matHeaderCellDef class="text-right">
+                            {{ 'OWNERSHIP.TRANSFER_BATN_VAT' | translate }}
+                          </th>
+                          <td mat-cell *matCellDef="let element" class="text-right">
+                            <div *ngIf="data.statusCode !== 'SUCCESS'">
+                              <div *ngIf="!isViewMode && i === lastestOrder" class="validreq">
+                                <mat-form-field
+                                  class="no-label input-sm-icon search-input-field placeholder-black-100 text-right">
+                                  <input
+                                    class="text-right"
+                                    type="text"
+                                    matInput
+                                    [placeholder]="placetext"
+                                    (focus)="placetext = ''"
+                                    appNumberOnly="qualitative"
+                                    formControlName="amount"
+                                    autocomplete="off"
+                                    [required]="true" />
+                                  <label>
+                                    {{ 'OWNERSHIP.AMOUNT' | translate }}
+                                  </label>
+                                </mat-form-field>
+                                <spig-error-msg [control]="form.get('amount')"></spig-error-msg>
+                              </div>
+                              <div *ngIf="isViewMode || i !== lastestOrder">
+                                <div>{{ (data.amount | numberDecimal) || '-' }}</div>
+                              </div>
+                            </div>
+                            <div *ngIf="data.statusCode === 'SUCCESS'">
+                              <div>{{ (data.amount | numberDecimal) || '-' }}</div>
+                            </div>
+                          </td>
+                        </ng-container>
+                        <ng-container matColumnDef="date">
+                          <th mat-header-cell *matHeaderCellDef>
+                            {{ 'OWNERSHIP.ORDER_DATE' | translate }}
+                          </th>
+                          <td mat-cell *matCellDef="let element">
+                            {{ (element.date | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                          </td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="tableColumnssale"></tr>
+                        <tr mat-row *matRowDef="let row; columns: tableColumnssale"></tr>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <div fxLayout="row" class="mb-35 mt-30 align-items-initial">
+                  <div fxFlex="15">
+                    <h6>
+                      {{ 'OWNERSHIP.DOCUMENT_LIST' | translate }}
+                    </h6>
+                  </div>
+                  <div fxFlex="85">
+                    <div class="table-scroll" table-scroll>
+                      <app-upload-multi-file-content
+                        [uploadMultiInfo]="uploadMultiInfo"
+                        [readonly]="isViewMode"
+                        [list]="data.documentUpload || []"
+                        [column]="documentColumns"
+                        uploadFor="AUCTION_OWNERSHIP"
+                        [labelAcceptFile]="isViewMode ? '' : 'UPLOAD_FILE.LABEL_HINT_DOCUMENT_PDF_JPG_JPEG'"
+                        (uploadFileEvent)="onUploadFileContent($event)"></app-upload-multi-file-content>
+                    </div>
+                  </div>
+                </div>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </div>
+        </div>
+      </ng-container>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

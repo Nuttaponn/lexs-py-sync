@@ -1,0 +1,968 @@
+<app-action-bar
+  (backButtonHandler)="onBack()"
+  [hasSaveButton]="actionBar.hasSave"
+  [saveButtonText]="actionBar.saveText || ''"
+  [hasPrimaryButton]="actionBar.hasPrimary"
+  [primaryButtonIcon]="actionBar.primaryIcon || ''"
+  (primaryButtonHandler)="onSave()"
+  [primaryButtonText]="actionBar.primaryText || ''"
+  [showNavBarInformation]="true">
+  <ng-container navBarInformationTemplate>
+    <mat-icon svgIcon="icon-Box-Bag-Circle" class="icon icon-xmedium default-cursor"></mat-icon
+    ><span class="ml-8">รายละเอียด{{ ledHeader | translate }}</span>
+  </ng-container>
+</app-action-bar>
+
+<div class="content-below-action-bar-area">
+  <ng-container *ngIf="showTopWarningBanner">
+    <div class="pt-16 pl-24 pr-24">
+      <app-message-banner type="warn-normal" [icon]="'icon-Error'" [message]="warningMessageBanner">
+      </app-message-banner>
+    </div>
+  </ng-container>
+</div>
+
+<!-- สํานักงานบังคับคดีหลัก -->
+<div class="content-container" [formGroup]="seizureLedForm">
+  <div class="inner-container-padding">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+      <div class="title-text">
+        <h5 class="mt-12 mb-12 ml-12 mr-12">
+          {{ ledHeader | translate }}
+        </h5>
+      </div>
+    </div>
+  </div>
+  <mat-divider class="mr-24"></mat-divider>
+  <div class="inner-container-padding">
+    <div class="ml-12 mb-16 mt-24" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+      <div fxLayout="column" fxFlex="14">
+        <h6>รายละเอียด</h6>
+      </div>
+      <ng-container
+        *ngIf="
+          (seizureLedsDTO.paymentMethod === 'E-FILING' && !!seizureLedsDTO.isFeePaid) ||
+            (seizureLedsDTO.paymentMethod === 'NON-E-FILING' &&
+              seizureLedsDTO.status && ['COMPLETED', 'PENDING_RECEIPT_UPLOAD'].includes(seizureLedsDTO.status)) ||
+            seizureLedForm.get('ledName')?.disabled;
+          else editDetail
+        ">
+        <div fxLayout="column" fxFlex="30">
+          <span class="thin-letter">ชื่อสำนักงานบังคับคดี</span>
+          <div>{{ seizureLedsDTO.ledName || '-' }}</div>
+        </div>
+        <div
+          fxLayout="column"
+          fxFlex="30"
+          *ngIf="seizureLedsDTO.seizureLedType === 'MAIN' || seizureLedsDTO.seizureLedType === 'MAIN_(ADDITIONAL)'">
+          <span class="thin-letter">ศาล</span>
+          <div>
+            {{ seizureLedForm.get('civilCourtNo')?.value + ' - ' + seizureLedForm.get('civilCourtName')?.value || '-' }}
+          </div>
+        </div>
+      </ng-container>
+      <ng-template #editDetail>
+        <div fxLayout="column" fxFlex="30">
+          <spig-dropdown
+            [classInput]="'input-s'"
+            placeholder="ชื่อสำนักงานบังคับคดี"
+            formControlName="ledName"
+            [config]="dropdownNoIconConfig"
+            [options]="executionOffice"
+            (selectedOption)="onSelectOfficeOption($event)">
+          </spig-dropdown>
+        </div>
+        <div fxLayout="column" fxFlex="30">
+          <ng-container
+            *ngIf="seizureLedsDTO.seizureLedType === 'MAIN' || seizureLedsDTO.seizureLedType === 'MAIN_(ADDITIONAL)'">
+            <span class="thin-letter">ศาล</span>
+            <div>{{ rawValue.seizureLed.civilCourtNo + ' - ' + rawValue.seizureLed.civilCourtName }}</div>
+          </ng-container>
+        </div>
+      </ng-template>
+    </div>
+
+    <!-- E-filing -->
+    <div class="ml-12 mb-16 mt-24" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+      <div fxLayout="column" fxFlex="14">
+        <h6>&nbsp;</h6>
+      </div>
+      <div fxLayout="column" fxFlex="30">
+        <span class="thin-letter">ประเภท</span>
+        <div>{{ 'SEIZURE_OFFICE_TYPE.' + seizureLedsDTO.seizureLedType | translate }}</div>
+      </div>
+      <div fxLayout="column" fxFlex="30">
+        <span class="thin-letter">เงื่อนไขการจ่ายเงิน</span>
+        <div>{{ 'SEIZURE_E_FILLING_STATUS.' + (seizureLedsDTO.paymentMethod || 'UNKNOWN') | translate }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- เลขที่เก็บ -->
+<div class="content-container" [formGroup]="ledRefForm">
+  <div class="inner-container-padding">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+      <div class="title-text">
+        <h5 class="mt-12 mb-12 ml-12 mr-12">เลขเก็บ</h5>
+      </div>
+    </div>
+  </div>
+  <mat-divider class="mr-24"></mat-divider>
+  <div class="inner-container-padding">
+    <div class="ml-12 mb-16 mt-24" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+      <div fxLayout="column" fxFlex="14">
+        <h6>รายละเอียด</h6>
+      </div>
+      <ng-container
+        *ngIf="
+          (seizureLedsDTO.paymentMethod === 'E-FILING' && !!seizureLedsDTO.isFeePaid) ||
+            (seizureLedsDTO.paymentMethod === 'NON-E-FILING' &&
+              seizureLedsDTO.status && ['COMPLETED', 'PENDING_RECEIPT_UPLOAD'].includes(seizureLedsDTO.status)) ||
+            ledRefForm.get('ledRefNo')?.disabled;
+          else ediLedRefNo
+        ">
+        <div fxLayout="column" fxFlex="30">
+          <span class="thin-letter">เลขเก็บ</span>
+          <div>{{ ledRefForm.get('ledRefNo')?.value || '-' }}</div>
+        </div>
+        <div fxLayout="column" fxFlex="30">
+          <span class="thin-letter">วันที่ได้เลขเก็บ</span>
+          <div>{{ (ledRefForm.get('ledRefNoDate')?.value | buddhistEra: 'DD/MM/yyyy') || '-' }}</div>
+        </div>
+      </ng-container>
+      <ng-template #ediLedRefNo>
+        <div fxLayout="column" fxFlex="30">
+          <mat-form-field>
+            <mat-label>เลขเก็บ</mat-label>
+            <input
+              type="text"
+              matInput
+              placeholder="เลขเก็บ"
+              autocomplete="off"
+              formControlName="ledRefNo"
+              maxlength="15" />
+          </mat-form-field>
+          <spig-error-msg [control]="ledRefForm.controls['ledRefNo']"></spig-error-msg>
+        </div>
+        <div fxLayout="column" fxFlex="30">
+          <ng-container *ngIf="ledRefForm.get('ledRefNoDate')?.disabled">
+            <span class="thin-letter">วันที่ได้เลขเก็บ</span>
+            <div>{{ (ledRefForm.get('ledRefNoDate')?.value | buddhistEra: 'DD/MM/yyyy') || '-' }}</div>
+          </ng-container>
+          <ng-container *ngIf="!ledRefForm.get('ledRefNoDate')?.disabled">
+            <spig-datepicker
+              class="date-picker-block"
+              [classInput]="'input-s icon'"
+              label="วันที่ได้เลขเก็บ"
+              formControlName="ledRefNoDate"
+              [min]="minLedRefNoDate">
+            </spig-datepicker>
+            <spig-error-msg [control]="ledRefForm.controls['ledRefNoDate']"></spig-error-msg>
+          </ng-container>
+        </div>
+      </ng-template>
+    </div>
+
+    <div class="ml-12 mb-16 mt-24" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+      <div fxLayout="column" fxFlex="14">
+        <h6>ทนายความผู้ดำเนินงาน</h6>
+      </div>
+      <div fxLayout="column" fxFlex="30">
+        <span class="thin-letter">สำนักงานทนายความ</span>
+        <div>{{ ledRefForm.get('ledRefOffice')?.value || '-' }}</div>
+      </div>
+      <ng-container
+        *ngIf="
+          (seizureLedsDTO.paymentMethod === 'E-FILING' && !!seizureLedsDTO.isFeePaid) ||
+            (seizureLedsDTO.paymentMethod === 'NON-E-FILING' &&
+              seizureLedsDTO.status && ['COMPLETED', 'PENDING_RECEIPT_UPLOAD'].includes(seizureLedsDTO.status)) ||
+            ledRefForm.get('onSiteLawyerId')?.disabled;
+          else ediLawyer
+        ">
+        <div fxLayout="column" fxFlex="30">
+          <span class="thin-letter">ทนายความ</span>
+          <div>{{ getLawyerFullName(seizureLedsDTO.onsiteLawyerId) }}</div>
+        </div>
+      </ng-container>
+      <ng-template #ediLawyer>
+        <div fxLayout="column" fxFlex="30">
+          <spig-dropdown
+            classInput="input-s long"
+            placeholder="ทนายความ"
+            formControlName="onSiteLawyerId"
+            [config]="dropdownNoIconConfig"
+            [options]="lawyerOptions">
+          </spig-dropdown>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>
+
+<!-- รายการที่ต้องบันทึก -->
+<div class="content-container">
+  <div class="inner-container-padding">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+      <div class="title-text">
+        <h5 class="mt-12 mb-12 ml-12 mr-12">รายการที่ต้องบันทึก</h5>
+      </div>
+      <div *ngIf="seizureLedsDTO.paymentMethod === 'E-FILING'">
+        วันที่จ่ายเงินผ่าน e-Filing <span class="bold">{{ feePaidTimestamp }}</span>
+      </div>
+    </div>
+  </div>
+
+  <mat-divider class="mr-24"></mat-divider>
+
+  <div class="inner-container-padding">
+    <div fxLayout="row" fxLayoutAlign="start" fxLayoutGap="16px" class="ml-12 mr-12 mb-24">
+      <div fxFlex="15">
+        <h6>รายการเอกสารที่ต้องบันทึก</h6>
+      </div>
+      <div fxFlex="85">
+        <div>
+          <table mat-table [dataSource]="documentSource">
+            <ng-container matColumnDef="no">
+              <th mat-header-cell *matHeaderCellDef class="text-center width-pct-5">
+                {{ 'COMMON.LABEL_NO' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element" class="text-center">
+                <span *ngIf="!element.optional || isViewOnly">{{ element.orderNumber }}</span>
+                <span class="elm-form centerBox" *ngIf="element.optional && !isViewOnly">
+                  <input
+                    type="checkbox"
+                    class="elm-radio-check elm-check"
+                    (change)="toggleDocumentOptional(element)"
+                    [disabled]="element.action.uploaded"
+                    [name]="element.documentName"
+                    [id]="element.documentName"
+                    [checked]="element.action.hidden === false"
+                    [class.inactive]="element.action.uploaded" />
+                  <label class="elm-check-label"></label>
+                </span>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="documentName">
+              <th mat-header-cell *matHeaderCellDef>ชื่อเอกสาร</th>
+              <td mat-cell *matCellDef="let element">
+                <span
+                  [class.link]="element.refs.imageId"
+                  (click)="element.refs.imageId ? onDownloadDocument(element.refs) : ''">
+                  {{ element.documentName }}
+                  <span *ngIf="!element.optional && !element.refs.imageId" class="fill-red">*</span>
+                </span>
+                <span class="elm-form checkbox-send-channel ml-10" *ngIf="element.sendChannel.display.checkbox">
+                  <input
+                    type="checkbox"
+                    class="elm-radio-check elm-check"
+                    [checked]="element.sendChannel.checked"
+                    [disabled]="element.sendChannel.disabled || isViewOnly"
+                    (change)="toggleSendChannel($event)"
+                    [class.inactive]="(element.sendChannel.disabled && element.sendChannel.checked) || isViewOnly" />
+                  <label class="elm-check-label color-red">นำส่งเอกสารทางไปรษณีย์</label>
+                </span>
+                <span *ngIf="element.sendChannel.display.label">(หมายเหตุ: นำส่งเอกสารทางไปรษณีย์)</span>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="documentDate">
+              <th mat-header-cell *matHeaderCellDef>วันที่อัปโหลด</th>
+              <td mat-cell *matCellDef="let element">
+                <span>
+                  {{ element.documentDate }}
+                </span>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="documentAction">
+              <th mat-header-cell *matHeaderCellDef class="text-center">{{ 'COMMON.LABEL_COMMAND' | translate }}</th>
+              <td mat-cell *matCellDef="let element" class="text-center">
+                <ng-container *ngIf="!element.action.hidden">
+                  <div fxLayout="row" fxLayoutAlign="center center">
+                    <input
+                      type="file"
+                      #file_uploader
+                      name="fileUploader"
+                      class="hidden"
+                      [accept]="acceptFileList.toString()"
+                      (change)="onUploadFile($event)" />
+                    <!-- Delete button -->
+                    <mat-icon
+                      *ngIf="element.action.uploaded && element.action.deletable"
+                      svgIcon="icon-Bin"
+                      (click)="onDeleteDocument(element)"
+                      class="icon icon-medium icon-red mr-5"></mat-icon>
+                    <!-- upload button -->
+                    <button
+                      mat-flat-button
+                      *ngIf="(!element.action.uploaded && !element.action.hidden) || element.action.disabled"
+                      [color]="element.action.colorClass"
+                      [disabled]="element.action.disabled"
+                      (click)="onUploadDocument(element)"
+                      class="link link-red medium-aw-button full-width">
+                      <mat-icon [svgIcon]="'icon-Arrow-Upload'" class="icon icon-medium"></mat-icon>
+                      {{ 'COMMON.BUTTON_UPLOAD' | translate }}
+                    </button>
+                    <!-- uploaded button -->
+                    <button
+                      mat-stroked-button
+                      *ngIf="element.action.uploaded && !element.action.hidden && !element.action.disabled"
+                      [color]="element.action.colorClass"
+                      (click)="onUploadDocument(element)"
+                      class="link link-red medium-aw-button full-width">
+                      <mat-icon [svgIcon]="'icon-Arrow-Upload'" class="icon icon-medium"></mat-icon>
+                      {{ 'COMMON.BUTTON_UPLOAD' | translate }}
+                    </button>
+                  </div>
+                </ng-container>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="docColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: docColumns"></tr>
+          </table>
+
+          <!-- Invalid file size / Invalid file type -->
+          <ng-container *ngIf="isInvalidFile">
+            <p class="mt-8 error-msg">กรุณาอัปโหลดเอกสารเฉพาะ JPEG , PDF ขนาดไม่เกิน 30 MB เท่านั้น</p>
+          </ng-container>
+
+          <!-- Empty row handler -->
+          <app-message-empty *ngIf="documentSource.data.length === 0" message="ไม่มีรายการที่เกี่ยวข้อง">
+          </app-message-empty>
+        </div>
+      </div>
+    </div>
+
+    <!-- Require seizure timestamp once all documents are uploaded -->
+    <div fxLayout="row" fxLayoutAlign="start" fxLayoutGap="16px" class="ml-12 mr-12 mb-18">
+      <div fxFlex="15">
+        <h6>วันที่ยึดทรัพย์</h6>
+      </div>
+      <div fxFlex="85">
+        <ng-container *ngIf="isViewOnly; else ediSeizureTimestamp">
+          <span class="thin-letter">วันที่ยึดทรัพย์</span>
+          <div>{{ (seizureLedsDTO.seizureTimestamp | buddhistEra: 'DD/MM/YYYY') || '-' }}</div>
+        </ng-container>
+        <ng-template #ediSeizureTimestamp>
+          <spig-datepicker
+            [classInput]="'input-s icon'"
+            label="วันที่ยึดทรัพย์"
+            [formControl]="seizureTimestampControl"
+            [min]="minDate"
+            [max]="maxDate">
+          </spig-datepicker>
+        </ng-template>
+        <spig-error-msg
+          *ngIf="!seizureTimestampControl.value && seizureTimestampControl.invalid"
+          [control]="seizureTimestampControl"
+          customErrorMsg="กรุณาระบุวันที่"></spig-error-msg>
+      </div>
+    </div>
+
+    <!-- Warning label -->
+    <ng-container *ngIf="isEditOnly && showWaningUploadDocument">
+      <div class="mt-8 mb-8" *ngIf="documentSource.data.length">
+        <app-message-banner
+          type="warn-normal"
+          class="mt-8"
+          [message]="'SEIZURE_E_FILLING_MSG_WARNING.' + seizureLedsDTO.paymentMethod || 'UNKNOWN'">
+        </app-message-banner>
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+<!-- รายการทรัพย์ภายใต้สํานักงานบังคับคดี -->
+<div class="content-container">
+  <div class="inner-container-padding-24">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+      <div class="title-text">
+        <h5 class="mt-12 mb-12 mr-12">รายการทรัพย์ภายใต้สํานักงานบังคับคดี</h5>
+      </div>
+      <div *ngIf="isEditOnly">
+        <ng-container *ngIf="seizureLedsDTO.paymentMethod === 'E-FILING' && !seizureLedsDTO.isFeePaid">
+          <button mat-stroked-button class="xsmall-aw-button fn-16" (click)="onAddCollateral()">
+            <mat-icon svgIcon="icon-Plus" class="icon icon-xmedium"></mat-icon> เพิ่ม
+          </button>
+        </ng-container>
+        <ng-container *ngIf="seizureLedsDTO.paymentMethod === 'NON-E-FILING' && !isAllMandatoryCompleted()">
+          <button mat-stroked-button class="xsmall-aw-button fn-16" (click)="onAddCollateral()">
+            <mat-icon svgIcon="icon-Plus" class="icon icon-xmedium"></mat-icon> เพิ่ม
+          </button>
+        </ng-container>
+      </div>
+      <div fxLayout="row" *ngIf="!isEditOnly">
+        <div class="description" (click)="isOpened = !isOpened">
+          <mat-icon
+            [svgIcon]="isOpened ? 'icon-Slide-Hide' : 'icon-Expand'"
+            class="icon icon-xmedium icon-hide-show fill-blue mr-5">
+          </mat-icon
+          >{{ (isOpened ? 'COMMON.ICON_EXPANSION_HIDE' : 'COMMON.ICON_EXPANSION_SHOW') | translate }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <mat-card-content>
+    <mat-accordion>
+      <mat-expansion-panel [expanded]="isOpened" hideToggle>
+        <mat-divider class="mr-24"></mat-divider>
+        <div class="inner-container-padding-24">
+          <div class="search-section pt-0 pb-8" fxLayout="row" fxLayoutAlign="center start" fxLayoutGap="12px">
+            <div fxFlex>
+              <spig-dropdown
+                placeholder="ประเภทหลักประกัน"
+                classInput="input-xsm icon"
+                [config]="dropdownConfig"
+                [options]="collateralTypeOptions"
+                [formControl]="selectCollateralTypeControl"
+                (selectedOption)="applyFilter($event)">
+              </spig-dropdown>
+            </div>
+            <div fxFlex>
+              <spig-dropdown
+                placeholder="สถานะหลักประกัน (LEXS)"
+                classInput="input-xsm icon"
+                [config]="collateralStatusConfig"
+                [options]="collateralStatusOptions"
+                [formControl]="selectCollateralStatusControl"
+                (selectedOption)="applyFilter($event)"></spig-dropdown>
+            </div>
+            <div fxFlex>
+              <ng-container *ngIf="isNonMortgage; else elseTemplate">
+                <spig-dropdown
+                  placeholder="เลขที่เอกสารสิทธิ์: จากน้อยไปมาก"
+                  classInput="input-xsm icon"
+                  [config]="sortingConfig"
+                  [options]="sortingNonMotgageOptions"
+                  (selectedOption)="sortByDocumentNo($event)"
+                  [formControl]="selectSortControl"></spig-dropdown>
+              </ng-container>
+              <ng-template #elseTemplate>
+                <spig-dropdown
+                  placeholder="เลขที่หลักประกัน: จากน้อยไปมาก"
+                  classInput="input-xsm icon"
+                  [config]="sortingConfig"
+                  [options]="sortingOptions"
+                  (selectedOption)="sort($event)"
+                  [formControl]="selectSortControl"></spig-dropdown>
+              </ng-template>
+            </div>
+          </div>
+
+          <div
+            fxLayout="row"
+            fxLayoutAlign="space-between center"
+            [ngClass]="{ 'mb-10': !showCollateralSelection || isViewOnly }">
+            <h5 class="mt-16 mb-16">
+              <ng-container *ngIf="isNonMortgage; else elseTemplateTitle"> ทรัพย์นอกจำนอง </ng-container>
+              <ng-template #elseTemplateTitle> ทรัพย์จำนอง </ng-template>
+            </h5>
+            <!-- <span *ngIf="!showCollateralSelection && !isViewOnly">ทั้งหมด:
+              <span class="fn-16 bold">{{ collateralsSource.filteredData.length }}
+                รายการ
+              </span>
+            </span> -->
+            <!-- ยึดสำเร็จ | ไม่สำเร็จ -->
+            <ng-container *ngIf="!showCollateralSelection || isViewOnly">
+              <ng-container *ngIf="!seizureLedsDTO?.isFeePaid; else elseTotalTemplate">
+                <span
+                  >ทั้งหมด:
+                  <span class="fn-16 bold"
+                    >{{ collateralsSource.filteredData.length }}
+                    รายการ
+                  </span>
+                </span>
+              </ng-container>
+              <ng-template #elseTotalTemplate>
+                <span>
+                  <span class="numberCount mt-5"
+                    >ยึดสำเร็จ
+                    <span class="numberSize fn-16 bold">{{ successCount }}</span>
+                  </span>
+                  <span class="divider-vertical"></span>
+                  <span class="mt-5"
+                    >ยึดไม่สำเร็จ
+                    <span class="numberSize fn-16 bold">{{ failedCount }}</span>
+                  </span>
+                </span>
+              </ng-template>
+            </ng-container>
+          </div>
+          <div [ngClass]="{ 'mt-20 mb-20': showCollateralSelection && !isViewOnly }">
+            <div fxLayout="row" fxLayoutAlign="space-between center" [dir]="showCollateralSelection ? 'ltr' : 'rtl'">
+              <!-- คำสั่ง -->
+              <ng-container *ngIf="showCollateralSelection">
+                <div class="title-text">
+                  <button
+                    *ngIf="selection.selected.length > 0"
+                    class="medium-aw-button"
+                    type="button"
+                    (click)="onOrder()"
+                    color="primary"
+                    mat-flat-button
+                    [matMenuTriggerFor]="actionMenu">
+                    คำสั่ง ({{ selection.selected.length }})
+                    <mat-icon svgIcon="icon-Direction-Down" class="icon icon-small-xl"></mat-icon>
+                  </button>
+                  <button
+                    *ngIf="selection.selected.length === 0"
+                    class="medium-aw-button"
+                    type="button"
+                    (click)="onOrder()"
+                    color="primary"
+                    mat-flat-button>
+                    คำสั่ง ({{ selection.selected.length }})
+                    <mat-icon svgIcon="icon-Direction-Down" class="icon icon-small-xl"></mat-icon>
+                  </button>
+                  <mat-menu class="deb-menu-item" #actionMenu="matMenu" xPosition="before">
+                    <div class="pt-12 pb-12 pl-16 pr-16">
+                      <div
+                        class="cursor-pointer"
+                        fxLayout="row"
+                        (click)="onMarkSomeAsSuccess()"
+                        fxLayoutAlign="start center"
+                        fxLayoutGap="16px">
+                        <div>ยึดสำเร็จ</div>
+                      </div>
+                    </div>
+                    <div class="pt-12 pb-12 pl-16 pr-16">
+                      <div
+                        class="cursor-pointer"
+                        fxLayout="row"
+                        (click)="onMarkSomeAsFailed()"
+                        fxLayoutAlign="start center"
+                        fxLayoutGap="16px">
+                        <div>ยึดไม่สำเร็จ</div>
+                      </div>
+                    </div>
+                  </mat-menu>
+
+                  <button
+                    id="btn-task-transfer-1"
+                    mat-stroked-button
+                    class="medium-aw-button overflow-ellipsis ml-16"
+                    (click)="markAllAsSuccess()">
+                    <mat-icon svgIcon="icon-Check-Square-Free-Fill" class="icon icon-xmedium fill-black"></mat-icon>
+                    ยึดสำเร็จทั้งหมด
+                  </button>
+                  <button
+                    id="btn-task-transfer-2"
+                    mat-stroked-button
+                    class="medium-aw-button overflow-ellipsis ml-16"
+                    (click)="markAllAsFaild()">
+                    <mat-icon svgIcon="icon-Dismiss-Circle" class="icon icon-xmedium"></mat-icon>
+                    ยึดไม่สำเร็จทั้งหมด
+                  </button>
+                </div>
+              </ng-container>
+              <!-- ยึดสำเร็จ | ไม่สำเร็จ -->
+              <ng-container *ngIf="showCollateralSelection && !isViewOnly">
+                <div fxLayout="row" class="flex-display">
+                  <ng-container *ngIf="!seizureLedsDTO?.isFeePaid; else elseTotalTemplate">
+                    <span
+                      >ทั้งหมด:
+                      <span class="fn-16 bold"
+                        >{{ collateralsSource.filteredData.length }}
+                        รายการ
+                      </span>
+                    </span>
+                  </ng-container>
+                  <ng-template #elseTotalTemplate>
+                    <span class="numberCount mt-5"
+                      >ยึดสำเร็จ
+                      <span class="numberSize fn-16 bold">{{ successCount }}</span>
+                    </span>
+                    <span class="divider-vertical"></span>
+                    <span class="mt-5"
+                      >ยึดไม่สำเร็จ
+                      <span class="numberSize fn-16 bold">{{ failedCount }}</span>
+                    </span>
+                  </ng-template>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+
+          <ng-container
+            *ngTemplateOutlet="
+              assetsUnderTheOffice;
+              context: { list: collateralsSource.filteredData.length > 0 ? collateralsSource.filteredData : [] }
+            ">
+          </ng-container>
+          <ng-container *ngIf="collateralsSource.data.length === 0 || collateralsSource.filteredData.length === 0">
+            <ng-container *ngTemplateOutlet="assetsUnderTheOfficeEmpty"></ng-container>
+          </ng-container>
+
+          <ng-template #assetsUnderTheOffice let-dataSource="list">
+            <div class="table-scroll" table-scroll>
+              <table
+                mat-table
+                [dataSource]="dataSource"
+                class="space-pre-line"
+                [class.empty]="collateralsSource.data.length === 0">
+                <ng-container matColumnDef="select" sticky>
+                  <th mat-header-cell *matHeaderCellDef>
+                    <mat-checkbox
+                      (change)="$event ? toggleAllRows() : null"
+                      [checked]="selection.hasValue() && isAllSelected()"
+                      [indeterminate]="selection.hasValue() && !isAllSelected()"
+                      [aria-label]="checkboxLabel()">
+                    </mat-checkbox>
+                  </th>
+                  <td mat-cell *matCellDef="let row">
+                    <mat-checkbox
+                      (click)="$event.stopPropagation()"
+                      (change)="$event ? selection.toggle(row) : null"
+                      [checked]="selection.isSelected(row)"
+                      [aria-label]="checkboxLabel(row)">
+                    </mat-checkbox>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="orderNumber" sticky>
+                  <th mat-header-cell *matHeaderCellDef class="text-center" columnElevationLeft>
+                    {{ 'COMMON.LABEL_NO' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let element" class="text-center" columnElevationLeft>
+                    {{ element.orderNumber }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="collateralSubTypeDesc">
+                  <th mat-header-cell *matHeaderCellDef class="min-width-115px">ประเภทย่อย</th>
+                  <td mat-cell *matCellDef="let element" class="min-width-115px">
+                    <span>{{ element.collateralSubTypeDesc }}</span>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="documentNo">
+                  <th mat-header-cell *matHeaderCellDef class="min-width-115px">เลขที่เอกสารสิทธิ์</th>
+                  <td mat-cell *matCellDef="let element" class="min-width-115px">
+                    <span>{{ element.documentNo | coerceString }}</span>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="collateralTypeDesc">
+                  <th mat-header-cell *matHeaderCellDef class="min-width-115px">
+                    {{ 'SEIZURE_PROPERTY.SEIZURE_LIST_INFO.ASSET_TYPE' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let element" class="min-width-115px">
+                    <span>
+                      {{ element.collateralTypeDesc }}
+                    </span>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="collateralId">
+                  <th mat-header-cell *matHeaderCellDef class="min-width-115px">เลขที่หลักประกัน</th>
+                  <td mat-cell *matCellDef="let element" class="min-width-115px">
+                    <span>
+                      {{ element.collateralId }}
+                    </span>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="collateralDetails">
+                  <th mat-header-cell *matHeaderCellDef class="min-width-352px">รายละเอียดทรัพย์</th>
+                  <td mat-cell *matCellDef="let element" class="min-width-352px">
+                    <span>{{ element.collateralDetails }}</span>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="ownerId">
+                  <th mat-header-cell *matHeaderCellDef class="min-width-115px">เจ้าของกรรมสิทธิ์</th>
+                  <td mat-cell *matCellDef="let element" class="min-width-115px">
+                    <span>{{ element.ownerId }}</span>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="totalAppraisalValue">
+                  <th mat-header-cell *matHeaderCellDef class="text-right min-width-115px">
+                    ราคาประเมิน (บาท)<app-tooltip
+                      [iconClass]="['icon-small', 'fill-white']"
+                      [params]="[
+                        {
+                          title: '',
+                          content: 'ราคาประเมินของธนาคาร: ทรัพย์จำนอง<br>ราคาประเมินราชการ: ทรัพย์นอกจำนอง',
+                        },
+                      ]"></app-tooltip>
+                  </th>
+                  <td mat-cell *matCellDef="let element" class="text-right min-width-115px">
+                    <span>{{ element.totalAppraisalValue | numberDecimal }}</span>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="collateralCmsStatus">
+                  <th mat-header-cell *matHeaderCellDef class="text-center">สถานะหลักประกัน (CMS)</th>
+                  <td mat-cell *matCellDef="let element" class="text-center">
+                    <ng-container
+                      *ngIf="element.collateralCmsStatus && element.collateralCmsStatus !== '-'; else emptyCmsStatus">
+                      <span class="status-label size-xl full-width" [appBadgeStatus]="element.collateralCmsStatus">
+                        {{ 'COLLATERAL_CMS_STATUS.' + element.collateralCmsStatus | translate }}
+                      </span>
+                    </ng-container>
+                    <ng-template #emptyCmsStatus>
+                      <span>-</span>
+                    </ng-template>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="assentRlsStatus">
+                  <th mat-header-cell *matHeaderCellDef class="min-width-85px text-center">
+                    {{ 'ภาระผูกพัน' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let element" class="min-width-85px text-center">
+                    <div class="status-label status-normal m-auto full-width">
+                      {{ element.obligationStatus || 'ไม่มี' }}
+                    </div>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="obligationStatus">
+                  <th mat-header-cell *matHeaderCellDef class="text-center min-width-85px">
+                    {{ 'สถานะทรัพย์ที่สืบพบ' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let element" class="text-center min-width-85px">
+                    <div class="status-label status-normal m-auto full-width">
+                      {{ element.assentRlsStatus || 'ไม่มี' }}
+                    </div>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="collateralCaseLexsStatus" stickyEnd>
+                  <th mat-header-cell *matHeaderCellDef columnElevationRight class="text-center min-width-135px">
+                    สถานะทรัพย์ (LEXS)
+                  </th>
+                  <td mat-cell *matCellDef="let element" columnElevationRight class="text-center min-width-135px">
+                    <ng-container
+                      *ngIf="
+                        !!element.collateralCaseLexsStatus && element.collateralCaseLexsStatus !== '-';
+                        else dashTemplate
+                      ">
+                      <div class="status-label" [appBadgeStatus]="element.collateralCaseLexsStatus">
+                        <mat-icon
+                          *ngIf="element.collateralCaseLexsStatus === 'SEIZURED'"
+                          svgIcon="icon-Mark"
+                          class="icon icon-small">
+                        </mat-icon>
+                        {{ 'COLLATERAL_LEXS_STATUS.' + element.collateralCaseLexsStatus | translate }}
+                      </div>
+                    </ng-container>
+                    <ng-template #dashTemplate> - </ng-template>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="seizureStatus" stickyEnd>
+                  <th mat-header-cell *matHeaderCellDef class="text-center">ผลการยึดทรัพย์</th>
+                  <td mat-cell *matCellDef="let element">
+                    <div *ngIf="element.seizureStatus === 'FAILED'" class="flex-row-place-center">
+                      <div class="status-label size-xl" [appBadgeStatus]="element.seizureStatus">
+                        {{ 'COLLATERAL_SEIZURE_STATUS.' + element.seizureStatus | translate }}
+                      </div>
+                      <ng-container *ngIf="isEditOnly; else elseFailTemplate">
+                        <mat-icon
+                          (click)="onSelectReasonIcon(element)"
+                          svgIcon="icon-Information"
+                          class="icon icon-small fill-blue ml-4"></mat-icon>
+                      </ng-container>
+                      <ng-template #elseFailTemplate>
+                        <app-tooltip
+                          [params]="[{ title: 'เหตุผลยึดทรัพย์ไม่สำเร็จ', content: getReasonTooltip(element.reason) }]">
+                        </app-tooltip>
+                      </ng-template>
+                    </div>
+                    <div
+                      *ngIf="element.seizureStatus !== 'FAILED'"
+                      class="status-label size-xl"
+                      [appBadgeStatus]="element.seizureStatus">
+                      <mat-icon
+                        *ngIf="element.seizureStatus === 'COMPLETED' || element.seizureStatus === 'SUCCESS'"
+                        svgIcon="icon-Mark"
+                        class="icon icon-small-xl fill-krungthai-green"></mat-icon>
+                      {{ 'COLLATERAL_SEIZURE_STATUS.' + element.seizureStatus | translate }}
+                    </div>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="assetDocuments" stickyEnd>
+                  <th mat-header-cell *matHeaderCellDef class="min-width-135px text-center">
+                    {{ 'รายการเอกสาร' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let element" class="min-width-135px">
+                    <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="32">
+                      <div fxFlex="100">
+                        <button
+                          type="button"
+                          mat-stroked-button
+                          class="medium-fw-button"
+                          (click)="onClickAssetDocuments(element)">
+                          {{ 'COMMON.BUTTON_VIEW_DOCUMENT' | translate }}
+                        </button>
+                      </div>
+                    </div>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="action" stickyEnd>
+                  <th mat-header-cell *matHeaderCellDef class="text-center min-width-115px">
+                    {{ 'COMMON.LABEL_COMMAND' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let element" class="text-center min-width-115px">
+                    <div fxLayout="row" *ngIf="element?.action?.deletable || element?.action?.editable">
+                      <div fxFlex="50">
+                        <span
+                          *ngIf="element?.action?.deletable"
+                          (click)="onDeleteCollateral(element)"
+                          class="link link-red mr-10 ml-10"
+                          >{{ 'COMMON.BUTTON_DELETE' | translate }}</span
+                        >
+                      </div>
+                      <div fxFlex="50">
+                        <span
+                          *ngIf="element?.action?.editable"
+                          (click)="onEditCollateral(element)"
+                          class="link mr-10 ml-10"
+                          >{{ 'COMMON.BUTTON_EDIT' | translate }}</span
+                        >
+                      </div>
+                    </div>
+                    <span *ngIf="element?.action?.viewable" (click)="onViewDetail(element)" class="link mr-10 ml-10">{{
+                      'COMMON.LABEL_VIEW_DETAIL' | translate
+                    }}</span>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="collateralColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: collateralColumns"></tr>
+              </table>
+            </div>
+          </ng-template>
+
+          <ng-template #assetsUnderTheOfficeEmpty>
+            <!-- Empty row handler -->
+            <app-message-empty message="ไม่มีรายการที่เกี่ยวข้อง"></app-message-empty>
+          </ng-template>
+
+          <!-- Paginator -->
+          <app-paginator
+            #colPaginator
+            [length]="colPageData.data.length"
+            [pageSize]="colPageData.pageSize"
+            (page)="onPaging($event)">
+          </app-paginator>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </mat-card-content>
+</div>
+
+<!-- อัพโหลดใบเสร็จค่าใช้จ่าย -->
+<div class="content-container" *ngIf="receipt && showReceiptSection">
+  <div class="inner-container-padding">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+      <div class="title-text">
+        <h5 class="mt-12 mb-12 ml-12 mr-12">อัปโหลดใบเสร็จค่าใช้จ่าย</h5>
+      </div>
+    </div>
+  </div>
+
+  <mat-divider class="mr-24"></mat-divider>
+
+  <div class="inner-container-padding">
+    <div class="ml-12 mb-16 mt-24" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+      <div fxLayout="column" fxFlex="14">
+        <h6>ใบเสร็จค่าใช้จ่าย</h6>
+      </div>
+      <div>
+        <table mat-table [dataSource]="receiptSource" class="white-space-pre-line">
+          <ng-container matColumnDef="orderNumber">
+            <th mat-header-cell *matHeaderCellDef class="text-center">{{ 'COMMON.LABEL_NO' | translate }}</th>
+            <td mat-cell *matCellDef="let element" class="text-center">
+              {{ element.orderNumber }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="documentName">
+            <th mat-header-cell *matHeaderCellDef>ชื่อเอกสาร</th>
+            <td mat-cell *matCellDef="let element">
+              <span [class.link]="element.action.uploaded" (click)="onDownload(element)">{{
+                element.documentName
+              }}</span>
+              <label *ngIf="!element.imageId || element.imageId === ''" class="color-red">*</label>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="uploadedDate">
+            <th mat-header-cell *matHeaderCellDef>วันที่อัปโหลด</th>
+            <td mat-cell *matCellDef="let element">
+              <span>
+                {{ (element.receiveDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+              </span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_COMMAND' | translate }}</th>
+            <td mat-cell *matCellDef="let element">
+              <div fxLayout="row" fxLayoutAlign="center center"></div>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="receiptColumn"></tr>
+          <tr mat-row *matRowDef="let row; columns: receiptColumn"></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="ml-12 mb-16 mt-24" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+      <div fxLayout="column" fxFlex="14">
+        <h6>ข้อมูลใบเสร็จค่าใช้จ่าย</h6>
+      </div>
+
+      <div fxLayout="column" fxFlex="30">
+        <span class="thin-letter">หมายเลขคดีดำชั้นต้น</span>
+        <div>{{ receipt.blackCaseNo }}</div>
+      </div>
+
+      <div fxLayout="column" fxFlex="30">
+        <span class="thin-letter">หมายเลขคดีแดงชั้นต้น</span>
+        <div class="fill-red">{{ receipt.redCaseNo }}</div>
+      </div>
+    </div>
+
+    <div class="ml-12 mb-16 mt-24" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+      <div fxLayout="column" fxFlex="14">
+        <h6>&nbsp;</h6>
+      </div>
+
+      <div fxLayout="column" fxFlex="30">
+        <span class="thin-letter">โจทก์</span>
+        <div>{{ receipt.plaintiffName }}</div>
+      </div>
+
+      <div fxLayout="column" fxFlex="30">
+        <span class="thin-letter">ศาล</span>
+        <div>{{ receipt.courtName }}</div>
+      </div>
+    </div>
+
+    <div class="ml-12 mb-16 mt-24" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+      <div fxLayout="column" fxFlex="14">
+        <h6>&nbsp;</h6>
+      </div>
+
+      <div fxLayout="column" fxFlex="30">
+        <span class="thin-letter">ค่าใช้จ่ายบังคับคดีตั้งเรื่องยึดทรัพย์*</span>
+        <ng-container *ngIf="receipt?.amount; else elseTemplate">
+          <div>{{ receipt.amount | numberDecimal }}</div>
+        </ng-container>
+        <ng-template #elseTemplate>
+          <div>-</div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,30 @@
+<app-action-bar
+  [backButtonText]="actionBarConfig.backText || ''"
+  (backButtonHandler)="onCancel()"
+  [hasPrimaryButton]="actionBarConfig.hasPrimary"
+  [primaryButtonText]="actionBarConfig.primaryText || ''"
+  (primaryButtonHandler)="onPrimary()"
+  [primaryButtonIcon]="actionBarConfig.primaryIcon || ''"
+  [hasCancelButton]="actionBarConfig.hasCancel"
+  [cancelButtonText]="actionBarConfig.cancelText || ''"
+  (cancelButtonHandler)="onCancel()"
+  [showNavBarInformation]="true">
+  <ng-container navBarInformationTemplate>
+    <mat-icon svgIcon="icon-Archive" class="icon icon-xmedium default-cursor"></mat-icon>
+    <span class="ml-05em bold">{{ 'LAWSUIT.CLOSE.CLOSE_LITIGATION' | translate }}</span>
+  </ng-container>
+</app-action-bar>
+
+<div class="body-container action-bar-margin">
+  <div
+    fxLayout="row"
+    *ngIf="!litigationDetail?.litigationClosed && litigationDetail?.litigationCloseInfo?.litigationId">
+    <div class="banner-content">
+      <app-message-banner type="warn-normal" [message]="closeMessage" [size]="'medium'"></app-message-banner>
+    </div>
+  </div>
+
+  <app-lawsuit-detail-head [litigationDetail]="litigationDetail"></app-lawsuit-detail-head>
+
+  <app-close-lg-detail #closeLgDetail></app-close-lg-detail>
+</div>

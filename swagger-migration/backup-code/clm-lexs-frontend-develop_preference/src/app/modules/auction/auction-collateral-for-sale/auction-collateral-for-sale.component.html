@@ -1,0 +1,92 @@
+<div class="content-container margin-top-zero">
+  <div class="inner-container-padding-24">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+      <div class="title-text">
+        <h5 class="mt-12 mb-12 mr-12">รายละเอียดมติที่ประชุมคณะกรรมการซื้อขายทรัพย์สินพร้อมขาย</h5>
+      </div>
+      <div fxLayout="row">
+        <div class="description" (click)="isOpened = !isOpened">
+          <mat-icon
+            [svgIcon]="isOpened ? 'icon-Slide-Hide' : 'icon-Expand'"
+            class="icon icon-xmedium icon-hide-show fill-blue mr-5">
+          </mat-icon
+          >{{ isOpened ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate) }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <mat-accordion>
+    <mat-expansion-panel [expanded]="isOpened" hideToggle>
+      <mat-divider class="no-margin"></mat-divider>
+      <div class="mb-16 mt-24 mr-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+        <div fxLayout="column" fxFlex="15">
+          <h6>ข้อมูลมติ</h6>
+        </div>
+        <div fxLayout="column" fxFlex="30" fxLayoutGap="12px">
+          <span class="thin-letter">มติที่ประชุม</span>
+          <div>
+            {{ resolution.get(data?.resolution || '') }}
+          </div>
+        </div>
+        <div fxLayout="column" fxFlex="30" fxLayoutGap="12px">
+          <span class="thin-letter">วิธีการขาย</span>
+          <div>{{ data?.saletypedesc | coerceString }}</div>
+        </div>
+        <div fxLayout="column" fxFlex="30" fxLayoutGap="12px"></div>
+      </div>
+
+      <div class="mb-16 mr-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+        <div fxLayout="column" fxFlex="15"></div>
+        <div fxLayout="column" fxFlex="30" fxLayoutGap="12px">
+          <span class="thin-letter">กำหนดราคาซื้อต่ำสุด(บาท)</span>
+          <div>
+            {{ (data?.minPrice | numberDecimal) || '-' }}
+          </div>
+        </div>
+        <div fxLayout="column" fxFlex="30" fxLayoutGap="12px">
+          <span class="thin-letter">กำหนดราคาซื้อสูงสุด(บาท)</span>
+          <div>
+            {{ (data?.maxPrice | numberDecimal) || '-' }}
+          </div>
+        </div>
+        <div fxLayout="column" fxFlex="30" fxLayoutGap="12px">
+          <span class="thin-letter"
+            >ราคาประเมิน(บาท)
+            <app-tooltip
+              [params]="[
+                { title: 'ราคาประเมินของธนาคาร: ' + 'ทรัพย์จำนอง' },
+                { title: 'ราคาประเมินราชการ: ' + 'ทรัพย์นอกจำนอง' },
+              ]">
+            </app-tooltip>
+          </span>
+          <div>{{ (data?.genCbsAppval | numberDecimal) || '-' }}</div>
+        </div>
+      </div>
+
+      <div class="mb-16 mr-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+        <div fxLayout="column" fxFlex="15"></div>
+        <div fxLayout="column" fxFlex="30" fxLayoutGap="12px">
+          <span class="thin-letter">ราคาอนุมัติใช้ได้ถึงวันที่</span>
+          <ng-container *ngIf="data?.effectiveDateTo; else elseeffectiveDateToTemplate">
+            <div>{{ data?.effectiveDateTo | buddhistEra: 'DD/MM/yyyy' || '-' }}</div>
+          </ng-container>
+          <ng-template #elseeffectiveDateToTemplate>
+            <span>-</span>
+          </ng-template>
+        </div>
+        <div fxLayout="column" fxFlex="30" fxLayoutGap="12px">
+          <span class="thin-letter">เอกสาร</span>
+          <ng-container *ngIf="data?.chronicleId; else elseTemplate">
+            <div class="link" (click)="navigateTo()">
+              <span class="link">มติที่ประชุม</span>
+            </div>
+          </ng-container>
+          <ng-template #elseTemplate>
+            <span>-</span>
+          </ng-template>
+        </div>
+        <div fxLayout="column" fxFlex="30" fxLayoutGap="12px"></div>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

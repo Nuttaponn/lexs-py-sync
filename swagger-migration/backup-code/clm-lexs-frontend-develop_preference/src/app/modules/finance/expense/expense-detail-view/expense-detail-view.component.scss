@@ -1,0 +1,45 @@
+.disbursementbanner.message-banner {
+  margin: 16px 24px 16px 24px;
+}
+
+.labeldisbursementbannerhead {
+  color: rgba(18, 18, 18, 0.1);
+}
+
+.labeldisbursementbannerheadtext {
+  color: rgba(18, 18, 18, 1);
+  font-weight: 700;
+  font-size: 24px;
+}
+
+.tablemargin {
+  margin-top: 27px;
+}
+
+.colordivhide {
+  background-color: #f9fcff;
+}
+
+.divmargin {
+  margin-top: 50px;
+}
+
+.nopaddingdivhide {
+  padding: 0px;
+  margin: 0;
+  ::ng-deep .mat-expansion-panel-body {
+    padding: 0px !important;
+  }
+}
+
+.text16 {
+  font: 400 16px / 30px KrungthaiFastRegular;
+}
+
+.matdivwidth {
+  width: 95%;
+}
+
+.suberror {
+  font-size: 14px;
+}

@@ -1,0 +1,174 @@
+{
+  "aucBiddingId": 385,
+  "aucRef": 102,
+  "ledId": 3,
+  "ledName": "สำนักงานบังคับคดีแพ่งกรุงเทพมหานคร 3",
+  "aucLedSeq": "1",
+  "lawCourtId": "302",
+  "lawCourtName": "จังหวัดอุบลราชธานี",
+  "aucRound": 6,
+  "totalRound": 6,
+  "bidDate": "2023-09-12",
+  "aucBiddingStatus": "VALIDATE",
+  "aucBiddingStatusDesc": "ขายทอดตลาดได้",
+  "aucBiddingStatusRemark": "ขายทรัพย์ได้ทั้งหมด",
+  "saleChannel": "ขายแบบธรรมดา",
+  "attendAuctionFlag": false,
+  "bidDates": [
+    {
+      "number": "1",
+      "bidDate": "2023-09-07",
+      "status": "ขายทอดตลาดได้",
+      "remark": "ขายทรัพย์ได้บางส่วน",
+      "aucBiddingId": 380
+    },
+    {
+      "number": "2",
+      "bidDate": "2023-09-08",
+      "status": "ขายทอดตลาดได้",
+      "remark": "ขายทรัพย์ได้บางส่วน",
+      "aucBiddingId": 381
+    },
+    {
+      "number": "3",
+      "bidDate": "2023-09-09",
+      "status": "ขายทอดตลาดได้",
+      "remark": "ขายทรัพย์ได้บางส่วน",
+      "aucBiddingId": 382
+    },
+    {
+      "number": "4",
+      "bidDate": "2023-09-10",
+      "status": "ขายทอดตลาดได้",
+      "remark": "ขายทรัพย์ได้บางส่วน",
+      "aucBiddingId": 383
+    },
+    {
+      "number": "5",
+      "bidDate": "2023-09-11",
+      "status": "ขายทอดตลาดได้",
+      "remark": "ขายทรัพย์ได้บางส่วน",
+      "aucBiddingId": 384
+    },
+    {
+      "number": "6",
+      "bidDate": "2023-09-12",
+      "status": "ขายทอดตลาดได้",
+      "remark": "ขายทรัพย์ได้ทั้งหมด",
+      "aucBiddingId": 385
+    }
+  ],
+  "aucBiddingDocuments": [
+    {
+      "documentTemplate": {
+        "documentGroup": "AUCREFRESULT",
+        "documentTemplateId": "LEXSF137",
+        "documentName": "ใบประกาศขายทอดตลาด",
+        "optional": false
+      },
+      "documentId": 889970,
+      "imageSource": "LEXS",
+      "imageId": "b0bfe40c-bb77-4427-be6d-9852aa169057",
+      "imageName": "1. คำขอยึดทรัพย์ อสังหาริมทรัพย์_ .pdf",
+      "uploadTimestamp": "2023-09-12T16:54:48+07:00",
+      "reuploadable": false
+    },
+    {
+      "documentTemplate": {
+        "documentGroup": "AUCBIDRESULT",
+        "documentTemplateId": "LEXSF138",
+        "documentName": "รายงานการขาย",
+        "optional": false
+      },
+      "documentId": 0
+    }
+  ],
+  "aucBiddingDeedGroups": [
+    {
+      "deedGroupId": 113,
+      "aucBiddingDeedGroupId": 283,
+      "fsubbidnum": "2",
+      "saletypedesc": "ปลอดการจำนอง",
+      "isValid": true,
+      "aucBiddingDeedGroupStatus": "COMPLETE",
+      "aucResult": "SOLD",
+      "action": "VIEW",
+      "npaResolutionSummary": {
+        "resolution": "PURCHASE",
+        "minPrice": "900000.02",
+        "maxPrice": "100000.02",
+        "totalAppraisalValue": "279000.00",
+        "effectiveDateTo": "2024-09-12",
+        "npaResolutionDocument": "d8061793-74b4-4376-9414-dffeee8db423"
+      },
+      "deeds": [
+        {
+          "deedId": 128,
+          "assetTypeDesc": " ที่ดินพร้อมสิ่งปลูกสร้าง",
+          "landType": "โฉนดเลขที่",
+          "collateralId": "238182",
+          "collateralTypeCode": "1",
+          "collateralSubTypeCode": "1",
+          "collateralDocNo": "40857"
+        }
+      ]
+    },
+    {
+      "deedGroupId": 114,
+      "aucBiddingDeedGroupId": 295,
+      "fsubbidnum": "3",
+      "saletypedesc": "ปลอดการจำนอง",
+      "isValid": true,
+      "aucBiddingDeedGroupStatus": "COMPLETE",
+      "aucResult": "SOLD",
+      "action": "REUPLOAD",
+      "npaResolutionSummary": {
+        "resolution": "PURCHASE",
+        "minPrice": "900000.03",
+        "maxPrice": "100000.03",
+        "totalAppraisalValue": "360000.00",
+        "effectiveDateTo": "2024-09-12",
+        "npaResolutionDocument": "d8061793-74b4-4376-9414-dffeee8db423"
+      },
+      "deeds": [
+        {
+          "deedId": 101,
+          "assetTypeDesc": " ที่ดินพร้อมสิ่งปลูกสร้าง",
+          "landType": "โฉนดเลขที่",
+          "collateralId": "216966",
+          "collateralTypeCode": "3",
+          "collateralSubTypeCode": "1"
+        }
+      ]
+    },
+    {
+      "deedGroupId": 112,
+      "aucBiddingDeedGroupId": 278,
+      "fsubbidnum": "1",
+      "saletypedesc": "ปลอดการจำนอง",
+      "isValid": true,
+      "aucBiddingDeedGroupStatus": "COMPLETE",
+      "aucResult": "SOLD",
+      "action": "VIEW",
+      "npaResolutionSummary": {
+        "resolution": "PURCHASE",
+        "minPrice": "900000.01",
+        "maxPrice": "100000.01",
+        "totalAppraisalValue": "513000.00",
+        "effectiveDateTo": "2024-09-12",
+        "npaResolutionDocument": "d8061793-74b4-4376-9414-dffeee8db423"
+      },
+      "deeds": [
+        {
+          "deedId": 100,
+          "assetTypeDesc": " ที่ดินพร้อมสิ่งปลูกสร้าง",
+          "landType": "โฉนดเลขที่",
+          "collateralId": "238162",
+          "collateralTypeCode": "4",
+          "collateralSubTypeCode": "1",
+          "collateralDocNo": "-"
+        }
+      ]
+    }
+  ]
+}

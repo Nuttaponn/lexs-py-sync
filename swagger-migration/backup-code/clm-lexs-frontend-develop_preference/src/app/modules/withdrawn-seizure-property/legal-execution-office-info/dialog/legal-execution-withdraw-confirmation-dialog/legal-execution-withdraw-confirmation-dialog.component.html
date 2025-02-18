@@ -1,0 +1,160 @@
+<ng-container *ngIf="!onCheck; else clickedTemplate">
+  <div class="dialog-content normal-xsm">
+    <div fxLayout="column" fxLayoutAlign="start" fxLayoutGap="7px">
+      <label>{{
+        'WITHDRAWN_LEGAL_EXECUTION.LABEL_DIALOG_CONFIRMATION_01'
+          | translate: { RECORD_MESSAGE: recordMessage, SELECTION_LENGTH: selectionLength }
+      }}</label>
+      <label>{{
+        'WITHDRAWN_LEGAL_EXECUTION.LABEL_DIALOG_CONFIRMATION_02' | translate: { BOTTOM_MESSAGE: bottomMessage }
+      }}</label>
+    </div>
+  </div>
+</ng-container>
+<ng-template #clickedTemplate>
+  <ng-container [ngSwitch]="onCheck">
+    <ng-container *ngSwitchCase="'SuccessWithUnSuccess'">
+      <div class="dialog-content normal-ssm">
+        <div fxLayout="column" fxLayoutAlign="start" fxLayoutGap="7px">
+          <label>{{
+            'WITHDRAWN_LEGAL_EXECUTION.LABEL_DIALOG_CONFIRMATION_11' | translate: { RECORD_MESSAGE: recordMessage }
+          }}</label>
+          <label>{{
+            'WITHDRAWN_LEGAL_EXECUTION.LABEL_DIALOG_CONFIRMATION_12' | translate: { BOTTOM_MESSAGE: bottomMessage }
+          }}</label>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container *ngSwitchCase="'haveStatusU'">
+      <div class="dialog-content normal-xsm">
+        <div fxLayout="column" fxLayoutAlign="start" fxLayoutGap="7px">
+          <label>{{
+            'WITHDRAWN_LEGAL_EXECUTION.LABEL_DIALOG_CONFIRMATION_21' | translate: { RECORD_MESSAGE: recordMessage }
+          }}</label>
+          <label>{{
+            'WITHDRAWN_LEGAL_EXECUTION.LABEL_DIALOG_CONFIRMATION_22' | translate: { BOTTOM_MESSAGE: bottomMessage }
+          }}</label>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container *ngSwitchCase="'noUIncluded'">
+      <div class="dialog-content normal-xsm">
+        <div fxLayout="column" fxLayoutAlign="start" fxLayoutGap="7px">
+          <label>{{
+            'WITHDRAWN_LEGAL_EXECUTION.LABEL_DIALOG_CONFIRMATION_31' | translate: { RECORD_MESSAGE: recordMessage }
+          }}</label>
+          <label>{{
+            'WITHDRAWN_LEGAL_EXECUTION.LABEL_DIALOG_CONFIRMATION_32'
+              | translate: { SELECTION_LENGTH: selectionLength, COLLATERAL_LENGTH: collateralLength }
+          }}</label>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container *ngSwitchCase="'warning'">
+      <div class="dialog-content normal-ssm">
+        <div fxLayout="column" fxLayoutAlign="start" fxLayoutGap="7px">
+          <label>{{
+            'WITHDRAWN_LEGAL_EXECUTION.LABEL_DIALOG_CONFIRMATION_41' | translate: { RECORD_MESSAGE: recordMessage }
+          }}</label>
+          <label>{{
+            'WITHDRAWN_LEGAL_EXECUTION.LABEL_DIALOG_CONFIRMATION_42' | translate: { BOTTOM_MESSAGE: bottomMessage }
+          }}</label>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container *ngSwitchCase="'alreadyUnsuccess'">
+      <div class="dialog-content normal-ssm">
+        <div fxLayout="column" fxLayoutAlign="start" fxLayoutGap="7px">
+          <label>{{ 'WITHDRAWN_LEGAL_EXECUTION.LABEL_DIALOG_CONFIRMATION_51' | translate }}</label>
+          <label>{{ 'WITHDRAWN_LEGAL_EXECUTION.LABEL_DIALOG_CONFIRMATION_52' | translate }}</label>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container *ngSwitchCase="'EWS006'">
+      <div class="dialog-content normal-ssm">
+        <div fxLayout="column" fxLayoutAlign="start" fxLayoutGap="7px">
+          <label>{{ 'WITHDRAWN_LEGAL_EXECUTION.LABEL_DIALOG_EWS006_01' | translate }}</label>
+          <label>{{ 'WITHDRAWN_LEGAL_EXECUTION.LABEL_DIALOG_EWS006_02' | translate }}</label>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container *ngSwitchCase="'EWS007'">
+      <div class="dialog-content normal-ssm">
+        <div fxLayout="column" fxLayoutAlign="start" fxLayoutGap="7px">
+          <label>{{ 'WITHDRAWN_LEGAL_EXECUTION.LABEL_DIALOG_EWS007' | translate }}</label>
+          <label class="mt-12">{{ 'WITHDRAWN_LEGAL_EXECUTION.LABEL_DIALOG_UPLOAD_LEGAL_DOC' | translate }}</label>
+          <ng-container
+            [ngTemplateOutlet]="legalDocument"
+            [ngTemplateOutletContext]="{ values: ['1', '3', '4', '5', '6'] }">
+          </ng-container>
+          <ng-container *ngTemplateOutlet="contactDocument"></ng-container>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container *ngSwitchCase="'EWS008'">
+      <div class="dialog-content normal-ssm">
+        <div fxLayout="column" fxLayoutAlign="start" fxLayoutGap="7px">
+          <label>{{ 'WITHDRAWN_LEGAL_EXECUTION.LABEL_DIALOG_EWS008' | translate }}</label>
+          <label class="mt-12">{{ 'WITHDRAWN_LEGAL_EXECUTION.LABEL_DIALOG_UPLOAD_LEGAL_DOC' | translate }}</label>
+          <ng-container
+            [ngTemplateOutlet]="legalDocument"
+            [ngTemplateOutletContext]="{ values: ['1', '2', '3', '4', '5', '6'] }">
+          </ng-container>
+          <ng-container *ngTemplateOutlet="contactDocument"></ng-container>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container *ngSwitchCase="'EWS009'">
+      <div class="dialog-content normal-ssm">
+        <div fxLayout="column" fxLayoutAlign="start" fxLayoutGap="7px">
+          <label>{{ 'WITHDRAWN_LEGAL_EXECUTION.LABEL_DIALOG_EWS009' | translate }}</label>
+          <label class="mt-12">{{ 'WITHDRAWN_LEGAL_EXECUTION.LABEL_DIALOG_UPLOAD_LEGAL_DOC' | translate }}</label>
+          <ng-container
+            [ngTemplateOutlet]="legalDocument"
+            [ngTemplateOutletContext]="{ values: ['2', '3', '4', '5', '6'] }">
+          </ng-container>
+          <ng-container *ngTemplateOutlet="contactDocument"></ng-container>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container *ngSwitchCase="'EWS010'">
+      <div class="dialog-content normal-ssm">
+        <div fxLayout="column" fxLayoutAlign="start" fxLayoutGap="7px">
+          <label>{{ 'WITHDRAWN_LEGAL_EXECUTION.LABEL_DIALOG_EWS010' | translate }}</label>
+          <label>{{ 'WITHDRAWN_LEGAL_EXECUTION.LABEL_DIALOG_EWS010_1' | translate }}</label>
+          <label>{{ 'WITHDRAWN_LEGAL_EXECUTION.LABEL_DIALOG_EWS010_2' | translate }}</label>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container *ngSwitchCase="'auctionReceipt'">
+      <div class="dialog-content normal-md">
+        <div fxLayout="column" fxLayoutAlign="start" fxLayoutGap="7px">
+          <label>{{ 'WITHDRAWN_LEGAL_EXECUTION.LABEL_DIALOG_AUCTION_RECEIPT_1' | translate }}</label>
+          <label>{{ 'WITHDRAWN_LEGAL_EXECUTION.LABEL_DIALOG_AUCTION_RECEIPT_2' | translate }}</label>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container *ngSwitchCase="'onSubmitAuctionExpense'">
+      <div class="dialog-content normal-ssm">
+        <div fxLayout="column" fxLayoutAlign="start" fxLayoutGap="7px">
+          <label>{{ 'WITHDRAWN_LEGAL_EXECUTION.LABEL_DIALOG_AUCTION_SUBMIT' | translate }}</label>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container *ngSwitchDefault></ng-container>
+  </ng-container>
+</ng-template>
+
+<ng-template let-values="values" #legalDocument>
+  <!-- for legal docuement -->
+  <ng-container *ngFor="let item of values">
+    <label>{{ 'WITHDRAWN_LEGAL_EXECUTION.LABEL_DIALOG_LEGAL_DOC_NO_' + item | translate }}</label>
+  </ng-container>
+</ng-template>
+
+<ng-template #contactDocument>
+  <!-- for เอกสารผู้ติดต่อ -->
+  <label class="mt-12">{{ 'WITHDRAWN_LEGAL_EXECUTION.LABEL_DIALOG_CONTACT_DOC' | translate }}</label>
+  <label>{{ 'WITHDRAWN_LEGAL_EXECUTION.LABEL_DIALOG_CONTACT_DOC_NO_1' | translate }}</label>
+  <label>{{ 'WITHDRAWN_LEGAL_EXECUTION.LABEL_DIALOG_CONTACT_DOC_NO_2' | translate }}</label>
+</ng-template>

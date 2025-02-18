@@ -1,0 +1,47 @@
+<div class="carousel-wrapper">
+  <div class="scroll-wrapper" [class.scroll]="enableCarousel" #scrollWrapper (scroll)="onScroll()">
+    <div class="tabs" [class.scroll]="enableCarousel" fxLayout="row" fxLayoutGap="16">
+      <div
+        *ngFor="let tab of tabs; let i = index"
+        (click)="tabChange($event, i)"
+        class="tab"
+        [class.active]="currentSubTab !== null && currentSubTab === i"
+        fxLayout="column"
+        fxLayoutAlign="space-between stretch"
+        [fxFlex]="enableCarousel ? 20 : 100 / tabs.length">
+        <div class="tab-header-content" fxLayout="row">
+          <div class="color-strip" [style]="'background-color: ' + tab.color"></div>
+          <div>
+            <span class="bold">{{ tab.label }}</span
+            ><br />
+            <h4>{{ tab.count }}</h4>
+          </div>
+        </div>
+        <div class="tab-select-content" fxLayout="row" fxLayoutGap="16" fxLayoutAlign="start center">
+          <mat-radio-group [name]="'subtab' + i">
+            <mat-radio-button
+              type="radio"
+              [value]="i"
+              [checked]="currentSubTab !== null && currentSubTab === i"
+              (click)="tabChange($event, i)">
+            </mat-radio-button>
+          </mat-radio-group>
+          <span>{{ 'DASHBOARD.SELECT' | translate }}</span>
+        </div>
+      </div>
+      <div *ngIf="enableCarousel" class="end-space"></div>
+    </div>
+  </div>
+  <div class="carousel-buttons" *ngIf="enableCarousel">
+    <div>
+      <button (click)="onPrev()" type="button" class="carousel-btn prev" *ngIf="!isScrollRightEnd">
+        <mat-icon svgIcon="icon-Direction-Left"></mat-icon>
+      </button>
+    </div>
+    <div>
+      <button (click)="onNext()" type="button" class="carousel-btn next" *ngIf="!isScrollLeftEnd">
+        <mat-icon svgIcon="icon-Direction-Right"></mat-icon>
+      </button>
+    </div>
+  </div>
+</div>

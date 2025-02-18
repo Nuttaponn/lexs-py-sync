@@ -1,0 +1,81 @@
+<div [formGroup]="searchCtrl">
+  <div class="search-section pb-8" fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="12px">
+    <div fxFlex class="mx-width-pct-25">
+      <spig-dropdown
+        classInput="input-xsm icon no-border"
+        [config]="lotConfig"
+        [options]="lotOptions"
+        (selectedOption)="onSelectedOption(TABLE_FILTER_KEY.aucLot)"
+        formControlName="lot">
+      </spig-dropdown>
+    </div>
+    <div fxFlex class="mx-width-pct-25">
+      <spig-dropdown
+        classInput="input-xsm icon no-border"
+        [config]="setConfig"
+        [options]="setOptions"
+        (selectedOption)="onSelectedOption(TABLE_FILTER_KEY.aucSet)"
+        formControlName="set">
+      </spig-dropdown>
+    </div>
+    <div fxFlex class="mx-width-pct-25">
+      <spig-dropdown
+        classInput="input-xsm icon no-border"
+        [config]="orderNoConfig"
+        [options]="orderNoOptions"
+        (selectedOption)="onSelectedOption(TABLE_FILTER_KEY.fbidnum)"
+        formControlName="orderNo">
+      </spig-dropdown>
+    </div>
+    <div fxFlex class="mx-width-pct-25">
+      <spig-dropdown
+        classInput="input-xsm icon no-border"
+        [config]="redCaseNoConfig"
+        [options]="redCaseNoOptions"
+        (selectedOption)="onSelectedOption(TABLE_FILTER_KEY.redCaseNo)"
+        formControlName="redCaseNo">
+      </spig-dropdown>
+    </div>
+  </div>
+  <div class="search-section pb-8" fxLayout="row" fxLayoutAlign="start" fxLayoutGap="12px">
+    <div fxFlex class="mx-width-pct-25">
+      <spig-dropdown
+        classInput="input-xsm icon no-border"
+        [config]="legalExecutionOfficeConfig"
+        [options]="legalExecutionOfficeOptions"
+        (selectedOption)="onSelectedOption(TABLE_FILTER_KEY.lawCourtId)"
+        formControlName="legalExecutionOffice">
+      </spig-dropdown>
+    </div>
+    <div fxFlex class="mx-width-pct-25">
+      <spig-dropdown
+        classInput="input-xsm icon no-border"
+        [config]="statusConfig"
+        [options]="statusOptions"
+        (selectedOption)="
+          onSelectedOption(template === 'NORMAL' ? TABLE_FILTER_KEY.aucStatusName : TABLE_FILTER_KEY.matchingStatus)
+        "
+        formControlName="status">
+      </spig-dropdown>
+    </div>
+    <div fxFlex class="mx-width-pct-25">
+      <spig-dropdown
+        classInput="input-xsm icon no-border"
+        [config]="defendantConfig"
+        [options]="defendantOptions"
+        (selectedOption)="onSelectedOption(TABLE_FILTER_KEY.defendantName)"
+        formControlName="defendant">
+      </spig-dropdown>
+    </div>
+    <div fxFlex class="mx-width-pct-25">
+      <!-- LEX2-42660 caseType -->
+      <spig-dropdown
+      classInput="input-xsm icon no-border"
+      [config]="caseTypeConfig"
+      [options]="caseTypeOptions"
+      (selectedOption)="onSelectedOption(TABLE_FILTER_KEY.caseType)"
+      formControlName="caseType">
+    </spig-dropdown>
+    </div>
+  </div>
+</div>

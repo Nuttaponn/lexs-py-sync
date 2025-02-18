@@ -1,0 +1,58 @@
+<div *ngIf="data.title || data.icon || data.iconName" mat-dialog-title [ngClass]="contentCssClasses">
+  <div *ngIf="!!!data.hideIcon && (data.icon || data.iconName)" class="alert-modal-title-icon" id="alert-modal-title-icon">
+    <mat-icon svgIcon="{{data.iconName}}" class="{{data.iconClass || 'dialog-icon'}}"></mat-icon>
+  </div>
+  <strong *ngIf="data.title" id="dialog-title-text" class="dialog-title-margin"
+    [innerHTML]="data.title | translate | convertDomPipe"></strong>
+</div>
+
+<div *ngIf="data?.steps?.length > 0">
+  <mat-horizontal-stepper labelPosition="bottom" class="stepper" #stepperDialog>
+    <ng-container *ngFor="let item of data.steps; let i = index">
+      <mat-step completed="false" [aria-labelledby]="i < stepperDialog.selectedIndex ? '' : 'disableclick'">
+        <ng-template matStepLabel>
+          <div class="mat-step-custom-click" (click)="$event.stopPropagation()">
+            <span class="bold">{{ item.label }}</span>
+          </div>
+        </ng-template>
+      </mat-step>
+    </ng-container>
+  </mat-horizontal-stepper>
+</div>
+
+<mat-dialog-content id="contentCssClasses" [ngClass]="contentCssClasses">
+  <form #dialogForm="ngForm" class="form-content">
+    <div *ngIf="data.component">
+      <ng-template #dialog_body></ng-template>
+    </div>
+    <div *ngIf="!data.component"><span [innerHTML]="(data.message | translate) | convertDomPipe"></span></div>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions [ngClass]="contentCssClasses">
+  <div id="actions-left-button" *ngIf="data.backButtonLabel">
+    <button id="btn-dialog-back" type="button" [ngClass]="data.backButtonClass" mat-stroked-button
+      *ngIf="data.backButtonLabel" (click)="backButtonClicked()">
+      <mat-icon *ngIf="data.backIconName" svgIcon="{{data.backIconName}}" class="icon icon-xs"></mat-icon>
+      {{data.backButtonLabel | translate}}
+    </button>
+  </div>
+  <div id="actions-right-button">
+    <button id="btn-dialog-close" type="button" [ngClass]="data.leftButtonClass" mat-raised-button
+      *ngIf="data.leftButtonLabel" mat-dialog-close (click)="leftButtonClicked()">{{data.leftButtonLabel
+      | translate}}
+    </button>
+    <button id="btn-dialog-option" type="button" [ngClass]="data.optionBtnClass" *ngIf="data.optionBtnLabel"
+      mat-stroked-button (click)="optionButtonClicked()">
+      <mat-icon *ngIf="data.optionBtnIcon" svgIcon="{{data.optionBtnIcon}}" class="icon icon-xs"></mat-icon>
+      {{data.optionBtnLabel | translate}}
+    </button>
+    <button id="btn-dialog-active" type="button" [ngClass]="data.rightButtonClass" mat-flat-button
+      *ngIf="data.rightButtonLabel" color="primary"
+      [disabled]="(data.context && data.context.formControl && data.context.formControl.invalid) || data.disableRightButton"
+      (click)="rightButtonClicked()" cdkFocusInitial>
+      <mat-icon *ngIf="data.buttonIconName" svgIcon="{{data.buttonIconName}}" class="icon icon-xs"
+        [ngClass]="data.rightIconButtonClass"></mat-icon>
+      {{data.rightButtonLabel | translate}}
+    </button>
+  </div>
+</mat-dialog-actions>

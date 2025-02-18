@@ -1,0 +1,265 @@
+[
+  {
+    "courtAppeal": {
+      "appealDescription": "string",
+      "appealDueDate": "string",
+      "appealPurpose": "REQUEST_APPEAL",
+      "approveDate": "2023-01-23",
+      "approverDecision": "TO_APPEAL",
+      "approverRemark": "string",
+      "bankRemark": "string",
+      "conditionalAppeal": "APPEAL",
+      "conditionalRemark": "string",
+      "courtAppealDocuments": [
+        {
+          "active": true,
+          "documentDate": "2023-01-09T05:50:37.236Z",
+          "documentId": 0,
+          "documentTemplate": {
+            "autoMatchType": "string",
+            "contentType": "string",
+            "documentGroup": "LITIGATION",
+            "documentName": "string",
+            "documentTemplateId": "string",
+            "forLitigation": true,
+            "forNoticeLetter": true,
+            "needHardCopy": true,
+            "optional": true,
+            "requiredDocumentDate": true,
+            "searchType": "LEXS"
+          },
+          "documentTemplateId": "string",
+          "imageId": "string",
+          "imageName": "string"
+        }
+      ],
+      "dayToAppealDueDate": 0,
+      "headerFlag": "DRAFT",
+      "litigationCaseId": 11,
+      "litigationId": 0,
+      "rejectReason": "string",
+      "updateFlag": "A"
+    },
+    "courtDecrees": [
+      {
+        "courtStatus": "PENDING",
+        "defendants": [
+          {
+            "acceptDecreeDate": "string",
+            "courtDecreeId": 0,
+            "decreeDueDate": "string",
+            "firstName": "string",
+            "identificationNo": "string",
+            "lastName": "string",
+            "otherSendTypeDesc": "string",
+            "personId": "string",
+            "relation": "MAIN_BORROWER",
+            "saveStatus": true,
+            "sendRemark": "string",
+            "sendStatus": "string",
+            "sendType": "string",
+            "taskId": 0
+          }
+        ],
+        "headerFlag": "DRAFT",
+        "id": 0,
+        "lawyerId": "string",
+        "lawyerName": "string",
+        "litigationCaseId": 11,
+        "litigationId": "string",
+        "remark": "string",
+        "requestDecreeDate": "string",
+        "saveStatus": true,
+        "taskId": 0
+      }
+    ],
+    "courtLevel": "CIVIL",
+    "courtVerdicts": [
+      {
+        "accounts": [
+          {
+            "accountId": "string",
+            "lateCharge": 0,
+            "lateChargeAmount": 0,
+            "litigationCaseId": 11,
+            "marketCode": "string",
+            "marketDescription": "string",
+            "outstandingBalance": 0,
+            "tdrStatus": "string",
+            "tdrTrackingResult": "string",
+            "totalAmount": 0,
+            "verdictInterestStartDate": "string",
+            "verdictLateCharge": 0,
+            "verdictLateChargeAmount": 0,
+            "verdictOutstandingBalance": 0,
+            "verdictTotalAmount": 0
+          }
+        ],
+        "appealCourtBlackCaseNo": "string",
+        "blackCaseNo": "string",
+        "caseEnd": true,
+        "ciosRedCaseNo": true,
+        "ciosVerdictDate": true,
+        "courtFee": [
+          {
+            "accountNo": "string",
+            "courtLevel": "string",
+            "courtRefundAmount": 0,
+            "initialAmount": 0,
+            "netAmount": 0,
+            "status": "string",
+            "transactionDate": "string",
+            "transactionName": "string"
+          }
+        ],
+        "courtLevel": "CIVIL",
+        "courtName": "string",
+        "courtType": "CIVIL",
+        "courtVerdict": "string",
+        "courtVerdictCode": "string",
+        "courtVerdictDate": "string",
+        "courtVerdictDocuments": [
+          {
+            "active": true,
+            "documentDate": "2023-01-09T05:50:37.236Z",
+            "documentId": 0,
+            "documentTemplate": {
+              "autoMatchType": "string",
+              "contentType": "string",
+              "documentGroup": "LITIGATION",
+              "documentName": "string",
+              "documentTemplateId": "string",
+              "forLitigation": true,
+              "forNoticeLetter": true,
+              "needHardCopy": true,
+              "optional": true,
+              "requiredDocumentDate": true,
+              "searchType": "LEXS"
+            },
+            "documentTemplateId": "string",
+            "imageId": "string",
+            "imageName": "string"
+          }
+        ],
+        "courtVerdictType": "string",
+        "courtVerdictTypeCode": "string",
+        "debtorLawyerFee": [
+          {
+            "courtName": "string",
+            "initialAmount": 0,
+            "paidAmount": 0,
+            "remainingAmount": 0
+          }
+        ],
+        "defendants": [
+          {
+            "firstName": "string",
+            "identificationNo": "string",
+            "lastName": "string",
+            "relation": "MAIN_BORROWER"
+          }
+        ],
+        "extendAppeals": [
+          {
+            "attachment": {
+              "active": true,
+              "documentDate": "2023-01-09T05:50:37.236Z",
+              "documentId": 0,
+              "documentTemplate": {
+                "autoMatchType": "string",
+                "contentType": "string",
+                "documentGroup": "LITIGATION",
+                "documentName": "string",
+                "documentTemplateId": "string",
+                "forLitigation": true,
+                "forNoticeLetter": true,
+                "needHardCopy": true,
+                "optional": true,
+                "requiredDocumentDate": true,
+                "searchType": "LEXS"
+              },
+              "documentTemplateId": "string",
+              "imageId": "string",
+              "imageName": "string"
+            },
+            "extendAppealId": 0,
+            "extendDate": "string",
+            "litigationCaseId": 11
+          }
+        ],
+        "firstEnforcementDate": "string",
+        "firstVerdictDate": "string",
+        "firstVerdictUserFirstName": "string",
+        "firstVerdictUserId": "string",
+        "firstVerdictUserLastName": "string",
+        "headerFlag": "DRAFT",
+        "lastVerdictDate": "string",
+        "lastVerdictUserFirstName": "string",
+        "lastVerdictUserId": "string",
+        "lastVerdictUserLastName": "string",
+        "litigationCaseId": 11,
+        "litigationId": "string",
+        "litigationStatus": "string",
+        "otherCourtFeeType": "string",
+        "otherCourtFeeTypeCode": "string",
+        "redCaseNo": "string",
+        "remark": "string",
+        "saveStatus": true,
+        "seizedPropertyType": "string",
+        "supremeCourtBlackCaseNo": "string",
+        "taskId": 0,
+        "testimonyStatus": "string",
+        "totalCourtRefundAmount": 0,
+        "totalInitialAmount": 0,
+        "totalNetAmount": 0
+      }
+    ],
+    "disputeAppeals": [
+      {
+        "defendantAppealDate": "string",
+        "disputeAppealDescription": "string",
+        "disputeAppealDocuments": [
+          {
+            "active": true,
+            "documentDate": "2023-01-09T05:50:37.236Z",
+            "documentId": 0,
+            "documentTemplate": {
+              "autoMatchType": "string",
+              "contentType": "string",
+              "documentGroup": "LITIGATION",
+              "documentName": "string",
+              "documentTemplateId": "string",
+              "forLitigation": true,
+              "forNoticeLetter": true,
+              "needHardCopy": true,
+              "optional": true,
+              "requiredDocumentDate": true,
+              "searchType": "LEXS"
+            },
+            "documentTemplateId": "string",
+            "imageId": "string",
+            "imageName": "string"
+          }
+        ],
+        "disputeAppealId": 0,
+        "disputeDefendants": [
+          {
+            "firstName": "string",
+            "identificationNo": "string",
+            "lastName": "string",
+            "relation": "MAIN_BORROWER"
+          }
+        ],
+        "lastDisputeAppealDate": "string",
+        "litigationCaseId": 11,
+        "requestDefer": true,
+        "updateFlag": "A"
+      }
+    ],
+    "lawyerId": "string",
+    "lawyerName": "string",
+    "lawyerOfficeCode": "string",
+    "lawyerOfficeName": "string",
+    "litigationCaseId": 11
+  }
+]

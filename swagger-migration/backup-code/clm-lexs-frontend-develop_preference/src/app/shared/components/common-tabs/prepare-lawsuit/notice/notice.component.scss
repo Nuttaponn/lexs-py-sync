@@ -1,0 +1,11 @@
+.title-content {
+  padding: 20px 14px;
+}
+
+.title-content-no-pt {
+  padding: 0 20px 14px;
+}
+
+::ng-deep .mat-expansion-panel-body {
+  padding: 0 16px 16px !important;
+}

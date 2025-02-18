@@ -1,0 +1,157 @@
+<mat-tab-group
+  class="tab-group-container"
+  [ngClass]="tabIndex === 0 ? 'mat-ink-bar-width-100' : ''"
+  mat-align-tabs="start"
+  (selectedTabChange)="onTabChanged($event)"
+  [(selectedIndex)]="tabIndex">
+  <!-- กำลังดำเนินการ -->
+  <mat-tab>
+    <ng-template matTabLabel>
+      <span
+        *ngIf="totalProcessAnnounces || 0 > 0"
+        class="bg-color-red"
+        matBadge="{{ totalProcessAnnounces }}"
+        matBadgeOverlap="false">
+        {{ 'AUCTION_LED_CARD.OWNERSHIP_TRANSFER.PROCESS' | translate }}</span
+      >
+      <span *ngIf="totalProcessAnnounces === 0"> {{ 'AUCTION_LED_CARD.OWNERSHIP_TRANSFER.PROCESS' | translate }}</span>
+    </ng-template>
+
+    <ng-template matTabContent>
+      <ng-container *ngTemplateOutlet="auctionLEDCardAnnouncementTable"></ng-container>
+      <ng-container
+        *ngIf="!announcementInfo.data || announcementInfo.data.length === 0"
+        [ngTemplateOutlet]="dataNotFound">
+      </ng-container>
+      <app-paginator
+        *ngIf="announcementInfo.data.length > 0"
+        #paginator
+        [pageSize]="pageSize"
+        [length]="announcementInfo.data.length"
+        (page)="onPaging($event)"></app-paginator>
+    </ng-template>
+  </mat-tab>
+
+  <!-- โอนกรรมสิทธ์เสร็จสิ้น -->
+  <mat-tab label="{{ 'AUCTION_LED_CARD.OWNERSHIP_TRANSFER.DONE' | translate }}">
+    <ng-template matTabContent>
+      <ng-container *ngTemplateOutlet="auctionLEDCardAnnouncementTable"></ng-container>
+      <ng-container
+        *ngIf="!announcementInfo.data || announcementInfo.data.length === 0"
+        [ngTemplateOutlet]="dataNotFound">
+      </ng-container>
+      <app-paginator
+        *ngIf="announcementInfo.data.length > 0"
+        #paginator
+        [pageSize]="pageSize"
+        [length]="announcementInfo.data.length"
+        (page)="onPaging($event)"></app-paginator>
+    </ng-template>
+  </mat-tab>
+</mat-tab-group>
+
+<div class="data-table-content mt-16"></div>
+
+<ng-template #auctionLEDCardAnnouncementTable>
+  <div class="table mt-16">
+    <table mat-table [dataSource]="announcementInfo.filteredData" [class.empty]="announcementInfo.data.length === 0">
+      <ng-container matColumnDef="no">
+        <th class="text-center width-pct-5" mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_NO' | translate }}</th>
+        <td class="text-center width-pct-5" mat-cell *matCellDef="let element; let i = index">
+          {{ pageSize * (pageIndex - 1) + i + 1 }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="aucSet">
+        <th mat-header-cell *matHeaderCellDef>ชุดทรัพย์</th>
+        <td mat-cell *matCellDef="let element">
+          <span class="link" (click)="navigateToAuctionDetails(element)"> ชุดทรัพย์ที่ {{ element.fsubbidnum }} </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef>วันขาย</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.soldDate | buddhistEra: 'DD/MM/yyyy' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="owner">
+        <th mat-header-cell *matHeaderCellDef>ผู้ถือกรรมสิทธิ์</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.ownerName }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="office">
+        <th mat-header-cell *matHeaderCellDef>สำนักงานที่ดิน</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.ledName }}
+        </td>
+      </ng-container>
+
+      <!-- สถานะ Column -->
+      <ng-container matColumnDef="aucStatus">
+        <th mat-header-cell *matHeaderCellDef class="text-center">สถานะ</th>
+        <td mat-cell *matCellDef="let element" class="text-center">
+          <div
+            class="status-label size-normal text-center max-width"
+            [class.status-success]="
+              element?.conveyanceStatus === 'COMPLETE' || element?.conveyanceStatus === 'XFER_COMPLETE'
+            "
+            [class.status-normal]="element?.conveyanceStatus === 'SUBMIT_XFER_CHQ'"
+            [class.status-pending]="
+              element?.conveyanceStatus === 'APPRAISAL' ||
+              element?.conveyanceStatus === 'XFER_ARR' ||
+              element?.conveyanceStatus === 'AMEND_XFER_CHQ' ||
+              element?.conveyanceStatus === 'ISSUE_XFER_CHQ' ||
+              element?.conveyanceStatus === 'XFER_FAIL'
+            ">
+            <mat-icon
+              *ngIf="element?.conveyanceStatus === 'COMPLETE' || element?.conveyanceStatus === 'XFER_COMPLETE'"
+              svgIcon="icon-Mark"
+              class="icon-xmedium fill-green"></mat-icon>
+            <span *ngIf="element?.conveyanceStatus === 'APPRAISAL' || element?.conveyanceStatus === 'XFER_FAIL'">
+              รอนัดโอนกรรมสิทธิ์
+            </span>
+            <span *ngIf="element?.conveyanceStatus === 'XFER_ARR'">
+              รอออกแคชเชียร์เช็ค<br />
+              โอนกรรมสิทธิ์
+            </span>
+            <span *ngIf="element?.conveyanceStatus === 'SUBMIT_XFER_CHQ'">
+              รออนุมัติออกแคชเชียร์<br />
+              เช็คโอนกรรมสิทธิ์
+            </span>
+            <span *ngIf="element?.conveyanceStatus === 'AMEND_XFER_CHQ'"> รอแก้ไข </span>
+            <span *ngIf="element?.conveyanceStatus === 'ISSUE_XFER_CHQ'"> รอผลการโอนกรรมสิทธิ์ </span>
+            <span *ngIf="element?.conveyanceStatus === 'COMPLETE' || element?.conveyanceStatus === 'XFER_COMPLETE'">
+              โอนกรรมสิทธิ์สำเร็จ
+            </span>
+            <span *ngIf="!element?.conveyanceStatus"> - </span>
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- คำสั่ง Column -->
+      <ng-container matColumnDef="command">
+        <th mat-header-cell *matHeaderCellDef class="text-center">{{ 'COMMON.LABEL_COMMAND' | translate }}</th>
+        <td mat-cell *matCellDef="let element" class="text-center">
+          <button
+            class="long-button ml-10"
+            type="button"
+            mat-stroked-button
+            (click)="navigateToAuctionDetails(element, true)">
+            <mat-icon svgIcon="icon-Money" class="icon icon-small-xl"></mat-icon>
+            ออกแคชเชียร์เช็ค
+          </button>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </div>
+</ng-template>
+
+<ng-template #dataNotFound>
+  <app-message-empty [message]="'ไม่พบรายการโอนกรรมสิทธิ์'"></app-message-empty>
+</ng-template>

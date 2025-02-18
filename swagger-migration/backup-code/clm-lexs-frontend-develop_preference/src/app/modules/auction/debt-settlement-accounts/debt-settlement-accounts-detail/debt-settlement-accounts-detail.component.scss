@@ -1,0 +1,66 @@
+@import '/src/styles/colors';
+@import '/src/styles/table-alignment';
+
+.detail-row,
+.detail-row-wrapper {
+  height: 0;
+  padding: 0 !important;
+}
+.error-msg {
+  white-space: pre;
+}
+
+.bg-blue {
+  background-color: map-get($ktb-palette-precious-blue, 00);
+}
+
+.bg-color-gray {
+  .mat-badge-content {
+    background: map-get($ktb-palette-biz-gray, 200);
+    width: 25px;
+    border-radius: 45%;
+    color: $black;
+  }
+}
+
+.sticky {
+  position: fixed;
+  top: 122px;
+  left: 63px;
+  z-index: 1000;
+  width: calc(100% - 110px);
+  display: block;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0px 4px 8px 0px map-get($ktb-palette-biz-black, B016);
+  padding: 20px 24px;
+}
+.debtAmount {
+  text-align: end;
+}
+.debt-cell,
+.cutOff-cell {
+  text-align: end;
+}
+
+.bdr-8 {
+  border-radius: 8px;
+}
+
+/** FIXED TABLE LAYOUT */
+.table-fixed {
+  table-layout: fixed;
+}
+// order, expand button
+.cell-xxs {
+  @include table-width(5, 0);
+}
+
+// storage name
+.cell-s {
+  @include table-width(10, 0);
+}
+
+// document name
+.cell-l {
+  @include table-width(30, 0);
+}

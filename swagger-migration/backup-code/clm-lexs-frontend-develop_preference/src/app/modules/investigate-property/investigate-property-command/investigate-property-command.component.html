@@ -1,0 +1,62 @@
+<!-- รายละเอียดคดี-->
+<div [formGroup]="form">
+  <app-case-details [title]="caseDetailTitle" [data]="litigationCaseShortDetail" [hidelawyer]="true">
+    <div class="mb-28 mr-16" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+      <div fxLayout="column" fxFlex="15">
+        <h6>{{ 'INVESTIGATE_PROPERTY.OBJECTIVE' | translate }}</h6>
+      </div>
+      <div fxLayout="column" fxFlex="30">
+        <ng-container *ngIf="isViewMode">
+          <span class="thin-letter">{{ 'INVESTIGATE_PROPERTY.OBJECTIVE' | translate }}</span>
+          <div>
+            {{
+              (form.get('reasonDesc')?.value
+                ? 'AUCTION_DETAIL.AUCTION_PAYMENT.' + form.get('reasonDesc')?.value
+                : '-'
+              ) | translate
+            }}
+          </div>
+        </ng-container>
+        <ng-container *ngIf="!isViewMode">
+          <spig-dropdown
+            classInput="input-s icon"
+            [options]="dropDownOption"
+            [config]="ddlConfig"
+            formControlName="reasonCode">
+          </spig-dropdown>
+          <spig-error-msg [control]="getControl('reasonCode')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+          </spig-error-msg>
+        </ng-container>
+      </div>
+    </div>
+    <div class="mb-28 mr-16" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+      <div fxLayout="column" fxFlex="15"></div>
+      <div fxLayout="column" fxFlex="54">
+        <ng-container *ngIf="isViewMode">
+          <span class="thin-letter">{{ 'INVESTIGATE_PROPERTY.OBJECTIVE' | translate }}</span>
+          <div>{{ getControl('remark').value || '-' }}</div>
+        </ng-container>
+        <ng-container *ngIf="!isViewMode">
+          <mat-form-field>
+            <mat-label>{{ 'COMMON.LABEL_REMARKS' | translate }}</mat-label>
+            <textarea
+              class="input-full-field"
+              type="text"
+              matInput
+              cdkTextareaAutosize
+              #autosize="cdkTextareaAutosize"
+              cdkAutosizeMinRows="5"
+              autocomplete="off"
+              formControlName="remark"
+              [maxlength]="1000"></textarea>
+          </mat-form-field>
+          <spig-error-msg [control]="getControl('remark')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+          </spig-error-msg>
+        </ng-container>
+      </div>
+    </div>
+  </app-case-details>
+</div>
+<app-investigate-property-documents-list
+  [data]="assetInvestigationCreateInfo"
+  [form]="form"></app-investigate-property-documents-list>

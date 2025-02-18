@@ -1,0 +1,150 @@
+<div fxLayout="column" fxLayoutGap="12px">
+<app-message-banner
+  *ngIf="isShowWarningBanner; else elseFailBannerTemplate"
+  [type]="'warn-normal'"
+  [icon]="'icon-Error'"
+  [message]="messageBanner">
+</app-message-banner>
+<ng-template #elseFailBannerTemplate>
+  <app-message-banner
+    [type]="isShowErrorBanner ? 'fail': 'info'"
+    [icon]="'icon-Error'"
+    [message]="isShowErrorBanner ? messageBannerError : messageBannerAvailable"
+    actionButtonClass="bold non-border info"
+    [actionButton]="isShowErrorBanner ? '' : 'ดูประกาศ'"
+    (actionButtonHandler)="onRouteToExistAuctionCase(auctionValidationResponse)"
+  >
+  </app-message-banner>
+</ng-template>
+
+<ng-container [formGroup]="newAuctionForm">
+  <div class="search-section pb-8" fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="12px">
+    <h6 fxFlex="13">
+
+      {{ 'รายละเอียดคดี' | translate }}
+    </h6>
+    <div fxFlex="83" fxLayout="row" fxLayoutGap="12px">
+      <div fxFlex="33%">
+        <spig-dropdown [config]="redCaseConfig" [options]="redCase" formControlName="redCaseNo"
+          [classInput]="'input-normal elevation-e1 border-black-40'">
+        </spig-dropdown>
+        <spig-error-msg
+          *ngIf="getControl('redCaseNo')?.hasError('required')"
+          [control]="getControl('redCaseNo')"
+          [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+        </spig-error-msg>
+        <div *ngIf="isShowExistingData" class="text-danger margin-bottom-thin my-mat-hint">
+          {{ 'มีข้อมูลในระบบแล้ว' }}<span>&nbsp;</span>
+        </div>
+        <!-- <spig-error-msg
+          *ngIf="getControl('redCase')?.hasError('existed')"
+          [control]="getControl('redCase')"
+          [customErrorMsg]="'มีข้อมูลในระบบแล้ว'">
+        </spig-error-msg> -->
+      </div>
+      <div fxFlex="33%">
+        <spig-dropdown [config]="courtNameConfig" [options]="courtName" formControlName="courtNo"
+          [classInput]="'input-normal elevation-e1 border-black-40'">
+        </spig-dropdown>
+        <spig-error-msg
+          *ngIf="getControl('courtNo')?.hasError('required')"
+          [control]="getControl('courtNo')"
+          [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+        </spig-error-msg>
+        <div *ngIf="isShowExistingData" class="text-danger margin-bottom-thin my-mat-hint">
+          {{ 'มีข้อมูลในระบบแล้ว' }}<span>&nbsp;</span>
+        </div>
+        <!-- <spig-error-msg
+          *ngIf="getControl('courtNo')?.hasError('existed')"
+          [control]="getControl('courtNo')"
+          [customErrorMsg]="'มีข้อมูลในระบบแล้ว'">
+        </spig-error-msg> -->
+      </div>
+      <div fxFlex="33%">
+        <spig-dropdown
+        [config]="ledIdConfig" [options]="ledId" formControlName="ledId"
+        [classInput]="'input-normal elevation-e1 border-black-40'">
+      </spig-dropdown>
+      <spig-error-msg
+          *ngIf="getControl('ledId')?.hasError('required')"
+          [control]="getControl('ledId')"
+          [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+        </spig-error-msg>
+        <div *ngIf="isShowExistingData" class="text-danger margin-bottom-thin my-mat-hint">
+          {{ 'มีข้อมูลในระบบแล้ว' }}<span>&nbsp;</span>
+        </div>
+        <!-- <spig-error-msg
+          *ngIf="getControl('ledId')?.hasError('existed')"
+          [control]="getControl('ledId')"
+          [customErrorMsg]="'มีข้อมูลในระบบแล้ว'">
+        </spig-error-msg> -->
+      </div>
+    </div>
+  </div>
+
+  <div fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="12px">
+    <div fxFlex="13">
+      <h6>
+        {{ 'เลขประกาศ' | translate }} <br>
+        {{ 'ขายทอดตลาด' | translate }}
+      </h6>
+    </div>
+    <div fxFlex="85" fxLayout="row" fxLayoutGap="12px">
+      <div fxFlex="33%">
+        <mat-form-field class="input-full-field border-black-40 min-width-pct-50">
+          <mat-label>{{ 'Lot' | translate }}</mat-label>
+          <input matInput [required]="true" formControlName="aucLot" appRemoveSpaces />
+        </mat-form-field>
+        <spig-error-msg
+          *ngIf="getControl('aucLot')?.hasError('required')"
+          [control]="getControl('aucLot')"
+          [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+        </spig-error-msg>
+        <div *ngIf="isShowExistingData" class="text-danger margin-bottom-thin my-mat-hint">
+          {{ 'มีข้อมูลในระบบแล้ว' }}<span>&nbsp;</span>
+        </div>
+        <!-- <spig-error-msg
+          *ngIf="getControl('aucLot')?.hasError('existed')"
+          [control]="getControl('aucLot')"
+          [customErrorMsg]="'มีข้อมูลในระบบแล้ว'">
+        </spig-error-msg> -->
+      </div>
+      <div fxFlex="33%">
+        <mat-form-field class="input-full-field border-black-40 min-width-pct-50">
+          <mat-label>{{ 'ชุดที่' | translate }}</mat-label>
+          <input matInput formControlName="aucSet" />
+        </mat-form-field>
+        <div *ngIf="isShowExistingData" class="text-danger margin-bottom-thin my-mat-hint">
+          {{ 'มีข้อมูลในระบบแล้ว' }}<span>&nbsp;</span>
+        </div>
+        <!-- <spig-error-msg
+          *ngIf="getControl('aucSet')?.hasError('existed')"
+          [control]="getControl('aucSet')"
+          [customErrorMsg]="'มีข้อมูลในระบบแล้ว'">
+        </spig-error-msg> -->
+      </div>
+      <div fxFlex="33%">
+        <mat-form-field class="input-full-field border-black-40 min-width-pct-50">
+          <mat-label>{{ 'ลำดับที่' | translate }}</mat-label>
+          <input matInput type="text" formControlName="fbidnum" />
+        </mat-form-field>
+        <!-- <spig-error-msg
+          *ngIf="getControl('fbidnum')?.hasError('required')"
+          [control]="getControl('fbidnum')"
+          [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+        </spig-error-msg> -->
+        <div *ngIf="isShowExistingData" class="text-danger margin-bottom-thin my-mat-hint">
+          {{ 'มีข้อมูลในระบบแล้ว' }}<span>&nbsp;</span>
+        </div>
+        <!-- <spig-error-msg
+          *ngIf="getControl('fbidnum')?.hasError('existed')"
+          [control]="getControl('fbidnum')"
+          [customErrorMsg]="'มีข้อมูลในระบบแล้ว'">
+        </spig-error-msg> -->
+      </div>
+    </div>
+  </div>
+  <!-- <br *ngIf="!isShowExistingData">
+  <br *ngIf="!isShowExistingData"> -->
+  <br>
+</ng-container>

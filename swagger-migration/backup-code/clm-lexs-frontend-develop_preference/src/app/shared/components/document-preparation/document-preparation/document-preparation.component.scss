@@ -1,0 +1,31 @@
+@import '/src/styles/colors';
+@import '/src/styles/mixins';
+
+.document-prep-info-card {
+  @include mat-card-content-box;
+
+  .title-row {
+    line-height: 50px;
+  }
+}
+
+.header-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: map-get($ktb-palette-golden-yellow, 600);
+  width: 24px;
+  height: 24px;
+  border-radius: 12px;
+
+  .header-icon {
+    width: 12px;
+    color: $white;
+  }
+}
+
+::ng-deep app-document-preparation {
+  .mat-expansion-panel-body {
+    padding: 0px !important;
+  }
+}

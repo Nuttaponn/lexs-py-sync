@@ -1,0 +1,467 @@
+@import './variables';
+
+/* Override button style of Angular Material
+* By default, Button is 'flat' but in 'variables.scss', we set varaiable '$button-flat-force-drop-shadow' = true to force it to show box-shadow
+*/
+
+button {
+  font-size: $font-description;
+  cursor: pointer;
+
+  &.mat-mdc-button {
+    width: auto !important;
+    font-size: $font-description;
+    line-height: 158% !important;
+    background: map-get($ktb-palette-biz-black, 10);
+    color: map-get($ktb-palette-biz-black, 70);
+    border-radius: 8px;
+
+    &.long-button {
+      width: auto !important;
+      height: 56px !important;
+    }
+
+    &.medium-fw-button {
+      width: 100% !important;
+      height: 56px !important;
+    }
+
+    &.medium-button {
+      width: auto !important;
+      height: 56px !important;
+    }
+
+    &.medium-aw-button {
+      width: auto !important;
+      height: 56px !important;
+    }
+
+    &.small-button {
+      font-size: $font-sub-description;
+      width: auto !important;
+      height: 56px !important;
+    }
+
+    &.xsmall-aw-button {
+      font-size: $font-sub-description;
+      width: auto !important;
+      height: 42px !important;
+    }
+
+    &.mat-ghost {
+      border: 0px;
+      background-color: transparent;
+      color: map-get($ktb-palette-biz-black, 80);
+
+      &[disabled] {
+        border: 0px !important;
+      }
+    }
+  }
+
+  &.mat-mdc-raised-button {
+    &.xsmall-aw-button {
+      font-size: $font-sub-description;
+      width: auto !important;
+      height: 42px !important;
+    }
+
+    &.long-button {
+      width: auto !important;
+      height: 56px !important;
+    }
+
+    &.box-shadow-none {
+      box-shadow: none !important;
+    }
+
+    &.stroked-border-gray {
+      border-radius: 8px;
+      border: 1px solid map-get($ktb-palette-biz-black, 50);
+      color: map-get($ktb-palette-biz-black, 70);
+    }
+  }
+
+  &.mat-mdc-unelevated-button {
+    // width: auto !important;
+    // font-size: $font-description !important;
+    line-height: 158% !important;
+    border-radius: 8px;
+
+    &.xlong-aw-button {
+      width: auto !important;
+      height: 61px !important;
+    }
+
+    &.long-button {
+      width: auto !important;
+      height: 56px !important;
+    }
+
+    &.long-aw-button {
+      width: auto !important;
+      height: 56px !important;
+    }
+
+    &.medium-fw-button {
+      width: 100% !important;
+      height: 56px !important;
+    }
+
+    &.medium-button {
+      width: auto !important;
+      height: 56px !important;
+    }
+
+    &.medium-aw-button {
+      width: auto !important;
+      height: 56px !important;
+    }
+
+    &.small-button {
+      font-size: $font-sub-description;
+      width: auto !important;
+      height: 56px !important;
+    }
+
+    &.xsmall-aw-button {
+      font-size: $font-sub-description;
+      width: auto !important;
+      height: 42px !important;
+    }
+
+    &.mat-warn {
+      background-color: $krungthai-red !important;
+      color: $white;
+
+      mat-spinner {
+        stroke: $krungthai-red;
+      }
+    }
+
+    &.mat-accent {
+      background-color: $krungthai-green !important;
+    }
+
+    &[disabled] {
+      background-color: map-get($ktb-palette-biz-black, 10) !important;
+      color: map-get($ktb-palette-biz-black, 50) !important;
+      box-shadow: none !important;
+    }
+
+    &[disabled]:hover {
+      box-shadow: none !important;
+    }
+
+    &.mat-secondary {
+      background: $bg-almost-white;
+      color: $krungthai-blue;
+
+      &.mat-mdc-progress-spinner circle,
+      .mat-mdc-progress-spinner circle {
+        stroke: $krungthai-blue;
+      }
+    }
+
+    &.mat-secondary-warn {
+      background: map_get($ktb-palette-red, 100);
+      color: map_get($ktb-palette-red, 600);
+
+      &.mat-mdc-progress-spinner circle,
+      .mat-mdc-progress-spinner circle {
+        stroke: map_get($ktb-palette-red, 600);
+      }
+    }
+
+    &.mat-secondary-accent {
+      background: map_get($ktb-palette-green, 100);
+      color: map_get($ktb-palette-green, 600);
+
+      &.mat-mdc-progress-spinner circle,
+      .mat-mdc-progress-spinner circle {
+        stroke: map_get($ktb-palette-green, 600);
+      }
+    }
+
+    &.mat-mdc-progress-spinner circle,
+    .mat-mdc-progress-spinner circle {
+      stroke: $white;
+    }
+  }
+
+  &.mat-mdc-outlined-button {
+    width: auto !important;
+    font-size: $font-description;
+    line-height: 158% !important;
+    border-radius: 8px;
+    min-width: fit-content;
+    border: 0px solid transparent !important;
+    outline: 1px solid map_get($ktb-palette-biz-black, 50);
+    color: map_get($ktb-palette-biz-black, 80);
+    font-weight: 700;
+
+    @for $i from 1 through 100 {
+      $width: $i * 1%;
+
+      &.width-pct-#{$i}-button {
+        width: $width !important;
+        height: 56px !important;
+      }
+    }
+
+    &.md-border-radius {
+      border-radius: 4px;
+    }
+
+    &.long-button {
+      width: auto !important;
+      height: 56px !important;
+    }
+
+    &.medium-fw-button {
+      width: 100% !important;
+      height: 56px !important;
+    }
+
+    &.medium-7w-button {
+      width: 70% !important;
+      height: 56px !important;
+    }
+
+    &.medium-button {
+      width: auto !important;
+      height: 56px !important;
+    }
+
+    &.medium-aw-button {
+      width: auto !important;
+      height: 56px !important;
+    }
+
+    &.small-button {
+      font-size: $font-sub-description;
+      width: auto !important;
+      height: 56px !important;
+    }
+
+    &.xsmall-aw-button {
+      font-size: $font-sub-description;
+      width: auto !important;
+      height: 42px !important;
+    }
+
+    &.mat-primary {
+      color: $krungthai-blue;
+      outline-color: $krungthai-blue;
+    }
+
+    &.mat-primary:hover {
+      background-color: $bg-almost-white !important;
+      outline-color: $krungthai-blue !important;
+    }
+
+    &.mat-warn {
+      outline: 1px solid $krungthai-red !important;
+      color: $krungthai-red;
+
+      &.mat-mdc-progress-spinner circle,
+      .mat-mdc-progress-spinner circle {
+        stroke: $krungthai-red;
+      }
+    }
+
+    &.mat-accent {
+      color: map_get($ktb-palette-green, 600);
+
+      outline: 1px solid map_get($ktb-palette-green, 200);
+
+      &.mat-mdc-progress-spinner circle,
+      .mat-mdc-progress-spinner circle {
+        stroke: map_get($ktb-palette-green, 600);
+      }
+    }
+
+    &.border-blue {
+      outline: 1px solid $krungthai-blue !important;
+    }
+
+    &.border-black {
+      outline: 1px solid map-get($ktb-palette-biz-black, 40);
+    }
+
+    &.mat-black {
+      color: map_get($ktb-palette-biz-gray, 900);
+    }
+
+    &.mat-gray {
+      color: map-get($ktb-palette-biz-black, 70);
+      outline: 1px solid map-get($ktb-palette-biz-black, 50);
+
+      &.mat-mdc-progress-spinner circle,
+      .mat-mdc-progress-spinner circle {
+        stroke: map-get($ktb-palette-biz-black, 70);
+      }
+    }
+
+    &.mat-orange {
+      color: map_get($ktb-palette-golden-yellow, 700);
+
+      &.mat-mdc-progress-spinner circle,
+      .mat-mdc-progress-spinner circle {
+        stroke: map_get($ktb-palette-golden-yellow, 700);
+      }
+    }
+
+    &[disabled] {
+      color: map-get($ktb-palette-biz-black, 50) !important;
+      outline: 1px solid map-get($ktb-palette-biz-black, 30) !important;
+    }
+
+    &.mat-ghost {
+      border: 0px;
+
+      &[disabled] {
+        border: 0px !important;
+      }
+    }
+
+    &.mat-advance-search {
+      padding: 8px;
+      border-radius: 4px;
+      outline: 2px solid map-get($ktb-palette-biz-black, 30) !important;
+
+      &:hover {
+        outline-color: map-get($ktb-palette-biz-black, 30) !important;
+        background-color: map-get($ktb-palette-biz-black, 10) !important;
+      }
+
+      &.advance-active,
+      &:active {
+        background-color: map-get($ktb-palette-biz-black, 30) !important;
+        outline-color: map-get($ktb-palette-biz-black, 20) !important;
+      }
+    }
+
+    &:not(.mat-advance-search):hover {
+      outline: 2px solid map-get($ktb-palette-biz-black, 30);
+      background-color: map-get($ktb-palette-biz-black, 10);
+    }
+
+    &:not(.mat-advance-search):active {
+      outline: 2px solid map-get($ktb-palette-biz-black, 30);
+      background-color: map-get($ktb-palette-biz-black, 20);
+    }
+  }
+
+  &.mat-mdc-fab {
+    background-color: transparent !important;
+    box-shadow: none !important;
+
+    &.mat-primary {
+      color: $krungthai-blue;
+      outline-color: $krungthai-blue;
+    }
+
+    &.mat-primary:hover {
+      background-color: $bg-almost-white !important;
+      outline-color: $krungthai-blue !important;
+    }
+
+    &.mat-primary:active {
+      background-color: map-get($ktb-palette-blue, 30) !important;
+    }
+
+    &.mat-warn {
+      color: $krungthai-red;
+    }
+
+    &.mat-warn:hover {
+      background-color: map_get($ktb-palette-red, 100) !important;
+    }
+
+    &.mat-warn:active {
+      background-color: map_get($ktb-palette-red, 200) !important;
+    }
+
+    &.mat-accent {
+      color: $krungthai-green;
+    }
+
+    &.mat-accent:hover {
+      background-color: map_get($ktb-palette-green, 100) !important;
+    }
+
+    &.mat-accent:active {
+      background-color: map_get($ktb-palette-green, 200) !important;
+    }
+
+    &.mat-gray {
+      background-color: map-get($ktb-palette-biz-black, 20);
+      color: map-get($ktb-palette-biz-black, 60);
+    }
+
+    &.mat-gray:hover {
+      background-color: map-get($ktb-palette-biz-black, 10) !important;
+    }
+
+    &.mat-gray:active {
+      background-color: map-get($ktb-palette-biz-black, 20) !important;
+    }
+
+    &.mat-black-80 {
+      color: map_get($ktb-palette-biz-gray, 900);
+    }
+
+    &.mat-red-60 {
+      color: map_get($ktb-palette-red, 600);
+    }
+  }
+
+  &.overflow-ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &.expand-sub-btn {
+    &.active {
+      outline: 2px solid;
+      outline-color: map_get($ktb-palette-biz-black, 30);
+      background-color: map_get($ktb-palette-biz-black, 20);
+    }
+
+    &.inactive {
+      outline: 1px solid;
+      outline-color: map_get($ktb-palette-biz-black, 30);
+      background-color: $white;
+    }
+  }
+}
+
+mat-icon {
+  &.btn-icon svg {
+    width: 18.5px !important;
+    height: 18.5px !important;
+  }
+
+  &.btn-icon-fab svg {
+    width: auto !important;
+    height: 30px !important;
+  }
+}
+
+/* FIXED(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.
+*/
+.mat-mdc-icon-button .mat-mdc-focus-indicator {
+  display: none;
+}
+
+/* FIXED(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.
+*/
+.mat-mdc-focus-indicator {
+  background-color: transparent !important;
+}
+
+.mat-mdc-icon-button:hover .mat-mdc-button-persistent-ripple::before {
+  opacity: 0 !important;
+}

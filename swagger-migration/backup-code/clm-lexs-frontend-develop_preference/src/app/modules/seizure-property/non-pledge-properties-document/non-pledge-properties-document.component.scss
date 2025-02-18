@@ -1,0 +1,15 @@
+::ng-deep app-non-pledge-properties-document {
+  .sub-expansion:not(:last-child) {
+    border-bottom: none;
+  }
+  .app-document-header {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+  .mat-mdc-cell {
+    line-height: 1.6;
+  }
+  .custom-fns {
+    font-size: 16px;
+  }
+}

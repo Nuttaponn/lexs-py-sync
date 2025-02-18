@@ -1,0 +1,85 @@
+<div class="data-table-content">
+  <table mat-table [dataSource]="dataTableSource.filteredData">
+    <ng-container matColumnDef="no">
+      <th mat-header-cell *matHeaderCellDef class="text-center width-pct-5">
+        {{ 'COMMON.LABEL_NO' | translate }}
+      </th>
+      <td mat-cell *matCellDef="let element; let i = index" class="text-center width-pct-5">
+        {{ i + 1 }}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="fsubbidnum">
+      <th mat-header-cell *matHeaderCellDef>
+        {{ 'AUCTION_DETAIL.CASHIER_CHEQUE_COLLATERAL.PROPERTY_SET' | translate }}
+      </th>
+      <td mat-cell *matCellDef="let element">
+        <span class="link" (click)="navigateToPropertyDetail(element.fsubbidnum)">
+          {{ element.fsubbidnum ? ('PROPERTY.PROPERTY_SET_NUMBER' | translate) + ' ' + element.fsubbidnum : '-' }}
+        </span>
+      </td>
+    </ng-container>
+    <ng-container *ngIf="sectionName === 'COLLATERAL'" matColumnDef="amount">
+      <th mat-header-cell *matHeaderCellDef class="new-line text-right">
+        {{ 'AUCTION_DETAIL.CASHIER_CHEQUE_COLLATERAL.MARGIN_PRICE' | translate }}
+      </th>
+      <td mat-cell *matCellDef="let element" class="text-right">
+        {{ (element.amount | numberDecimal) || '-' }}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="buyerType">
+      <th mat-header-cell *matHeaderCellDef>
+        {{ 'AUCTION_DETAIL.CASHIER_CHEQUE_STAMP_DUTY.BUYER_TYPE' | translate }}
+      </th>
+      <td mat-cell *matCellDef="let element">
+        {{ 'RESULT_BUYER_TYPE.KTB' | translate }}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="soldPrice">
+      <th mat-header-cell *matHeaderCellDef class="new-line text-right">
+        {{ 'AUCTION_DETAIL.CASHIER_CHEQUE_STAMP_DUTY.AFFORDABLE_PRICE' | translate }}
+      </th>
+      <td mat-cell *matCellDef="let element" class="text-right">
+        {{ (element.soldPrice | numberDecimal) || '-' }}
+      </td>
+    </ng-container>
+    <ng-container *ngIf="sectionName === 'STAMP' || sectionName === 'ON_REQUEST'" matColumnDef="amount">
+      <th mat-header-cell *matHeaderCellDef class="new-line text-right">
+        {{ 'AUCTION_DETAIL.CASHIER_CHEQUE_STAMP_DUTY.STAMP_DUTY_FEE' | translate }}
+      </th>
+      <td mat-cell *matCellDef="let element" class="text-right">
+        {{ (element.amount | numberDecimal) || '-' }}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="orderPaymentDate">
+      <th mat-header-cell *matHeaderCellDef class="width-pct-20">
+        {{ 'AUCTION_DETAIL.CASHIER_CHEQUE_COLLATERAL.PAYMENT_DATE' | translate }}
+      </th>
+      <div *ngIf="!hasEditMode || !dataInfo.get('actionFlag')?.value">
+        <td mat-cell *matCellDef="let element" class="width-pct-20">
+          {{ element.orderPaymentDate | buddhistEra: 'DD/MM/yyyy' || '-' }}
+        </td>
+      </div>
+      <div *ngIf="hasEditMode && dataInfo.get('actionFlag')?.value">
+        <td mat-cell *matCellDef="let element" class="width-pct-20">
+          {{ (dataInfo.get('receiveCashierDate')?.value | buddhistEra: 'DD/MM/yyyy') || '-' }}
+        </td>
+      </div>
+    </ng-container>
+    <tr
+      mat-header-row
+      *matHeaderRowDef="sectionName === 'COLLATERAL' ? displayCollateralColumns : displayStampColumns"></tr>
+    <tr
+      mat-row
+      *matRowDef="let row; columns: sectionName === 'COLLATERAL' ? displayCollateralColumns : displayStampColumns"></tr>
+  </table>
+  <app-paginator
+    #paginator
+    *ngIf="dataTableSource.data.length > 0"
+    [pageSize]="pageSize"
+    [length]="dataTableSource.data.length"
+    (page)="onPaging($event)"></app-paginator>
+  <app-message-empty
+    *ngIf="!dataTableSource || dataTableSource.data.length === 0"
+    [message]="'COMMON.LABEL_PREFIX_NOT_FOUND'">
+  </app-message-empty>
+</div>

@@ -1,0 +1,93 @@
+<app-action-bar
+  (backButtonHandler)="onBack()"
+  [hasCancelButton]="actionBar.hasCancel"
+  (cancelButtonHandler)="onCancel()"
+  [hasSaveButton]="actionBar.hasSave"
+  [hasRejectButton]="actionBar.hasReject"
+  [hasPrimaryButton]="actionBar.hasPrimary"
+  [primaryButtonText]="'COURT.DECREE.UPLOAD_RECEIPT_CONFIRM'"
+  [primaryButtonIcon]="actionBar.primaryIcon!"
+  (primaryButtonHandler)="onSubmit()"
+  [showNavBarInformation]="true">
+  <ng-container navBarInformationTemplate>
+    <mat-icon svgIcon="icon-Check" class="icon icon-xmedium default-cursor"></mat-icon>
+    <span class="ml-8">{{ 'COURT.DECREE.UPLOAD_RECEIPT_TITLE' | translate }} </span>
+  </ng-container>
+</app-action-bar>
+<div class="content-below-action-bar-area execution-receipt-container">
+  <div class="content-container mat-elevation-z0">
+    <div class="title-content">
+      <h5>{{ 'COURT.DECREE.UPLOAD_RECEIPT_TITLE' | translate }}</h5>
+    </div>
+    <mat-divider></mat-divider>
+    <!-- จำเลย -->
+    <div fxLayout="row" class="p-32 pb-0">
+      <div fxFlex="15" class="text-align-right pr-64">
+        <h6>{{ 'COURT.LABEL_DEFENDANT' | translate }}</h6>
+      </div>
+      <div fxFlex="70">
+        <app-defendant-table [defendants]="defendants" [isSelectable]="false" [showId]="false"></app-defendant-table>
+      </div>
+      <div fxFlex="15"></div>
+    </div>
+    <!-- คำแถลงขอออกคำบังคับ -->
+    <div fxLayout="row" class="p-32 pb-0">
+      <div fxFlex="15" class="text-align-right pr-64">
+        <h6>{{ 'COURT.LABEL_DECREE_REQUEST' | translate }}</h6>
+      </div>
+      <div fxFlex="70">
+        <app-upload-file-table-auto-increment
+          [initialDocuments]="documents"
+          (documentChange)="onDocumentChange($event)"
+          [uploadMultiInfo]="uploadMultiInfo"></app-upload-file-table-auto-increment>
+        <span class="error-msg sub-desc mt-8" *ngIf="documentError">{{ 'COURT.UPLOAD_INCOMPLETE' | translate }}</span>
+      </div>
+      <div fxFlex="15"></div>
+    </div>
+    <!-- ข้อมูลใบเสร็จรับเงิน -->
+    <div fxLayout="row" class="p-32">
+      <div fxFlex="15" class="text-align-right pr-64">
+        <h6>{{ 'COURT.DECREE.UPLOAD_RECEIPT_INFO' | translate }}</h6>
+      </div>
+      <div fxFlex="70" fxLayout="column" fxLayoutGap="24">
+        <div fxLayout="row">
+          <div fxFlex="50">
+            <div class="pb-24">
+              <span class="thin-letter"
+                >{{ 'COURT.DECREE.UPLOAD_RECEIPT_LABEL_BLACK_CASE_NO' | translate }}{{ courtLevelText }}</span
+              ><br />
+              <span>{{ receiptInfo?.blackCaseNo }}</span>
+            </div>
+            <div>
+              <span class="thin-letter">{{ 'COURT.DECREE.UPLOAD_RECEIPT_LABEL_EXECUTION_FEE_DATE' | translate }}</span
+              ><br />
+              <span>{{ receiptInfo?.executionFeeDate | buddhistEra: 'DD/MM/yyyy' }}</span>
+            </div>
+          </div>
+          <div fxFlex="50">
+            <span class="thin-letter"
+              >{{ 'COURT.DECREE.UPLOAD_RECEIPT_LABEL_RED_CASE_NO' | translate }}{{ courtLevelText }}</span
+            ><br />
+            <span>{{ receiptInfo?.redCaseNo }}</span>
+          </div>
+        </div>
+        <div>
+          <app-upload-file-amount-table
+            [amountTableHeaderText]="'COURT.DECREE.TABLE_HEADER_UPLOAD_RECEIPT_AMOUNT'"
+            [fileTableHeaderText]="'COURT.DECREE.TABLE_HEADER_UPLOAD_RECEIPT_FILE'"
+            (documentChange)="onReceiptsChange($event)"
+            [uploadForm]="uploadForm"
+            [showTotal]="true"
+            [uploadMultiInfo]="uploadMultiInfo"
+            mode="EXECUTION_FEE"
+            [taskId]="taskId"
+            documentTemplateId="LEXSF065">
+          </app-upload-file-amount-table>
+          <app-message-banner type="fail" *ngIf="receipts[0]?.file" [message]="'COURT.DECREE.UPLOAD_RECEIPT_WARNING'">
+          </app-message-banner>
+        </div>
+      </div>
+      <div fxFlex="15"></div>
+    </div>
+  </div>
+</div>

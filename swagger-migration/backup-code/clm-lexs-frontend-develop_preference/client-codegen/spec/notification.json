@@ -1,0 +1,417 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "KTB Backend for Frontend APIs.",
+    "description": "Microservice: notification",
+    "contact": {
+      "name": "Krungthai Bank Public Company Limited",
+      "url": "https://krungthai.com",
+      "email": ""
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://lexsdev.krungthai/ktb/rest/lexs",
+      "description": "Generated server url"
+    }
+  ],
+  "paths": {
+    "/v1/notifications/markReadByRecipient": {
+      "post": {
+        "tags": [
+          "notification-controller"
+        ],
+        "operationId": "markReadByRecipient",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NotificationMarkReadRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationMarkReadResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/notifications/unreadCountByRecipient": {
+      "get": {
+        "tags": [
+          "notification-controller"
+        ],
+        "operationId": "unreadCountByRecipient",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotiUsersUnreadCountResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/notifications/messagesByRecipient": {
+      "get": {
+        "tags": [
+          "notification-controller"
+        ],
+        "operationId": "messagesByRecipient",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "U"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetNotificationByRecipientResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "NotificationMarkReadRequest": {
+        "type": "object",
+        "properties": {
+          "readMessages": {
+            "maxItems": 2147483647,
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReadMessage"
+            }
+          }
+        }
+      },
+      "ReadMessage": {
+        "required": [
+          "notiMessageId",
+          "readType"
+        ],
+        "type": "object",
+        "properties": {
+          "readType": {
+            "pattern": "M|H",
+            "type": "string"
+          },
+          "notiMessageId": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "FailureMessageModel": {
+        "type": "object",
+        "properties": {
+          "notiMessageId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "failureReason": {
+            "type": "string"
+          }
+        }
+      },
+      "NotificationMarkReadResponse": {
+        "type": "object",
+        "properties": {
+          "recipientUserId": {
+            "type": "string"
+          },
+          "successMessages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SuccessMessageModel"
+            }
+          },
+          "failureMessages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FailureMessageModel"
+            }
+          }
+        }
+      },
+      "SuccessMessageModel": {
+        "type": "object",
+        "properties": {
+          "notiMessageId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "readDatetime": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "NotiUsersUnreadCountResponse": {
+        "type": "object",
+        "properties": {
+          "recipientUserId": {
+            "type": "string"
+          },
+          "unreadCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "GetNotificationByRecipientResponse": {
+        "type": "object",
+        "properties": {
+          "recipientUserId": {
+            "type": "string"
+          },
+          "messages": {
+            "$ref": "#/components/schemas/PageMessageResponse"
+          }
+        }
+      },
+      "Hyperlink": {
+        "required": [
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "T",
+              "V",
+              "G",
+              "M"
+            ]
+          },
+          "viewCode": {
+            "type": "string"
+          },
+          "taskId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "params": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Param"
+            }
+          }
+        }
+      },
+      "MessageResponse": {
+        "type": "object",
+        "properties": {
+          "notiMessageId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "notiId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "sentDatetime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "readDatetime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string"
+          },
+          "senderUserId": {
+            "type": "string"
+          },
+          "messageHeader": {
+            "type": "string"
+          },
+          "messageDetails": {
+            "type": "string"
+          },
+          "litigationId": {
+            "type": "string"
+          },
+          "litigationCaseId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "financialId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "customerId": {
+            "type": "string"
+          },
+          "hyperlink": {
+            "$ref": "#/components/schemas/Hyperlink"
+          }
+        }
+      },
+      "PageMessageResponse": {
+        "type": "object",
+        "properties": {
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MessageResponse"
+            }
+          },
+          "number": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sort": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SortObject"
+            }
+          },
+          "numberOfElements": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageable": {
+            "$ref": "#/components/schemas/PageableObject"
+          },
+          "first": {
+            "type": "boolean"
+          },
+          "last": {
+            "type": "boolean"
+          },
+          "empty": {
+            "type": "boolean"
+          }
+        }
+      },
+      "PageableObject": {
+        "type": "object",
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "sort": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SortObject"
+            }
+          },
+          "paged": {
+            "type": "boolean"
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "unpaged": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Param": {
+        "required": [
+          "name",
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        }
+      },
+      "SortObject": {
+        "type": "object",
+        "properties": {
+          "direction": {
+            "type": "string"
+          },
+          "nullHandling": {
+            "type": "string"
+          },
+          "ascending": {
+            "type": "boolean"
+          },
+          "property": {
+            "type": "string"
+          },
+          "ignoreCase": {
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,302 @@
+<div class="content-container ml-0 mr-0">
+  <div class="pl-16 pr-16 pb-16">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+      <div fxLayout="row">
+        <h4>
+          {{
+            tabIndex === 0
+              ? ('LAWSUIT.DEFERMENT.PRESENTATION_LIST' | translate)
+              : tabIndex === 1
+                ? ('LAWSUIT.DEFERMENT.APPROVE_LIST' | translate)
+                : ('LAWSUIT.DEFERMENT.APPROVE_HISTORY' | translate)
+          }}
+        </h4>
+        <div *ngIf="!hasCeased && tabIndex === 1" class="ml-2em mt-24">
+          <mat-icon svgIcon="icon-Pause-Circle" class="icon icon-medium default-cursor fill-blue"></mat-icon>
+          <span class="ml-1em"
+            >{{ 'LAWSUIT.DEFERMENT.TOTAL_DEFERMENT_DAY' | translate }}:
+            <span class="bold">{{ getTotalDefermentDays(dataTable) }}</span>
+            วัน
+          </span>
+        </div>
+      </div>
+      <div fxLayout="row">
+        <button
+          *ngIf="tabIndex === 0 && (!isExecution || (isExecution && pExecution?.canDelay))"
+          class="xsmall-aw-button mr-1em"
+          mat-flat-button
+          color="primary"
+          (click)="gotoDefermentMain()">
+          <span *ngIf="_btnAction === 'DEFERMENT'; else cessation">
+            <mat-icon svgIcon="icon-Pause" class="icon icon-sm btn-icon"></mat-icon>
+          </span>
+          <ng-template #cessation>
+            <mat-icon svgIcon="icon-Record-Stop" class="icon icon-sm btn-icon"></mat-icon>
+          </ng-template>
+          <span *ngIf="_btnAction === 'DEFERMENT'">
+            {{ defermentCategory === 'PROSECUTE' ? ('LAWSUIT.DEFERMENT.SAVE_DEFERMENT' | translate) : '' }}
+            {{ defermentCategory === 'EXECUTION' ? ('LAWSUIT.DEFERMENT.EXECUTION_BTN' | translate) : '' }}
+          </span>
+          <span *ngIf="_btnAction !== 'DEFERMENT'">
+            {{ 'LAWSUIT.DEFERMENT.CESSATION_BTN' | translate }}
+          </span>
+        </button>
+        <div fxLayout="row">
+          <spig-dropdown
+            classInput="input-xsm long icon no-border"
+            [config]="lgidSortingConfig"
+            [options]="lgidSortingOptions"
+            [formControl]="lgidSortingCtrl"
+            (selectedOption)="filterByLGID()"></spig-dropdown>
+        </div>
+      </div>
+    </div>
+    <div class="data-table-content">
+      <ng-container
+        *ngTemplateOutlet="
+          defermentInfo;
+          context: { list: dataTable && dataTable.length > 0 ? dataTable : [{}] }
+        "></ng-container>
+      <ng-container *ngIf="!dataTable || dataTable?.length === 0" [ngTemplateOutlet]="dataNotFound"> </ng-container>
+    </div>
+  </div>
+</div>
+
+<ng-template #defermentInfo let-dataSource="list">
+  <div class="table-scroll" table-scroll>
+    <table mat-table [dataSource]="dataSource" [class.empty]="dataTable && dataTable.length === 0">
+      <ng-container matColumnDef="no" sticky>
+        <th class="text-center" mat-header-cell *matHeaderCellDef>
+          {{ 'COMMON.LABEL_NO' | translate }}
+        </th>
+        <td class="text-center" mat-cell *matCellDef="let element; let i = index">
+          {{ i + 1 }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="defermentDate" sticky>
+        <th mat-header-cell *matHeaderCellDef columnElevationLeft class="new-line">
+          {{
+            (_btnAction === 'CESSATION'
+              ? 'LAWSUIT.DEFERMENT.CESSATION_DATE'
+              : defermentCategory === 'EXECUTION'
+                ? 'LAWSUIT.DEFERMENT.DATE_EXCUTION'
+                : 'LAWSUIT.DEFERMENT.DATE'
+            ) | translate
+          }}
+        </th>
+        <td mat-cell *matCellDef="let element" columnElevationLeft>
+          <div class="link" (click)="goToDefermentDetail(element, element.actionFlag, tabIndex !== 0)">
+            {{ (element.startDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+          </div>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="type">
+        <th mat-header-cell *matHeaderCellDef>ประเภท</th>
+        <td mat-cell *matCellDef="let element">ชะลอบังคับคดี({{ defermentTypeMapper.get(element.defermentType) }})</td>
+      </ng-container>
+      <ng-container matColumnDef="lgCount">
+        <th mat-header-cell *matHeaderCellDef>จำนวนคดี</th>
+        <td mat-cell *matCellDef="let element; let index = index">
+          <span *ngIf="element?.litigationRedCaseDetail?.length <= 1">
+            {{ element?.litigationRedCaseDetail?.length }}
+          </span>
+          <span *ngIf="element?.litigationRedCaseDetail?.length > 1">
+            {{ element?.litigationRedCaseDetail?.length }}
+            <app-tooltip [iconClass]="['icon-small', 'fill-blue']" [params]="element.litigationRedCaseI"></app-tooltip>
+          </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="approveDate">
+        <th mat-header-cell *matHeaderCellDef class="new-line">
+          {{ 'LAWSUIT.DEFERMENT.APPROVAL_DATE' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ (element.approveDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="lgid">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'LAWSUIT.DEFERMENT.LGID' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <span *ngIf="element.defermentLitigationDebtInfos?.length === 1">
+            {{ element.defermentLitigationDebtInfos[0].litigationId || '-' }}
+          </span>
+          <span *ngIf="element.defermentLitigationDebtInfos?.length > 1">
+            {{ getLowestLGID(element.defermentLitigationDebtInfos) }}
+            <span> ({{ getOtherLGID(element.defermentLitigationDebtInfos).length }}+)</span>
+          </span>
+          <app-tooltip
+            *ngIf="element.defermentLitigationDebtInfos?.length > 1"
+            [params]="[
+              {
+                title: 'COMMON.LABEL_LITIGATION_ID' | translate,
+                content: '<b>' + getOtherLGID(element.defermentLitigationDebtInfos).join('<br>') + '</b>',
+              },
+            ]"
+            [iconClass]="['icon-small', 'fill-blue']"></app-tooltip>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="defermentCancelDate">
+        <th mat-header-cell *matHeaderCellDef class="new-line">
+          {{
+            (_btnAction === 'CESSATION'
+              ? 'LAWSUIT.DEFERMENT.CESSATION_CANCEL_DATE'
+              : defermentCategory === 'EXECUTION'
+                ? 'วันที่ยกเลิก\nชะลอบังคับคดี'
+                : 'LAWSUIT.DEFERMENT.CANCEL_DATE'
+            ) | translate
+          }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ (element.cancelDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="defermentReason">
+        <th mat-header-cell *matHeaderCellDef>
+          {{
+            (_btnAction === 'CESSATION'
+              ? 'LAWSUIT.DEFERMENT.CESSATION_REASON'
+              : defermentCategory === 'EXECUTION'
+                ? 'เหตุผลการชะลอบังคับคดี'
+                : 'LAWSUIT.DEFERMENT.REASON'
+            ) | translate
+          }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <span *ngIf="element.defermentReasonCode === '1013'; else dropdownValue">
+            {{ element.defermentReasonOther || '-' }}
+          </span>
+          <ng-template #dropdownValue>
+            {{ element.defermentReasonName || '-' }}
+          </ng-template>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="defermentDeadline">
+        <th mat-header-cell *matHeaderCellDef class="new-line">
+          {{
+            (_btnAction === 'CESSATION'
+              ? 'LAWSUIT.DEFERMENT.CANCEL_CESSATION_DATE'
+              : defermentCategory === 'EXECUTION'
+                ? 'วันที่ครบกำหนด\nชะลอบังคับคดี'
+                : 'LAWSUIT.DEFERMENT.FINAL_DATE'
+            ) | translate
+          }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ (element.endDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="defermentDuration">
+        <th mat-header-cell *matHeaderCellDef class="new-line">
+          {{ 'LAWSUIT.DEFERMENT.DURATION_NUMBER' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" class="text-right">
+          {{ element.defermentDays || '-' }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="document">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'LAWSUIT.DEFERMENT.DOCUMENT' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div *ngIf="element && element?.documents && element?.documents[0]?.imageId">
+            <div class="link" fxLayoutAlign="space-between center" fxLayoutGap="8">
+              <span (click)="openDoc(element.documents[0])" class="break-word"
+                >{{ element.documents[0].documentTemplate.documentName || '-' }}
+              </span>
+            </div>
+          </div>
+          <div *ngIf="element && element?.documents && element?.documents[1]?.imageId; else documentNotFound">
+            <div class="link" fxLayoutAlign="space-between center" fxLayoutGap="8">
+              <span (click)="openDoc(element.documents[1])" class="break-word"
+                >{{ element.documents[1].documentTemplate.documentName || '-' }}
+              </span>
+            </div>
+          </div>
+          <ng-template #documentNotFound>
+            <div>-</div>
+          </ng-template>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="defermentBy" [stickyEnd]="isExecution && tabIndex === 1">
+        <th mat-header-cell *matHeaderCellDef [columnElevationRight]="isExecution && tabIndex === 1">
+          {{ (_btnAction === 'CESSATION' ? 'LAWSUIT.DEFERMENT.BY_CESSATION' : 'LAWSUIT.DEFERMENT.BY') | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" [columnElevationRight]="isExecution && tabIndex === 1">
+          <div>{{ element.organizationCode || '-' }}</div>
+          <div>
+            {{ element.createdBy || '-' }} -
+            {{ element.createdByName || '-' }}
+          </div>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="status" stickyEnd>
+        <th mat-header-cell *matHeaderCellDef columnElevationRight>
+          {{ (tabIndex === 0 ? 'LAWSUIT.DEFERMENT.STATUS' : 'LAWSUIT.DEFERMENT.RESULT_STATUS') | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" columnElevationRight>
+          <div class="status-label size-auto" [ngClass]="element.defermentTaskStatus | defermentStatus">
+            {{ (element.defermentTaskStatus | defermentStatus: element.defermentTaskStatus) || '-' }}
+          </div>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="command" stickyEnd>
+        <th mat-header-cell *matHeaderCellDef class="action-cell text-center">
+          {{ 'COMMON.LABEL_COMMAND' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" class="action-cell">
+          <div fxLayout="row" *ngIf="element.actionFlag">
+            <button
+              *ngIf="
+                ((isExecution && pExecution?.canEditDelay) || !isExecution) &&
+                element.defermentTaskStatus === defermentStatusEnum.Draft
+              "
+              mat-stroked-button
+              (click)="toDeleteRecord(element)"
+              class="command-button mat-fab border-red mr-1em">
+              {{ 'COMMON.BUTTON_DELETE' | translate }}
+            </button>
+            <button
+              *ngIf="
+                ((isExecution && pExecution?.canEditDelay) || !isExecution) &&
+                (element.defermentTaskStatus === defermentStatusEnum.Draft ||
+                  element.defermentTaskStatus === defermentStatusEnum.Revise)
+              "
+              mat-stroked-button
+              (click)="toEditRecord(element)"
+              class="command-button mat-fab text-gray-700">
+              {{ 'COMMON.BUTTON_EDIT' | translate }}
+            </button>
+          </div>
+        </td>
+      </ng-container>
+      <tr
+        mat-header-row
+        *matHeaderRowDef="
+          tabIndex === 0 ? defermentColumn : tabIndex === 1 ? defermentListColumn : defermentHistoryColumn
+        "></tr>
+      <tr
+        mat-row
+        *matRowDef="
+          let row;
+          columns: tabIndex === 0 ? defermentColumn : tabIndex === 1 ? defermentListColumn : defermentHistoryColumn
+        "></tr>
+    </table>
+  </div>
+</ng-template>
+
+<!-- dataNotFound -->
+<ng-template #dataNotFound>
+  <app-message-empty
+    message="{{
+      (tabIndex === 0
+        ? 'LAWSUIT.DEFERMENT.PRESENT_NOT_FOUND'
+        : tabIndex === 1
+          ? 'LAWSUIT.DEFERMENT.APPROVE_NOT_FOUND'
+          : 'LAWSUIT.DEFERMENT.HISTORY_NOT_FOUND'
+      ) | translate
+    }}"></app-message-empty>
+</ng-template>

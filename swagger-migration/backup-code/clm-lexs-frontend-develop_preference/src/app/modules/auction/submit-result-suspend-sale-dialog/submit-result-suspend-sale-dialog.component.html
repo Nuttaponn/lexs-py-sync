@@ -1,0 +1,69 @@
+<div class="content">
+  <div>
+    <app-message-banner
+      type="warn-normal"
+      [icon]="'icon-Error'"
+      [message]="
+        'กรุณาตรวจสอบความถูกต้อง หลังจากกดปุ่ม “ยืนยันระบุเหตุผล” จะไม่สามารถกลับมาแก้ไขข้อมูลได้'
+      "></app-message-banner>
+  </div>
+  <div class="mt-20">
+    <div class="mb-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+      <h6 fxLayout="column" fxFlex="20">รายละเอียด</h6>
+      <div fxLayout="column" fxFlex="35" fxLayoutGap="12px">
+        <span class="thin-letter">ผลการขายทอดตลาด</span>
+        <div>งดการขาย</div>
+      </div>
+      <div fxLayout="column" fxFlex="35" fxLayoutGap="12px">
+        <span class="thin-letter">จำนวนชุดทรัพย์ที่เลือก</span>
+        <div>{{ selectItems.length }}</div>
+      </div>
+    </div>
+    <div class="mb-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+      <h6 fxLayout="row" fxFlex="20">เหตุผลที่งดการขาย<span class="fill-red">*</span></h6>
+      <div fxLayout="column" fxFlex="">
+        <div>
+          <div fxLayout="column" fxFlex>
+            <mat-radio-group (ngModelChange)="onRadioChange($event)" class="full-width" [formControl]="reason">
+              <div fxLayout="row" class="full-width">
+                <div fxFlex="28">
+                  <mat-radio-button value="UNLAWFUL_NOTICE">{{ 'ส่งหมายไม่ชอบ' | translate }}</mat-radio-button>
+                </div>
+                <div fxFlex="28">
+                  <mat-radio-button value="OTHER">{{ 'อื่นๆ' | translate }}</mat-radio-button>
+                </div>
+              </div>
+            </mat-radio-group>
+            <spig-error-msg [control]="reason" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED_2'"></spig-error-msg>
+          </div>
+        </div>
+        <div class="mt-8">
+          <mat-form-field class="input-full-field">
+            <mat-label>{{ 'COMMON.LABEL_REMARKS' | translate }}</mat-label>
+            <textarea
+              class="input-full-field"
+              type="text"
+              matInput
+              cdkTextareaAutosize
+              #autosize="cdkTextareaAutosize"
+              cdkAutosizeMinRows="5"
+              autocomplete="off"
+              [formControl]="remark"
+              [maxlength]="500"></textarea>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="mb-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+      <h6 fxLayout="row" fxFlex="22">รายละเอียดงดการขาย<span class="fill-red">*</span></h6>
+      <div fxLayout="column" fxFlex="78">
+        <app-suspend-detail-table
+          (onUpdateSelectItem)="updateSelectItem($event)"
+          [data]="bidDates"
+          [aucBiddingStatus]="aucBiddingStatus"
+          [aucRound]="aucRound"></app-suspend-detail-table>
+        <spig-error-msg [control]="selectedItem" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED_2'"></spig-error-msg>
+      </div>
+    </div>
+  </div>
+</div>

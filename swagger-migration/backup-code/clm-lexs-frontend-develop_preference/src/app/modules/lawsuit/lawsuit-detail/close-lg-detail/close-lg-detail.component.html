@@ -1,0 +1,473 @@
+<div class="card-container">
+  <div fxLayout="column" fxLayoutGap="48">
+    <div>
+      <h5 class="card-title-text">
+        {{ 'LAWSUIT.CLOSE.CLOSE_LITIGATION' | translate }}
+      </h5>
+      <mat-divider></mat-divider>
+    </div>
+    <div>
+      <div class="mb-16 bold">
+        {{ 'LAWSUIT.CLOSE.HEADER_ACCOUNT_INFO' | translate }}
+      </div>
+      <div class="table-scroll section" table-scroll>
+        <table mat-table [dataSource]="accountsDataSource" id="account-table">
+          <!-- Order -->
+          <ng-container matColumnDef="order" sticky>
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'COMMON.LABEL_NO' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let acc; let i = index">
+              <span *ngIf="!acc.isSum">{{ i + 1 }}</span>
+            </td>
+          </ng-container>
+          <!-- Account No -->
+          <ng-container matColumnDef="accountNo" sticky>
+            <th mat-header-cell *matHeaderCellDef>
+              <span>{{ 'LAWSUIT.CLOSE.TABLE_HEADER_ACCOUNT_NO' | translate }}</span>
+            </th>
+            <td mat-cell *matCellDef="let acc">
+              <span *ngIf="!acc.isSum">{{ acc.accountNo }}</span>
+            </td>
+          </ng-container>
+          <!-- Bill No -->
+          <ng-container matColumnDef="billNo" sticky>
+            <th mat-header-cell *matHeaderCellDef columnElevationLeft>
+              <span>{{ 'LAWSUIT.CLOSE.TABLE_HEADER_BILL_NO' | translate }}</span>
+            </th>
+            <td mat-cell *matCellDef="let acc" columnElevationLeft>
+              <span *ngIf="!acc.isSum">{{ acc.billNo }}</span>
+            </td>
+          </ng-container>
+          <!-- DPD -->
+          <ng-container matColumnDef="dpd">
+            <th mat-header-cell *matHeaderCellDef>
+              <span>{{ 'COMMON.LABEL_DPD' | translate }}</span>
+            </th>
+            <td mat-cell *matCellDef="let acc">
+              <span *ngIf="!acc.isSum">{{ acc.dpd | number }}</span>
+            </td>
+          </ng-container>
+          <!-- C-Final/Stage -->
+          <ng-container matColumnDef="cFinal">
+            <th mat-header-cell *matHeaderCellDef>
+              <span>{{ 'LAWSUIT.CLOSE.TABLE_HEADER_C_FINAL' | translate }}</span>
+            </th>
+            <td mat-cell *matCellDef="let acc">
+              <span *ngIf="!acc.isSum">{{ acc.cfinal || '-' }}</span>
+            </td>
+          </ng-container>
+          <!-- Debt Type -->
+          <ng-container matColumnDef="debtType">
+            <th mat-header-cell *matHeaderCellDef>
+              <span>{{ 'LAWSUIT.CLOSE.TABLE_HEADER_DEBT_TYPE' | translate }}</span>
+            </th>
+            <td mat-cell *matCellDef="let acc">
+              <span *ngIf="!acc.isSum">{{ acc.marketCode + ' - ' + acc.marketDescription }}</span>
+              <span *ngIf="acc.isSum">{{ 'LAWSUIT.CLOSE.TOTAL_DEBT' | translate }}</span>
+            </td>
+          </ng-container>
+          <!-- Total Debt -->
+          <ng-container matColumnDef="totalDebt">
+            <th mat-header-cell *matHeaderCellDef>
+              <span>{{ 'LAWSUIT.CLOSE.TABLE_HEADER_DEBT' | translate }}</span>
+            </th>
+            <td mat-cell *matCellDef="let acc">
+              <div *ngIf="!acc.isSum" class="text-right">
+                {{ sumDebt(acc) | numberDecimal }}
+              </div>
+              <div *ngIf="acc.isSum" class="bold align-right">
+                {{ litigationDetail.accountInfo?.summaryAll | numberDecimal }}
+              </div>
+            </td>
+          </ng-container>
+          <!-- Prescription Date -->
+          <ng-container matColumnDef="prescriptionDate">
+            <th mat-header-cell *matHeaderCellDef>
+              <span>{{ 'LAWSUIT.CLOSE.TABLE_HEADER_PRESCRIPTION_DATE' | translate }}</span>
+            </th>
+            <td mat-cell *matCellDef="let acc">
+              <span *ngIf="!acc.isSum">{{ acc.prescriptionDate | buddhistEra: 'DD/MM/YYYY' }}</span>
+            </td>
+          </ng-container>
+          <!-- Booking Center -->
+          <ng-container matColumnDef="bookingCenter">
+            <th mat-header-cell *matHeaderCellDef>
+              <span>{{ 'LAWSUIT.CLOSE.TABLE_HEADER_BOOKING_CENTER' | translate }}</span>
+            </th>
+            <td mat-cell *matCellDef="let acc">
+              <span *ngIf="!acc.isSum">{{ acc.bookingCode + ' - ' + acc.bookingName }}</span>
+            </td>
+          </ng-container>
+          <!-- Response Unit -->
+          <ng-container matColumnDef="responseUnit">
+            <th mat-header-cell *matHeaderCellDef>
+              <span>{{ 'LAWSUIT.CLOSE.TABLE_HEADER_RESPONSE_UNIT' | translate }}</span>
+            </th>
+            <td mat-cell *matCellDef="let acc">
+              <span *ngIf="!acc.isSum">{{ acc.responseBranchCode + ' - ' + acc.responseBranchName }}</span>
+            </td>
+          </ng-container>
+          <!-- TDR Tracking Result -->
+          <ng-container matColumnDef="tdrTrackingResult">
+            <th mat-header-cell *matHeaderCellDef>
+              <span>{{ 'LAWSUIT.CLOSE.TABLE_HEADER_TDR' | translate }}</span>
+            </th>
+            <td mat-cell *matCellDef="let acc">
+              <span *ngIf="!acc.isSum">{{ acc.tdrTrackingResult || '-' }}</span>
+            </td>
+          </ng-container>
+          <!-- LGID/Black Case No./Red Case No. -->
+          <ng-container matColumnDef="lgidBlackRedCaseNo">
+            <th mat-header-cell *matHeaderCellDef>
+              <span
+                >{{ 'COMMON.LABEL_LITIGATION_ID' | translate }}/<br />
+                {{ 'COMMON.LABEL_BLACK_CASE_NO' | translate }}/{{ 'COMMON.LABEL_RED_CASE_NO_2' | translate }}</span
+              >
+            </th>
+            <td mat-cell *matCellDef="let acc">
+              <span *ngIf="!acc.isSum">
+                <span *ngIf="acc.litigationId" class="link">{{ acc.litigationId }}</span>
+                <span *ngIf="!!!acc.litigationId">-</span><br />
+                <span>{{ acc.blackCaseNo || '-' }}</span
+                >/<span class="fill-red">{{ acc.redCaseNo || '-' }}</span>
+              </span>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="litigationStatus" stickyEnd>
+            <th mat-header-cell *matHeaderCellDef columnElevationRight>
+              <span>{{ 'LAWSUIT.CLOSE.TABLE_HEADER_LITIGATION_STATUS' | translate }}</span>
+            </th>
+            <td mat-cell *matCellDef="let acc" columnElevationRight>
+              <div class="status-label status-normal" *ngIf="!acc.isSum">
+                {{ acc.litigationStatus }}
+              </div>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="accountsDisplayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: accountsDisplayedColumns"></tr>
+        </table>
+        <ng-container
+          *ngIf="!!!accountsDataSource || accountsDataSource.length === 0"
+          [ngTemplateOutlet]="dataNotFound">
+        </ng-container>
+      </div>
+    </div>
+    <div>
+      <div class="mb-16 bold">
+        {{ 'LAWSUIT.CLOSE.HEADER_EXPENSE_INFO' | translate }}
+      </div>
+      <div class="section">
+        <table mat-table [dataSource]="expensesDataSource">
+          <!-- Order -->
+          <ng-container matColumnDef="order">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'COMMON.LABEL_NO' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let ex; let i = index">
+              <span>{{ i + 1 }}</span>
+            </td>
+          </ng-container>
+          <!-- Account No -->
+          <ng-container matColumnDef="accountNo">
+            <th mat-header-cell *matHeaderCellDef>
+              <span>{{ 'LAWSUIT.CLOSE.TABLE_HEADER_ACCOUNT_NO_EN' | translate }}</span>
+            </th>
+            <td mat-cell *matCellDef="let ex">
+              <span>{{ ex.accountNo }}</span>
+            </td>
+          </ng-container>
+          <!-- Spacing -->
+          <ng-container matColumnDef="space">
+            <th mat-header-cell *matHeaderCellDef>
+              <span></span>
+            </th>
+            <td mat-cell *matCellDef="let ex" class="align-right">
+              <div *ngIf="ex.isSum">
+                {{ 'LAWSUIT.CLOSE.TOTAL' | translate }}
+              </div>
+            </td>
+          </ng-container>
+          <!-- Balance -->
+          <ng-container matColumnDef="balance">
+            <th mat-header-cell *matHeaderCellDef class="align-right">
+              <span>{{ 'LAWSUIT.CLOSE.TABLE_HEADER_BALANCE' | translate }}</span>
+            </th>
+            <td mat-cell *matCellDef="let ex">
+              <div *ngIf="!ex.isSum" class="align-right">
+                {{ ex.balance | numberDecimal }}
+              </div>
+              <div *ngIf="ex.isSum" class="bold align-right">
+                {{ litigationDetail.expenseInfo?.totalBalance | numberDecimal }}
+              </div>
+            </td>
+          </ng-container>
+          <!-- Expense -->
+          <ng-container matColumnDef="expense">
+            <th mat-header-cell *matHeaderCellDef class="align-right">
+              <span>{{ 'LAWSUIT.CLOSE.TABLE_HEADER_EXPENSE' | translate }}</span>
+            </th>
+            <td mat-cell *matCellDef="let ex">
+              <div *ngIf="!ex.isSum" class="align-right">
+                {{ ex.expense | numberDecimal }}
+              </div>
+              <div *ngIf="ex.isSum" class="bold align-right">
+                {{ litigationDetail.expenseInfo?.totalExpense | numberDecimal }}
+              </div>
+            </td>
+          </ng-container>
+          <!-- Write Off Status -->
+          <ng-container matColumnDef="writeOffFlag">
+            <th mat-header-cell *matHeaderCellDef>
+              <span>{{ 'LAWSUIT.CLOSE.TABLE_HEADER_WRITE_OFF' | translate }}</span>
+            </th>
+            <td mat-cell *matCellDef="let ex">
+              <span>{{ ex.writeOffFlag }}</span>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="expensesDisplayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: expensesDisplayedColumns"></tr>
+        </table>
+        <ng-container
+          *ngIf="!!!expensesDataSource || expensesDataSource.length === 0"
+          [ngTemplateOutlet]="dataNotFound">
+        </ng-container>
+      </div>
+    </div>
+    <div>
+      <div class="mb-16 bold">
+        {{ 'LAWSUIT.CLOSE.HEADER_LITIGATION_RESULT' | translate }}
+      </div>
+      <div class="section">
+        <table mat-table [dataSource]="casesDataSource">
+          <!-- Order -->
+          <ng-container matColumnDef="order">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'COMMON.LABEL_NO' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let case; let i = index">
+              <span>{{ i + 1 }}</span>
+            </td>
+          </ng-container>
+          <!-- Case Type -->
+          <ng-container matColumnDef="caseType">
+            <th mat-header-cell *matHeaderCellDef>
+              <span>{{ 'LAWSUIT.CLOSE.TABLE_HEADER_CASE_TYPE' | translate }}</span>
+            </th>
+            <td mat-cell *matCellDef="let case">
+              <span>{{ case.caseType?.name }}</span>
+            </td>
+          </ng-container>
+          <!-- Black Case No -->
+          <ng-container matColumnDef="blackCaseNo">
+            <th mat-header-cell *matHeaderCellDef>
+              <span>{{ 'COMMON.LABEL_BLACK_CASE_NO' | translate }}</span>
+            </th>
+            <td mat-cell *matCellDef="let case">
+              <div>{{ case.blackCaseNo || '-' }}</div>
+            </td>
+          </ng-container>
+          <!-- Red Case No -->
+          <ng-container matColumnDef="redCaseNo">
+            <th mat-header-cell *matHeaderCellDef>
+              <span>{{ 'COMMON.LABEL_RED_CASE_NO_2' | translate }}</span>
+            </th>
+            <td mat-cell *matCellDef="let case">
+              <span>{{ case.redCaseNo || '-' }}</span>
+            </td>
+          </ng-container>
+          <!-- Court Verdict Type -->
+          <ng-container matColumnDef="courtVerdictType">
+            <th mat-header-cell *matHeaderCellDef>
+              <span>{{ 'LAWSUIT.CLOSE.TABLE_HEADER_COURT_VERDICT_TYPE' | translate }}</span>
+            </th>
+            <td mat-cell *matCellDef="let case">
+              <span>{{ case.courtVerdictType }}</span>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="casesDisplayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: casesDisplayedColumns"></tr>
+        </table>
+        <ng-container *ngIf="!!!casesDataSource || casesDataSource.length === 0" [ngTemplateOutlet]="dataNotFound">
+        </ng-container>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <div fxLayout="column" fxLayoutGap="64" [formGroup]="lgCloseForm">
+      <div fxFlex>
+        <div fxFlex="20" class="mr-16">
+          <span class="bold">{{ 'LAWSUIT.CLOSE.LABEL_CLOSURE_DETAIL' | translate }}</span>
+        </div>
+        <div fxFlex="60" fxLayout="column" fxLayoutGap="24">
+          <div fxLayout="row">
+            <div fxFlex="50">
+              <div class="label">
+                {{ 'LAWSUIT.CLOSE.LABEL_LITIGATION_DATE' | translate }}
+              </div>
+              <span>{{
+                litigationDetail.litigationDate ? (litigationDetail.litigationDate | buddhistEra: 'DD/MM/YYYY') : '-'
+              }}</span>
+            </div>
+            <div fxFlex="50">
+              <div class="label">
+                {{ 'LAWSUIT.CLOSE.LABEL_LITIGATION_CLOSE_DATE' | translate }}
+              </div>
+              <span>{{
+                litigationDetail.litigationCloseInfo?.litigationClosedDate
+                  ? (litigationDetail.litigationCloseInfo?.litigationClosedDate | buddhistEra: 'DD/MM/YYYY')
+                  : '-'
+              }}</span>
+            </div>
+          </div>
+          <div fxLayout="column" fxLayoutGap="16" *ngIf="isFormEditable">
+            <div>
+              <spig-dropdown
+                [config]="closeLgConditionConfig"
+                [options]="closeLgConditions"
+                formControlName="closeCondition"
+                [classInput]="'mb-8 ' + (dropdownHasErrors() && 'invalid')"></spig-dropdown>
+              <spig-error-msg [control]="getControl('closeCondition')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+              </spig-error-msg>
+            </div>
+            <div>
+              <mat-form-field class="full-width mb-8">
+                <mat-label>{{ 'LAWSUIT.CLOSE.LABEL_CLOSE_REASON' | translate }}</mat-label>
+                <textarea matInput required formControlName="closeReason" class="medium" maxlength="2000"></textarea>
+              </mat-form-field>
+              <spig-error-msg [control]="getControl('closeReason')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+              </spig-error-msg>
+            </div>
+          </div>
+          <div fxLayout="column" fxLayoutGap="24" *ngIf="!isFormEditable">
+            <div>
+              <div class="label">
+                {{ 'LAWSUIT.CLOSE.LABEL_CLOSE_CONDITION' | translate }}
+              </div>
+              <span>{{
+                closeLgConditionMap[litigationDetail.litigationCloseInfo?.closeLitigation || ''] || '-'
+              }}</span>
+            </div>
+            <div>
+              <div class="label">
+                {{ 'LAWSUIT.CLOSE.LABEL_CLOSE_REASON' | translate }}
+              </div>
+              <span>{{ litigationDetail.litigationCloseInfo?.closeReason || '-' }}</span>
+            </div>
+          </div>
+        </div>
+        <div fxFlex="20"></div>
+      </div>
+      <div
+        fxLayout="row"
+        *ngIf="
+          getControl('closeCondition')?.value === closeCondition.DeptClosed ||
+          (!isFormEditable && litigationDetail?.litigationCloseInfo?.closeLitigation === closeCondition.DeptClosed)
+        ">
+        <div fxFlex="20" class="mr-16">
+          <span class="bold">{{ 'LAWSUIT.CLOSE.DEBT_INFORMATION' | translate }}</span>
+        </div>
+        <div fxFlex="80" id="tableDebtInfos">
+          <table mat-table [dataSource]="litigationCaseDebtInfos">
+            <!-- ลำดับ -->
+            <ng-container matColumnDef="no">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'COMMON.LABEL_NO' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element; let i = index">
+                <span>{{ i + 1 }}</span>
+              </td>
+              <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
+            <!-- คดีหมายเลขดำ -->
+            <ng-container matColumnDef="blackCaseNo">
+              <th mat-header-cell *matHeaderCellDef>
+                <span>{{ 'COMMON.LABEL_BLACK_CASE_NO' | translate }}</span>
+              </th>
+              <td mat-cell *matCellDef="let element">
+                <div>{{ element.blackCaseNo || '-' }}</div>
+              </td>
+              <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
+            <!-- คดีหมายเลขแดง -->
+            <ng-container matColumnDef="redCaseNo">
+              <th mat-header-cell *matHeaderCellDef>
+                <span>{{ 'COMMON.LABEL_RED_CASE_NO_2' | translate }}</span>
+              </th>
+              <td mat-cell *matCellDef="let element">
+                <span>{{ element.redCaseNo || '-' }}</span>
+              </td>
+              <td mat-footer-cell *matFooterCellDef>
+                <span>{{ 'COMMON.TOTAL' | translate }}</span>
+              </td>
+            </ng-container>
+            <!-- ยอดชำระหนี้เสร็จสิ้น (บาท) -->
+            <ng-container matColumnDef="debtAmount">
+              <th mat-header-cell *matHeaderCellDef class="text-right">
+                <span>{{ 'LAWSUIT.CLOSE.DEBT_AMOUNT_COMPLETED' | translate }}</span>
+              </th>
+              <td mat-cell *matCellDef="let element; let index = index" class="text-right">
+                <span *ngIf="!isFormEditable">
+                  {{ (element.debtAmount | numberDecimal) || '-' }}
+                </span>
+                <ng-container *ngIf="isFormEditable">
+                  <mat-form-field class="no-label input-full-field border-black-40">
+                    <input
+                      class="text-right"
+                      matInput
+                      appNumberOnly="qualitative"
+                      type="text"
+                      [(ngModel)]="litigationCaseDebtInfos[index].debtAmount"
+                      [ngModelOptions]="{ standalone: true }" />
+                  </mat-form-field>
+                </ng-container>
+              </td>
+              <td mat-footer-cell *matFooterCellDef class="text-right">
+                <span class="bold">
+                  {{ (litigationCaseDebtInfos | arraySum: 'debtAmount' | numberDecimal) || '-' }}
+                </span>
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="debtInfosColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: debtInfosColumns"></tr>
+            <!-- รวมทั้งหมด footer column -->
+            <tr mat-footer-row *matFooterRowDef="debtInfosColumns"></tr>
+          </table>
+          <app-message-banner
+            *ngIf="isFormEditable"
+            [type]="'fail'"
+            [message]="'LAWSUIT.CLOSE.LAWYER_FEES_CALCULATION_MSG_BANNER'"></app-message-banner>
+        </div>
+      </div>
+      <div fxFlex *ngIf="isFormEditable">
+        <div fxFlex="20" class="mr-16">
+          <span class="bold">{{ 'LAWSUIT.CLOSE.LABEL_CONFIRM_CLOSE' | translate }}</span>
+        </div>
+        <div fxFlex="60">
+          <div fxLayout="row" class="mb-16">
+            <div class="elm-form mr-16">
+              <input type="checkbox" class="elm-radio-check elm-check" formControlName="checklist1" />
+              <label></label>
+            </div>
+            <span>{{ 'LAWSUIT.CLOSE.LABEL_CHECKLIST_1' | translate }}</span>
+          </div>
+          <div fxLayout="row" class="mb-16">
+            <div class="elm-form mr-16">
+              <input type="checkbox" class="elm-radio-check elm-check" formControlName="checklist2" />
+              <label></label>
+            </div>
+            <span>{{ 'LAWSUIT.CLOSE.LABEL_CHECKLIST_2' | translate }}</span>
+          </div>
+          <p class="error-msg" *ngIf="checkboxHasErrors()">
+            {{ 'COMMON.ERROR_MSG_REQUIRED_CHECKED' | translate }}
+          </p>
+        </div>
+        <div fxFlex="20"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #dataNotFound>
+  <app-message-empty [message]="'COMMON.LABEL_PREFIX_NOT_FOUND'"></app-message-empty>
+</ng-template>

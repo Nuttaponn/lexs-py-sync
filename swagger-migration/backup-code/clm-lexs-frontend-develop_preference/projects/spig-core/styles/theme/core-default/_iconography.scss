@@ -1,0 +1,164 @@
+@import "variables";
+@import "./breakpoints";
+
+mat-icon {
+  @mixin setFill($arg1) {
+    svg {
+      fill: $arg1;
+    }
+  }
+
+  &.fill-blue {
+    @include setFill(map_get($ktb-palette-blue, 500));
+  }
+
+  &.fill-krungthai-green {
+    @include setFill(#279400);
+  }
+
+  &.fill-krungthai-red {
+    @include setFill(#d0082c);
+  }
+
+  &.fill-gold {
+    @include setFill(map-get($ktb-palette-golden-yellow, 600));
+  }
+
+  &.fill-yellow {
+    @include setFill(map_get($ktb-palette-golden-yellow, 400));
+  }
+
+  &.fill-red {
+    @include setFill(map_get($ktb-palette-red, 550));
+  }
+
+  &.fill-krungthai-green {
+    @include setFill($krungthai-green);
+  }
+
+  &.fill-green {
+    @include setFill(map_get($ktb-palette-green, 300));
+  }
+
+  &.fill-green-600 {
+    @include setFill(map_get($ktb-palette-green, 600));
+  }
+
+  &.fill-black {
+    @include setFill(map_get($ktb-palette-biz-gray, 900));
+  }
+
+  &.fill-gray {
+    @include setFill(map_get($ktb-palette-biz-gray, 600));
+  }
+
+  &.fill-white {
+    @include setFill(map_get($ktb-palette-biz-gray, 300));
+  }
+
+  &.fill-white-100 {
+    @include setFill($white);
+  }
+
+  &.fill-disabled {
+    @include setFill(map_get($ktb-palette-biz-gray, 300));
+  }
+
+  &.fill-black-30 {
+    @include setFill(map_get($ktb-palette-biz-black, 30));
+  }
+
+  &.fill-black-60 {
+    @include setFill(map_get($ktb-palette-biz-black, 60));
+  }
+
+  &.fill-black-70 {
+    @include setFill(map_get($ktb-palette-biz-black, 70));
+  }
+
+  svg {
+    display: inline-block;
+    vertical-align: middle;
+    width: 32px;
+    height: 32px;
+
+    @include breakpoint(ktb-md) {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  &.icon-xsmall {
+    svg {
+      width: 12px;
+      height: 12px;
+    }
+  }
+
+  &.icon-small {
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  &.icon-small-xm {
+    svg {
+      width: 18.5px;
+      height: 18.5px;
+    }
+  }
+
+  &.icon-small-xl {
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  &.icon-error {
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  &.icon-xmedium {
+    svg {
+      width: 24px !important;
+      height: 24px !important;
+    }
+  }
+
+  &.icon-medium {
+    svg {
+      width: 30px !important;
+      height: 30px !important;
+
+      @include breakpoint(ktb-lte-md) {
+        width: 20px;
+        height: 20px;
+      }
+
+      // @include breakpoint(ktb-md) {
+      //     width: 28px !important;
+      //     height: 28px;
+      // }
+      // transform: scale(1.2);
+    }
+  }
+
+  &.icon-burg-menu {
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  &.icon-large {
+    svg {
+      width: 40px;
+      height: 40px;
+    }
+  }
+}

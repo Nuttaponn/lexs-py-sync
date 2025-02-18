@@ -1,0 +1,19 @@
+{
+  "DOPA": {
+    "CREATED_BY": "ผู้ส่งคำขอ",
+    "CREATED_DATE": "วันที่ส่งคำขอ",
+    "ID_NOT_FOUND": "ไม่พบหมายเลขบัตรประชาชนนี้ใน DOPA กรุณาตรวจสอบความถูกต้อง",
+    "LOGIN_MESSAGE_ALERT": "โปรดเข้าสู่ระบบ Agent ก่อนกด 'อัปเดทข้อมูล' DOPA",
+    "NOT_FOUND": "ไม่พบข้อมูล DOPA",
+    "TITLE": "ข้อมูล DOPA",
+    "UPDATE": "อัปเดทข้อมูล DOPA",
+    "UPDATE_DOPA": "อัปเดทข้อมูล DOPA",
+    "UPDATE_MESSAGE": "อยู่ระหว่างการอัปเดทข้อมูล DOPA ...",
+    "UPDATE_MESSAGE_COMPLETED": "ได้อัปเดทข้อมูล DOPA จำนวน {{COUNT_NUMBER}} รายการ แล้ว",
+    "UPDATE_MESSAGE_FAIL": "ไม่สามารถอัปเดทข้อมูล DOPA ได้ในขณะนี้ โปรดเข้าสู่ระบบ Agent ก่อนดำเนินการ",
+    "UPDATE_MESSAGE_TASK_NOTFOUND": "ไม่พบรายการคำร้องขออัปเดทข้อมูล DOPA",
+    "UPDATE_STATUS_BTN": "อัปเดตสถานะจาก DOPA",
+    "UPDATE_STATUS_MESSAGE_COMPLETED": "อัปเดตสถานะจาก DOPA แล้ว",
+    "UPDATE_TITLE_TASK_NOTFOUND": "ไม่สามารถอัปเดทข้อมูล DOPA"
+  }
+}

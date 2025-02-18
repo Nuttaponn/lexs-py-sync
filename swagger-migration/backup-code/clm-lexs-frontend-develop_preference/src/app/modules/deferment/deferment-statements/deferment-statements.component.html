@@ -1,0 +1,123 @@
+<div class="content-container ml-0 mr-0">
+  <div class="inner-container-padding">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+      <div class="title-text">
+        <h5 class="mt-12 mb-12">
+          {{ 'LAWSUIT.DEFERMENT.DEFERMENT_STATEMENT_TITLE' | translate }}
+        </h5>
+      </div>
+      <div fxLayout="row">
+        <div class="description" (click)="isOpened = !isOpened">
+          <mat-icon [svgIcon]="isOpened ? 'icon-Slide-Hide' : 'icon-Expand'" class="icon icon-hide-show fill-blue">
+          </mat-icon>
+          <span class="bold">{{
+            isOpened ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate)
+          }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <mat-accordion>
+    <mat-divider></mat-divider>
+    <mat-expansion-panel class="mt-24 mb-24" [expanded]="isOpened">
+      <div class="sub-container ml-16 mr-16" fxLayout="row" fxLayoutGap="2%">
+        <h6 fxFlex="15">
+          {{ (mode === 'EDIT' ? 'COMMON.DOCUMENT_UPLOADED' : 'LAWSUIT.DEFERMENT.DOCUMENT_LIST') | translate }}
+        </h6>
+        <div fxFlex="83">
+          <ng-container
+            *ngTemplateOutlet="
+              mode === 'EDIT' ? documentUploadEditTemplate : documentUploadViewTemplate;
+              context: { list: defermentUploadedFiles }
+            ">
+          </ng-container>
+        </div>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>
+<ng-template #documentUploadEditTemplate>
+  <app-upload-multi-file-content
+    [column]="documentUploadedColumnList"
+    [list]="defermentUploadedFiles"
+    [uploadFor]="'DEFERMENT_STATEMENT'"
+    [uploadMultiInfo]="uploadMultiInfo"
+    (uploadFileEvent)="onUploadFileEvent($event)"
+    (onSuspendAuctionEndDateChangeEvent)="onSuspendAuctionEndDateChange($event)"
+    [labelAcceptFile]="'UPLOAD_FILE.LABEL_HINT_DOCUMENT_PDF_JPG_JPEG_2'"
+    [readonly]="mode === 'VIEW'"></app-upload-multi-file-content>
+  <div *ngIf="!!uploadedFileCompleted" class="mt-16 color-red">
+    {{ 'UPLOAD_FILE.ERROR_FILE_UPLOAD_REQUIRED' | translate }}
+  </div>
+</ng-template>
+<ng-template let-dataSource="list" #documentUploadViewTemplate>
+  <div class="table-scroll section" table-scroll>
+    <table mat-table [dataSource]="dataSource">
+      <ng-container matColumnDef="no">
+        <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_NO' | translate }}</th>
+        <td mat-cell *matCellDef="let element; let rowIndex = index" class="text-center">{{ rowIndex + 1 }}</td>
+      </ng-container>
+      <ng-container matColumnDef="documentName">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'LAWSUIT.DEFERMENT.DEFERMENT_STATEMENT_UPLOAD_DOCUMENT_COLUMN.HEADER_DOCUMENT_NAME' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element; let rowIndex = index">
+          <div [class.link]="!!element.imageId" (click)="!!element.imageId ? onViewDocument(rowIndex) : null">
+            {{ element?.documentTemplate?.documentName || '-' }}
+          </div>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="collateralIds">
+        <th mat-header-cell *matHeaderCellDef>{{ 'AUCTION_LED_CARD.DEFERMENT_DEBT.COLLATERAL_NUMBER' | translate }}</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element?.attributes?.collateralIds?.[0] || '-' }}
+          <ng-container *ngIf="element?.attributes?.collateralIds && element?.attributes?.collateralIds.length > 1">
+            <app-tooltip
+              [params]="[
+                {
+                  title: 'LAWSUIT.TOOLTIP.TITLE_COLLATERAL_IDS' | translate,
+                  content: wrapperCollateralIds(element?.attributes?.collateralIds),
+                },
+              ]"></app-tooltip>
+          </ng-container>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="ledName">
+        <th mat-header-cell *matHeaderCellDef>{{ 'LAWSUIT.LEGAL_EXECUTION_OFFICE' | translate }}</th>
+        <td mat-cell *matCellDef="let element">{{ element?.attributes?.ledName || '-' }}</td>
+      </ng-container>
+      <ng-container matColumnDef="redCaseNo">
+        <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_RED_CASE_NO_2' | translate }}</th>
+        <td mat-cell *matCellDef="let element">{{ element?.attributes?.redCaseNo || '-' }}</td>
+      </ng-container>
+      <ng-container matColumnDef="uploadDate">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'LAWSUIT.DEFERMENT.DEFERMENT_STATEMENT_UPLOAD_DOCUMENT_COLUMN.HEADER_UPLOAD_DATE' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element?.documentDate | buddhistEra: 'DD/MM/yyyy' || '-' }}</td>
+      </ng-container>
+      <ng-container matColumnDef="suspendAuctionEndDate">
+        <th mat-header-cell *matHeaderCellDef class="new-line">
+          {{ 'LAWSUIT.DEFERMENT.SUSPEND_AUCTION_END_DATE' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element?.attributes?.suspendAuctionEndDate | buddhistEra: 'DD/MM/yyyy' || '-' }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="lawyerName" stickyEnd>
+        <th mat-header-cell *matHeaderCellDef columnElevationRight>
+          {{ 'COMMON.LABEL_RESPONSIBLE_LAWYER' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" columnElevationRight>{{ element?.attributes?.lawyerName || '-' }}</td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="documentUploadedColumnList"></tr>
+      <tr mat-row *matRowDef="let row; columns: documentUploadedColumnList"></tr>
+    </table>
+    <ng-container
+      *ngIf="defermentUploadedFiles && defermentUploadedFiles.length === 0"
+      [ngTemplateOutlet]="emptyDataListTemplate"></ng-container>
+  </div>
+</ng-template>
+<ng-template #emptyDataListTemplate>
+  <app-message-empty [message]="'COMMON.SEARCH_NOT_FOUND'"></app-message-empty>
+</ng-template>

@@ -1,0 +1,42 @@
+.wrap-tile {
+  display: flex;
+}
+
+.mat-mdc-dialog-title {
+  display: flex;
+}
+
+.content {
+  min-width: 720px;
+}
+
+.input-lg {
+  width: 70%;
+}
+
+/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
+.mat-mdc-form-field .mat-form-field-wrapper {
+  padding-right: 30px !important;
+}
+
+.justify-content-end {
+  justify-content: end;
+  padding-bottom: 1.5rem;
+}
+
+.w-132 {
+  width: 132px;
+}
+
+.dialog-content {
+  min-width: 720px;
+}
+
+button.mat-mdc-outlined-button {
+  border-color: unset !important;
+}
+
+.mat-mdc-outlined-button:not([class*='mat-elevation-z']),
+.mat-mdc-unelevated-button:not([class*='mat-elevation-z']) {
+  box-shadow: none;
+}

@@ -1,0 +1,434 @@
+<app-action-bar
+  (backButtonHandler)="onBack(false)"
+  [hasCancelButton]="actionBar.hasCancel"
+  (cancelButtonHandler)="onCancel()"
+  [hasSaveButton]="actionBar.hasSave"
+  [saveButtonText]="actionBar.saveText || 'COMMON.BUTTON_SAVE'"
+  [hasRejectButton]="actionBar.hasReject"
+  [rejectButtonText]="actionBar.rejectText || 'COMMON.BUTTON_REJECT'"
+  [rejectButtonIcon]="actionBar.rejectIcon || 'icon-Dismiss-Square'"
+  [hasPrimaryButton]="actionBar.hasPrimary"
+  [primaryButtonText]="actionBar.primaryText || ''"
+  [primaryButtonIcon]="actionBar.primaryIcon || 'icon-Selected'"
+  (primaryButtonHandler)="onSubmit()"
+  [showNavBarInformation]="true">
+  <ng-container navBarInformationTemplate>
+    <div>
+      <mat-icon [svgIcon]="titleIcon" class="icon icon-xmedium default-cursor"></mat-icon>
+      <span class="ml-05em">{{ title | translate }}</span>
+    </div>
+  </ng-container>
+</app-action-bar>
+
+<div class="content-below-action-bar-area">
+  <div>
+    <div class="content-container mat-elevation-z0">
+      <div class="title-content status-section" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="12px">
+        <div class="status-label">
+          <label class="labeldisbursementbannerheadtext bold"
+            >{{ 'FINANCE.EXPENSE_DETAIL.PAYMENT_LIST' | translate }}
+          </label>
+        </div>
+      </div>
+      <div fxLayout="row" class="title-content p-32">
+        <div fxFlex="17" class="text-align-right pl-10">
+          <h6>{{ 'FINANCE.EXPENSE_DETAIL.CASE_INFORMATION' | translate }}</h6>
+        </div>
+        <div fxFlex="68" fxLayout="column" fxLayoutGap="24">
+          <div fxLayout="row">
+            <div fxFlex="50">
+              <div class="pb-16">
+                <span class="thin-letter">LG ID</span><br />
+                <span>{{ datapass.lgId || '-' }} </span>
+                <div class="size-md fill-red bold">{{ datapass.debtSaleStatus || '' }}</div>
+              </div>
+              <div class="pb-16">
+                <span class="thin-letter">{{ 'FINANCE.DEBTOR_NAME' | translate }}</span
+                ><br />
+                <span>{{ datapass.customerName === ' ' ? '-' : datapass.customerName || '-' }}</span>
+              </div>
+              <div class="pb-16">
+                <span class="thin-letter">Response Unit</span><br />
+                <span>{{ datapass.responseUnitCode || '' }}-{{ datapass.responseUnitName || '' }}</span>
+              </div>
+            </div>
+            <div fxFlex="50">
+              <div class="pb-16">
+                <span class="thin-letter">{{ 'FINANCE.EXPENSE_DETAIL.BLACK_RED_CASE_NUMBER' | translate }}</span
+                ><br />
+                <span
+                  >{{ datapass.blackCaseNo || '-' }}/<span class="fill-red">{{
+                    datapass.redCaseNo || '-'
+                  }}</span></span
+                >
+              </div>
+              <div class="pb-16">
+                <span class="thin-letter">{{ 'FINANCE.EXPENSE_DETAIL.BRANCH' | translate }}</span
+                ><br />
+                <span>{{ datapass.branchCode || '' }}-{{ datapass.branchName || '' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="mode === MODE.ADD && !isAutoPay" fxFlex="15">
+          <button (click)="addPaymentList()" class="xsmall-aw-button" mat-stroked-button color="black">
+            <mat-icon svgIcon="icon-Edit" class="icon icon-sm btn-icon"></mat-icon>
+            {{ 'FINANCE.EXPENSE_DETAIL.CHOOSE_NEW_LG_ID' | translate }}
+          </button>
+        </div>
+      </div>
+
+      <!-- MVP 1.3 -->
+      <ng-container *ngIf="isShowWithdrawInfo; else elseWithdrawInfoTemplate">
+        <ng-container *ngIf="expenseGroup === 1; else withdrawalInfo">
+          <div fxLayout="row" class="title-content p-32">
+            <div fxFlex="17" class="text-align-right pl-10">
+              <h6>
+                {{ 'FINANCE.EXPENSE_DETAIL.WITHDRAWAL_INFORMATION' | translate }}
+              </h6>
+            </div>
+            <div fxFlex="68" fxLayout="column" fxLayoutGap="24">
+              <div fxLayout="row" class="display-flex-wrap">
+                <div *ngFor="let item of litigationDetailList" fxFlex="50" fxLayoutGap="24">
+                  <span class="thin-letter"
+                    >{{ item?.expenseTypeCode }}
+                    {{ item?.expenseSubTypeName }}
+                    (บาท)
+                  </span>
+                  <br />
+                  <span>{{ (item?.expenseAmount | numberDecimal) || '-' }}</span>
+                </div>
+                <div fxFlex="50" fxLayoutGap="24">
+                  <span class="thin-letter">
+                    {{ 'FINANCE.EXPENSE_DETAIL.NET_WITHDRAWAL_AMOUNT' | translate }}
+                  </span>
+                  <br />
+                  <span>
+                    {{ (sumLitigationDetailList | numberDecimal) || '-' }}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <ng-container *ngIf="mode === MODE.EDIT">
+              <div fxLayout="column" fxLayoutGap="24">
+                <button (click)="editWithdrawalInfo()" class="xsmall-aw-button" mat-stroked-button color="black">
+                  <mat-icon svgIcon="icon-Edit" class="icon icon-sm btn-icon"></mat-icon>
+                  {{ 'FINANCE.EXPENSE_WITHDRAWAL_INFO_DIALOG.TITLE' | translate }}
+                </button>
+              </div>
+            </ng-container>
+            <div fxFlex="15"></div>
+          </div>
+        </ng-container>
+
+        <ng-template #withdrawalInfo>
+          <div fxLayout="row" class="title-content p-32">
+            <div fxFlex="17" class="text-align-right pl-10">
+              <h6>
+                {{ 'FINANCE.EXPENSE_DETAIL.WITHDRAWAL_INFORMATION' | translate }}
+              </h6>
+            </div>
+            <div fxFlex="68" fxLayout="column" fxLayoutGap="24">
+              <div fxLayout="row">
+                <div fxFlex="50">
+                  <div *ngIf="mode === MODE.ADD || mode === MODE.EDIT" class="pb-24">
+                    <!-- <span class="thin-letter"></span><br>
+                <span>{{ datapass?.JUDGMENT_DEBT_AMOUNT || "-" }}</span> -->
+                    <mat-form-field
+                      *ngIf="datapass?.fieldName !== undefined"
+                      class="matdivwidth"
+                      color="primary"
+                      hideRequiredMarker>
+                      <mat-label>{{ datapass.fieldName || 'ยอดหนี้ตามคำพิพากษา (บาท)' }}</mat-label>
+                      <input
+                        matInput
+                        type="text"
+                        id="DEBTAMOUNT"
+                        #DEBTAMOUNTModel="ngModel"
+                        appNumberOnly="qualitative"
+                        [(ngModel)]="DEBTAMOUNT"
+                        (blur)="callcalculate()"
+                        (keydown.enter)="$any($event.target).blur()"
+                        placeholder="5000"
+                        required />
+                    </mat-form-field>
+                    <span *ngIf="datapass?.fieldName === undefined" class="thin-letter">{{
+                      'ยอดหนี้ตามคำพิพากษา (บาท)'
+                    }}</span
+                    ><br />
+                    <span *ngIf="datapass?.fieldName === undefined">{{
+                      (datatax.expenseAmount | numberDecimal) || '-'
+                    }}</span>
+                    <span
+                      class="required-error login-sub-description color-red pl-16 suberror"
+                      *ngIf="DEBTAMOUNTModel?.errors && DEBTAMOUNTModel?.touched"
+                      >{{ 'LOGIN.ERROR_REQUIRED' | translate }}</span
+                    >
+                  </div>
+                  <div *ngIf="mode === MODE.VIEW || mode === MODE.APPROVE" class="pb-24">
+                    <span class="thin-letter">{{ datatax.fieldName || 'ยอดหนี้ตามคำพิพากษา (บาท)' }}</span
+                    ><br />
+                    <span>{{ (datatax.fieldValue | numberDecimal) || '-' }}</span>
+                  </div>
+                </div>
+                <div fxFlex="50">
+                  <div class="pb-24">
+                    <span class="thin-letter">{{ 'FINANCE.EXPENSE_DETAIL.NET_WITHDRAWAL_AMOUNT' | translate }}</span
+                    ><br />
+                    <span>{{ (datatax.totalAmount | numberDecimal) || '-' }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div fxFlex="15"></div>
+          </div>
+        </ng-template>
+      </ng-container>
+
+      <!-- MVP 2.1.1 -->
+      <!-- start Enh link https://ktbinnovation.atlassian.net/wiki/spaces/LEXS/pages/3184918802/Enhancement+for+Execution+Expenses -->
+      <ng-template #elseWithdrawInfoTemplate>
+        <ng-container>
+          <div fxLayout="row" class="title-content p-32">
+            <div fxFlex="17" class="text-align-right pl-10">
+              <h6>
+                {{ 'FINANCE.EXPENSE_DETAIL.WITHDRAWAL_INFORMATION' | translate }}
+              </h6>
+            </div>
+            <div fxFlex="68" fxLayout="column" fxLayoutGap="24">
+              <div fxLayout="row">
+                <div fxFlex="50">
+                  <div class="pb-24">
+                    <span class="thin-letter">{{ datatax.fieldName || 'ค่าใช้จ่ายขอเบิก (บาท)' }}</span>
+                    <div>{{ (datatax.expenseAmount | numberDecimal) || '-' }}</div>
+                  </div>
+                </div>
+                <div fxFlex="50">
+                  <div class="pb-24">
+                    <span class="thin-letter">{{ 'FINANCE.EXPENSE_DETAIL.NET_WITHDRAWAL_AMOUNT' | translate }}</span>
+                    <div>{{ (datatax.totalAmount | numberDecimal) || '-' }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div fxFlex="15"></div>
+          </div>
+          <div *ngIf="datatax.expenseRateId === 'E82113'" fxLayout="row" class="title-content p-32">
+            <div fxFlex="17" class="text-align-right pl-10"></div>
+            <div fxFlex="68" fxLayout="column" fxLayoutGap="24">
+              <div fxLayout="row">
+                <div fxFlex="50">
+                  <div class="pb-24">
+                    <div class="thin-letter">ชำระหนี้เสร็จสิ้น (บาท)</div>
+                    <div>{{ (withdrawSeizureResponse.debtPaidAmount | numberDecimal) || '-' }}</div>
+                  </div>
+                </div>
+                <div fxFlex="50"></div>
+              </div>
+            </div>
+            <div fxFlex="15"></div>
+          </div>
+        </ng-container>
+      </ng-template>
+      <!-- end Enh link https://ktbinnovation.atlassian.net/wiki/spaces/LEXS/pages/3184918802/Enhancement+for+Execution+Expenses -->
+
+      <div *ngIf="isShowTaxInfo" class="pb-24" fxLayout="row" fxLayoutGap="12px">
+        <div fxFlex="98" class="text-align-right pl-16">
+          <div class="colordivhide">
+            <mat-accordion class="accordion-headers-align">
+              <div fxLayout="row" fxLayoutAlign="space-between center" class="title-content pl-12">
+                <div>
+                  <h6>
+                    {{ 'FINANCE.EXPENSE_DETAIL.TAX_INFORMATION' | translate }}
+                  </h6>
+                </div>
+                <div fxLayout="row">
+                  <div class="description" (click)="isOpened1 = !isOpened1">
+                    <mat-icon
+                      [svgIcon]="isOpened1 ? 'icon-Slide-Hide' : 'icon-Expand'"
+                      class="icon icon-hide-show icon-xmedium fill-blue mr-5">
+                    </mat-icon
+                    >{{
+                      isOpened1
+                        ? ('COMMON.ICON_EXPANSION_HIDE' | translate)
+                        : ('COMMON.ICON_EXPANSION_SHOW' | translate)
+                    }}
+                  </div>
+                </div>
+              </div>
+
+              <mat-expansion-panel [expanded]="isOpened1" hideToggle class="colordivhide nopaddingdivhide">
+                <div fxLayout="row">
+                  <div fxFlex="17"></div>
+                  <div fxFlex="68" fxLayout="column" fxLayoutGap="24">
+                    <div fxLayout="row">
+                      <div fxFlex="50">
+                        <div class="pb-24">
+                          <span class="thin-letter">{{
+                            'FINANCE.EXPENSE_DETAIL.WITHHOLDING_TAX_RATE' | translate
+                          }}</span
+                          ><br />
+                          <span class="text16">{{ datatax.whtRate || '-' }}</span>
+                        </div>
+                        <div class="pb-24">
+                          <span class="thin-letter">{{
+                            'FINANCE.EXPENSE_DETAIL.AMOUNT_OF_WITHHOLDING_TAX' | translate
+                          }}</span
+                          ><br />
+                          <span class="text16">{{ (datatax.wtAmount | numberDecimal) || '-' }}</span>
+                        </div>
+                        <div class="pb-24">
+                          <span class="thin-letter">{{ 'FINANCE.EXPENSE_DETAIL.NET_AMOUNT' | translate }}</span
+                          ><br />
+                          <span class="text16">{{ (datatax.totalAmount | numberDecimal) || '-' }}</span>
+                        </div>
+                      </div>
+                      <div fxFlex="50">
+                        <div class="pb-24">
+                          <span class="thin-letter">{{ 'FINANCE.VAT_RATE' | translate }} (%)</span><br />
+                          <span class="text16">{{ datatax.vatRate }}</span>
+                        </div>
+                        <div class="pb-24">
+                          <span class="thin-letter">{{ 'FINANCE.EXPENSE_DETAIL.AMOUNT_BEFORE_VAT' | translate }}</span
+                          ><br />
+                          <span class="text16">{{ (datatax.excludedVatAmount | numberDecimal) || '-' }}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div fxFlex="15"></div>
+                </div>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </div>
+        </div>
+      </div>
+      <ng-container *ngIf="!isCaseExecutionSeizureAsset || (isCaseExecutionSeizureAsset && expenseGroup === 2)">
+        <div fxLayout="row" fxLayoutGap="12px" class="divmargin">
+          <div fxFlex="15" class="text-align-right pl-26">
+            <h6>{{ 'FINANCE.EXPENSE_DETAIL.LIST_DOCUMENTS' | translate }}</h6>
+          </div>
+        </div>
+        <div fxLayout="row" fxLayoutGap="12px" class="pb-24">
+          <div fxFlex="98" class="text-align-right pl-26">
+            <table class="tablemargin" mat-table [dataSource]="dataSource">
+              <ng-container matColumnDef="no">
+                <th mat-header-cell *matHeaderCellDef class="text-center width-pct-5">
+                  {{ 'COMMON.LABEL_NO' | translate }}
+                </th>
+                <td mat-cell *matCellDef="let element; let i = index" class="text-center width-pct-5">
+                  {{ i + 1 }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="documentTemplate">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ 'FINANCE.EXPENSE_DETAIL.DOCUMENT_NAME' | translate }}
+                </th>
+                <td mat-cell *matCellDef="let element; let i = index">
+                  <span
+                    [ngClass]="element.imageId ? 'link' : ''"
+                    (click)="element.imageId ? onDownloadDocument(element) : ''">
+                    {{ element.documentTemplate.documentName }}</span
+                  >
+                  <label *ngIf="element.required && (!element.imageId || element.imageId === '')" class="color-red"
+                    >*</label
+                  >
+                  <br />
+                  <span
+                    *ngIf="
+                      submitted === true &&
+                      element.required &&
+                      (element.imageId === undefined || element.imageId === '')
+                    "
+                    class="color-red pl-16"
+                    >{{ 'UPLOAD_FILE.ERROR_FILE_UPLOAD_REQUIRED' | translate }}</span
+                  >
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="uploadUserId">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ 'FINANCE.EXPENSE_DETAIL.UPLOAD_DOCUMENTS_BY' | translate }}
+                </th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.uploadUserId === 'System' ? 'ระบบ LEXS' : element.uploadUserId || '-' }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="subjectTo">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ 'FINANCE.EXPENSE_DETAIL.AFFILIATION' | translate }}
+                </th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.subjectTo || '-' }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="documentDate">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ 'FINANCE.EXPENSE_DETAIL.LAST_TRANSACTION_DATE' | translate }}
+                </th>
+                <td mat-cell *matCellDef="let element">
+                  {{ (element?.documentDate | buddhistEra: 'DD/MM/yyyy HH:mm:ss') || '-' }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="delete">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let element; let i = index">
+                  <ng-container *ngIf="element.objectType === 'EXPENSE'">
+                    <mat-icon
+                      *ngIf="element.imageId"
+                      svgIcon="icon-Bin"
+                      class="icon btn-icon fill-red mr-10"
+                      (click)="onRemoveDocument(i, element?.isSubContract)"></mat-icon>
+                  </ng-container>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="active">
+                <th mat-header-cell *matHeaderCellDef class="text-center">
+                  {{ 'COMMON.LABEL_COMMAND' | translate }}
+                </th>
+                <td mat-cell *matCellDef="let element; let i = index" class="text-center">
+                  <ng-container *ngIf="element.objectType === 'EXPENSE' || isAutoPay">
+                    <input type="file" #fileUpload name="fileUpload" [accept]="acceptFile.toString()" class="hidden" />
+                    <button
+                      *ngIf="!(element.isUpload || element.imageId)"
+                      type="button"
+                      mat-flat-button
+                      color="primary"
+                      class="medium-fw-button"
+                      (click)="onUploadDocument(i, element.documentTemplateId, element.litigationId)">
+                      <mat-icon svgIcon="icon-Arrow-Upload" class="icon-xmedium"></mat-icon>
+                      {{ 'COMMON.BUTTON_UPLOAD' | translate }}
+                    </button>
+                    <button
+                      *ngIf="element.isUpload || element.imageId"
+                      type="button"
+                      mat-stroked-button
+                      class="medium-7w-button"
+                      (click)="onUploadDocument(i, element.documentTemplateId, element.litigationId)">
+                      <mat-icon svgIcon="icon-Arrow-Upload" class="icon-xmedium"></mat-icon>
+                      {{ 'COMMON.BUTTON_UPLOAD' | translate }}
+                    </button>
+                  </ng-container>
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            </table>
+            <ng-container *ngIf="dataSource.length === 0" [ngTemplateOutlet]="dataNotFound"></ng-container>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+  <div>
+    <app-expense-assets
+      *ngIf="isCaseExecutionSeizureAsset && expenseGroup !== 2"
+      [mode]="mode"
+      [dataForm]="expenseAssetFormGroup"
+      [transaction]="currentTransaction"
+      [submitted]="submitted"></app-expense-assets>
+  </div>
+</div>
+
+<ng-template #dataNotFound>
+  <app-message-empty [message]="'DOC_PREP.NOT_FOUND_DOC'"></app-message-empty>
+</ng-template>

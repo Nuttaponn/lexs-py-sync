@@ -1,0 +1,104 @@
+mat-icon {
+  height: initial !important;
+  width: initial !important;
+  cursor: pointer;
+
+  svg {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  // icon color
+  @mixin setFill($arg1) {
+    svg {
+      fill: $arg1;
+    }
+  }
+
+  &.icon-red,
+  &.fill-red {
+    @include setFill($krungthai-red);
+  }
+
+  &.icon-green,
+  &.fill-green {
+    @include setFill($krungthai-green);
+  }
+
+  &.icon-yellow,
+  &.fill-yellow {
+    @include setFill(map-get($ktb-palette-golden-yellow, 700));
+  }
+
+  &.icon-black-100,
+  &.fill-black-100 {
+    @include setFill(map-get($ktb-palette-biz-gray, 900));
+  }
+
+  &.icon-black-50,
+  &.fill-black-50 {
+    @include setFill(map-get($ktb-palette-biz-black, 50));
+  }
+
+  &.icon-blue &.fill-blue {
+    @include setFill($krungthai-blue);
+  }
+
+  &.icon-white &.fill-white {
+    @include setFill($white);
+  }
+
+  // icon size
+  &.icon-xxs {
+    svg {
+      @include box(10px, 10px);
+    }
+  }
+
+  &.icon-xs {
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  &.icon-sm-xm {
+    svg {
+      @include box(18px, 18px);
+    }
+  }
+
+  &.icon-sm {
+    svg {
+      @include box(20px, 20px);
+    }
+  }
+
+  &.icon-md {
+    svg {
+      @include box(24px, 24px);
+    }
+  }
+
+  &.icon-lg {
+    svg {
+      @include box(28px, 28px);
+    }
+  }
+
+  &.icon-xl {
+    svg {
+      @include box(36px, 36px);
+    }
+  }
+
+  &.icon-xxl {
+    svg {
+      @include box(44px, 44px);
+    }
+  }
+
+  &.default-cursor {
+    cursor: default;
+  }
+}

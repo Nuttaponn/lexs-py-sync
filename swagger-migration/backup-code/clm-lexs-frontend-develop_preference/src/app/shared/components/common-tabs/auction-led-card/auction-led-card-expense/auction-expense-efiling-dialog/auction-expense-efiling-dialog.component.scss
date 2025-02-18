@@ -1,0 +1,9 @@
+.container {
+  width: 560px !important;
+}
+
+::ng-deep app-auction-expense-efiling-dialog {
+  .banner-container {
+    margin: 2px;
+  }
+}

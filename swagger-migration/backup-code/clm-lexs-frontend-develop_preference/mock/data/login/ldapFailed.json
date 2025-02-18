@@ -1,0 +1,12 @@
+{
+  "errors":[
+    {
+      "code":"AD_UNAVAILABLE",
+      "message":"KLAW LDAP OR KTB AD failed",
+      "description":"KLAW LDAP OR KTB AD is unavailable",
+      "originalErrorCode":"52e",
+      "originalErrorDesc":"[LDAP: error code 99 - 80090308: LdapErr: DSID-0C090436, comment: AcceptSecurityContext error, data 52e, v23f0\u0000]",
+      "traceId":"cb4fdd65b7e4cbad"
+    }
+  ]
+}

@@ -1,0 +1,168 @@
+<div class="container">
+  <mat-card appearance="outlined" class="mat-elevation-z0 p-0">
+    <div class="header">
+      {{ 'LAWSUIT.DIALOG_CONFIRM_CONTENT_MERGE_LG' | translate }}
+    </div>
+    <mat-card-content>
+      <div class="data-table-content">
+        <div class="table-scroll" table-scroll>
+          <table mat-table [dataSource]="dataSource">
+            <!-- LG ID Column -->
+            <ng-container matColumnDef="lgId" sticky>
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'COMMON.LABEL_LITIGATION_ID' | translate }}/{{ 'LAWSUIT.HEAD_COLUMN_LITIGATION_STATUS' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.litigationId || '-' }}
+              </td>
+            </ng-container>
+            <!-- CIF/Debtor Column -->
+            <ng-container matColumnDef="cifNo" sticky>
+              <th columnElevationLeft mat-header-cell *matHeaderCellDef>
+                {{ 'LAWSUIT.HEAD_COLUMN_CIF_NO' | translate }}
+              </th>
+              <td columnElevationLeft mat-cell *matCellDef="let element">
+                <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="3px">
+                  <div fxFlex>{{ element.customerId || '-' }}</div>
+                  <div fxFlex>{{ element.customerName || '-' }}</div>
+                </div>
+              </td>
+            </ng-container>
+            <!-- HEAD_COLUMN_DUEDATE Column -->
+            <ng-container matColumnDef="duedate">
+              <th mat-header-cell *matHeaderCellDef>{{ 'LAWSUIT.HEAD_COLUMN_START_DUE_DATE' | translate }}</th>
+              <td mat-cell *matCellDef="let element">{{ element.prescriptionDate || '-' }}</td>
+            </ng-container>
+            <!-- HEAD_COLUMN_DPD Column -->
+            <ng-container matColumnDef="dpd">
+              <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_DPD' | translate }}</th>
+              <td mat-cell *matCellDef="let element">{{ (element.dpd | number) || '-' }}</td>
+            </ng-container>
+            <!-- HEAD_COLUMN_LAWYER Column -->
+            <ng-container matColumnDef="lawyer">
+              <th mat-header-cell *matHeaderCellDef>{{ 'LAWSUIT.HEAD_COLUMN_LAWYER_OFFICE' | translate }}</th>
+              <td mat-cell *matCellDef="let element">
+                <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="3px">
+                  <div fxFlex>{{ (element.lawyerOfficeCode || '') + '-' + (element.lawyerOfficeName || '') }}</div>
+                  <div fxFlex>{{ (element.lawyerId || '') + '-' + (element.lawyerName || '') }}</div>
+                </div>
+              </td>
+            </ng-container>
+            <!-- HEAD_COLUMN_RESPONSE_ID Column -->
+            <ng-container matColumnDef="responseId">
+              <th mat-header-cell *matHeaderCellDef>{{ 'LAWSUIT.HEAD_COLUMN_BRANCH_RESPONSE_UNIT' | translate }}</th>
+              <td mat-cell *matCellDef="let element">
+                <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="3px">
+                  <div fxFlex>{{ (element.ownerBranchCode || '') + '-' + (element.ownerBranchName || '') }}</div>
+                  <div fxFlex>
+                    {{ (element.amdResponseUnitCode || '') + '-' + (element.amdResponseUnitName || '') }}
+                  </div>
+                </div>
+              </td>
+            </ng-container>
+            <!-- HEAD_COLUMN_AO Column -->
+            <ng-container matColumnDef="ao">
+              <th mat-header-cell *matHeaderCellDef>{{ 'LAWSUIT.HEAD_COLUMN_KBD_AO' | translate }}</th>
+              <td mat-cell *matCellDef="let element; let i = index">
+                <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="3px">
+                  <div fxFlex>
+                    {{ element.kbdUserId || '-' }}
+                    <!-- //TODO LEX2-312 change-label-and-data kdn + kbd to kdn(กบม) -->
+                    <app-tooltip
+                      [params]="[
+                        {
+                          title: 'LAWSUIT.TOOLTIP.TITLE_KBD' | translate,
+                          content:
+                            element.kbdUserId && element.kbdUserName
+                              ? element.kbdUserId + ' - ' + element.kbdUserName
+                              : '-',
+                        },
+                        {
+                          title: 'LAWSUIT.TOOLTIP.TITLE_AO' | translate,
+                          content: (element.aoUserId || '') + '-' + (element.aoUserName || ''),
+                        },
+                      ]">
+                    </app-tooltip>
+                  </div>
+                  <div fxFlex>{{ element.aoUserId || '-' }}</div>
+                </div>
+              </td>
+            </ng-container>
+            <!-- HEAD_COLUMN_ESCORT Column -->
+            <ng-container matColumnDef="escort" stickyEnd>
+              <th columnElevationRight mat-header-cell *matHeaderCellDef>
+                {{ 'LAWSUIT.HEAD_COLUMN_LG_STATUS_ESCORT' | translate }}
+              </th>
+              <td columnElevationRight mat-cell *matCellDef="let element">
+                <div class="table-btn-group" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="5px">
+                  <div fxFlex>
+                    <div
+                      *ngIf="element.litigationStatusDesc && element.litigationStatusDesc !== '-'"
+                      class="status-label status-normal">
+                      {{ element.litigationStatusDesc }}
+                    </div>
+                    <span *ngIf="!element.litigationStatusDesc || element.litigationStatusDesc === '-'"> - </span>
+                  </div>
+                  <div fxFlex>
+                    <div
+                      *ngIf="element.defermentStatus && element.defermentStatus !== '-'"
+                      class="status-label status-normal yellow-golden">
+                      {{ 'LAWSUIT.DEFERMANT_STATUS.' + element.defermentStatus | translate }}
+                    </div>
+                    <span *ngIf="!element.defermentStatus || element.defermentStatus === '-'"> - </span>
+                  </div>
+                </div>
+              </td>
+            </ng-container>
+            <!-- HEAD_COLUMN_FLAG Column -->
+            <ng-container matColumnDef="flag" stickyEnd>
+              <th mat-header-cell *matHeaderCellDef>{{ 'LAWSUIT.HEAD_COLUMN_FLAG' | translate }}</th>
+              <td mat-cell *matCellDef="let element">{{ element.flag || '-' }}</td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+          </table>
+        </div>
+      </div>
+    </mat-card-content>
+    <br />
+    <mat-card-content>
+      <div class="detail bold">{{ 'LAWSUIT.DIALOG_CONFIRM_FOOTER_MERGE_LG' | translate }}{{ expectedLgId || '-' }}</div>
+    </mat-card-content>
+    <mat-card-content>
+      <div class="data-table-content" *ngIf="dataSourcedoc && dataSourcedoc.length > 0">
+        <table mat-table [dataSource]="dataSourcedoc">
+          <ng-container matColumnDef="accountNo" sticky>
+            <th mat-header-cell *matHeaderCellDef>{{ 'CUSTOMER.ACCOUNT' | translate }}</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.accountNo }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="billNo" sticky>
+            <th mat-header-cell *matHeaderCellDef>{{ 'LAWSUIT.HEAD_COLUMN_BILL_NO' | translate }}</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.billNo }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="accountName" sticky>
+            <th mat-header-cell *matHeaderCellDef>{{ 'CUSTOMER.BANK_NAME' | translate }}</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.accountName }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="accountType" sticky>
+            <th mat-header-cell *matHeaderCellDef>{{ 'LAWSUIT.MERGE_LG_ID_PRODUCT' | translate }}</th>
+            <td mat-cell *matCellDef="let element">
+              {{ acctypeDesc(element.accountType) }}
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumnsdoc; sticky: true"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumnsdoc"></tr>
+        </table>
+        <app-message-banner [message]="'LAWSUIT.BANNER_LIMIT_ERROR'" [type]="'fail'" [icon]="'icon-Error'">
+        </app-message-banner>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

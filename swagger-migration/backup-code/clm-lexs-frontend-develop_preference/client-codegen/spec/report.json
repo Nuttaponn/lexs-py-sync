@@ -1,0 +1,438 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "KTB Backend for Frontend APIs.",
+    "description": "Microservice: report",
+    "contact": {
+      "name": "Krungthai Bank Public Company Limited",
+      "url": "https://krungthai.com",
+      "email": ""
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://lexsdev.krungthai/ktb/rest/lexs",
+      "description": "Generated server url"
+    }
+  ],
+  "paths": {
+    "/v1/workbench/litigation/litigation-status": {
+      "get": {
+        "tags": [
+          "workbench-controller"
+        ],
+        "operationId": "getLitigationStatusDashboardInfo",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LitigationStatusDashboard"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/workbench/litigation/deferment": {
+      "get": {
+        "tags": [
+          "workbench-controller"
+        ],
+        "operationId": "getLitigationDefermentDashboardInfo",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LitigationDefermentDashboard"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/workbench/litigation/deferment-exec": {
+      "get": {
+        "tags": [
+          "workbench-controller"
+        ],
+        "operationId": "getLitigationDefermentExecDashboardInfo",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LitigationDefermentExecDashboard"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/workbench/litigation/collateral-lexs-status": {
+      "get": {
+        "tags": [
+          "workbench-controller"
+        ],
+        "operationId": "getCollateralLexsStatusDashboardInfo",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollateralLexsStatusDashboard"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/workbench/financial/expense-status": {
+      "get": {
+        "tags": [
+          "workbench-controller"
+        ],
+        "operationId": "getExpenseDashboardInfo",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExpenseDashboard"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/workbench/customer/document": {
+      "get": {
+        "tags": [
+          "workbench-controller"
+        ],
+        "operationId": "getCustomerDocumentDashboardInfo",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerDashboard"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/workbench/auction/account-document-status": {
+      "get": {
+        "tags": [
+          "workbench-controller"
+        ],
+        "operationId": "getAccountDocumentStatusDashboardInfo",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountDocumentStatusDashboard"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/report/legal-executions/genSlaReport": {
+      "get": {
+        "tags": [
+          "ex-report-controller"
+        ],
+        "operationId": "downloadSLAReport",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {
+                "schema": {
+                  "type": "string",
+                  "format": "byte"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "LitigationStatusDashboard": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "description": "total",
+            "format": "int32"
+          },
+          "approveLitigation": {
+            "type": "integer",
+            "description": "อนุมัติดำเนินคดี : กลุ่มที่มีเลขที่กฎหมายแล้วแต่ยังไม่มีการบันทึกบอกกล่าว และไม่มีการชะลอดำเนินคดี",
+            "format": "int32"
+          },
+          "noticeLitigation": {
+            "type": "integer",
+            "description": "ยื่นบอกกล่าว : กลุ่มที่มีการบันทึกบอกกล่าวแล้วแต่ยังไม่มีเลขคดีดำ และไม่มีการชะลอดำเนินคดี",
+            "format": "int32"
+          },
+          "litigationInProgress": {
+            "type": "integer",
+            "description": "ดำเนินคดี : กลุ่มที่มีเลขคดีดำแล้วแต่ยังไม่มีการบันทึกผลการพิพากษา",
+            "format": "int32"
+          },
+          "deferLitigation": {
+            "type": "integer",
+            "description": "ชะลอดำเนินคดี : กลุ่มที่มีการชะลอดำเนินคดี",
+            "format": "int32"
+          },
+          "adjudicationLitigation": {
+            "type": "integer",
+            "description": "มีคำพิพากษา : กลุ่มที่มีการบันทึกผลการพิพากษาแล้ว",
+            "format": "int32"
+          },
+          "seizured": {
+            "type": "integer",
+            "description": "ยึดทรัพย์ : กลุ่มที่อยู่ระหว่างการถูกยึดทรัพย์",
+            "format": "int32"
+          },
+          "writOfExecution": {
+            "type": "integer",
+            "description": "ออกหมายบังคับคดี : กลุ่มที่มีการบันทึกผลออกหมายบังคับคดีแล้ว",
+            "format": "int32"
+          },
+          "auction": {
+            "type": "integer",
+            "description": "ขายทอดตลาด : กลุ่มที่อยู่ระหว่างการขายทรัพย์ทอดตลาด",
+            "format": "int32"
+          },
+          "deferExecution": {
+            "type": "integer",
+            "description": "ชะลอบังคับคดี : กลุ่มที่อยู่ระหว่างการชะลอบังคับคดี",
+            "format": "int32"
+          },
+          "assetInvestigation": {
+            "type": "integer",
+            "description": "สืบทรัพย์ : กลุ่มที่อยู่ระหว่างการสืบทรัพย์ในขั้นตอนต่างๆ",
+            "format": "int32"
+          }
+        }
+      },
+      "LitigationDefermentDashboard": {
+        "type": "object",
+        "properties": {
+          "noneDeferment": {
+            "type": "integer",
+            "description": "เลขที่กฎหมายที่ไม่มีการชะลอดำเนินคดี",
+            "format": "int32"
+          },
+          "noneNotice": {
+            "type": "integer",
+            "description": "ก่อนบอกกล่าว : ลูกหนี้ที่มีการชะลอดำเนินคดี โดยยังไม่มีการบันทึกบอกกล่าว",
+            "format": "int32"
+          },
+          "alreadyNotice": {
+            "type": "integer",
+            "description": "บอกกล่าวแล้ว : ลูกหนี้ที่มีการชะลอดำเนินคดี โดยมีการบันทึกบอกกล่าวแล้ว",
+            "format": "int32"
+          }
+        }
+      },
+      "LitigationDefermentExecDashboard": {
+        "type": "object",
+        "properties": {
+          "noneDefermentExec": {
+            "type": "integer",
+            "description": "เลขที่กฎหมายที่ไม่มีการชะลอบังคับคดี",
+            "format": "int32"
+          },
+          "deferExecWritOfExec": {
+            "type": "integer",
+            "description": "ก่อนออกหมายบังคับคดี",
+            "format": "int32"
+          },
+          "deferExecSeizure": {
+            "type": "integer",
+            "description": "อยู่ระหว่างยึดทรัพย์",
+            "format": "int32"
+          },
+          "deferExecAuction": {
+            "type": "integer",
+            "description": "อยู่ระหว่างขายทอดตลาด",
+            "format": "int32"
+          },
+          "deferExecOther": {
+            "type": "integer",
+            "description": "อื่นๆ",
+            "format": "int32"
+          }
+        }
+      },
+      "CollateralLexsStatusDashboard": {
+        "type": "object",
+        "properties": {
+          "pledge": {
+            "type": "integer",
+            "description": "ไม่ถูกอายัด/ยึด/ขาย",
+            "format": "int32"
+          },
+          "seizured": {
+            "type": "integer",
+            "description": "ยึดทรัพย์",
+            "format": "int32"
+          },
+          "onSale": {
+            "type": "integer",
+            "description": "อยู่ระหว่างขายทอดตลาด",
+            "format": "int32"
+          },
+          "pendingSale": {
+            "type": "integer",
+            "description": "รอประกาศขายทอดตลาดใหม่",
+            "format": "int32"
+          },
+          "sold": {
+            "type": "integer",
+            "description": "ขายทอดตลาดแล้ว",
+            "format": "int32"
+          }
+        }
+      },
+      "ExpenseDashboard": {
+        "type": "object",
+        "properties": {
+          "pendingVerification": {
+            "type": "integer",
+            "description": "จำนวนรายการเบิกงานที่รอตรวจสอบโดย KLAW",
+            "format": "int32"
+          },
+          "pendingApproval": {
+            "type": "integer",
+            "description": "จำนวนรายการเบิกงานที่รออนุมัติการจ่ายเงินโดย KTB",
+            "format": "int32"
+          },
+          "pendingReceiptUpload": {
+            "type": "integer",
+            "description": "จำนวนรายการเบิกงานที่รออัปโหลดใบเสร็จ",
+            "format": "int32"
+          },
+          "pendingVerificationKlawAuto": {
+            "type": "integer",
+            "description": "จำนวนรายการเบิกเงินอัโนมัติที่รอตรวจสอบโดย KLAW",
+            "format": "int32"
+          },
+          "pendingReceiptUploadAuto": {
+            "type": "integer",
+            "description": "จำนวนรายการเบิกงานที่รออัปโหลดใบเสร็จสำหรับรายการเบิกเงินอัตโนมัติ",
+            "format": "int32"
+          },
+          "pendingVerificationAuto": {
+            "type": "integer",
+            "description": "จำนวนรายการเบิกเงินที่รอตรวจสอบโดย KTB",
+            "format": "int32"
+          }
+        }
+      },
+      "CustomerDashboard": {
+        "type": "object",
+        "properties": {
+          "lexsDpd": {
+            "type": "integer",
+            "description": "LEXS_DPD คือ จำนวนวันผิดนัดชำระที่รายการของลูกค้าจะเข้าสู่ระบบ LEXS",
+            "format": "int32"
+          },
+          "litigationDpd": {
+            "type": "integer",
+            "description": "LITIGATION_DPD คือ จำนวนวันผิดนัดชำระที่จะเริ่มกระบวนการทางกฎหมาย",
+            "format": "int32"
+          },
+          "customerLexsDocumentDashboard": {
+            "$ref": "#/components/schemas/CustomerDocumentDashboard"
+          },
+          "customerLitigationDocumentDashboard": {
+            "$ref": "#/components/schemas/CustomerDocumentDashboard"
+          }
+        }
+      },
+      "CustomerDocumentDashboard": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "description": "ลูกหนี้ทั้งหมด",
+            "format": "int32"
+          },
+          "pendingNoticeDocumentCustomerNotOverDue": {
+            "type": "integer",
+            "description": "กลุ่มลูกหนี้ที่เอกสารบอกกล่าว(สำเนาเอกสาร) ยังไม่ครบถ้วน และเป็นลูกหนี้ที่ไม่เกิน SLA",
+            "format": "int32"
+          },
+          "pendingNoticeDocumentCustomerOverDue": {
+            "type": "integer",
+            "description": "กลุ่มลูกหนี้ที่เอกสารบอกกล่าว(สำเนาเอกสาร) ยังไม่ครบถ้วน  และเป็นลูกหนี้ที่เกิน SLA",
+            "format": "int32"
+          },
+          "pendingLitigationDocumentCustomerNotOverDue": {
+            "type": "integer",
+            "description": "กลุ่มลูกหนี้ที่เอกสารบอกกล่าวครบถ้วนแล้วแต่เอกสารฟ้อง(ต้นฉบับ) ยังไม่ครบถ้วน และเป็นลูกหนี้ที่ไม่เกิน SLA",
+            "format": "int32"
+          },
+          "pendingLitigationDocumentCustomerOverDue": {
+            "type": "integer",
+            "description": "กลุ่มลูกหนี้ที่เอกสารบอกกล่าวครบถ้วนแล้วแต่เอกสารฟ้อง(ต้นฉบับ) ยังไม่ครบถ้วน และเป็นลูกหนี้ที่เกิน SLA",
+            "format": "int32"
+          },
+          "finishedDocumentCustomer": {
+            "type": "integer",
+            "description": "กลุ่มลูกหนี้ที่มีเอกสารบอกกล่าวและเอกสารฟ้องครบถ้วนแล้ว",
+            "format": "int32"
+          }
+        },
+        "description": "กลุ่มลูกหนี้ที่มี DPD มากกว่า LITIGATION_DPD วันขึ้นไป"
+      },
+      "AccountDocumentStatusDashboard": {
+        "type": "object",
+        "properties": {
+          "followUp": {
+            "type": "integer",
+            "description": "อยู่ระหว่างติดตามบัญชีรับ-จ่าย",
+            "format": "int32"
+          },
+          "approval": {
+            "type": "integer",
+            "description": "อยู่ระหว่างตรวจบัญชีรับ-จ่าย",
+            "format": "int32"
+          },
+          "debtSettlement": {
+            "type": "integer",
+            "description": "อยู่ระหว่างหักชำระหนี้",
+            "format": "int32"
+          }
+        }
+      }
+    }
+  }
+}

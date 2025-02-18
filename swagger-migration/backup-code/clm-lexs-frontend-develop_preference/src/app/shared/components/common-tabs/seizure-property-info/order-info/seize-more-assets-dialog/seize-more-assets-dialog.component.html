@@ -1,0 +1,20 @@
+<div class="content">
+  <div class="mt-20">
+    <div fxLayout="row" class="disabled-elm-form">
+      <div fxFlex="30">
+        <h6>{{ 'เลือกประเภท' | translate }}</h6>
+      </div>
+      <div fxFlex>
+        <mat-radio-group
+          class="full-width"
+          [formControl]="assetType"
+          fxLayout="row"
+          fxLayoutAlign="start start"
+          fxLayoutGap="30px">
+          <mat-radio-button fxFlex="30" value="PLEDGE">{{ 'ทรัพย์จำนอง' | translate }}</mat-radio-button>
+          <mat-radio-button fxFlex="" value="NON_PLEDGE">{{ 'ทรัพย์นอกจำนอง' | translate }}</mat-radio-button>
+        </mat-radio-group>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,46 @@
+@import '/src/styles/colors';
+@import '/src/styles/typography';
+
+.info-container {
+  background: $white;
+  border-radius: 8px;
+  border: 1px solid map-get($ktb-palette-biz-black, 10);
+  /* Elevation/E1 */
+  box-shadow: 0px 2px 4px map-get($ktb-palette-biz-black, B008);
+  padding: 0 16px;
+  margin: 1em;
+
+  .title {
+    padding: 1.5em;
+  }
+
+  .sub-container {
+    margin: 1.5em;
+
+    .header {
+      font-weight: bold;
+      margin-right: 4em;
+    }
+
+    .radio-btn {
+      margin-right: 3em;
+      font-family: 'KrungthaiFastRegular';
+      font-weight: 500;
+      font-size: $font-description;
+      line-height: 125%;
+    }
+
+    .date-picker {
+      margin: 2em 26.5em 0em 0em;
+    }
+  }
+
+  .bg-color {
+    background-color: map-get($ktb-palette-blue, 50);
+    padding: 1em 2em 2em 1em;
+  }
+
+  ::ng-deep .mat-expansion-panel-body {
+    padding: 0 !important;
+  }
+}

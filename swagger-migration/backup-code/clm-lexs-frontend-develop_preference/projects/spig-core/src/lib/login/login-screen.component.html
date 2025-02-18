@@ -1,0 +1,71 @@
+<div class="login" [class.error]="!password && errorMessage">
+  <div class="version-text font-title" *ngIf="screenOptions.copyright" id="copy-right">
+    <mat-label>
+      {{ 'LOGIN.COPYRIGHT' | translate}}
+    </mat-label>
+  </div>
+  <div class="login-area">
+    <div *ngIf="screenOptions.showCampaign" class="login-campaign"></div>
+    <div class="login-form">
+      <div class="login-form-titlebar">
+        <div class="login-titlebar-logo"></div>
+      </div>
+      <div class="login-form-body">
+        <div class="hiddenTooltip" #tooltip="matTooltip" matTooltipClass="error-tooltip" matTooltipPosition="above"
+          [matTooltip]="errorMessage"></div>
+        <div class="login-form-area">
+          <div *ngIf="screenOptions.appLogo" class="login-form-logo">
+            <p *ngIf="screenOptions.welcomeHeader" class="login-form-head grey-text">{{ 'LOGIN.WELCOME' | translate }}
+            </p>
+            <p *ngIf="screenOptions.appTitle" class="login-form-head ktb-text">{{ 'LOGIN.APP_TITLE' | translate }}</p>
+          </div>
+          <div class="login-input-area">
+            <form #loginForm="ngForm" (ngSubmit)="login()">
+              <mat-form-field class="login-username-field" color="primary" hideRequiredMarker>
+                <mat-label>{{ 'LOGIN.LABEL_USER_ID' | translate }}</mat-label>
+                <input type="text" id="username" #usernameModel="ngModel" matInput
+                  placeholder="{{ 'LOGIN.PLACEHOLDER_USER_ID' | translate }}" name="username" [(ngModel)]="username"
+                  required autocomplete="off" (input)="valueChange()" [maxlength]="usernameLength">
+                <mat-icon class="error" matSuffix *ngIf="!password && errorMessage && !screenOptions.errorAsTooltip"
+                  (click)="$event.stopPropagation()" svgIcon="icon-Error"></mat-icon>
+              </mat-form-field>
+              <span class="required-error login-sub-description"
+                *ngIf="!errorMessage && usernameModel?.invalid && usernameModel?.touched">{{ 'LOGIN.ERROR_REQUIRED' |
+                translate }}</span>
+              <mat-form-field class="login-password-field"
+                [ngClass]="{'password-padding' : (!password && errorMessage)}" color="primary" hideRequiredMarker>
+                <mat-label>{{ 'LOGIN.LABEL_PASSWORD' | translate }}</mat-label>
+                <input id="password" #passwordModel="ngModel" [type]="hide ? 'password' : 'text'" matInput
+                  [placeholder]="(!password && errorMessage) ? '' : 'LOGIN.PLACEHOLDER_PASSWORD' | translate"
+                  name="password" [(ngModel)]="password" required autocomplete="off" (input)="valueChange()"
+                  [maxlength]="pwdLength">
+                <mat-icon
+                  [ngClass]="errorMessage && passwordModel?.invalid ? 'show-password-icon invalid':'show-password-icon valid'"
+                  matSuffix *ngIf="screenOptions.toggleShowPassword && (password || !errorMessage)" (click)="$event.stopPropagation();hide = !hide"
+                  svgIcon="{{hide? 'icon-hide' : 'icon-View'}}"></mat-icon>
+                <mat-icon class="error" matSuffix *ngIf="!password && errorMessage && !screenOptions.errorAsTooltip"
+                  svgIcon="icon-Error" (click)="$event.stopPropagation()"></mat-icon>
+              </mat-form-field>
+              <span class="required-error login-sub-description"
+                *ngIf="!errorMessage && passwordModel?.touched && passwordModel?.invalid">{{ 'LOGIN.ERROR_REQUIRED' |
+                translate }}</span>
+              <mat-error class="required-error login-sub-description"
+                *ngIf="username && password && errorMessage && !isTooltipErrorType">{{errorMessage}}</mat-error>
+              <button mat-flat-button id="btn-login"
+                [color]="(!!!screenOptions.alwaysEnableButton && loginForm.invalid) ? null : 'primary'"
+                class="bg-gradient long-button login-btn elevation-e2"
+                [ngClass]="{'disabled-button' : !!!screenOptions.alwaysEnableButton && (!username || !password || !!errorMessage)}"
+                [disabled]="!!!screenOptions.alwaysEnableButton && (!username || !password || !!errorMessage)">{{
+                'LOGIN.BUTTON_LOGIN' | translate }}</button>
+            </form>
+          </div>
+          <div *ngIf="screenOptions.remarkText" class="login-remark-text" [innerHTML]="('LOGIN.REMARK' | translate) | convertDomPipe">
+          </div>
+          <span *ngIf="screenOptions.remarkText && screenOptions.contactInfo" class="separator"></span>
+          <div *ngIf="screenOptions.contactInfo" class="login-contact" [innerHTML]="('LOGIN.CONTACT' | translate) | convertDomPipe"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

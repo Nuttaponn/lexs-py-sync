@@ -1,0 +1,39 @@
+@import '/src/styles/colors';
+
+button.neutral {
+  border: 1px solid map-get($ktb-palette-biz-black, 50);
+  color: map_get($ktb-palette-biz-gray, A400);
+}
+
+button.neutral:active {
+  border: 2px solid map-get($ktb-palette-biz-black, 30);
+  border-radius: 4px;
+  background-color: map-get($ktb-palette-biz-black, 20);
+}
+
+button.neutral:hover {
+  border: 2px solid map-get($ktb-palette-biz-black, 30);
+  border-radius: 4px;
+  background-color: map-get($ktb-palette-biz-black, 10);
+}
+
+.full-width,
+button.mat-advance-search.full-width {
+  width: 100% !important;
+}
+
+button.mat-advance-search {
+  margin-top: 1px !important;
+  height: 38px !important;
+  outline: none !important;
+  border: 1px solid map-get($ktb-palette-biz-black, 50) !important;
+  font-size: 14px;
+  font-family: KrungthaiFastBold;
+  color: #121212b2;
+  box-sizing: border-box;
+}
+
+.force-width-33 {
+  width: 33%;
+  max-width: 33%;
+}

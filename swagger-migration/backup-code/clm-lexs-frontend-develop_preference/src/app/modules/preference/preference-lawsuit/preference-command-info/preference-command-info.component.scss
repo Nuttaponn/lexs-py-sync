@@ -1,0 +1,31 @@
+.status-tag {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: bold;
+  display: inline-block;
+}
+
+.status-tag.pending {
+  color: #ff9800;
+  background-color: #fff3e0;
+}
+.status-tag.review {
+  color: #2196f3;
+  background-color: #e3f2fd;
+}
+
+.status-tag.revise {
+  color: #ff9800;
+  background-color: #fff3e0;
+}
+
+.status-tag.completed {
+  color: #4caf50;
+  background-color: #e8f5e9;
+}
+
+.status-tag.approved {
+  color: #4caf50;
+  background-color: #e8f5e9;
+}

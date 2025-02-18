@@ -1,0 +1,25 @@
+.detail-row,
+.detail-row-wrapper {
+  height: 0;
+}
+.reasons {
+  margin: 20px;
+}
+
+.name-cell {
+  width: auto;
+}
+.order-cell {
+  width: 5%;
+}
+.or-cell {
+  width: 15%;
+}
+.hasO-cell {
+  width: 20%;
+}
+.checkbox-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

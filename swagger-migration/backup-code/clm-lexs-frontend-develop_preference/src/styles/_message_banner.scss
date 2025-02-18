@@ -1,0 +1,180 @@
+@import './variables';
+
+.banner-container {
+  height: auto;
+  width: auto;
+  box-shadow: 0px 4px 8px map-get($ktb-palette-biz-black, B016);
+  white-space: pre-line;
+
+  &.black-info {
+    background-color: map-get($ktb-palette-biz-gray, 700);
+
+    mat-icon {
+      color: $white !important;
+    }
+  }
+
+  &.gray-info {
+    background-color: map-get($ktb-palette-biz-gray, 100);
+
+    mat-icon {
+      color: map-get($ktb-palette-biz-gray, 900) !important;
+    }
+  }
+
+  &.info {
+    background-color: map-get($ktb-palette-blue, 50);
+
+    mat-icon {
+      color: $krungthai-blue !important;
+    }
+  }
+
+  &.warn {
+    background-color: map-get($ktb-palette-golden-yellow, 100);
+
+    mat-icon {
+      color: map-get($ktb-palette-golden-yellow, 700);
+    }
+  }
+
+  &.warn-normal {
+    background-color: map-get($ktb-palette-golden-yellow, 50);
+
+    mat-icon {
+      color: map-get($ktb-palette-golden-yellow, 700);
+    }
+  }
+
+  &.fail {
+    background-color: map_get($ktb-palette-red, 100);
+
+    mat-icon {
+      color: map_get($ktb-palette-red, 600) !important;
+    }
+  }
+
+  &.fail-highlight {
+    background-color: map_get($ktb-palette-red, 600);
+  }
+
+  &.success {
+    background-color: map_get($ktb-palette-green, 100);
+    mat-icon {
+      color: $krungthai-green !important;
+    }
+  }
+
+  .banner-content {
+    padding: 10px 22px;
+    @include font-style(description, KrungthaiFastRegular, 400);
+    display: flex;
+    align-items: center;
+    color: map-get($ktb-palette-biz-gray, 900);
+
+    // size
+    &.auto {
+      height: auto;
+    }
+
+    &.large {
+      height: 72px;
+    }
+  }
+
+  .banner-content-fail-highlight {
+    padding: 10px 22px;
+    @include font-style(description, KrungthaiFastRegular, 700);
+    display: flex;
+    align-items: center;
+    color: $white;
+
+    // size
+    &.auto {
+      height: auto;
+    }
+
+    &.large {
+      height: 72px;
+    }
+  }
+
+  .element-inline {
+    place-content: center space-between;
+
+    .bold {
+      font-family: KrungthaiFastBold;
+    }
+
+    &.black-info {
+      color: $white !important;
+    }
+
+    &.btn {
+      @include font-style(sub-description, KrungthaiFastRegular);
+      background-color: transparent;
+      float: inline-end;
+      cursor: pointer;
+
+      &.black-info {
+        color: $white !important;
+      }
+
+      &.info {
+        color: $krungthai-blue !important;
+      }
+
+      &.warn {
+        color: map-get($ktb-palette-golden-yellow, 700);
+      }
+
+      &.fail {
+        color: map_get($ktb-palette-red, 600) !important;
+      }
+
+      &.fail-highlight {
+        color: map_get($ktb-palette-red, 600);
+        background-color: map_get($ktb-palette-red, 100);
+        padding: 1em;
+        border-radius: 0.6em;
+      }
+
+      &.black {
+        color: #121212 !important;
+        border: 1px solid map_get($ktb-palette-biz-black, B010) !important;
+      }
+
+      &.bold {
+        font-family: KrungthaiFastBold !important;
+      }
+
+      &.icon-black mat-icon {
+        color: map_get($ktb-palette-biz-gray, 900) !important;
+      }
+
+      &.icon-small-xm mat-icon svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      &.max-w-fit {
+        max-width: fit-content;
+      }
+    }
+
+    &.border {
+      border: 1px solid map_get($ktb-palette-red, 200);
+      border-radius: 8px;
+      padding: 8px;
+      color: map_get($ktb-palette-red, 600) !important;
+    }
+
+    &.non-border {
+      border: 0px;
+    }
+  }
+
+  .w-400 {
+    width: 400px;
+  }
+}

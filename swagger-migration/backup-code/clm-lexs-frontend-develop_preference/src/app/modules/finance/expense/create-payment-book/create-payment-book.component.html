@@ -1,0 +1,1493 @@
+<div [ngClass]="{ 'content-below-action-bar-area': !isFromTask }">
+  <div *ngIf="expenseStatusCode && expenseStatusCode !== 'DRAFT' && mode !== 'VIEW'" class="pt-16 pl-24 pr-24">
+    <app-message-banner [type]="'black-info'" [message]="expenseMsgMapper.get(expenseStatusCode) || ''">
+    </app-message-banner>
+  </div>
+  <div class="container" [formGroup]="dataForm">
+    <mat-card appearance="outlined" class="card">
+      <div class="header pt-0">
+        <div class="title pl-10 pr-10" fxLayout="row" fxLayoutAlign="space-between center">
+          <div class="mt-8 mb-8" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="12px">
+            <h3>
+              <!-- เลขที่หนังสือเบิกจ่ายเงิน -->
+              <span>
+                {{ 'FINANCE.EXPENSE_REQUEST_NO' | translate }}
+              </span>
+              <span class="divider-vertical"></span>
+              <span>{{ detail.expenseNo || '-' }}</span>
+            </h3>
+            <div
+              class="status-label"
+              *ngIf="detail?.expenseStatusName"
+              [ngClass]="
+                statusCode
+                  ? (statusCode | financeStatusBtn: 'EXPENSE_STATUS' : detail.expenseStatusCode || '')
+                  : detail.expenseStatusCode === 'DRAFT'
+                    ? 'status-info'
+                    : ''
+              ">
+              {{ detail.expenseStatusName }}
+            </div>
+          </div>
+          <div fxLayoutGap="12px">
+            <!-- ผู้รับผิดชอบงาน -->
+            {{ 'FINANCE.PERSON_IN_CHARGE' | translate }} :
+            {{ responsiblePerson }}
+          </div>
+        </div>
+        <div *ngIf="mode === MODE.ADD && !detail?.expenseNo" class="pl-10 pr-10">
+          <span class="fill-black-70 thin-letter">
+            <!-- ระบบจะแสดงเลขที่หนังสือเบิกจ่ายเงินหลังจากกด “บันทึกร่าง” หรือ “นำเสนอ” -->
+            {{ 'FINANCE.PAYMENT_BOOK_NO_DETAIL' | translate }}
+          </span>
+        </div>
+        <div *ngIf="taskCode === 'EXPENSE_CLAIM_CORRECTION'" class="pl-10 pr-10">
+          <span class="fill-black-70 thin-letter">
+            <!-- เลขที่หนังสือเบิกจ่ายเงินเดิม -->
+            {{ 'FINANCE.PAYMENT_BOOK_NO_REFERENCE' | translate }}
+            {{ detail.referenceExpenseNo || '-' }}
+          </span>
+        </div>
+      </div>
+      <mat-card-content>
+        <!-- accordion เหตุผลการพิจารณา -->
+        <mat-accordion *ngIf="exStatusAccordionReason" class="accordion-headers-align">
+          <div fxLayout="row" fxLayoutAlign="space-between center" class="accordion-headers-title">
+            <div>
+              <!-- เหตุผลการพิจารณา -->
+              <h6>
+                {{
+                  expenseStatusCode === 'PAYMENT_FAILED'
+                    ? ('FINANCE.TITLE_PAYMENT_FAILED_REASON' | translate)
+                    : ('FINANCE.TITLE_APPROVE_REASON' | translate)
+                }}
+              </h6>
+            </div>
+            <div fxLayout="row">
+              <div class="description" (click)="isOpened0 = !isOpened0">
+                <mat-icon
+                  [svgIcon]="isOpened0 ? 'icon-Slide-Hide' : 'icon-Expand'"
+                  class="icon icon-hide-show icon-xmedium fill-blue mr-5">
+                </mat-icon
+                >{{
+                  isOpened0 ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate)
+                }}
+              </div>
+            </div>
+          </div>
+          <mat-expansion-panel class="no-padding" [expanded]="isOpened0" hideToggle>
+            <div class="mb-16 mt-16" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+              <div fxLayout="column" fxFlex="25"></div>
+              <div fxLayout="column">
+                <span class="fill-black-70 thin-letter">
+                  <!-- หมายเหตุ -->
+                  {{ kbmReasonMapper.get(expenseStatusCode) || '' }}
+                </span>
+                <div class="pt-5 pb-5">
+                  <span *ngIf="reason || reasonNote">{{ reason ? reason + ' ' : '' }}{{ reasonNote || '' }}</span>
+                  <span *ngIf="!reason && !reasonNote">-</span>
+                </div>
+              </div>
+            </div>
+            <!-- Enhance sprint 3: LEX2-38468 remove this section
+            <ng-container *ngIf="expenseStatusCode === 'PENDING_DECIDE_REVERSE_EXPENSE_CLAIM'">
+              <div class="mb-16" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+                <div fxLayout="column" fxFlex="25"></div>
+                <div fxLayout="column">
+                  <span class="fill-black-70 thin-letter">
+                    {{ 'FINANCE.TITLE_REVERSE_EXPENSE_REJECT_REASON' | translate }}
+                  </span>
+                  <div class="pt-5 pb-5">
+                    <span *ngIf="reason || reasonNote">{{
+                      reason ? reason + ' ' : '' }}{{ reasonNote || ''
+                    }}</span>
+                    <span *ngIf="!reason && !reasonNote">-</span>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+            -->
+          </mat-expansion-panel>
+        </mat-accordion>
+
+        <!-- accordion ข้อมูลหนังสือเบิกจ่ายเงิน -->
+        <mat-accordion class="accordion-headers-align">
+          <div fxLayout="row" fxLayoutAlign="space-between center" class="accordion-headers-title mt-16">
+            <div>
+              <!-- ข้อมูลหนังสือเบิกจ่ายเงิน -->
+              <h6>{{ 'FINANCE.PAYMENT_BOOK_INFO' | translate }}</h6>
+            </div>
+            <div fxLayout="row">
+              <div class="description" (click)="isOpened1 = !isOpened1">
+                <mat-icon
+                  [svgIcon]="isOpened1 ? 'icon-Slide-Hide' : 'icon-Expand'"
+                  class="icon icon-hide-show icon-xmedium fill-blue mr-5">
+                </mat-icon
+                >{{
+                  isOpened1 ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate)
+                }}
+              </div>
+            </div>
+          </div>
+          <mat-expansion-panel class="no-padding" [expanded]="isOpened1" hideToggle>
+            <div class="mb-16" fxLayout="row" fxLayoutGap="16px">
+              <div fxLayout="column" fxFlex="25"></div>
+              <div fxLayout="column" fxFlex="37.5">
+                <!-- ขั้นตอนดำเนินคดีที่ขอเบิก -->
+                <ng-container *ngIf="mode === MODE.ADD || mode === MODE.EDIT">
+                  <spig-dropdown
+                    [options]="expenseStepType"
+                    [required]="true"
+                    classInput="input-normal"
+                    [config]="expenseStepTypeConfig"
+                    formControlName="stepCode"
+                    (selectedOption)="onSelectedExpenseStepType($event)">
+                  </spig-dropdown>
+                  <spig-error-msg [control]="getControl('stepCode')" [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'">
+                  </spig-error-msg>
+                </ng-container>
+                <ng-container *ngIf="mode === MODE.VIEW || mode === MODE.APPROVE">
+                  <span class="fill-black-70 thin-letter">
+                    {{ 'FINANCE.DISBURSEMENT_LITIGATION_STEP' | translate }}
+                  </span>
+                  <div class="pt-5 pb-5">
+                    {{ detail.stepName || '-' }}
+                  </div>
+                </ng-container>
+              </div>
+              <div fxLayout="column" fxFlex="37.5">
+                <!-- ขั้นตอนการดำเนินคดีย่อยที่ขอเบิก -->
+                <ng-container *ngIf="mode === MODE.ADD || mode === MODE.EDIT">
+                  <spig-dropdown
+                    [options]="expenseStepSubType"
+                    [required]="true"
+                    classInput="input-normal"
+                    [config]="expenseStepSubTypeConfig"
+                    formControlName="stepSubCode"
+                    (selectedOption)="onSelectedExpenseStepSubType($event)">
+                  </spig-dropdown>
+                  <spig-error-msg [control]="getControl('stepSubCode')" [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'">
+                  </spig-error-msg>
+                </ng-container>
+                <ng-container *ngIf="mode === MODE.VIEW || mode === MODE.APPROVE">
+                  <span class="fill-black-70 thin-letter">
+                    {{ 'FINANCE.SUB_DISBURSEMENT_LITIGATION_STEP' | translate }}
+                  </span>
+                  <div class="pt-5 pb-5">
+                    {{ detail.stepSubName || '-' }}
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+            <div class="mb-16" fxLayout="row" fxLayoutGap="16px">
+              <div fxLayout="column" fxFlex="25"></div>
+              <div fxLayout="column" fxFlex="37.5">
+                <!-- ประเภทค่าใช้จ่าย -->
+                <ng-container *ngIf="mode === MODE.ADD || mode === MODE.EDIT">
+                  <spig-dropdown
+                    *ngIf="getControl('stepSubCode')?.value"
+                    [options]="expenseType"
+                    [required]="true"
+                    classInput="input-normal"
+                    [config]="expenseTypeConfig"
+                    formControlName="expenseTypeCode"
+                    (selectedOption)="onSelectedExpenseType($event)">
+                  </spig-dropdown>
+                  <spig-error-msg
+                    *ngIf="getControl('stepSubCode')?.value"
+                    [control]="getControl('expenseTypeCode')"
+                    [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'">
+                  </spig-error-msg>
+                </ng-container>
+                <ng-container
+                  *ngIf="
+                    !(detail?.expenseGroup === 1 && detail?.stepCode === 'PROSECUTION') &&
+                    (mode === MODE.VIEW || mode === MODE.APPROVE)
+                  ">
+                  <span class="fill-black-70 thin-letter">
+                    {{ 'FINANCE.EXPENSE_TYPE' | translate }}
+                  </span>
+                  <div class="pt-5 pb-5">
+                    {{ detail.expenseTypeCode }}
+                    {{ detail.expenseTypeName || '-' }}
+                  </div>
+                </ng-container>
+              </div>
+              <div fxLayout="column" fxFlex="37.5">
+                <!-- ประเภทค่าใช้จ่ายย่อย -->
+                <ng-container *ngIf="mode === MODE.ADD || mode === MODE.EDIT">
+                  <spig-dropdown
+                    *ngIf="getControl('stepSubCode')?.value"
+                    [options]="expenseSubType"
+                    [required]="true"
+                    classInput="input-normal"
+                    [config]="expenseSubTypeConfig"
+                    formControlName="expenseSubTypeCode"
+                    (selectedOption)="onSelectedExpenseSubType($event)">
+                  </spig-dropdown>
+                  <spig-error-msg
+                    *ngIf="getControl('stepSubCode')?.value"
+                    [control]="getControl('expenseSubTypeCode')"
+                    [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'">
+                  </spig-error-msg>
+                </ng-container>
+                <ng-container
+                  *ngIf="
+                    !(detail?.expenseGroup === 1 && detail?.stepCode === 'PROSECUTION') &&
+                    (mode === MODE.VIEW || mode === MODE.APPROVE)
+                  ">
+                  <span class="fill-black-70 thin-letter">
+                    {{ 'FINANCE.SUB_EXPENSE_TYPE' | translate }}
+                  </span>
+                  <div class="pt-5 pb-5">
+                    {{ detail.expenseSubTypeName || '-' }}
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+            <div
+              *ngIf="mode === MODE.ADD || mode === MODE.EDIT"
+              class="mb-16"
+              fxLayout="row"
+              fxLayoutAlign="start center"
+              fxLayoutGap="16px">
+              <div fxLayout="column" fxFlex="25"></div>
+              <div fxLayout="column" fxFlex="75">
+                <app-message-banner
+                  *ngIf="
+                    (!getControl('expenseSubTypeCode')?.value ||
+                      !getControl('expenseSubTypeCode')?.value ||
+                      !getControl('expenseSubTypeCode')?.value ||
+                      !getControl('expenseSubTypeCode')?.value) &&
+                    isClickAddPaymentList
+                  "
+                  type="fail"
+                  [message]="'FINANCE.BANNER_BTN_ADD_PAYMENT_LIST'"></app-message-banner>
+              </div>
+            </div>
+            <ng-container
+              *ngIf="
+                mode === MODE.VIEW ||
+                mode === MODE.APPROVE ||
+                ((mode === MODE.ADD || mode === MODE.EDIT) && getControl('expenseSubTypeCode')?.value)
+              ">
+              <div class="mb-16" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+                <div fxLayout="column" fxFlex="25"></div>
+                <div fxLayout="column" fxFlex="37.5">
+                  <span class="fill-black-70 thin-letter">
+                    <!-- รหัสบัญชี -->
+                    {{ 'FINANCE.ACCOUNT_CODE' | translate }}
+                  </span>
+                  <div class="pt-5 pb-5">
+                    {{ detail.accountCode || '-' }}
+                  </div>
+                </div>
+                <div fxLayout="column" fxFlex="37.5">
+                  <span class="fill-black-70 thin-letter">
+                    <!-- ประเภทหนังสือเบิกเงิน -->
+                    {{ 'FINANCE.WITHDRAWAL_BOOK_TYPE' | translate }}
+                  </span>
+                  <div class="pt-5 pb-5">
+                    {{ detail.whtRate ? (detail.whtRate | whtType: 'translate') : '-' }}
+                  </div>
+                </div>
+              </div>
+              <div class="mb-16" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+                <div fxLayout="column" fxFlex="25"></div>
+                <div fxLayout="column" fxFlex="37.5">
+                  <span class="fill-black-70 thin-letter">
+                    <!-- ผู้รับเงิน -->
+                    {{ 'FINANCE.RECEIVER' | translate }}
+                  </span>
+                  <div class="pt-5 pb-5">
+                    {{ withholdingTaxInfo.receiverName || '-' }}
+                  </div>
+                </div>
+                <div fxLayout="column" fxFlex="37.5">
+                  <span class="fill-black-70 thin-letter">
+                    <!-- วิธีการจ่ายเงิน -->
+                    {{ 'FINANCE.PAYMENT_METHOD' | translate }}
+                  </span>
+                  <div class="pt-5 pb-5">
+                    {{ detail.paymentMethodName || '-' }}
+                  </div>
+                </div>
+              </div>
+              <div class="mb-16" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+                <div fxLayout="column" fxFlex="25"></div>
+                <div fxLayout="column" fxFlex="37.5">
+                  <span class="fill-black-70 thin-letter">
+                    <!-- ชื่อบัญชี -->
+                    {{ 'CUSTOMER.BANK_NAME' | translate }}
+                  </span>
+                  <div class="pt-5 pb-5">
+                    <ng-container *ngIf="mode === 'ADD' || mode === 'EDIT'; else notEditAccName">
+                      {{ withholdingTaxInfo.expenseTaxname || '-' }}
+                    </ng-container>
+                    <ng-template #notEditAccName>
+                      {{ detail.accountName || '-' }}
+                    </ng-template>
+                  </div>
+                </div>
+                <div fxLayout="column" fxFlex="37.5">
+                  <span class="fill-black-70 thin-letter">
+                    <!-- เลขที่บัญชี -->
+                    {{ 'CUSTOMER.ACCOUNT' | translate }}
+                  </span>
+                  <div class="pt-5 pb-5">
+                    <ng-container *ngIf="mode === 'ADD' || mode === 'EDIT'; else notEditAccNo">
+                      {{ withholdingTaxInfo.expenseAccountno || '-' }}
+                    </ng-container>
+                    <ng-template #notEditAccNo>
+                      {{ detail.accountNo || '-' }}
+                    </ng-template>
+                  </div>
+                </div>
+              </div>
+              <div class="mb-16" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+                <div fxLayout="column" fxFlex="25"></div>
+                <div fxLayout="column" fxFlex="75">
+                  <ng-container *ngIf="mode === MODE.ADD || mode === MODE.EDIT">
+                    <mat-form-field fxFlex>
+                      <mat-label>
+                        {{ 'COMMON.LABEL_REMARKS' | translate }}
+                      </mat-label>
+                      <textarea
+                        maxlength="500"
+                        matInput
+                        class="form-control no-resize"
+                        rows="5"
+                        formControlName="note"
+                        (blur)="onBlurMainRemarks()"></textarea>
+                    </mat-form-field>
+                  </ng-container>
+                  <ng-container *ngIf="mode === MODE.VIEW || mode === MODE.APPROVE">
+                    <span class="fill-black-70 thin-letter">
+                      {{ 'COMMON.LABEL_REMARKS' | translate }}
+                    </span>
+                    <div class="pt-5 pb-5">
+                      {{ detail.note || '-' }}
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+            </ng-container>
+          </mat-expansion-panel>
+        </mat-accordion>
+        <!-- accordion ข้อมูลการหักภาษี ณ ที่จ่าย -->
+        <mat-accordion
+          class="accordion-headers-align no-padding"
+          *ngIf="
+            (detail?.whtRate | whtType) !== '-' &&
+            (detail?.whtRate | whtType) !== 0 &&
+            getControl('expenseSubTypeCode')?.value
+          ">
+          <div fxLayout="row" fxLayoutAlign="space-between center" class="accordion-headers-title mt-16">
+            <div>
+              <!-- ข้อมูลการหักภาษี ณ ที่จ่าย -->
+              <h6>{{ 'FINANCE.WITHHOLDING_TAX_INFO' | translate }}</h6>
+            </div>
+            <div fxLayout="row">
+              <div class="description" (click)="isOpened2 = !isOpened2">
+                <mat-icon
+                  [svgIcon]="isOpened2 ? 'icon-Slide-Hide' : 'icon-Expand'"
+                  class="icon icon-hide-show icon-xmedium fill-blue mr-5">
+                </mat-icon
+                >{{
+                  isOpened2 ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate)
+                }}
+              </div>
+            </div>
+          </div>
+          <mat-expansion-panel [expanded]="isOpened2" hideToggle>
+            <div class="mb-16" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+              <div fxLayout="column" fxFlex="25"></div>
+              <div fxLayout="column" fxFlex="37.5">
+                <span class="fill-black-70 thin-letter">
+                  <!-- ประเภทเงินได้พึงประเมินที่จ่าย -->
+                  {{ 'FINANCE.INCOME_PAID_TYPE' | translate }}
+                </span>
+                <div class="pt-5 pb-5">
+                  {{ withholdingTaxInfo.expenseType || '-' }}
+                </div>
+              </div>
+              <div fxLayout="column" fxFlex="37.5">
+                <span class="fill-black-70 thin-letter">
+                  <!-- ประเภทธุรกิจ ของผู้ถูกหักภาษี ณ ที่จ่าย -->
+                  {{ 'FINANCE.WITHHOLDING_TAX_BUSINESS_TYPE' | translate }}
+                </span>
+                <div class="pt-5 pb-5">
+                  {{ withholdingTaxInfo.expenseBusinessType || '-' }}
+                </div>
+              </div>
+            </div>
+            <div class="mb-16" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+              <div fxLayout="column" fxFlex="25"></div>
+              <div fxLayout="column" fxFlex="37.5">
+                <span class="fill-black-70 thin-letter">
+                  <!-- เลขประจำตัวผู้เสียภาษีอากร/เลขบัตรประชาชน -->
+                  {{ 'COMMON.LABEL_TAX_ID' | translate }}/
+                  {{ 'COMMON.LABEL_NATIONAL_ID' | translate }}
+                </span>
+                <div class="pt-5 pb-5">
+                  {{ withholdingTaxInfo.expenseTaxno || '-' }}
+                </div>
+              </div>
+              <div fxLayout="column" fxFlex="37.5">
+                <span class="fill-black-70 thin-letter">
+                  <!-- ที่อยู่ -->
+                  {{ 'CUSTOMER.ADDRESS' | translate }}
+                </span>
+                <div class="pt-5 pb-5">
+                  {{ withholdingTaxInfo.addressLine || '-' }}
+                </div>
+              </div>
+            </div>
+            <div class="mb-16" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+              <div fxLayout="column" fxFlex="25"></div>
+              <div fxLayout="column" fxFlex="37.5">
+                <span class="fill-black-70 thin-letter">
+                  <!-- แขวง/ตำบล -->
+                  {{ 'COMMON.LABEL_SUB_DISTRICT' | translate }}
+                </span>
+                <div class="pt-5 pb-5">
+                  {{ withholdingTaxInfo.subdistrictName || '-' }}
+                </div>
+              </div>
+              <div fxLayout="column" fxFlex="37.5">
+                <span class="fill-black-70 thin-letter">
+                  <!-- เขต/อำเภอ -->
+                  {{ 'COMMON.LABEL_DISTRICT' | translate }}
+                </span>
+                <div class="pt-5 pb-5">
+                  {{ withholdingTaxInfo.districtName || '-' }}
+                </div>
+              </div>
+            </div>
+            <div class="mb-16" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+              <div fxLayout="column" fxFlex="25"></div>
+              <div fxLayout="column" fxFlex="37.5">
+                <span class="fill-black-70 thin-letter">
+                  <!-- จังหวัด -->
+                  {{ 'COMMON.LABEL_PROVICE' | translate }}
+                </span>
+                <div class="pt-5 pb-5">
+                  {{ withholdingTaxInfo.provinceName || '-' }}
+                </div>
+              </div>
+              <div fxLayout="column" fxFlex="37.5">
+                <span class="fill-black-70 thin-letter">
+                  <!-- รหัสไปรษณีย์ -->
+                  {{ 'COMMON.LABEL_POSTAL_CODE' | translate }}
+                </span>
+                <div class="pt-5 pb-5">
+                  {{ withholdingTaxInfo.postalCode || '-' }}
+                </div>
+              </div>
+            </div>
+            <div class="mb-16" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+              <div fxLayout="column" fxFlex="25"></div>
+              <div fxLayout="column" fxFlex="37.5">
+                <span class="fill-black-70 thin-letter">
+                  <!-- โทรศัพท์ -->
+                  {{ 'COMMON.LABEL_TELEPHONE' | translate }}
+                </span>
+                <div class="pt-5 pb-5">
+                  {{ withholdingTaxInfo.expenseTel || '-' }}
+                </div>
+              </div>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+        <!-- บันทึกรับเอกสารต้นฉบับ -->
+        <ng-container *ngIf="checkTaskCode(['EXPENSE_CLAIM_RECIEVE_ORIGINAL_DOCUMENT']) && mode === MODE.APPROVE">
+          <div class="mr-10 mb-16 mt-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+            <div fxLayout="column" fxFlex="25">
+              <div fxLayout="row" fxLayoutGap="12px" class="mt-12">
+                <mat-icon svgIcon="icon-save-primary" class="icon btn-icon"></mat-icon>
+                <h6>
+                  <!-- บันทึกรับเอกสารต้นฉบับ -->
+                  {{ 'FINANCE.DOCUMENT_RECEIVED_DATE' | translate }}
+                </h6>
+              </div>
+            </div>
+            <div fxLayout="column" fxFlex="35">
+              <spig-datepicker
+                formControlName="receiveDate"
+                [classInput]="'input-s icon'"
+                [label]="'FINANCE.ORIGINAL_DOCUMENT_RECEIVED_DATE'"
+                class="display-grid"
+                [max]="currentDate"
+                [required]="true">
+              </spig-datepicker>
+              <spig-error-msg [control]="getControl('receiveDate')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+              </spig-error-msg>
+            </div>
+          </div>
+        </ng-container>
+        <ng-container
+          *ngIf="
+            (exStatusReecieveDoc &&
+              checkTaskCode([
+                'EXPENSE_CLAIM_PAYMENT_APPROVAL',
+                'EXPENSE_CLAIM_RECEIPT_UPLOAD',
+                'EXPENSE_CLAIM_NEWS_RECEIPT_UPLOAD',
+                'EXPENSE_CLAIM_CORRECTION',
+                'EXPENSE_CLAIM_SYSTEM_PAYMENT',
+              ])) ||
+            (taskCode === 'EXPENSE_CLAIM_RECIEVE_ORIGINAL_DOCUMENT' && mode === MODE.VIEW)
+          ">
+          <div class="mr-10 mb-16 mt-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+            <div fxLayout="column" fxFlex="25">
+              <h6>
+                <!-- บันทึกรับเอกสารต้นฉบับ -->
+                {{ 'FINANCE.DOCUMENT_RECEIVED_DATE' | translate }}
+              </h6>
+            </div>
+            <div fxLayout="column" fxFlex="35">
+              <span class="thin-letter">
+                <!-- วันที่ได้รับเอกสารต้นฉบับ -->
+                {{ 'FINANCE.ORIGINAL_DOCUMENT_RECEIVED_DATE' | translate }}
+              </span>
+              <div class="pt-5 pb-5 fn-16">
+                {{ (detail.receiveDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+              </div>
+            </div>
+          </div>
+        </ng-container>
+        <!-- รายการเบิก -->
+        <div class="title mt-20 mb-20" fxLayout="row" fxLayoutAlign="space-between center">
+          <div fxLayout="row" fxLayoutGap="12px" class="mt-12">
+            <mat-icon svgIcon="icon-Arrow-Swap" class="icon btn-icon"></mat-icon>
+            <h6>
+              <!-- รายการเบิก -->
+              {{ 'FINANCE.EXPENSE_LIST' | translate }}
+            </h6>
+          </div>
+          <div fxLayoutGap="12px" *ngIf="mode === MODE.ADD || mode === MODE.EDIT">
+            <button
+              mat-flat-button
+              color="primary"
+              id="btn-add-picking-list"
+              class="small-button overflow-ellipsis ml-10"
+              [disabled]="false"
+              (click)="addPaymentList()">
+              <mat-icon svgIcon="icon-Plus" class="icon btn-icon"></mat-icon>
+              <!-- เพิ่มรายการ -->
+              {{ 'FINANCE.ADD_LIST' | translate }}
+            </button>
+          </div>
+        </div>
+        <div class="data-table-content">
+          <ng-container [ngTemplateOutlet]="paymentTable"> </ng-container>
+          <app-message-banner
+            *ngIf="
+              paymentList?.data?.length === 0 &&
+              (actionBarEventName === 'SAVE' || actionBarEventName === 'SUBMIT') &&
+              (mode === MODE.ADD || exStatusBannerAddPayment)
+            "
+            type="fail"
+            [message]="'FINANCE.BANNER_REQUIRE_ADD_PAYMENT_LIST'"></app-message-banner>
+          <app-message-banner
+            *ngIf="
+              (actionBarEventName === 'REJECT' || actionBarEventName === 'SUBMIT' || actionBarEventName === 'SENT') &&
+              exStatusBannerPayment &&
+              expenseService.hasVerify
+            "
+            type="fail"
+            icon="icon-Error"
+            [message]="
+              'FINANCE.PAYMENT_LIST_MESSAGE_BANNER.' + taskCode + '_' + actionBarEventName
+            "></app-message-banner>
+        </div>
+        <!-- การขออนุมัติ -->
+        <ng-container *ngIf="mode === MODE.ADD || mode === MODE.EDIT">
+          <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px" class="mt-15">
+            <div fxLayout="column" fxFlex="25">
+              <h6>
+                <!-- การขออนุมัติ -->
+                {{ 'FINANCE.ASK_THE_APPROVAL' | translate }}
+              </h6>
+            </div>
+            <div fxLayout="column" fxFlex="35" class="full-width">
+              <spig-dropdown
+                [options]="assigneeOption"
+                [required]="true"
+                classInput="input-normal"
+                [config]="assigneeOptionConfig"
+                formControlName="assigneeId">
+              </spig-dropdown>
+              <spig-error-msg [control]="getControl('assigneeId')" [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'">
+              </spig-error-msg>
+            </div>
+          </div>
+        </ng-container>
+        <!-- checkbox ตรวจสอบความถูกต้อง -->
+        <ng-container *ngIf="detail?.expenseGroup === 3 || mode === MODE.ADD || mode === MODE.EDIT">
+          <ng-container *ngFor="let item of checkbox; let i = index; let first = first">
+            <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px" class="mt-15">
+              <div fxLayout="column" fxFlex="25">
+                <ng-container *ngIf="(mode === MODE.VIEW || mode === MODE.APPROVE) && first">
+                  <h6>{{ 'FINANCE.KLAW_CONFIRM' | translate }}</h6>
+                </ng-container>
+              </div>
+              <div fxLayout="column" fxFlex="75" class="full-width">
+                <div class="elm-form">
+                  <input
+                    class="elm-radio-check elm-check"
+                    type="checkbox"
+                    [id]="'checkbox' + i"
+                    [checked]="item?.checked"
+                    [disabled]="mode === MODE.VIEW || mode === MODE.APPROVE"
+                    [ngClass]="{
+                      inactive: mode === MODE.APPROVE || mode === MODE.VIEW,
+                    }"
+                    (change)="onCheckboxChange($event, i)" />
+                  <label
+                    class="elm-check-label fn-16"
+                    [for]="'checkbox' + i"
+                    [ngClass]="{
+                      disabled: mode === MODE.VIEW || mode === MODE.APPROVE,
+                    }">
+                    {{ item.item
+                    }}<span class="fill-red" *ngIf="!(mode === MODE.VIEW || mode === MODE.APPROVE)">*</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </ng-container>
+        <!-- กรุณาเลือกทุกรายการเพื่อยืนยันว่าท่านได้ตรวจสอบข้อมูลตามข้างต้นแล้ว -->
+        <div
+          fxLayout="row"
+          fxLayoutAlign="start start"
+          fxLayoutGap="16px"
+          class="mt-15"
+          *ngIf="!isCheckboxAll && (mode === MODE.ADD || mode === MODE.EDIT)">
+          <div fxLayout="column" fxFlex="25"></div>
+          <div fxLayout="column" fxFlex="75" class="full-width">
+            <app-message-banner
+              *ngIf="actionBarEventName === 'SAVE' || actionBarEventName === 'SUBMIT'"
+              type="fail"
+              [message]="'FINANCE.BANNER_REQUIRE_ALL_CHECKBOX'"></app-message-banner>
+          </div>
+        </div>
+        <!-- เลือกผู้อนุมัติ -->
+        <ng-container
+          *ngIf="
+            (expenseStatusCode === 'PENDING_CLOSED_LG_EXPENSE_CLAIM_CONSIDERATION' && mode !== MODE.APPROVE) ||
+            expenseStatusCode === 'PENDING_PAYMENT_CONSIDERATION'
+          ">
+          <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px" class="mt-15">
+            <div fxLayout="column" fxFlex="25">
+              <h6>
+                <!-- เลือกผู้อนุมัติ -->
+                {{ 'FINANCE.SELECT_APPROVAL' | translate }}
+              </h6>
+            </div>
+            <div fxLayout="column" fxFlex="35" class="full-width">
+              <spig-dropdown
+                [options]="approverOption"
+                [required]="true"
+                classInput="input-normal"
+                [config]="approverOptionConfig"
+                formControlName="approverId">
+              </spig-dropdown>
+              <spig-error-msg [control]="getControl('approverId')" [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'">
+              </spig-error-msg>
+            </div>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="expenseStatusCode === 'PENDING_DECIDE_REVERSE_EXPENSE_CLAIM'">
+          <div class="title mt-20 mb-20" fxLayout="row" fxLayoutAlign="space-between center">
+            <div fxLayout="row" fxLayoutGap="12px" class="mt-12">
+              <mat-icon svgIcon="icon-Arrow-Revert" class="icon btn-icon"></mat-icon>
+              <h6>{{ 'FINANCE.TITLE_REVERSE_EXPENSE_CLAIM' | translate }}</h6>
+            </div>
+          </div>
+          <div class="data-table-content">
+            <ng-container *ngTemplateOutlet="tableReverseExpense; context: { list: expenseRefundList }"> </ng-container>
+          </div>
+        </ng-container>
+        <!-- ใบเสร็จรับเงิน -->
+        <ng-container *ngIf="mode !== MODE.APPROVE && checkTaskCode(['EXPENSE_CLAIM_RECEIPT_UPLOAD'])">
+          <div class="title mt-20 mb-20" fxLayout="row" fxLayoutAlign="space-between center">
+            <div fxLayout="row" fxLayoutGap="12px" class="mt-12">
+              <mat-icon svgIcon="icon-Receipt" class="icon btn-icon"></mat-icon>
+              <h6>{{ 'LAWSUIT.SUIT.BTN_DOWNLOAD_PAYMENT_DOC' | translate }}</h6>
+            </div>
+          </div>
+          <div class="data-table-content">
+            <ng-container *ngTemplateOutlet="tableReceiptDocs; context: { list: receiptDocs }"> </ng-container>
+          </div>
+        </ng-container>
+        <!-- ใบเสร็จรับเงิน view -->
+        <ng-container
+          *ngIf="
+            (detail?.expenseGroup === 1 &&
+              (detail?.expenseTypeCode === 'E82' || detail?.expenseTypeCode === 'E21') &&
+              exStatusTableReceiptDocs) ||
+            (taskCode === 'SUPPORT_VIEW_EXPENSE' && ['E82', 'E21', 'E62'].includes(detail?.expenseTypeCode || ''))
+          ">
+          <div class="title mt-20 mb-20" fxLayout="row" fxLayoutAlign="space-between center">
+            <div fxLayout="row" fxLayoutGap="12px" class="mt-12">
+              <mat-icon svgIcon="icon-Receipt" class="icon btn-icon"></mat-icon>
+              <h6>{{ 'LAWSUIT.SUIT.BTN_DOWNLOAD_PAYMENT_DOC' | translate }}</h6>
+            </div>
+          </div>
+          <div class="data-table-content">
+            <ng-container *ngTemplateOutlet="tableViewReceiptDocs; context: { list: receiptDocs }"> </ng-container>
+          </div>
+        </ng-container>
+        <app-section-download-expense-report
+          *ngIf="!!detail"
+          [detail]="detail"
+          [isViewMode]="isView"></app-section-download-expense-report>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+
+<ng-template #paymentTable>
+  <div class="table-scroll section" table-scroll>
+    <table mat-table [dataSource]="paymentList" [trackBy]="trackBy">
+      <!-- ลำดับ Column -->
+      <ng-container matColumnDef="no" sticky>
+        <th class="text-center" mat-header-cell *matHeaderCellDef>
+          {{ 'COMMON.LABEL_NO' | translate }}
+        </th>
+        <td class="text-center" mat-cell *matCellDef="let element; let i = index">
+          {{ i + 1 }}
+        </td>
+        <td mat-footer-cell *matFooterCellDef></td>
+      </ng-container>
+      <!-- LG ID/สถานะปัจจุบัน Column -->
+      <ng-container matColumnDef="lgId" sticky>
+        <th mat-header-cell *matHeaderCellDef columnElevationLeft>
+          <div>{{ 'COMMON.LABEL_LG_ID' | translate }}/</div>
+          <div>
+            {{ 'LAWSUIT.BTN_CURRENT_STATUS' | translate }}
+          </div>
+        </th>
+        <td mat-cell *matCellDef="let element" columnElevationLeft>
+          <ng-container *ngIf="isCaseDataMigration(element); else elseCaseDataMigration">
+            <div>{{ element?.lgId || '-' }}</div>
+          </ng-container>
+          <ng-template #elseCaseDataMigration>
+            <div>
+              <app-tooltip
+                [params]="[
+                  {
+                    title: 'LAWSUIT.BRANCH_NAME' | translate,
+                    content: (element?.branchCode || '') + '-' + (element?.branchName || ''),
+                  },
+                  {
+                    title: 'SEARCH_CONTROL.LABEL_ALL_RESPONSE_UNIT' | translate,
+                    content: (element?.responseUnitCode || '') + '-' + (element?.responseUnitName || ''),
+                  },
+                ]"></app-tooltip>
+              <span class="link pl-5" (click)="navigateToLitigation(element?.lgId, element?.debtSaleStatus)">
+                {{ element?.lgId || '-' }}
+              </span>
+            </div>
+            <div>
+              <div
+                *ngIf="element?.litigationStatus && element?.litigationStatus !== '-'"
+                class="status-label no-margin status-normal">
+                {{ element?.litigationStatus }}
+              </div>
+              <span *ngIf="!element?.litigationStatus || element?.litigationStatus === '-'"> - </span>
+            </div>
+            <div class="fill-red">{{ element?.debtSaleStatus || '' }}</div>
+          </ng-template>
+        </td>
+        <td mat-footer-cell *matFooterCellDef columnElevationLeft></td>
+      </ng-container>
+      <!-- CIF Number/ชื่อลูกหนี้ Column -->
+      <ng-container matColumnDef="customerId">
+        <th mat-header-cell *matHeaderCellDef>
+          <div>{{ 'COMMON.LABEL_CIF_NUMBER' | translate }}/</div>
+          <div>
+            {{ 'CUSTOMER.HEAD_COLUMN_FULL_NAME' | translate }}
+          </div>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <ng-container *ngIf="isCaseDataMigration(element); else elseCaseDataMigration">
+            <div>-</div>
+            <div>-</div>
+          </ng-container>
+          <ng-template #elseCaseDataMigration>
+            <div class="link" (click)="navigateToCustomer(element?.customerId)">
+              {{ element?.customerId || '-' }}
+            </div>
+            <div>{{ element?.customerName || '-' }}</div>
+          </ng-template>
+        </td>
+        <td mat-footer-cell *matFooterCellDef></td>
+      </ng-container>
+      <!-- คดีหมายเลขดำ/แดง Column -->
+      <ng-container matColumnDef="blackCaseNo">
+        <th mat-header-cell *matHeaderCellDef class="new-line">
+          <p>{{ 'COMMON.LABEL_BLACK_CASE_NO_RED_CASE_NO' | translate }}</p>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <ng-container *ngIf="isCaseDataMigration(element); else elseCaseDataMigration">
+            <div>-</div>
+            <div>-</div>
+          </ng-container>
+          <ng-template #elseCaseDataMigration>
+            <div class="fill-black-70 thin-letter">{{ element?.blackCaseNo || '-' }}</div>
+            <div class="fill-red">{{ element?.redCaseNo || '-' }}</div>
+          </ng-template>
+        </td>
+        <td mat-footer-cell *matFooterCellDef>
+          <div *ngIf="!isCaseExecutionSeizure">
+            {{ 'COURT.TOTAL' | translate }}
+          </div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="court">
+        <th mat-header-cell *matHeaderCellDef>
+          <div>{{ 'COMMON.LABEL_COURT' | translate }}</div>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <ng-container *ngIf="isCaseDataMigration(element); else elseCaseDataMigration">
+            <div>-</div>
+          </ng-container>
+          <ng-template #elseCaseDataMigration>
+            <div>{{ element?.courtName || '-' }}</div>
+          </ng-template>
+        </td>
+        <!-- <td mat-footer-cell *matFooterCellDef>
+          {{ "COURT.TOTAL" | translate }}
+        </td> -->
+        <td mat-footer-cell *matFooterCellDef></td>
+      </ng-container>
+
+      <!-- Start LEX2-739-741 -->
+      <!-- ข้อมูลการยึดทรัพย์ Column -->
+      <!-- ประเภททรัพย์ Column -->
+      <ng-container matColumnDef="objectType">
+        <th mat-header-cell *matHeaderCellDef>
+          <div>{{ 'FINANCE.HEAD_COLUMN_TYPE_LED' | translate }}/</div>
+          <div>{{ 'FINANCE.HEAD_COLUMN_PROPERTY_TYPE' | translate }}</div>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <ng-container *ngIf="isCaseDataMigration(element); else elseCaseDataMigration">
+            <div>-</div>
+            <div>-</div>
+          </ng-container>
+          <ng-template #elseCaseDataMigration>
+            <div
+              *ngIf="
+                detail.stepSubCode &&
+                ['SEIZURE', 'SEIZURE_NON_PLEDGE_ASSET'].includes(detail.stepSubCode) &&
+                element?.propertyType
+              ">
+              <div class="link" (click)="navigateToExecutionDetail(element)">
+                {{ 'FINANCE.HEAD_COLUMN_TYPE_LED' | translate }}
+              </div>
+              <div *ngIf="element?.propertyType === 'COL' || element?.propertyType === 'NCOL'">
+                {{ (element?.propertyType === 'COL' ? 'FINANCE.COL' : 'FINANCE.NCOL') | translate }}
+              </div>
+              <div *ngIf="!element?.propertyType">-</div>
+            </div>
+            <div *ngIf="detail.stepSubCode === 'WITHDRAW_SEIZURE' && element?.propertyType">
+              <div
+                class="link"
+                (click)="
+                  navigateToWithdrawnDetail(
+                    element?.withdrawSeizureId,
+                    element?.withdrawSeizureLedId,
+                    element?.litigationId,
+                    element?.litigationCaseId
+                  )
+                ">
+                {{ 'FINANCE.WITHDRAW_SEIZURE' | translate }}
+              </div>
+              <div *ngIf="element?.propertyType === 'COL' || element?.propertyType === 'NCOL'">
+                {{ (element?.propertyType === 'COL' ? 'FINANCE.COL' : 'FINANCE.NCOL') | translate }}
+              </div>
+              <div *ngIf="!element?.propertyType">-</div>
+            </div>
+          </ng-template>
+          <!-- <div *ngIf="detail?.stepSubCode === 'SEIZURE_NON_PLEDGE_ASSET' && element?.propertyType">
+            <div class="link" (click)="navigateToExecutionDetail(element?.seizureId, element?.seizureLedId)">
+              {{ 'FINANCE.HEAD_COLUMN_TYPE_LED' | translate }}
+            </div>
+            <div *ngIf="element?.propertyType === 'COL' || element?.propertyType === 'NCOL'">
+              {{ (element?.propertyType === 'COL' ? 'FINANCE.COL' : 'FINANCE.NCOL') | translate }}
+            </div>
+            <div *ngIf="!element?.propertyType">-</div>
+          </div> -->
+        </td>
+        <td mat-footer-cell *matFooterCellDef></td>
+      </ng-container>
+      <!-- สบค.เขตอำนาจศาล Column -->
+      <!-- สบค.ที่ตั้งทรัพย์ Column -->
+      <ng-container matColumnDef="mainLed">
+        <th mat-header-cell *matHeaderCellDef>
+          <div>{{ 'FINANCE.HEAD_COLUMN_MAIN_LED' | translate }}/</div>
+          <div>{{ 'FINANCE.HEAD_COLUMN_ACTUAL_LED' | translate }}</div>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div>{{ element?.mainLed || '-' }}</div>
+          <div>{{ element?.actualLed || '-' }}</div>
+        </td>
+        <td mat-footer-cell *matFooterCellDef></td>
+      </ng-container>
+      <!-- วันที่จ่ายค่าธรรมเนียม Column -->
+      <!-- วิธีการจ่าย Column -->
+      <ng-container matColumnDef="paymentDate">
+        <th mat-header-cell *matHeaderCellDef>
+          <div>{{ 'FINANCE.HEAD_COLUMN_EFILING_DATE' | translate }}/</div>
+          <div>{{ 'FINANCE.HEAD_COLUMN_PAYMENT_METHOD' | translate }}</div>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div>
+            {{ (element?.paymentDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+          </div>
+          <div>{{ element?.paymentMethod || '-' }}</div>
+        </td>
+        <td mat-footer-cell *matFooterCellDef>
+          <div *ngIf="isCaseExecutionSeizure">
+            {{ 'COURT.TOTAL' | translate }}
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- วันที่ถอนการยึด Column LEX2-741 -->
+      <ng-container matColumnDef="withdrawSeizureDate">
+        <th mat-header-cell *matHeaderCellDef class="new-line">
+          {{ 'FINANCE.HEAD_COLUMN_WITHDRAW_SEIZURE_DATE' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div>
+            {{ (element?.withdrawSeizureDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+          </div>
+        </td>
+        <td mat-footer-cell *matFooterCellDef></td>
+      </ng-container>
+      <!-- ทนายผู้รับผิดชอบ Column LEX2-741 -->
+      <ng-container matColumnDef="lawyer">
+        <th mat-header-cell *matHeaderCellDef class="new-line">
+          {{ 'COMMON.LABEL_RESPONSIBLE_LAWYER' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div>{{ element?.lawyer || '-' }}</div>
+        </td>
+        <td mat-footer-cell *matFooterCellDef>
+          <div *ngIf="isCaseExecutionSeizure">
+            {{ 'COURT.TOTAL' | translate }}
+          </div>
+        </td>
+      </ng-container>
+      <!-- End LEX2-739-741 -->
+
+      <!-- Start LEX2-742-22822 [MVP2.1.2 SP 6] -->
+      <!-- สถานะของธนาคาร Column ktbStatus -->
+      <ng-container matColumnDef="ktbStatus">
+        <th mat-header-cell *matHeaderCellDef class="new-line">
+          <div>{{ 'FINANCE.HEAD_COLUMN_KTB_STATUS' | translate }}</div>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div>{{ element?.ktbStatus || '-' }}</div>
+        </td>
+        <td mat-footer-cell *matFooterCellDef></td>
+      </ng-container>
+
+      <!-- สบค./วันประกาศขายนัดเเรก Column mainLedAuction -->
+      <ng-container matColumnDef="mainLedAuction">
+        <th mat-header-cell *matHeaderCellDef>
+          <div>{{ 'FINANCE.HEAD_COLUMN_MAINLED_AUCTION' | translate }}/</div>
+          <div>{{ 'FINANCE.HEAD_COLUMN_MAINLED_AUCTION_DATE' | translate }}</div>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div class="link" (click)="navigateByObjectType(element, 'mainLedAuction')">
+            {{ element?.mainLed || '-' }}
+          </div>
+          <div>{{ (element?.bidDate | buddhistEra: 'DD/MM/yyyy') || '-' }}</div>
+        </td>
+        <td mat-footer-cell *matFooterCellDef></td>
+      </ng-container>
+
+      <!-- เลขที่เอกสารสิทธิ์/ประเภททรัพย์ Column documentNo -->
+      <ng-container matColumnDef="documentNo">
+        <th mat-header-cell *matHeaderCellDef>
+          <div>{{ 'COMMON.LABEL_DOCUMENT_NUMBER' | translate }}/</div>
+          <div>{{ 'FINANCE.HEAD_COLUMN_PROPERTY_TYPE' | translate }}</div>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div>{{ element?.documentNo || '-' }}</div>
+          <div>
+            <div *ngIf="element?.propertyType === 'COL' || element?.propertyType === 'NCOL'">
+              {{ (element?.propertyType === 'COL' ? 'FINANCE.COL' : 'FINANCE.NCOL') | translate }}
+            </div>
+            <div *ngIf="!element?.propertyType">-</div>
+          </div>
+        </td>
+        <td mat-footer-cell *matFooterCellDef></td>
+      </ng-container>
+
+      <!-- วันส่งเงินให้ธนาคารหรือวางเงินเพิ่ม/เงินจ่ายชำระหนี้ Column -->
+      <ng-container matColumnDef="paymentAmount">
+        <th mat-header-cell *matHeaderCellDef>
+          <div>{{ 'FINANCE.HEAD_COLUMN_PAYMENT_AUCTION' | translate }}/</div>
+          <div>{{ 'FINANCE.HEAD_COLUMN_PAYMENT_AUCTION_AMOUNT' | translate }}</div>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div>{{ element?.paymentDate || '-' }}</div>
+          <div>{{ (element?.paymentAmount | numberDecimal) || '-' }}</div>
+        </td>
+        <td mat-footer-cell *matFooterCellDef></td>
+      </ng-container>
+      <!-- End LEX2-742-22822 [MVP2.1.2 SP 6] -->
+
+      <!-- ค่าใช้จ่าย ขอเบิก Column -->
+      <ng-container matColumnDef="expense">
+        <th mat-header-cell *matHeaderCellDef class="text-right">
+          <div>{{ 'LAWSUIT.CLOSE.TABLE_HEADER_EXPENSE' | translate }}</div>
+          <div>
+            {{ 'FINANCE.HEAD_COLUMN_EXPENSE' | translate }}
+          </div>
+        </th>
+        <td mat-cell *matCellDef="let element" class="text-right">
+          {{ (element?.expenseAmount | numberDecimal) || '-' }}
+        </td>
+        <td mat-footer-cell *matFooterCellDef="let element" class="text-right bold">
+          {{ (paymentList.data || [] | expenseAmount: 'EXPENSE' | numberDecimal) || '-' }}
+        </td>
+      </ng-container>
+      <!-- W/T ขอเบิก Column -->
+      <ng-container matColumnDef="wt">
+        <th mat-header-cell *matHeaderCellDef class="text-right">
+          <div>{{ 'FINANCE.HEAD_COLUMN_WT' | translate }}</div>
+          <div>
+            {{ 'FINANCE.HEAD_COLUMN_EXPENSE' | translate }}
+          </div>
+        </th>
+        <td mat-cell *matCellDef="let element" class="text-right">
+          <app-tooltip
+            [params]="[
+              {
+                title: 'FINANCE.WITHHOLDING_TAX_RATE' | translate,
+                content: (detail.whtRate || '') + '%',
+              },
+            ]"></app-tooltip>
+          <span class="pl-5">
+            {{ (element?.wtAmount | numberDecimal) || '-' }}
+          </span>
+        </td>
+        <td mat-footer-cell *matFooterCellDef="let element" class="text-right bold">
+          <app-tooltip
+            [params]="[
+              {
+                title: 'FINANCE.WITHHOLDING_TAX_RATE' | translate,
+                content: (detail.whtRate || '') + '%',
+              },
+            ]"></app-tooltip>
+          <span class="pl-5">
+            {{ (paymentList.data | expenseAmount: 'WT_AMOUNT' | numberDecimal) || '-' }}
+          </span>
+        </td>
+      </ng-container>
+      <!-- VAT ขอเบิก column -->
+      <ng-container matColumnDef="vat">
+        <th mat-header-cell *matHeaderCellDef class="text-right">
+          <div>{{ 'FINANCE.HEAD_COLUMN_VAT' | translate }}</div>
+          <div>
+            {{ 'FINANCE.HEAD_COLUMN_EXPENSE' | translate }}
+          </div>
+        </th>
+        <td mat-cell *matCellDef="let element" class="text-right">
+          <app-tooltip
+            [params]="[
+              {
+                title: 'FINANCE.VAT_RATE' | translate,
+                content: (detail.vatRate || '') + '%',
+              },
+            ]"></app-tooltip>
+          <span class="pl-5">
+            {{ (element?.excludedVatAmount | numberDecimal) || '-' }}
+          </span>
+        </td>
+        <td mat-footer-cell *matFooterCellDef="let element" class="text-right bold">
+          <app-tooltip
+            [params]="[
+              {
+                title: 'FINANCE.VAT_RATE' | translate,
+                content: (detail.vatRate || '') + '%',
+              },
+            ]"></app-tooltip>
+          <span class="pl-5">
+            {{ (paymentList.data || [] | expenseAmount: 'VAT' | numberDecimal) || '-' }}
+          </span>
+        </td>
+      </ng-container>
+      <!-- จ่ายเงิน ขอเบิก column -->
+      <ng-container matColumnDef="totalAmount">
+        <th mat-header-cell *matHeaderCellDef class="text-right">
+          <div>{{ 'FINANCE.HEAD_COLUMN_PAYMENT' | translate }}</div>
+          <div>
+            {{ 'FINANCE.HEAD_COLUMN_EXPENSE' | translate }}
+          </div>
+        </th>
+        <td mat-cell *matCellDef="let element" class="text-right">
+          {{ (element?.totalAmount | numberDecimal) || '-' }}
+        </td>
+        <td mat-footer-cell *matFooterCellDef="let element" class="text-right bold">
+          <span class="pl-5">
+            {{ (paymentList.data || [] | expenseAmount: 'TOTAL' | numberDecimal) || '-' }}
+          </span>
+        </td>
+      </ng-container>
+      <!-- คำสั่ง column -->
+      <ng-container matColumnDef="action" stickyEnd>
+        <th mat-header-cell *matHeaderCellDef class="text-center" columnElevationRight>
+          {{ 'COMMON.LABEL_COMMAND' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element; let i = index" class="text-center" columnElevationRight>
+          <ng-container *ngIf="isCaseDataMigration(element); else elseCaseDataMigration">
+            <div>-</div>
+          </ng-container>
+          <ng-template #elseCaseDataMigration>
+            <span
+              class="link"
+              (click)="removePaymentList(i, element)"
+              *ngIf="
+                mode === MODE.ADD ||
+                (mode === MODE.EDIT && expenseStatusCode === 'DRAFT') ||
+                (mode === MODE.EDIT &&
+                  expenseStatusCode === 'PENDING_EXPENSE_CLAIM_CORRECTION' &&
+                  !!!element?.isApproved) ||
+                (taskCode === 'EXPENSE_CLAIM_CORRECTION' && !!!element.id)
+              "
+              >{{ 'COMMON.BUTTON_DELETE' | translate }}</span
+            >
+            <span
+              class="link pl-10"
+              (click)="editPaymentList(i, element)"
+              *ngIf="
+                mode === MODE.ADD ||
+                (mode === MODE.EDIT && expenseStatusCode === 'DRAFT') ||
+                (mode === MODE.EDIT &&
+                  expenseStatusCode === 'PENDING_EXPENSE_CLAIM_CORRECTION' &&
+                  !!!element?.isApproved) ||
+                (mode === MODE.APPROVE &&
+                  expenseStatusCode === 'PENDING_AUTO_EXPENSE_CLAIM_CORRECTION' &&
+                  statusCode !== 'PENDING_APPROVAL') ||
+                (taskCode === 'EXPENSE_CLAIM_CORRECTION' && !!!element.id)
+              "
+              >{{ 'COMMON.BUTTON_EDIT' | translate }}</span
+            >
+            <span
+              class="link pl-10"
+              (click)="detailPaymentList(i, element)"
+              *ngIf="
+                mode === MODE.VIEW ||
+                isViewDetailByStatus ||
+                ([MODE.APPROVE, MODE.EDIT].includes(mode) &&
+                  exStatusPaymentViewDetail &&
+                  hasIsApproved(element?.isApproved))
+              ">
+              {{ 'COMMON.BUTTON_VIEW_DETAIL' | translate }}
+            </span>
+          </ng-template>
+        </td>
+        <td mat-footer-cell *matFooterCellDef columnElevationRight></td>
+      </ng-container>
+      <!-- หมายเหตุ column -->
+      <ng-container matColumnDef="remark" stickyEnd>
+        <th mat-header-cell *matHeaderCellDef class="text-center">
+          {{ 'COMMON.LABEL_REMARKS' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element; let i = index">
+          <span class="link" (click)="remarkPaymentList(i, element)">{{ 'COMMON.LABEL_REMARKS' | translate }}</span>
+        </td>
+        <td mat-footer-cell *matFooterCellDef></td>
+      </ng-container>
+      <!-- ผ่าน column -->
+      <ng-container matColumnDef="pass" stickyEnd>
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'FINANCE.PASS' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element; let i = index" class="text-center">
+          <mat-radio-group [name]="'pass' + i" (change)="onChangeRadio($event, i)">
+            <mat-radio-button
+              class="radio-green"
+              type="radio"
+              color="primary"
+              [value]="true"
+              [checked]="element?.isApproved === true"
+              [disabled]="
+                mode === MODE.VIEW ||
+                checkTaskCode([
+                  'EXPENSE_CLAIM_CORRECTION',
+                  'EXPENSE_CLAIM_SYSTEM_PAYMENT',
+                  'REVERSE_EXPENSE_CLAIM_INVALID_RECEIPT',
+                  'REVERSE_EXPENSE_CLAIM_OTHER',
+                  'DECIDE_REVERSE_EXPENSE_CLAIM',
+                ])
+              ">
+            </mat-radio-button>
+          </mat-radio-group>
+        </td>
+        <td mat-footer-cell *matFooterCellDef></td>
+      </ng-container>
+      <!-- ไม่ผ่าน column -->
+      <ng-container matColumnDef="fail" stickyEnd>
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'FINANCE.NOT_PASS' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element; let i = index" class="text-center">
+          <mat-radio-group [name]="'pass' + i" (change)="onChangeRadio($event, i)">
+            <mat-radio-button
+              class="radio-red"
+              type="radio"
+              [value]="false"
+              [checked]="element?.isApproved === false"
+              [disabled]="
+                mode === MODE.VIEW ||
+                checkTaskCode([
+                  'EXPENSE_CLAIM_CORRECTION',
+                  'EXPENSE_CLAIM_SYSTEM_PAYMENT',
+                  'REVERSE_EXPENSE_CLAIM_INVALID_RECEIPT',
+                  'REVERSE_EXPENSE_CLAIM_OTHER',
+                  'DECIDE_REVERSE_EXPENSE_CLAIM',
+                ])
+              ">
+            </mat-radio-button>
+          </mat-radio-group>
+        </td>
+        <td mat-footer-cell *matFooterCellDef></td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="paymentColumns"></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: paymentColumns"
+        [class.bg-green-50]="
+          (mode === MODE.VIEW || mode === MODE.APPROVE || exStatusPaymentColGreen) &&
+          row?.isApproved === true &&
+          !isNoShowRadioCols
+        "
+        [class.bg-red-50]="
+          (mode === MODE.VIEW || mode === MODE.APPROVE || exStatusPaymentColRed) &&
+          row?.isApproved === false &&
+          !isNoShowRadioCols
+        "></tr>
+      <!-- รวม footer column -->
+      <ng-container>
+        <tr mat-footer-row *matFooterRowDef="paymentColumns" [hidden]="paymentList.data.length === 0"></tr>
+      </ng-container>
+    </table>
+  </div>
+  <div *ngIf="paymentList.data.length === 0">
+    <app-message-empty [message]="'FINANCE.NO_PAYMENT_LIST'"></app-message-empty>
+  </div>
+</ng-template>
+
+<ng-template #tableReceiptDocs let-dataSource="list">
+  <div table-scroll class="table-scroll">
+    <table mat-table [dataSource]="dataSource">
+      <!-- ชื่อเอกสาร -->
+      <ng-container matColumnDef="documentName" sticky>
+        <th mat-header-cell *matHeaderCellDef columnElevationLeft>
+          {{ 'UPLOAD_FILE.MULTI_COLUMN_DOCUMENT_NAME' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element; let i = index" columnElevationLeft>
+          <div fxLayout="row">
+            <div [class.link]="element?.isUpload || element?.imageId" (click)="onViewDocument(i)">
+              {{ element?.documentTemplate?.documentName || '-' }}
+            </div>
+          </div>
+        </td>
+      </ng-container>
+      <!-- ผู้อัปโหลด -->
+      <ng-container matColumnDef="uploadBy">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'FINANCE.HEAD_COLUMN_UPLOADER' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element; let i = index">
+          {{ element?.createBy || '-' }}
+        </td>
+      </ng-container>
+      <!-- วันที่อัปโหลด -->
+      <ng-container matColumnDef="uploadDate">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'UPLOAD_FILE.MULTI_COLUMN_UPLOAD_DATE' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element; let i = index">
+          {{ (element?.uploadDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+        </td>
+      </ng-container>
+      <!-- คำสั่ง -->
+      <ng-container matColumnDef="command" stickyEnd>
+        <th mat-header-cell *matHeaderCellDef class="text-center width-pct-25" columnElevationRight>
+          {{ 'COMMON.LABEL_COMMAND' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element; let i = index" class="text-center width-pct-25" columnElevationRight>
+          <mat-icon
+            *ngIf="!readonly && (element?.isUpload || element?.imageId) && element?.removeDocument"
+            svgIcon="icon-Bin"
+            class="icon fill-red mr-10 icon-md"
+            (click)="onRemoveDocument(i)"></mat-icon>
+          <ng-container>
+            <input type="file" #fileUpload name="fileUpload" [accept]="acceptFile.toString()" class="hidden" />
+            <button
+              *ngIf="!(element?.isUpload || element?.imageId)"
+              type="button"
+              mat-flat-button
+              color="primary"
+              class="medium-fw-button"
+              (click)="onUploadDocument(i, element?.documentTemplateId)">
+              <mat-icon svgIcon="icon-Arrow-Upload" class="icon-xmedium"></mat-icon>
+              {{ 'COMMON.BUTTON_UPLOAD' | translate }}
+            </button>
+            <button
+              *ngIf="element?.isUpload || element?.imageId"
+              type="button"
+              mat-stroked-button
+              class="medium-7w-button"
+              (click)="onUploadDocument(i, element?.documentTemplateId)">
+              <mat-icon svgIcon="icon-Arrow-Upload" class="icon-xmedium"></mat-icon>
+              {{ 'COMMON.BUTTON_UPLOAD' | translate }}
+            </button>
+          </ng-container>
+        </td>
+      </ng-container>
+
+      <tr
+        mat-header-row
+        *matHeaderRowDef="detail.expenseTypeCode === 'E62' ? receiptDocsColumnsE62 : receiptDocsColumns"></tr>
+      <tr
+        mat-row
+        *matRowDef="
+          let row;
+          columns: detail.expenseTypeCode === 'E62' ? receiptDocsColumnsE62 : receiptDocsColumns
+        "></tr>
+    </table>
+    <ng-container *ngIf="receiptDocs && receiptDocs.length === 0">
+      <app-message-empty [message]="'DOC_PREP.NOT_FOUND_DOC'"></app-message-empty>
+    </ng-container>
+  </div>
+</ng-template>
+
+<ng-template #tableViewReceiptDocs let-dataSource="list">
+  <div class="table-scroll">
+    <table mat-table [dataSource]="dataSource">
+      <!-- ชื่อเอกสาร -->
+      <ng-container matColumnDef="documentName">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'UPLOAD_FILE.MULTI_COLUMN_DOCUMENT_NAME' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element; let i = index">
+          <div fxLayout="row">
+            <div [class.link]="element?.imageId" (click)="onViewDocument(i)">
+              {{ element?.documentTemplate?.documentName || '-' }}
+            </div>
+          </div>
+        </td>
+      </ng-container>
+      <!-- วันที่ตามใบเสร็จรับเงิน -->
+      <ng-container matColumnDef="receiptDate">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'FINANCE.HEAD_COLUMN_RECEIPT_DATE' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element; let i = index">
+          {{ (element?.attributes?.receiptDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+        </td>
+      </ng-container>
+      <!-- ผู้อัปโหลด -->
+      <ng-container matColumnDef="uploadBy">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'FINANCE.HEAD_COLUMN_UPLOADER' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element; let i = index">
+          {{ element?.uploadUserId || '-' }}
+        </td>
+      </ng-container>
+      <!-- วันที่อัปโหลด -->
+      <ng-container matColumnDef="uploadDate">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'UPLOAD_FILE.MULTI_COLUMN_UPLOAD_DATE' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element; let i = index">
+          {{ (element?.documentDate | buddhistEra: 'DD/MM/yyyy hh:mm') || '-' }}
+        </td>
+      </ng-container>
+
+      <tr
+        mat-header-row
+        *matHeaderRowDef="detail.expenseTypeCode === 'E62' ? receiptDocsViewColumnsE62 : receiptDocsViewColumns"></tr>
+      <tr
+        mat-row
+        *matRowDef="
+          let row;
+          columns: detail.expenseTypeCode === 'E62' ? receiptDocsViewColumnsE62 : receiptDocsViewColumns
+        "></tr>
+    </table>
+    <ng-container *ngIf="receiptDocs && receiptDocs.length === 0">
+      <app-message-empty [message]="'DOC_PREP.NOT_FOUND_DOC'"></app-message-empty>
+    </ng-container>
+  </div>
+</ng-template>
+
+<ng-template #tableReverseExpense let-dataSource="list">
+  <div class="table-scroll">
+    <table mat-table [dataSource]="dataSource">
+      <!-- ลำดับ -->
+      <ng-container matColumnDef="no">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'COMMON.LABEL_NO' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element; let i = index" class="text-center">
+          {{ i + 1 }}
+        </td>
+      </ng-container>
+      <!-- หน่วยงาน -->
+      <ng-container matColumnDef="userRoleName">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'CONFIGURATION.HEAD_COLUMN_RESPONSE_UNIT' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element; let i = index">
+          {{ element?.userRoleName || '-' }}
+        </td>
+      </ng-container>
+      <!-- ผู้บันทึก -->
+      <ng-container matColumnDef="userId">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'FINANCE.HEAD_COLUMN_RECORDER_NAME' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element; let i = index">
+          {{ element?.userId || '-' }}
+        </td>
+      </ng-container>
+      <!-- วันที่บันทึก -->
+      <ng-container matColumnDef="timeStamp">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'FINANCE.HEAD_COLUMN_RECORD_DATE' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element; let i = index">
+          {{ (element?.timeStamp | buddhistEra: 'DD/MM/yyyy HH:mm') || '-' }}
+        </td>
+      </ng-container>
+      <!-- ผลการพิจารณา -->
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'COURT.LABEL_CONSIDER_RESULT' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element; let i = index">
+          {{ element?.action || '-' }}
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="expenseRefundColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: expenseRefundColumns"></tr>
+    </table>
+    <ng-container *ngIf="expenseRefundList && expenseRefundList.length === 0">
+      <app-message-empty [message]="'COMMON.LABEL_PREFIX_NOT_FOUND'"></app-message-empty>
+    </ng-container>
+  </div>
+</ng-template>

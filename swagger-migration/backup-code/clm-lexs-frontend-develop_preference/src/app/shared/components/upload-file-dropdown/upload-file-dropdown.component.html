@@ -1,0 +1,103 @@
+<div class="table-scroll">
+  <div class="table-scroll mt-2">
+    <table mat-table [dataSource]="list">
+      <ng-container matColumnDef="no">
+        <th mat-header-cell *matHeaderCellDef class="text-center">
+          {{ 'COMMON.LABEL_NO' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element; let rowNo = index" class="text-center">
+          <ng-container>
+            {{ rowNo + 1 }}
+          </ng-container>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="documentName">
+        <th mat-header-cell *matHeaderCellDef class="name-column">
+          {{ 'UPLOAD_FILE.MULTI_COLUMN_DOCUMENT_NAME' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element; let i = index" class="name-column">
+          <div fxLayout="row">
+            <div
+              *ngIf="readonly || element.isUpload"
+              [class.link]="element.isUpload || element.imageId"
+              (click)="onViewDocument(i)">
+              {{ element.documentTemplate?.documentName || '-' }}
+              <ng-container *ngIf="false"> (ถ้ามี)</ng-container>
+              <label *ngIf="!element.isUpload && element.uploadRequired && !readonly" class="color-red">*</label>
+            </div>
+            <ng-container *ngIf="!readonly && !element.isUpload">
+              <spig-dropdown
+                class="mb-05em mr-16"
+                [config]="documentNameConfig"
+                [options]="documentNameOptions"
+                (selectedOption)="onChangeDocumentName($event, i)"
+                [formControl]="documentCtr"
+                classInput="input-xsm input-normal long icon">
+              </spig-dropdown>
+            </ng-container>
+          </div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="uploadDate">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'UPLOAD_FILE.MULTI_COLUMN_UPLOAD_DATE_2' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element; let i = index">
+          {{ (element.uploadTimestamp | buddhistEra: 'DD/MM/yyyy') || '-' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="command">
+        <th mat-header-cell *matHeaderCellDef class="text-center width-pct-25">
+          {{ 'COMMON.LABEL_COMMAND' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element; let i = index" class="width-pct-25" [ngClass]="'text-center'">
+          <mat-icon
+            *ngIf="
+              !readonly &&
+              (element.isUpload || element.imageId) &&
+              element.removeDocument &&
+              (element.active || element.uploadRequired)
+            "
+            svgIcon="icon-Bin"
+            class="icon btn-icon fill-red icon-xmedium mr-24"
+            (click)="onRemoveDocument(i, element?.isSubContract)"></mat-icon>
+          <ng-container *ngIf="element.active || element.uploadRequired">
+            <input type="file" #fileUpload name="fileUpload" [accept]="acceptFile.toString()" class="hidden" />
+            <button
+              *ngIf="!(element.isUpload || element.imageId)"
+              type="button"
+              mat-flat-button
+              color="primary"
+              class="medium-fw-button"
+              (click)="onUploadDocument(i, element.documentTemplateId)">
+              <mat-icon svgIcon="icon-Arrow-Upload" class="icon-xmedium"></mat-icon>
+              {{ btnUpload[0] | translate }}
+            </button>
+            <button
+              *ngIf="element.isUpload || element.imageId"
+              type="button"
+              mat-stroked-button
+              class="medium-7w-button"
+              (click)="onUploadDocument(i, element.documentTemplateId)">
+              <mat-icon svgIcon="icon-Arrow-Upload" class="icon-xmedium"></mat-icon>
+              {{ btnUpload[1] | translate }}
+            </button>
+          </ng-container>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="readonly ? _column.slice(0, -1) : _column"></tr>
+      <tr mat-row *matRowDef="let row; columns: readonly ? _column.slice(0, -1) : _column"></tr>
+    </table>
+    <ng-container *ngIf="list && list.length === 0" [ngTemplateOutlet]="dataNotFound"> </ng-container>
+  </div>
+</div>
+<div [ngClass]="isErrorFiletypeOrFileSize ? 'error-msg sub-desc' : ''" class="label mt-8" *ngIf="labelAcceptFile">
+  {{ labelAcceptFile | translate }}
+</div>
+<ng-template #dataNotFound>
+  <app-message-empty [message]="'DOC_PREP.NOT_FOUND_DOC'"></app-message-empty>
+</ng-template>

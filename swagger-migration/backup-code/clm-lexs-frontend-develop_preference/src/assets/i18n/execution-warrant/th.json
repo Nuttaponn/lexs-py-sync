@@ -1,0 +1,49 @@
+{
+  "EXECUTION_WARRANT": {
+    "TITLE": "คำนวนภาระหนี้",
+    "TITLE_CALCULATE_DEBT_DETAIL": "รายละเอียดคำนวนภาระหนี้",
+    "TITLE_ASSING_LAWYER": "งานมอบหมายทนายความเพื่อออกหมายบังคับคดี",
+    "TITLE_PROCEED_EXECUTION": "ดำเนินการออกหมายบังคับคดี",
+    "TITLE_EXECUTION_DETAIL": "รายละเอียดดำเนินการออกหมายบังคับคดี",
+    "MSG_BANNER_DEBT_CALCULATE": "กรุณาตรวจสอบข้อมูลและอัพโหลดเอกสารการคำนวณภาระหนี้ และกดปุ่ม “เสร็จสิ้น”",
+    "MSG_BANNER_ASSIGN_LAWYER": "มอบหมายทนายความผู้รับผิดชอบและกดปุ่ม ‘เสร็จสิ้น’ เพื่อออกหมายบังคับคดีต่อไป",
+    "MSG_BANNER_PROCEED_EXECUTION": "กรุณาอัปโหลด หนังสือมอบอำนาจของทนายความและคำขอออกหมายบังคับคดี พร้อมระบุวันที่ยื่นและวันที่ศาลมีคำสั่ง แล้วกดปุ่ม ‘เสร็จสิ้น’",
+    "SNACKBAR_SAVE_SUCCESS_DRAFT": "เลขที่กฎหมาย: {{LG_ID}} บันทึกร่างสำเร็จแล้ว",
+    "SNACKBAR_SAVE_SUCCESS": "เลขที่กฎหมาย: {{LG_ID}} บันทึกสำเร็จแล้ว",
+    "SNACKBAR_SUBMIT_SUCCESS": "เลขที่กฎหมาย: {{LG_ID}} ดำเนินการสำเร็จแล้ว",
+    "SNACKBAR_ASSIGN_LAWYER_EW_SUCCESS": "เลขที่กฎหมาย: {{LG_ID}} มอบหมายงานยึดทรัพย์สำเร็จแล้ว",
+    "SNACKBAR_SUBMIT_DEBT_CALCULATE_SUCCESS": "เลขที่กฎหมาย: {{LG_ID}} บันทึกการคำนวณภาระหนี้สำเร็จแล้ว",
+    "SNACKBAR_SUBMIT_PROCEED_EXECUTION_SUCCESS": "เลขที่กฎหมาย: {{LG_ID}} บันทึกคำขอออกหมายสำเร็จแล้ว",
+    "LABEL_DOCUMENT_LIST": "รายการเอกสาร",
+    "LABEL_VERDICT_INFO": "รายละเอียดคำพิพากษา",
+    "LABEL_VERDICT_CIVIL_INFO": "ข้อมูลคำพิพากษา\nชั้นต้น",
+    "LABEL_VERDICT_APPEAL_INFO": "ข้อมูลคำพิพากษา\nอุธรณ์",
+    "LABEL_VERDICT_SUPREME_INFO": "ข้อมูลคำพิพากษา\nฎีกา",
+    "EXECUTION_DOCUMENT_INFO": {
+      "CALCULATE_DEBT_DETAIL": "รายละเอียดคำนวนภาระหนี้",
+      "RELATED_ACCOUNTS": "บัญชีที่เกี่ยวข้อง",
+      "CONCLUDE_CALCULATE_DEBT": "สรุปคำนวณภาระหนี้"
+    },
+    "CONCLUDE_CALCULATE_DEBT": {
+      "DOC_NAME": "เอกสาร",
+      "BANNER_NAME_ERROR_EXCEED": "กรุณาอัปโหลดไฟล์ EXCEL ขนาดไม่เกิน 30 MB เท่านั้น",
+      "BANNER_NAME_ORIGINAL": "กรุณาตรวจสอบความถูกต้อง หากอัปโหลดแล้วจะไม่สามารถแก้ไขเอกสารได้",
+      "DOCUMENT_UPLOAD_DATE": " วันเวลา\nที่อัปโหลด",
+      "UPLOAD_FAIL": "ระบบไม่รองรับไฟล์นี้ โปรดตรวจสอบประเภทและขนาดไฟล์ที่อัปโหลด"
+    },
+    "LIST_ACCOUNT_DOCUMENT": {
+      "DOC_NAME": "เอกสาร",
+      "HINT_DOC": "รองรับไฟล์ EXCEL ขนาดไม่เกิน 30 MB เท่านั้น",
+      "BUTTON_CLOSE": "ปิด",
+      "ERROR_FILE": "ไฟล์มีปัญหาหรือระบบไม่พบไฟล์\nกรุณาติดต่อ admin@ktb.co.th",
+      "UPLOAD_FAIL": "ไม่สามารถอัปโหลดได้ กรุณาตรวจสอบประเภทไฟล์และขนาดอีกครั้งหนึ่ง"
+    },
+    "RECORD_DOCUMENT": {
+      "PENDING_STATUS": "รอบันทึก",
+      "COMPLETED_STATUS": "บันทึกสำเร็จ",
+      "A_STATUS": "บันทึกสำเร็จ",
+      "R_STATUS": "บันทึกสำเร็จ แต่ศาลมีคำสั่งไม่อนุญาต",
+      "HINT_DOC_PDF": "รองรับไฟล์ PDF, JPEG ขนาดไม่เกิน 30MB"
+    }
+  }
+}

@@ -1,0 +1,134 @@
+<div>
+  <!-- message banner -->
+  <div class="mb-1em">
+    <app-message-banner
+      [message]="messageBanner"
+      type="warn-normal">
+    </app-message-banner>
+  </div>
+  <div class="mb-1em" fxLayout="row" fxLayoutGap="8px">
+    <div fxFlex="50">
+      <spig-dropdown
+        classInput="input-xsm icon"
+        [config]="collateralTypeConfig"
+        [formControl]="collateralTypeOptionsCtrl"
+        [options]="collateralTypeOptions"
+        (selectedOption)="filterByCollateralType($event)">
+      </spig-dropdown>
+    </div>
+    <div fxFlex="50">
+      <spig-dropdown
+        classInput="input-xsm icon"
+        [config]="dropdownDocNoSortConfig"
+        [formControl]="sortControl"
+        [options]="docNoSortOption"
+        (selectedOption)="sortByDocumentNo($event)">
+      </spig-dropdown>
+    </div>
+  </div>
+  <ng-container *ngIf="dataSource.length > 0; then dataTable; else dataNotFound"></ng-container>
+  <spig-paginator
+    *ngIf="dataSource.length > 0 && pageResultConfig && pageActionConfig"
+    [result]="pageResultConfig"
+    [action]="pageActionConfig"
+    (pageEvent)="pageEvent($event)">
+  </spig-paginator>
+  <p *ngIf="isSubmited && selection.selected.length === 0" class="error-msg">กรุณาเลือกอย่างน้อย 1 รายการในทรัพย์ ที่ต้องการเพิ่มจากระบบ LEXs</p>
+</div>
+
+<ng-template #dataTable>
+  <div class="table-scroll section" table-scroll>
+    <table mat-table [dataSource]="dataSource">
+      <ng-container matColumnDef="selection" sticky>
+        <th mat-header-cell *matHeaderCellDef>
+          <mat-checkbox
+            (change)="$event ? toggleAllRows() : null"
+            [checked]="selection.hasValue() && isAllSelected()"
+            [indeterminate]="selection.hasValue() && !isAllSelected()">
+          </mat-checkbox>
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <mat-checkbox
+            (click)="$event.stopPropagation()"
+            (change)="$event ? onCheckboxChange(row) : null"
+            [checked]="selection.isSelected(row)">
+          </mat-checkbox>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="index" sticky>
+        <th mat-header-cell *matHeaderCellDef>ลำดับ</th>
+        <td mat-cell *matCellDef="let element; let i = index;">
+          {{i + 1}}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="collateralType">
+        <th mat-header-cell *matHeaderCellDef>ประเภททรัพย์</th>
+        <td mat-cell *matCellDef="let element">{{element.lexsCollateralTypeDesc}}</td>
+      </ng-container>
+      <ng-container matColumnDef="subCollateralType">
+        <th mat-header-cell *matHeaderCellDef>ประเภทย่อย</th>
+        <td mat-cell *matCellDef="let element">{{element.lexsCollateralSubTypeDesc}}</td>
+      </ng-container>
+      <ng-container matColumnDef="documentNumber">
+        <th mat-header-cell *matHeaderCellDef>เลขที่เอกสารสิทธิ์</th>
+        <td mat-cell *matCellDef="let element">{{element.collateralId}}</td>
+      </ng-container>
+      <ng-container matColumnDef="collateralDetails">
+        <th mat-header-cell *matHeaderCellDef>รายละเอียดทรัพย์</th>
+        <td mat-cell *matCellDef="let element">{{element.lexsCollateralsDescription}}</td>
+      </ng-container>
+      <ng-container matColumnDef="redCase">
+        <th mat-header-cell *matHeaderCellDef>คดีหมายเลขแดง</th>
+        <td mat-cell *matCellDef="let element">{{element.lexsRedCaseNo}}</td>
+      </ng-container>
+      <ng-container matColumnDef="mortgagee">
+        <th mat-header-cell *matHeaderCellDef>ผู้รับจำนอง</th>
+        <td mat-cell *matCellDef="let element">{{element.assetObligationBy}}</td>
+      </ng-container>
+      <ng-container matColumnDef="ownerName">
+        <th mat-header-cell *matHeaderCellDef>ชื่อผู้ถือกรรมสิทธิ์</th>
+        <td mat-cell *matCellDef="let element">{{element.lexsOwnerFullName}}</td>
+      </ng-container>
+      <ng-container matColumnDef="accuser">
+        <th mat-header-cell *matHeaderCellDef>โจทก์</th>
+        <td mat-cell *matCellDef="let element">{{element.lexsPlaintiffName}}</td>
+      </ng-container>
+      <ng-container matColumnDef="defendant">
+        <th mat-header-cell *matHeaderCellDef>จำเลย</th>
+        <!-- <td mat-cell *matCellDef="let element">{{element.lexsDefendant[0]?.personName}}</td> -->
+        <td mat-cell *matCellDef="let element" class="text-left">
+          <ng-container *ngIf="['EDIT', 'MATCH'].includes('EDIT'); else elseDefTemplate">
+            <span>{{ element.defendantname || '-' }}</span>
+          </ng-container>
+          <ng-template #elseDefTemplate>
+            <ng-container *ngIf="element.lexsDefendant?.length > 1; else elseDefendantTemplate">
+              <div class="wrap-tooltip">
+                <span>{{ (element.lexsDefendant ) || '-' }}</span>
+                <ng-container *ngIf="element.lexsDefendant.length > 0">
+                  <app-tooltip
+                    [iconClass]="['icon-small', 'fill-blue']"
+                    [position]="'top-right'"
+                    [params]="[{ title: 'รายชื่อผู้เกี่ยวข้อง', content: element.lexsDefendant }]">
+                  </app-tooltip>
+                </ng-container>
+              </div>
+            </ng-container>
+            <ng-template #elseDefendantTemplate>
+              <span>{{ (element.lexsDefendant ) || '-' }}</span>
+            </ng-template>
+          </ng-template>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="ledName" stickyEnd>
+        <th mat-header-cell *matHeaderCellDef>สำนักงานบังคับคดี</th>
+        <td mat-cell *matCellDef="let element">{{element.ledName}}</td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </div>
+</ng-template>
+
+<ng-template #dataNotFound>
+  <app-message-empty message="ไม่มีรายการ"></app-message-empty>
+</ng-template>

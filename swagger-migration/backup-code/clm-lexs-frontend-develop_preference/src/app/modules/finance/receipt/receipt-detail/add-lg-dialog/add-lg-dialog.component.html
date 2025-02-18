@@ -1,0 +1,178 @@
+<div class="container" [formGroup]="form">
+  <div fxLayout="row" fxLayoutAlign="start" fxLayoutGap="16px" class="mt-15">
+    <div fxLayout="column" fxFlex="55">
+      <mat-form-field *ngIf="!hideSearch && selectList.length === 0" class="no-label input-sm-icon search-input-field">
+        <input
+          type="text"
+          matInput
+          [placeholder]="placeholder | translate"
+          autocomplete="off"
+          (focus)="placeholder = ''"
+          (keyup.enter)="onSearch()"
+          (blur)="placeholder = 'SEARCH_CONTROL.PLACEHOLDER_ADDITIONAL'"
+          formControlName="searchString" />
+        <mat-icon matSuffix class="icon icon-xmedium black-100 no-validate" svgIcon="icon-Search" (click)="onSearch()">
+        </mat-icon>
+      </mat-form-field>
+      <spig-error-msg
+        *ngIf="!hideSearch && selectList.length === 0"
+        [control]="getControl('searchString')"
+        customErrorMsg="กรุณาค้นหารายการเพื่อดำเนินงานต่อ">
+      </spig-error-msg>
+      <span *ngIf="hideSearch && selectList.length > 0">LG ID : {{ selectList[0].litigationId }}</span>
+      <span *ngIf="selectOneRow" class="thin-letter">1 เลขที่หนังสือ สามารถทำรายการได้ 1 เลขที่กฎหมาย เท่านั้น</span>
+    </div>
+  </div>
+  <div *ngIf="isSearch" fxLayout="row" fxLayoutAlign="start" fxLayoutGap="16px" class="mt-15">
+    <div fxLayout="column" fxFlex="100">
+      <ng-container>
+        <app-message-banner
+          type="info"
+          class="pb-20 hide-icon"
+          *ngIf="(data && data.length > 0) || isDeletedRecord"
+          [message]="objRefund?.totalAdded + ' รายการถูกเพิ่มแล้ว'"></app-message-banner>
+      </ng-container>
+      <ng-container *ngTemplateOutlet="table; context: { list: tableList }"> </ng-container>
+      <div *ngIf="(tableList?.length || 0) > 0" fxLayout="row" fxLayoutAlign="space-between center " class="pt-20">
+        <spig-error-msg [control]="getControl('data')" customErrorMsg="โปรดเลือกข้อมูลในตารางนี้"> </spig-error-msg>
+        <div class="fill-black-70" *ngIf="tableList && tableList.length > 0">
+          ผลลัพธ์: 1-{{ tableList.length }} จาก {{ tableList.length }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #table let-dataSource="list">
+  <div class="table-scroll" id="table">
+    <table mat-table [dataSource]="dataSource">
+      <!-- LG ID Column -->
+      <ng-container matColumnDef="litigationId">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'COMMON.LABEL_LG_ID' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div>
+            {{ element?.litigationId || '-' }}
+          </div>
+        </td>
+      </ng-container>
+      <!-- คดีหมายเลขดำ/แดง Column -->
+      <ng-container matColumnDef="blackCaseNo">
+        <th mat-header-cell *matHeaderCellDef class="new-line">
+          {{ 'COMMON.LABEL_BLACK_CASE_NO_RED_CASE_NO' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div class="fill-black-70">
+            {{ element?.blackCaseNo || '-' }}
+          </div>
+          <div class="fill-red">
+            {{ element?.redCaseNo || '-' }}
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- ศาล -->
+      <ng-container matColumnDef="court">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'COMMON.LABEL_COURT' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div>
+            {{ element?.court || '-' }}
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- ชื่อ-นามสกุลลูกหนี้  / ชื่อ-นามสกุลผู้กู้หลัก Column -->
+      <ng-container matColumnDef="customerName">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ (isAdvance ? 'FINANCE.MAIN_BORROWER_NAME' : 'FINANCE.DEBTOR_NAME') | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div>
+            {{ element?.customerName || '-' }}
+          </div>
+        </td>
+      </ng-container>
+      <!-- หน่วยงานดูแลลูกหนี้-->
+      <ng-container matColumnDef="customerId">
+        <th mat-header-cell *matHeaderCellDef>หน่วยงานดูแลลูกหนี้</th>
+        <td mat-cell *matCellDef="let element">
+          <div>
+            {{ element?.responseBranchCode || '-' }}
+            -
+            {{ element?.responseBranchName || '-' }}
+          </div>
+        </td>
+      </ng-container>
+      <!-- หน่วยงานดูแลลูกหนี้-->
+      <ng-container matColumnDef="branch">
+        <th mat-header-cell *matHeaderCellDef>สาขา</th>
+        <td mat-cell *matCellDef="let element">
+          <div>
+            {{ element?.branchCode || '-' }}
+            -
+            {{ element?.branchName || '-' }}
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- จำนวนเงินที่จ่าย (E11) -->
+      <ng-container matColumnDef="payAmount">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'FINANCE.RECEIPT_TYPE' | translate }}
+        </th>
+        <td class="text-right" mat-cell *matCellDef="let element">
+          <div>
+            {{ (element?.payAmount | numberDecimal) || '-' }}
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- จำนวนเงินที่ศาลสั่งคืน -->
+      <ng-container matColumnDef="courtRefundAmount">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'COURT.REFUND_AMOUNT_WITHOUT_CURRENCY' | translate }}
+        </th>
+        <td class="text-right" mat-cell *matCellDef="let element">
+          <div>
+            {{ (element?.refundAmount | numberDecimal) || '-' }}
+          </div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="customerStatusName">
+        <th class="text-center" mat-header-cell *matHeaderCellDef>
+          {{ 'COMMON.LABEL_COMMAND' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element; let index = index">
+          <div *ngIf="selectOneRow && objRefund?.totalAdded > 0 ? selectedLg === element?.litigationId : true">
+            <button
+              mat-stroked-button
+              color="primary"
+              [class.color.mat-primary]="!element?.added"
+              [class.border-blue]="!element?.added"
+              [class.mat-gray]="element?.added"
+              class="long-button overflow-ellipsis"
+              (click)="!element?.added ? addList(element) : deleteList(element)">
+              <mat-icon svgIcon="icon-Plus" class="icon-xmedium" *ngIf="!element?.added"></mat-icon>
+              <span class="mat-button-wrapper" *ngIf="!element?.added">เพิ่มรายการ</span>
+
+              <mat-icon svgIcon="icon-Bin" class="icon-md btn-icon mr-10" *ngIf="element?.added"></mat-icon>
+              <span *ngIf="element?.added"> ลบรายการ </span>
+            </button>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="isAdvance ? advanceTableColumns : tableColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: isAdvance ? advanceTableColumns : tableColumns"></tr>
+    </table>
+    <ng-container *ngIf="dataSource && dataSource.length === 0" [ngTemplateOutlet]="dataNotFound"></ng-container>
+  </div>
+</ng-template>
+
+<ng-template #dataNotFound>
+  <app-message-empty [message]="'COMMON.SEARCH_NOT_FOUND'"></app-message-empty>
+</ng-template>

@@ -1,0 +1,46 @@
+<app-case-details [title]="'TITLE_MSG.LAWSUIT_DETAIL'" [data]="litigationCaseShortDetail" [hidelawyer]="true">
+  <ng-container *ngIf="isShowResponsibleLawyerInfo">
+    <div class="mb-16 mt-24 ml-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="12px">
+      <div fxLayout="column" fxFlex="15">
+        <h6>{{ 'COMMON.LABEL_RESPONSIBLE_LAWYER' | translate }}</h6>
+      </div>
+      <div fxLayout="column" fxFlex="28">
+        <span class="thin-letter mb-12">สำนักงานทนายความ</span>
+        <div>
+          <ng-container *ngIf="isShowResponsibleLawyerInfo; else elseTemplate">
+            {{ 'COMMON.MAIN_BRANCE_KTB_OFFICE_CODE_NAME' | translate }}
+          </ng-container>
+        </div>
+      </div>
+      <div fxLayout="column" fxFlex="28">
+        <span class="thin-letter mb-12">{{ 'COMMON.LABEL_RESPONSIBLE_LAWYER' | translate }}</span>
+        <div>
+          <ng-container *ngIf="isShowResponsibleLawyerInfo; else elseTemplate">
+            {{ withdrawSeizureLedAllResponse.withdrawSeizureLed?.publicAuctionLawyerId }} -
+            {{ withdrawSeizureLedAllResponse.withdrawSeizureLed?.publicAuctionLawyerName || '-' }}
+          </ng-container>
+        </div>
+      </div>
+      <div fxFlex="28">{{ ' ' }}</div>
+      <ng-template #elseTemplate> - </ng-template>
+    </div>
+  </ng-container>
+</app-case-details>
+<ng-container *ngIf="taskCode !== 'R2E06-01-A' || isMakerAwaitingTask">
+  <app-withdrawn-reason
+    [isViewMode]="
+      ['VIEW', 'VIEW_PENDING', 'PENDING_APPROVAL'].includes(mode) ||
+      isMakerAwaitingTask ||
+      ['R2E06-03-C', 'R2E06-04-D', 'R2E06-05-E', 'R2E06-02-B'].includes(taskCode)
+    "
+    [form]="detailForm"></app-withdrawn-reason>
+</ng-container>
+<ng-container *ngIf="mode === 'EDIT' && (taskCode === 'R2E06-03-C' || taskCode === 'R2E06-04-D')">
+  <app-responsible-lawyer
+    [data]="litigationCaseShortDetail"
+    [dataForm]="dataLawyerForm"
+    [mode]="mode"></app-responsible-lawyer>
+</ng-container>
+<ng-container *ngIf="isApproveOrReject">
+  <app-approve-detail [data]="withdrawSeizureResponse"></app-approve-detail>
+</ng-container>

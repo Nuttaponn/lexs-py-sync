@@ -1,0 +1,66 @@
+<app-action-bar
+  (backButtonHandler)="onBack()"
+  [showNavBarInformation]="true"
+  [hasPrimaryButton]="actionBar.hasPrimary"
+  [primaryButtonText]="actionBar.primaryText || 'COMMON.BUTTON_FINISH'"
+  [primaryButtonIcon]="actionBar.primaryIcon || 'icon-Reset'"
+  (primaryButtonHandler)="onSubmit()"
+  [hasSaveButton]="actionBar.hasSave"
+  [saveButtonText]="actionBar.saveText || 'COMMON.BUTTON_SAVE'"
+  (saveButtonHandler)="onSave()"
+  [hasCancelButton]="actionBar.hasCancel"
+  [cancelButtonText]="actionBar.cancelText || 'COMMON.BUTTON_CANCEL'"
+  (cancelButtonHandler)="onCancel()"
+  [hasRejectButton]="actionBar.hasReject"
+  [rejectButtonIcon]="actionBar.rejectIcon || 'icon-Dismiss-Square'"
+  [rejectButtonText]="actionBar.rejectText || 'COMMON.BUTTON_NOT_APPROVE'"
+  (rejectButtonHandler)="onReject()"
+  [hasEditButton]="actionBar.hasEdit || false"
+  [editButtonIcon]="actionBar.editButtonIcon || 'icon-Arrow-Revert'"
+  [editButtonText]="actionBar.editButtonText || ''"
+  (editButtonHandler)="onEdit()">
+  <ng-container navBarInformationTemplate>
+    <mat-icon [svgIcon]="iconName" class="icon icon-xmedium"></mat-icon>
+    <span class="ml-8">{{ title | translate }}</span>
+    <span
+      *ngIf="!!titleStatus"
+      class="ml-12 status-label"
+      [ngClass]="taskCode === 'R2E06-12-B' ? 'status-normal' : 'status-pending'"
+      >{{ titleStatus | translate }}</span
+    >
+  </ng-container>
+</app-action-bar>
+
+<div class="content-below-action-bar-area">
+  <ng-container *ngIf="((isFromTask && isOwnerTask) || isOnRequest) && !!messageBanner">
+    <div class="m-24">
+      <app-message-banner [type]="'black-info'" [message]="messageBanner"></app-message-banner>
+    </div>
+  </ng-container>
+  <div class="mt-24 mb-24">
+    <app-case-details
+      [title]="'TITLE_MSG.LAWSUIT_DETAIL'"
+      [data]="litigationCaseShortDetail"
+      [hidelawyer]="true"></app-case-details>
+  </div>
+  <ng-container>
+    <app-withdraw-excution-detail
+      *ngIf="showWithdrawWxcutionDetail"
+      [data]="withdrawWritOfExecResponse"
+      [dataForm]="withdrawExcutionDetailComponentForm"
+      [mode]="excutionDetailMode">
+    </app-withdraw-excution-detail>
+    <app-responsible-lawyer
+      *ngIf="showResponsibleLawyer"
+      [hasExpand]="false"
+      [data]="responsibleLawyerData"
+      [dataForm]="dataLawyerForm"
+      [mode]="responsibleLawyerMode"></app-responsible-lawyer>
+    <app-withdraw-excution-result
+      *ngIf="showWithdrawExcutionResult"
+      [data]="withdrawWritOfExecResponse"
+      [dataForm]="withdrawExcutionResultComponentForm"
+      [mode]="excutionResultMode">
+    </app-withdraw-excution-result>
+  </ng-container>
+</div>

@@ -1,0 +1,53 @@
+{
+  "aucBiddingId": 346,
+  "aucBiddingDeedGroupId": 184,
+  "aucRef": 605,
+  "ledId": 71,
+  "ledName": "สำนักงานบังคับคดีจังหวัดภูเก็ต",
+  "aucLedSeq": "2",
+  "deedGroupId": 715,
+  "fsubbidnum": "2",
+  "lawCourtId": "407",
+  "lawCourtName": "จังหวัดหนองคาย",
+  "lawCourtLevel": "CIVIL",
+  "aucRound": 1,
+  "aucBiddingDeedGroupStatus": "COMPLETE",
+  "saleChannel": "ขายแบบธรรมดา",
+  "bidDate": "2023-09-08",
+  "aucBiddingResult": {
+    "aucResult": "SOLD",
+    "aucResultTimestamp": "2023-09-12T11:56:58+07:00",
+    "buyerType": "EXTERNAL",
+    "buyerName": "Miink 02",
+    "soldPrice": "888000.00",
+    "soldDate": "2023-09-08",
+    "remark": "Test case for Miink 02",
+    "requireResultDocument": true,
+    "requireReturnDocument": true
+  },
+  "aucBiddingDeedGroupDocuments": [
+    {
+      "documentTemplate": {
+        "documentGroup": "AUCDEEDGROUPRESULT",
+        "documentTemplateId": "LEXSF139",
+        "documentName": "สัญญาซื้อขาย",
+        "optional": false
+      },
+      "documentId": 889897,
+      "imageSource": "LEXS",
+      "imageId": "5125cd1e-c0e7-4356-a023-1e3700f6ebac",
+      "imageName": "สัญญาซื้อขาย_doc.pdf",
+      "uploadTimestamp": "2023-09-12T11:57:01+07:00",
+      "reuploadable": true
+    },
+    {
+      "documentTemplate": {
+        "documentGroup": "AUCDEEDGROUPRETURN",
+        "documentTemplateId": "LEXSF140",
+        "documentName": "เช็คหลักประกัน",
+        "optional": false
+      },
+      "documentId": 0
+    }
+  ]
+}

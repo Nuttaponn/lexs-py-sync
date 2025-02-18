@@ -1,0 +1,51 @@
+<div class="content-container mt-0">
+  <div class="inner-container-padding-24">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+      <div class="title-text">
+        <h5 class="mt-12 mb-12 mr-12">
+          {{ 'AUCTION_DETAIL.AUCTION_DOCUMENT_SUBMITTED.TITLE' | translate }}
+        </h5>
+      </div>
+      <div fxLayout="row">
+        <div class="description" (click)="isOpened = !isOpened">
+          <mat-icon
+            [svgIcon]="isOpened ? 'icon-Slide-Hide' : 'icon-Expand'"
+            class="icon icon-xmedium icon-hide-show fill-blue mr-5">
+          </mat-icon
+          >{{ isOpened ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate) }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <mat-accordion>
+    <mat-expansion-panel [expanded]="isOpened" hideToggle>
+      <mat-divider class="mr-24"></mat-divider>
+      <div class="mb-16 mt-24 mr-16 ml-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+        <div fxLayout="column" fxFlex="15">
+          <h6>{{ 'AUCTION_DETAIL.AUCTION_DOCUMENT_SUBMITTED.CHECK_COLLATERAL' | translate }}</h6>
+        </div>
+        <div fxLayout="column" fxFlex="30" fxLayoutGap="12px">
+          <span class="thin-letter">{{
+            'AUCTION_DETAIL.AUCTION_DOCUMENT_SUBMITTED.CHECK_COLLATERAL' | translate
+          }}</span>
+          <div>
+            {{ data?.aucRef || '-' }}
+          </div>
+        </div>
+      </div>
+      <div class="mb-16 mt-24 mr-16 ml-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+        <div fxLayout="column" fxFlex="15"></div>
+
+        <div fxLayout="column" class="table-content" fxFlex="60">
+          <app-upload-multi-file-content
+            [mode]="mode"
+            [uploadMultiInfo]="uploadMultiInfo"
+            [list]="documentUpload"
+            [column]="documentColumns"
+            [readonly]="isViewMode">
+          </app-upload-multi-file-content>
+        </div>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

@@ -1,0 +1,142 @@
+<div>
+  <!-- message banner -->
+  <div class="mb-1em">
+    <app-message-banner [message]="messageBanner" type="warn-normal">
+    </app-message-banner>
+  </div>
+  <!-- table -->
+  <div class="table-scroll section" table-scroll [formGroup]="form">
+    <table mat-table [dataSource]="rows.controls" formArrayName="rows">
+      <ng-container matColumnDef="index">
+        <th mat-header-cell *matHeaderCellDef>{{ 'index.msg_1' | translate }}</th>
+        <td mat-cell *matCellDef="let element; let i = index;">
+          {{i + 1}}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="collateralGroup">
+        <th mat-header-cell *matHeaderCellDef>{{ 'index.msg_2' | translate }}</th>
+        <td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i">{{rows.at(i).get('colGroup')?.value}}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="numberOfCollateral">
+        <th mat-header-cell *matHeaderCellDef>{{ 'index.msg_3' | translate }}<br>({{ 'index.msg_4' | translate }})</th>
+        <td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i">
+          {{rows.at(i).get('numberOfCollateral')?.value}}</td>
+      </ng-container>
+      <ng-container matColumnDef="salesMethod">
+        <th mat-header-cell *matHeaderCellDef>{{ 'index.msg_5' | translate }}</th>
+        <td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i">
+          <ng-container *ngIf="rows.at(i).get('isView')?.value === 'EDIT'">
+            <spig-dropdown [config]="saleTypeDescConfig" [options]="saleTypeDescOptions" formControlName="saleTypeDesc"
+              [classInput]="'input-normal elevation-e1 border-black-40'">
+            </spig-dropdown>
+            <spig-error-msg [control]="rows.at(i).get('saleTypeDesc')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+            </spig-error-msg>
+          </ng-container>
+          <ng-container *ngIf="rows.at(i).get('isView')?.value === 'VIEW'">
+            {{rows.at(i).get('saleTypeDesc')?.value}}
+          </ng-container>
+        </td>
+        <td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i">
+          {{rows.at(i).get('numberOfCollateral')?.value}}</td>
+      </ng-container>
+      <ng-container matColumnDef="outsiderCollateralPrice">
+        <th mat-header-cell *matHeaderCellDef>{{ 'index.msg_6' | translate }}<br>{{ 'index.msg_7' | translate }} ({{ 'index.msg_8' | translate }})</th>
+        <td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i">
+          <ng-container *ngIf="rows.at(i).get('isView')?.value === 'EDIT'">
+            <mat-form-field class="no-label input-sm-icon search-input-field">
+              <input matInput type="text" appNumberOnly="qualitative" formControlName="reserveFund"
+                placeholder="{{ 'index.msg_9' | translate }}" />
+        <td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i">
+          {{rows.at(i).get('reserveFund')?.value}}</td>
+        </mat-form-field>
+      </ng-container>
+      <ng-container *ngIf="rows.at(i).get('isView')?.value === 'VIEW'">
+        {{rows.at(i).get('reserveFund')?.value}}
+      </ng-container>
+      </td>
+      </ng-container>
+      <ng-container matColumnDef="substituteCollateralPrice">
+        <th mat-header-cell *matHeaderCellDef>{{ 'index.msg_10' | translate }}<br>{{ 'index.msg_11' | translate }} ({{ 'index.msg_12' | translate }})</th>
+        <td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i">
+          <ng-container *ngIf="rows.at(i).get('isView')?.value === 'EDIT'">
+            <mat-form-field class="no-label input-sm-icon search-input-field">
+              <input matInput type="text" appNumberOnly="qualitative" formControlName="reserveFund1"
+                placeholder="{{ 'index.msg_13' | translate }}" />
+            </mat-form-field>
+            <spig-error-msg [control]="rows.at(i).get('reserveFund1')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+            </spig-error-msg>
+          </ng-container>
+          <ng-container *ngIf="rows.at(i).get('isView')?.value === 'VIEW'">
+            {{rows.at(i).get('reserveFund1')?.value}}
+          </ng-container>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="specialistCollateralPrice">
+        <th mat-header-cell *matHeaderCellDef>{{ 'index.msg_14' | translate }}<br>{{ 'index.msg_15' | translate }} ({{ 'index.msg_16' | translate }})</th>
+        <td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i">
+          <ng-container *ngIf="rows.at(i).get('isView')?.value === 'EDIT'">
+            <mat-form-field class="no-label input-sm-icon search-input-field">
+              <input matInput type="text" appNumberOnly="qualitative" formControlName="assetPrice2"
+                placeholder="{{ 'index.msg_17' | translate }}" />
+            </mat-form-field>
+          </ng-container>
+          <ng-container *ngIf="rows.at(i).get('isView')?.value === 'VIEW'">
+            {{rows.at(i).get('assetPrice2')?.value}}
+          </ng-container>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="officerExCollateralPrice">
+        <th mat-header-cell *matHeaderCellDef>{{ 'index.msg_18' | translate }}<br>{{ 'index.msg_19' | translate }}<br>({{ 'index.msg_20' | translate }})</th>
+        <td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i">
+          <ng-container *ngIf="rows.at(i).get('isView')?.value === 'EDIT'">
+            <mat-form-field class="no-label input-sm-icon search-input-field">
+              <input matInput type="text" appNumberOnly="qualitative" formControlName="assetPrice3"
+                placeholder="{{ 'index.msg_21' | translate }}" />
+            </mat-form-field>
+            <spig-error-msg [control]="rows.at(i).get('assetPrice3')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+            </spig-error-msg>
+          </ng-container>
+          <ng-container *ngIf="rows.at(i).get('isView')?.value === 'VIEW'">
+            {{rows.at(i).get('assetPrice3')?.value}}
+          </ng-container>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="officerCtCollateralPrice">
+        <th mat-header-cell *matHeaderCellDef>{{ 'index.msg_22' | translate }}<br>{{ 'index.msg_23' | translate }}<br>{{ 'index.msg_24' | translate }} ({{ 'index.msg_25' | translate }})</th>
+        <td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i">
+          <ng-container *ngIf="rows.at(i).get('isView')?.value === 'EDIT'">
+            <mat-form-field class="no-label input-sm-icon search-input-field">
+              <input matInput type="text" appNumberOnly="qualitative" formControlName="assetPrice4"
+                placeholder="{{ 'index.msg_26' | translate }}" />
+            </mat-form-field>
+          </ng-container>
+          <ng-container *ngIf="rows.at(i).get('isView')?.value === 'VIEW'">
+            {{rows.at(i).get('assetPrice4')?.value}}
+          </ng-container>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="officerEsCollateralPrice">
+        <th mat-header-cell *matHeaderCellDef>{{ 'index.msg_27' | translate }}<br>{{ 'index.msg_28' | translate }}<br>{{ 'index.msg_29' | translate }} ({{ 'index.msg_30' | translate }})</th>
+        <td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i">
+          <ng-container *ngIf="rows.at(i).get('isView')?.value === 'EDIT'">
+            <mat-form-field class="no-label input-sm-icon search-input-field">
+              <input matInput type="text" appNumberOnly="qualitative" formControlName="assetPrice5"
+                placeholder="{{ 'index.msg_31' | translate }}" />
+            </mat-form-field>
+          </ng-container>
+          <ng-container *ngIf="rows.at(i).get('isView')?.value === 'VIEW'">
+            {{rows.at(i).get('assetPrice5')?.value}}
+          </ng-container>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </div>
+  <!-- Paginator -->
+  <ng-container>
+    <app-paginator *ngIf="dataSource.length > 0" #paginator [pageSize]="pageSize" [length]="dataSource.length"
+      (page)="onPaging($event)"></app-paginator>
+  </ng-container>
+</div>

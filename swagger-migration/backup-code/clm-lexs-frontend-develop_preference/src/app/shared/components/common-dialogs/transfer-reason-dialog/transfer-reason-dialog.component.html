@@ -1,0 +1,57 @@
+<ng-container [ngSwitch]="menu">
+  <ng-container *ngSwitchCase="'TASK'">
+    <ng-container *ngTemplateOutlet="taskTransferTemplate"></ng-container>
+  </ng-container>
+  <ng-container *ngSwitchCase="'FINANCE_EXPENSE'">
+    <ng-container *ngTemplateOutlet="financeExpenseTransferTemplate"></ng-container>
+  </ng-container>
+  <ng-container *ngSwitchDefault></ng-container>
+</ng-container>
+
+<ng-template #taskTransferTemplate>
+  <div>
+    <app-message-banner [message]="msgBanner" type="info"></app-message-banner>
+    <div [formGroup]="control" class="pt-20" fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="24px">
+      <div fxFlex="20">{{ 'COMMON.LABEL_REASON' | translate }}</div>
+      <div fxFlex class="reason-content">
+        <textarea
+          class="textarea-content"
+          cols="70"
+          rows="10"
+          [placeholder]="'COMMON.LABEL_REMARKS' | translate"
+          formControlName="note"
+          name="note"></textarea>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<ng-template #financeExpenseTransferTemplate>
+  <div class="dialog-content min-xl">
+    <app-message-banner [message]="msgBanner" type="info"></app-message-banner>
+    <form class="pt-20" [formGroup]="control" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+      <div fxFlex="25">
+        {{ 'TRANSFER_DIALOG.SELECT_RECIPIENT' | translate }}
+      </div>
+      <div fxLayout="column" fxLayoutGap="16px" fxFlex>
+        <div>
+          <spig-dropdown formControlName="targetUserId" [config]="config" [options]="options"> </spig-dropdown>
+          <spig-error-msg
+            [control]="control.get('targetUserId')"
+            [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'"></spig-error-msg>
+        </div>
+        <div>
+          <mat-form-field class="full-width">
+            <mat-label>{{ 'COMMON.LABEL_REASON' | translate }}</mat-label>
+            <textarea
+              formControlName="note"
+              maxlength="500"
+              matInput
+              rows="12"
+              class="comment-textarea form-control no-resize"></textarea>
+          </mat-form-field>
+          <spig-error-msg [control]="control.get('note')" [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'"></spig-error-msg>
+        </div>
+      </div>
+    </form>
+  </div>
+</ng-template>

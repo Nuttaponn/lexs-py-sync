@@ -1,0 +1,21 @@
+@import '/src/styles/colors';
+@import '/src/styles/typography';
+
+.customer-detail-container {
+  padding: 24px;
+
+  .info-container {
+    background: $white;
+    border-radius: 16px;
+    padding: 0 16px;
+
+    .info-section {
+      padding: 16px;
+    }
+
+    .status-section {
+      padding: 16px;
+      font-size: $font-sub-description;
+    }
+  }
+}

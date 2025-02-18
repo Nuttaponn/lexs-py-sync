@@ -1,0 +1,18 @@
+:host {
+  .full-width {
+    width: 100%;
+  }
+  mat-form-field {
+    width: 100%;
+  }
+
+  .w-120px {
+    width: 120px !important;
+  }
+}
+
+::ng-deep app-withdrawn-seizure-contact {
+  .combo-box-container {
+    font-size: 16px;
+  }
+}

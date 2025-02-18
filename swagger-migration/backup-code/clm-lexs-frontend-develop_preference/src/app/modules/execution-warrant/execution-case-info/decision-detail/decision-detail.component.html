@@ -1,0 +1,128 @@
+<div class="content-container">
+  <div class="inner-container-padding">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+      <div class="title-text">
+        <h5 class="mt-12 mb-12 ml-12 mr-12">{{ 'EXECUTION_WARRANT.LABEL_VERDICT_INFO' | translate }}</h5>
+      </div>
+      <div fxLayout="row">
+        <div class="description" (click)="isOpened = !isOpened">
+          <mat-icon
+            [svgIcon]="isOpened ? 'icon-Slide-Hide' : 'icon-Expand'"
+            class="icon icon-xmedium icon-hide-show fill-blue mr-5">
+          </mat-icon
+          >{{ isOpened ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate) }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <mat-accordion>
+    <mat-expansion-panel [expanded]="isOpened" hideToggle>
+      <mat-divider class="no-margin"></mat-divider>
+
+      <!-- ข้อมูลคำพิพากษาชั้นต้น -->
+      <ng-container *ngIf="courtLevel && ['CIVIL', 'APPEAL', 'SUPREME'].includes(courtLevel)">
+        <div class="mb-16 mt-24 mr-16 ml-16" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+          <div fxLayout="column" fxFlex="14">
+            <h6 class="new-line">{{ 'EXECUTION_WARRANT.LABEL_VERDICT_CIVIL_INFO' | translate }}</h6>
+          </div>
+          <div fxLayout="column" fxFlex="27">
+            <span class="thin-letter">{{ 'COURT.VERDICT_TYPE' | translate }}</span>
+            <div>{{ resultCivilCourtVerdicts.courtVerdictTypeDesc || '-' }}</div>
+          </div>
+          <div fxLayout="column" fxFlex="27">
+            <span class="thin-letter">{{ 'COURT.VERDICT_TYPE_ORDER' | translate }}</span>
+            <div>{{ resultCivilCourtVerdicts.courtVerdictDesc || '-' }}</div>
+          </div>
+        </div>
+        <div class="mb-16 mt-24 mr-16 ml-16" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+          <div fxLayout="column" fxFlex="14"></div>
+          <div fxLayout="column" fxFlex="27">
+            <span class="thin-letter">{{ 'COMMON.LABEL_COURT_VERDICT_DATE' | translate }}</span>
+            <div>{{ (resultCivilCourtVerdicts.courtVerdictDate | buddhistEra: 'DD/MM/yyyy') || '-' }}</div>
+          </div>
+          <div fxLayout="column" fxFlex="27">
+            <span class="thin-letter">{{ 'COURT.FEE_TYPE' | translate }}</span>
+            <div>{{ resultCivilCourtVerdicts.otherCourtFeeTypeDesc || '-' }}</div>
+          </div>
+        </div>
+        <div class="mb-16 mt-24 mr-16 ml-16" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+          <div fxLayout="column" fxFlex="14"></div>
+          <div fxLayout="column" fxFlex="27">
+            <span class="thin-letter">{{ 'COMMON.LABEL_REMARKS' | translate }}</span>
+            <div>{{ resultCivilCourtVerdicts.remark || '-' }}</div>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- ข้อมูลคำพิพากษาอุธรณ์ -->
+      <ng-container *ngIf="courtLevel && ['APPEAL', 'SUPREME'].includes(courtLevel)">
+        <div class="mb-16 mt-24 mr-16 ml-16" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+          <div fxLayout="column" fxFlex="14">
+            <h6 class="new-line">{{ 'EXECUTION_WARRANT.LABEL_VERDICT_APPEAL_INFO' | translate }}</h6>
+          </div>
+          <div fxLayout="column" fxFlex="27">
+            <span class="thin-letter">{{ 'COURT.VERDICT_TYPE' | translate }}</span>
+            <div>{{ resultAppealCourtVerdicts.courtVerdictTypeDesc || '-' }}</div>
+          </div>
+          <div fxLayout="column" fxFlex="27">
+            <span class="thin-letter">{{ 'COURT.VERDICT_TYPE_ORDER' | translate }}</span>
+            <div>{{ resultAppealCourtVerdicts.courtVerdictDesc || '-' }}</div>
+          </div>
+        </div>
+        <div class="mb-16 mt-24 mr-16 ml-16" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+          <div fxLayout="column" fxFlex="14"></div>
+          <div fxLayout="column" fxFlex="27">
+            <span class="thin-letter">{{ 'COMMON.LABEL_COURT_VERDICT_DATE' | translate }}</span>
+            <div>{{ (resultAppealCourtVerdicts.courtVerdictDate | buddhistEra: 'DD/MM/yyyy') || '-' }}</div>
+          </div>
+          <div fxLayout="column" fxFlex="27">
+            <span class="thin-letter">{{ 'COURT.FEE_TYPE' | translate }}</span>
+            <div>{{ resultAppealCourtVerdicts.otherCourtFeeTypeDesc || '-' }}</div>
+          </div>
+        </div>
+        <div class="mb-16 mt-24 mr-16 ml-16" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+          <div fxLayout="column" fxFlex="14"></div>
+          <div fxLayout="column" fxFlex="27">
+            <span class="thin-letter">{{ 'COMMON.LABEL_REMARKS' | translate }}</span>
+            <div>{{ resultAppealCourtVerdicts.remark || '-' }}</div>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- ข้อมูลคำพิพากษาฎีกา -->
+      <ng-container *ngIf="courtLevel && ['SUPREME'].includes(courtLevel)">
+        <div class="mb-16 mt-24 mr-16 ml-16" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+          <div fxLayout="column" fxFlex="14">
+            <h6 class="new-line">{{ 'EXECUTION_WARRANT.LABEL_VERDICT_SUPREME_INFO' | translate }}</h6>
+          </div>
+          <div fxLayout="column" fxFlex="27">
+            <span class="thin-letter">{{ 'COURT.VERDICT_TYPE' | translate }}</span>
+            <div>{{ resultSupremeCourtVerdicts.courtVerdictTypeDesc || '-' }}</div>
+          </div>
+          <div fxLayout="column" fxFlex="27">
+            <span class="thin-letter">{{ 'COURT.VERDICT_TYPE_ORDER' | translate }}</span>
+            <div>{{ resultSupremeCourtVerdicts.courtVerdictDesc || '-' }}</div>
+          </div>
+        </div>
+        <div class="mb-16 mt-24 mr-16 ml-16" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+          <div fxLayout="column" fxFlex="14"></div>
+          <div fxLayout="column" fxFlex="27">
+            <span class="thin-letter">{{ 'COMMON.LABEL_COURT_VERDICT_DATE' | translate }}</span>
+            <div>{{ (resultSupremeCourtVerdicts.courtVerdictDate | buddhistEra: 'DD/MM/yyyy') || '-' }}</div>
+          </div>
+          <div fxLayout="column" fxFlex="27">
+            <span class="thin-letter">{{ 'COURT.FEE_TYPE' | translate }}</span>
+            <div>{{ resultSupremeCourtVerdicts.otherCourtFeeTypeDesc || '-' }}</div>
+          </div>
+        </div>
+        <div class="mb-16 mt-24 mr-16 ml-16" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+          <div fxLayout="column" fxFlex="14"></div>
+          <div fxLayout="column" fxFlex="27">
+            <span class="thin-letter">{{ 'COMMON.LABEL_REMARKS' | translate }}</span>
+            <div>{{ resultSupremeCourtVerdicts.remark || '-' }}</div>
+          </div>
+        </div>
+      </ng-container>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

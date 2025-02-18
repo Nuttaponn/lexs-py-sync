@@ -1,0 +1,28 @@
+.validreq {
+  position: relative;
+}
+.validreq input {
+  position: relative;
+  font-family: KrungthaiFastRegular;
+}
+.validreq label {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  font-family: KrungthaiFastRegular;
+}
+.validreq label::after {
+  content: ' *';
+  color: red;
+}
+input[required]:valid + label {
+  display: none;
+}
+input[required]:focus + label {
+  display: none;
+}
+::ng-deep app-transfer-ownership-details {
+  .sub-expansion:not(:last-child) {
+    border-bottom: none;
+  }
+}

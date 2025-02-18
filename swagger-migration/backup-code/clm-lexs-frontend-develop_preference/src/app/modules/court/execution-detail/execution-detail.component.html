@@ -1,0 +1,309 @@
+<app-action-bar
+  (backButtonHandler)="onBack()"
+  [hasCancelButton]="actionBar.hasCancel"
+  [hasSaveButton]="actionBar.hasSave"
+  [hasRejectButton]="actionBar.hasReject"
+  [hasPrimaryButton]="actionBar.hasPrimary"
+  [primaryButtonText]="'COURT.SAVE_SENDING'"
+  [primaryButtonIcon]="actionBar.primaryIcon!"
+  (primaryButtonHandler)="onSubmit()"
+  [showNavBarInformation]="true">
+  <ng-container navBarInformationTemplate *ngIf="!isViewMode">
+    <mat-icon svgIcon="icon-save-primary" class="icon icon-xmedium default-cursor"></mat-icon>
+    <span class="ml-8 bold">{{ 'COURT.SAVE_SENDING' | translate }}</span>
+  </ng-container>
+  <ng-container navBarInformationTemplate *ngIf="isViewMode">
+    <mat-icon svgIcon="icon-Window" class="icon icon-xmedium default-cursor"></mat-icon>
+    <span class="ml-8 bold">
+      {{ 'COMPULSION_TITLE' | translate }}: {{ currentDefendant.title }}{{ currentDefendant.firstName }}
+      {{ currentDefendant.lastName }}</span
+    >
+  </ng-container>
+</app-action-bar>
+<div class="content-below-action-bar-area execution-detail-container">
+  <form [formGroup]="form" class="content-container mat-elevation-z0">
+    <div class="title-content">
+      <h5>{{ 'COURT.COMPULSION_RESULT' | translate }}</h5>
+    </div>
+    <mat-divider></mat-divider>
+    <div fxLayout="column" fxLayoutGap="48" class="p-32">
+      <!-- ข้อมูลคำบังคับ -->
+      <div fxLayout="row" fxLayoutGap="16">
+        <div fxFlex="15">
+          <span class="bold">{{ 'COURT.COMPULSION_DATE' | translate }}</span>
+        </div>
+        <div fxFlex="70">
+          <div fxLayout="column" fxLayoutGap="24">
+            <div>
+              <span class="thin-letter">{{ 'COURT.DECREE.TABLE_HEADER_REQUEST_DECREE_DATE' | translate }}</span
+              ><br />
+              <span>{{
+                currentDecree.requestDecreeDate ? (currentDecree.requestDecreeDate | buddhistEra: 'DD/MM/yyyy') : '-'
+              }}</span>
+            </div>
+            <div>
+              <span class="thin-letter">{{ 'COURT.DECREE.TABLE_HEADER_DEFENDANT' | translate }}</span
+              ><br />
+              <span>{{ currentDefendant.title }}{{ currentDefendant.firstName }} {{ currentDefendant.lastName }}</span>
+            </div>
+            <div *ngIf="isViewMode">
+              <span class="thin-letter">{{ 'COMMON.LABEL_REMARKS' | translate }}</span
+              ><br />
+              <span>{{ currentDecree.remark || '-' }}</span>
+            </div>
+            <div *ngIf="!isViewMode">
+              <mat-form-field class="full-width">
+                <mat-label>
+                  {{ 'COMMON.LABEL_REMARKS' | translate }}
+                </mat-label>
+                <textarea
+                  maxlength="500"
+                  matInput
+                  formControlName="remark"
+                  cols="20"
+                  rows="10"
+                  class="comment-textarea form-control no-resize"></textarea>
+              </mat-form-field>
+            </div>
+            <app-upload-multi-file-content
+              [readonly]="true"
+              [list]="documents"
+              [column]="documentColumns"
+              [labelAcceptFile]="''">
+            </app-upload-multi-file-content>
+          </div>
+        </div>
+        <div fxFlex="15"></div>
+      </div>
+      <!-- REMOVED: ข้อมูลการส่งคำบังคับ -->
+      <!-- <div fxLayout="row" fxLayoutGap="16"
+        *ngIf="(isViewMode && currentDefendant.sendRemark !== undefined && currentDefendant.sendRemark !== null) || !isViewMode">
+        <div fxFlex="15">
+          <span class="bold">ข้อมูลการส่งคำบังคับ</span>
+        </div>
+        <div fxFlex="70">
+          <mat-radio-group *ngIf="!isViewMode" formControlName="sendRemark" (change)="onListenedChange($event)">
+            <div fxLayout="row" fxLayoutGap="42">
+              <mat-radio-button type="radio" color="accent" class="radio-btn"
+                value="DEFENDANT">จำเลยมาฟังคำพิพากษา</mat-radio-button>
+              <mat-radio-button type="radio" color="accent" class="radio-btn"
+                value="NO_DEFENDANT">จำเลยไม่มาฟังคำพิพากษา</mat-radio-button>
+            </div>
+          </mat-radio-group>
+          <div *ngIf="isViewMode">
+            <span *ngIf="currentDefendant.sendRemark === 'DEFENDANT'">จำเลยมาฟังคำพิพากษา</span>
+            <span *ngIf="currentDefendant.sendRemark === 'NO_DEFENDANT'">จำเลยไม่มาฟังคำพิพากษา</span>
+          </div>
+          <div *ngIf="form.controls['sendRemark'].value === 'DEFENDANT'" class="pt-24">
+            <div fxLayout="row" fxLayoutGap="16" class="mb-16 full-width" *ngIf="!isViewMode">
+              <div>
+                <spig-datepicker formControlName="acceptDecreeDate" class="date-picker-block"
+                  (inputChange)="onDateChange('acceptDecreeDate', $event)"
+                  [classInput]="'input-s icon border-black-40 mb-4'" label="วันที่รับคำบังคับคดี"></spig-datepicker>
+                <spig-error-msg [control]="getControl('acceptDecreeDate')"
+                  [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED_2'">
+                </spig-error-msg>
+              </div>
+              <div>
+                <spig-datepicker formControlName="decreeDueDate" class="date-picker-block"
+                  (inputChange)="onDateChange('decreeDueDate', $event)"
+                  [classInput]="'input-s icon border-black-40 mb-4'" label="วันที่คำบังคับคดีครบกำหนด"
+                  [disabled]="true"></spig-datepicker>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayoutGap="128" class="mb-16 full-width" *ngIf="isViewMode">
+              <div>
+                <span class="thin-letter">วันที่รับคำบังคับคดี</span><br>
+                <span>{{ currentDefendant.acceptDecreeDate ? (currentDefendant.acceptDecreeDate | buddhistEra:
+                  'DD/MM/yyyy') : '-' }}</span>
+              </div>
+              <div>
+                <span class="thin-letter">วันที่คำบังคับคดีครบกำหนด</span><br>
+                <span>{{ currentDefendant.decreeDueDate ? (currentDefendant.decreeDueDate | buddhistEra: 'DD/MM/yyyy') :
+                  '-' }}</span>
+              </div>
+            </div>
+            <div fxLayout="row">
+              <div>
+                <spig-datepicker *ngIf="!isViewMode" formControlName="submitResultDate" class="date-picker-block"
+                  (inputChange)="onDateChange('submitResultDate', $event)"
+                  [classInput]="'input-s icon border-black-40 mb-4'" label="วันที่บันทึกผลการส่ง"></spig-datepicker>
+                <spig-error-msg [control]="getControl('submitResultDate')"
+                  [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED_2'">
+                </spig-error-msg>
+              </div>
+              <div *ngIf="isViewMode">
+                <span class="thin-letter">วันที่บันทึกผลการส่ง</span><br>
+                <span>{{ currentDefendant.submitResultDate ? (currentDefendant.submitResultDate | buddhistEra:
+                  'DD/MM/yyyy') : '-' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div fxFlex="15"></div>
+      </div> -->
+      <!-- ผลการนำส่ง -->
+      <div fxLayout="row" fxLayoutGap="16">
+        <div fxFlex="15">
+          <span class="bold">{{ 'COURT.TITLE_SENDING' | translate }}</span>
+        </div>
+        <div fxFlex="70">
+          <mat-radio-group *ngIf="!isViewMode" formControlName="sendStatus" (change)="onSendResultChange($event)">
+            <div fxLayout="row" fxLayoutGap="42">
+              <mat-radio-button type="radio" color="accent" class="radio-btn" value="SEND">{{
+                'COURT.RADIO_BTN_SEND' | translate
+              }}</mat-radio-button>
+              <mat-radio-button type="radio" color="accent" class="radio-btn" value="NOT_SEND"
+                >{{ 'COURT.RADIO_BTN_NOT_SEND' | translate }} ({{
+                  'COURT.RE_ECNFORCEMENT' | translate
+                }})</mat-radio-button
+              >
+            </div>
+          </mat-radio-group>
+          <div *ngIf="isViewMode">
+            <span *ngIf="currentDefendant.sendStatus === 'SEND'">{{ 'COURT.RADIO_BTN_SEND' | translate }}</span>
+            <span *ngIf="currentDefendant.sendStatus === 'NOT_SEND'"
+              >{{ 'COURT.RADIO_BTN_NOT_SEND' | translate }} ({{ 'COURT.RE_ECNFORCEMENT' | translate }})</span
+            >
+          </div>
+        </div>
+        <div fxFlex="15"></div>
+      </div>
+      <!-- วิธีการส่ง -->
+      <div
+        fxLayout="row"
+        fxLayoutGap="16"
+        *ngIf="form.controls['sendStatus'].value === 'SEND' || (isViewMode && currentDefendant.sendStatus === 'SEND')">
+        <div fxFlex="15">
+          <span class="bold">{{ 'COURT.DECREE.TABLE_HEADER_SEND_TYPE' | translate }}</span>
+        </div>
+        <div fxFlex="70">
+          <mat-radio-group *ngIf="!isViewMode" formControlName="sendType" (change)="onSendTypeChange($event)">
+            <div fxLayout="column" fxLayoutGap="24">
+              <div fxLayout="column" fxLayoutGap="24">
+                <mat-radio-button type="radio" color="accent" class="radio-btn" [value]="'CLOSE'">{{
+                  'COURT.CLOSE_WARRANT' | translate
+                }}</mat-radio-button>
+                <div fxLayout="row" fxLayoutGap="16" *ngIf="sendType === 'CLOSE'">
+                  <div>
+                    <spig-datepicker
+                      formControlName="sendResultDate"
+                      class="date-picker-block"
+                      (inputChange)="onDateChange('sendResultDate', $event)"
+                      [classInput]="'input-s icon border-black-40 mb-4'"
+                      [label]="'COURT.CLOSE_WARRANT_DATE'"></spig-datepicker>
+                    <spig-error-msg
+                      [control]="getControl('sendResultDate')"
+                      [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED_2'">
+                    </spig-error-msg>
+                  </div>
+                </div>
+              </div>
+              <div fxLayout="column" fxLayoutGap="24">
+                <mat-radio-button type="radio" color="accent" class="radio-btn" [value]="'SIGN'">{{
+                  'COURT.RECEIVE_WARRANT' | translate
+                }}</mat-radio-button>
+                <div fxLayout="row" fxLayoutGap="16" *ngIf="sendType === 'SIGN'">
+                  <div>
+                    <spig-datepicker
+                      formControlName="sendResultDate"
+                      class="date-picker-block"
+                      (inputChange)="onDateChange('sendResultDate', $event)"
+                      [classInput]="'input-s icon border-black-40 mb-4'"
+                      [label]="'COURT.RECEIVE_WARRANT_DATE'"></spig-datepicker>
+                    <spig-error-msg
+                      [control]="getControl('sendResultDate')"
+                      [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED_2'">
+                    </spig-error-msg>
+                  </div>
+                </div>
+              </div>
+              <div fxLayout="column" fxLayoutGap="24">
+                <mat-radio-button type="radio" color="accent" class="radio-btn" [value]="'ANNOUNCE'">{{
+                  'COURT.ANNOUNCEMENT_MEDIA' | translate
+                }}</mat-radio-button>
+                <div fxLayout="row" fxLayoutGap="16" *ngIf="sendType === 'ANNOUNCE'">
+                  <div>
+                    <spig-datepicker
+                      formControlName="sendResultDate"
+                      class="date-picker-block"
+                      (inputChange)="onDateChange('sendResultDate', $event)"
+                      [classInput]="'input-s icon border-black-40 mb-4'"
+                      [label]="'COURT.ANNOUNCE_DATE'"></spig-datepicker>
+                    <spig-error-msg
+                      [control]="getControl('sendResultDate')"
+                      [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED_2'">
+                    </spig-error-msg>
+                  </div>
+                </div>
+              </div>
+              <div fxLayout="column" fxLayoutGap="24">
+                <mat-radio-button type="radio" color="accent" class="radio-btn" [value]="'OTHER'">{{
+                  'COMMON.LABEL_ETC' | translate
+                }}</mat-radio-button>
+                <div fxLayout="column" fxLayoutGap="4">
+                  <mat-form-field class="other-field" *ngIf="sendType === 'OTHER'">
+                    <input matInput formControlName="otherSendTypeDesc" />
+                    <mat-label>{{ 'COURT.SPECIFY' | translate }}</mat-label>
+                  </mat-form-field>
+                  <spig-error-msg
+                    [control]="getControl('otherSendTypeDesc')"
+                    [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED_2'">
+                  </spig-error-msg>
+                </div>
+                <div fxLayout="row" fxLayoutGap="16" *ngIf="sendType === 'OTHER'">
+                  <div>
+                    <spig-datepicker
+                      formControlName="sendResultDate"
+                      class="date-picker-block"
+                      (inputChange)="onDateChange('sendResultDate', $event)"
+                      [classInput]="'input-s icon border-black-40 mb-4'"
+                      [label]="'COURT.RECEIVE_DATE'"></spig-datepicker>
+                    <spig-error-msg
+                      [control]="getControl('sendResultDate')"
+                      [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED_2'">
+                    </spig-error-msg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </mat-radio-group>
+          <div *ngIf="isViewMode">
+            <div class="mb-16">
+              <span *ngIf="sendType === 'CLOSE'">{{ 'COURT.CLOSE_WARRANT' | translate }}</span>
+              <span *ngIf="sendType === 'SIGN'">{{ 'COURT.RECEIVE_WARRANT' | translate }}</span>
+              <span *ngIf="sendType === 'ANNOUNCE'">{{ 'COURT.ANNOUNCEMENT_MEDIA' | translate }}</span>
+              <span *ngIf="sendType === 'OTHER'"
+                >{{ 'COMMON.LABEL_ETC' | translate }} ({{ currentDefendant.otherSendTypeDesc }})</span
+              >
+              <span *ngIf="!sendType">-</span>
+            </div>
+            <div class="mb-16">
+              <span *ngIf="sendType === 'CLOSE'" class="thin-letter">{{ 'COURT.CLOSE_WARRANT_DATE' | translate }}</span>
+              <span *ngIf="sendType === 'SIGN'" class="thin-letter">{{
+                'COURT.RECEIVE_WARRANT_DATE' | translate
+              }}</span>
+              <span *ngIf="sendType === 'ANNOUNCE'" class="thin-letter">{{ 'COURT.ANNOUNCE_DATE' | translate }}</span>
+              <span *ngIf="sendType === 'OTHER'" class="thin-letter">{{ 'COURT.RECEIVE_DATE' | translate }}</span>
+              <br />
+              <span>{{ currentDefendant.sendResultDate | buddhistEra: 'DD/MM/yyyy' }}</span>
+            </div>
+          </div>
+        </div>
+        <div fxFlex="15"></div>
+      </div>
+      <!-- ทนายความ -->
+      <div fxLayout="row" fxLayoutGap="16">
+        <div fxFlex="15">
+          <span class="bold">{{ 'COURT.LAWYER' | translate }}</span>
+        </div>
+        <div fxFlex="70">
+          <span class="thin-letter">{{ 'COURT.LAWYER' | translate }}</span
+          ><br />
+          <span>{{ currentDecree.lawyerId }} {{ currentDecree.lawyerName }}</span>
+        </div>
+        <div fxFlex="15"></div>
+      </div>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,451 @@
+<div>
+  <div class="pt-16 pl-24 pr-24">
+    <ng-container *ngIf="isFromTask && !!this.dataForm.get('advanceReceivePaymentStatusCode')?.value">
+      <app-message-banner
+        [type]="'black-info'"
+        [message]="msgBannerMapper[this.dataForm.get('advanceReceivePaymentStatusCode')?.value]">
+      </app-message-banner>
+    </ng-container>
+
+    <div class="container" [formGroup]="dataForm">
+      <mat-card appearance="outlined" class="card">
+        <div class="header">
+          <div class="title pl-10 pr-10" fxLayoutAlign="space-between center">
+            <div fxLayout="row" fxLayoutGap="12px">
+              <h3 class="mt-12 mb-0">
+                <!-- เลขที่หนังสือ -->
+                <span>{{ 'FINANCE.RECEIPT_NO' | translate }}</span>
+                <span class="divider-vertical"></span>
+                <span *ngIf="dataForm">{{ dataForm.get('advanceReceiveNo')?.value || '-' }}</span>
+              </h3>
+              <div
+                *ngIf="!isCreate"
+                class="status-label"
+                [ngClass]="dataForm.get('advanceReceivePaymentStatusCode')?.value | financeStatusBtn: 'ADVANCE_STATUS'">
+                {{ dataForm.get('advanceReceivePaymentStatusDesc')?.value || ' ' }}
+              </div>
+            </div>
+            <button
+              *ngIf="((isFromTask && statusCode === 'PENDING') || isCreate || isOwnTaskEdit) && !isAuto"
+              (click)="addList()"
+              mat-stroked-button
+              type="button"
+              class="medium-aw-button neutral">
+              <mat-icon class="icon icon-xmedium" svgIcon="icon-Plus"></mat-icon>
+              {{ 'FINANCE.ADD_LIST' | translate }}
+            </button>
+          </div>
+        </div>
+        <mat-card-content>
+          <!-- accordion เหตุผลการพิจารณา -->
+          <mat-accordion
+            *ngIf="
+              dataForm.get('advanceReceivePaymentStatusCode')?.value === 'PENDING_EDIT' ||
+              dataForm.get('advanceReceivePaymentStatusCode')?.value === 'PENDING_NO_SUCCESS'
+            "
+            class="accordion-headers-align tax-accordion">
+            <div fxLayout="row" fxLayoutAlign="space-between center" class="accordion-headers-title">
+              <div>
+                <!-- เหตุผลการพิจารณา -->
+                <h6>{{ 'FINANCE.TITLE_APPROVE_REASON' | translate }}</h6>
+              </div>
+              <div fxLayout="row">
+                <div class="description" (click)="isOpened1 = !isOpened1">
+                  <mat-icon
+                    [svgIcon]="isOpened1 ? 'icon-Slide-Hide' : 'icon-Expand'"
+                    class="icon icon-hide-show fill-blue">
+                  </mat-icon
+                  >{{
+                    isOpened1 ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate)
+                  }}
+                </div>
+              </div>
+            </div>
+            <mat-expansion-panel class="tax-expansion-panel" [expanded]="isOpened1" hideToggle>
+              <div class="mb-16" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+                <div fxLayout="column" fxFlex="25"></div>
+                <div fxLayout="column" fxFlex="75">
+                  <span class="fill-black-70">
+                    <!-- เหตุผลส่งกลับแก้ไข -->
+                    {{ 'FINANCE.TITLE_EDIT_REASON' | translate }}
+                  </span>
+                  <div class="pt-5 pb-5">
+                    {{ this.dataForm.get('reason')?.value || '-' }}
+                  </div>
+                </div>
+              </div>
+            </mat-expansion-panel>
+          </mat-accordion>
+          <!-- accordion โอนเงิน -->
+          <div *ngFor="let element of data; let i = index">
+            <div *ngIf="dataForm.get('createAdvancePayTransferInfo')?.value?.value.length !== 0; else emptyList">
+              <mat-accordion class="accordion-headers-align">
+                <div class="according-headers-payment">
+                  <div fxLayout="row" fxLayoutAlign="space-between center" class="title-content">
+                    <div fxLayout="row" fxLayoutAlign="center">
+                      <mat-icon svgIcon="icon-Window" class="icon icon-medium ml-3 mt-10"></mat-icon>
+                      <div class="title-text ml-8 mt-10" fxLayout="row" fxLayoutAlign="start center">
+                        <h6>{{ 'FINANCE.TRANSFER_PAYMENT' | translate }}</h6>
+                        &nbsp;&nbsp;
+                        <h6
+                          *ngIf="dataForm.get('createAdvancePayTransferInfo')"
+                          (click)="
+                            onClickLg(dataForm.get('createAdvancePayTransferInfo')?.value?.value[i].litigationId)
+                          ">
+                          <div class="link">
+                            LG ID
+                            {{ dataForm.get('createAdvancePayTransferInfo')?.value?.value[i].litigationId || '-' }}
+                          </div>
+                        </h6>
+                        <div
+                          *ngIf="
+                            dataForm.get('createAdvancePayTransferInfo') &&
+                            dataForm.get('createAdvancePayTransferInfo')?.value?.value[i].blackCaseNo
+                          "
+                          class="divider-vertical"></div>
+                        <h6>
+                          คดีหมายเลขดำ
+                          {{ dataForm.get('createAdvancePayTransferInfo')?.value?.value[i].blackCaseNo || '-' }}
+                        </h6>
+                        &nbsp;&nbsp;
+                        <h6 *ngIf="dataForm.get('createAdvancePayTransferInfo')" class="fill-red">
+                          คดีหมายเลขแดง
+                          {{ dataForm.get('createAdvancePayTransferInfo')?.value?.value[i].redCaseNo || '-' }}
+                        </h6>
+                      </div>
+                    </div>
+
+                    <div fxLayout="row">
+                      <div
+                        *ngIf="
+                          isCreate ||
+                          isOwnTaskEdit ||
+                          (isFromTask && !isApprove) ||
+                          (!(dataForm.get('advanceReceivePaymentStatusCode')?.value === 'PENDING_NO_SUCCESS') &&
+                            !(dataForm.get('advanceReceivePaymentStatusCode')?.value === 'DRAFT') &&
+                            !(dataForm.get('advanceReceivePaymentStatusCode')?.value === 'COMPLETED') &&
+                            !isApprove)
+                        "
+                        class="mr-28 description"
+                        (click)="onDeletePaymentRecord(element, i)">
+                        <mat-icon svgIcon="icon-Bin" class="icon-md btn-icon fill-red"></mat-icon>
+                        <span class="fill-red bold">{{ 'COMMON.BUTTON_DELETE' | translate }}</span>
+                      </div>
+                      <div class="description mr-9" (click)="isOpenedList[i] = !isOpenedList[i]">
+                        <mat-icon
+                          [svgIcon]="isOpenedList[i] ? 'icon-Slide-Hide' : 'icon-Expand'"
+                          class="icon-md icon-hide-show fill-blue mr-2">
+                        </mat-icon>
+                        <span class="bold">
+                          {{
+                            isOpenedList[i]
+                              ? ('COMMON.ICON_EXPANSION_HIDE' | translate)
+                              : ('COMMON.ICON_EXPANSION_SHOW' | translate)
+                          }}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="padded-container" fxLayout="row">
+                    <div fxLayout="row" fxLayoutGap="16" fxLayoutAlign="start center" class="ml-5">
+                      <div class="fill-black-70">ชื่อลูกหนี้:</div>
+                      <div>{{ dataForm.get('createAdvancePayTransferInfo')?.value?.value[i].customerName }}</div>
+                    </div>
+                    <div class="divider-vertical mt-5"></div>
+                    <div class="ml-10" fxLayout="row" fxLayoutGap="16" fxLayoutAlign="start center">
+                      <div class="fill-black-70">สถานะดำเนินคดีปัจจุบัน:</div>
+                      <div class="status-label status-normal status-m-inbox">
+                        {{ dataForm.get('createAdvancePayTransferInfo')?.value?.value[i].litigationCaseStatus || '-' }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <mat-expansion-panel [expanded]="isOpenedList[i]" hideToggle>
+                  <app-upload-multi-file-content
+                    *ngIf="!isCreate && this.documentUploadList[0].length > 0"
+                    [uploadMultiInfo]="{ cif: customerId, litigationId: litigationId }"
+                    [list]="documentUploadList[i]"
+                    [column]="documentColumns"
+                    [readonly]="isViewMode"
+                    [isAdvance]="true">
+                  </app-upload-multi-file-content>
+
+                  <!-- table -->
+                  <div class="sub-container">
+                    <div
+                      class="table-scroll"
+                      table-scroll
+                      *ngIf="data.length > 0"
+                      formArrayName="createAdvancePayTransferInfo">
+                      <table
+                        mat-table
+                        [dataSource]="
+                          dataForm.get('createAdvancePayTransferInfo')?.value?.value[i].createAdvancePayTransferDetail
+                        ">
+                        <!-- no -->
+                        <ng-container matColumnDef="no">
+                          <th class="text-center" mat-header-cell *matHeaderCellDef>
+                            {{ 'COMMON.LABEL_NO' | translate }}
+                          </th>
+                          <td class="text-center" mat-cell *matCellDef="let element; let index = index">
+                            {{ index + 1 }}
+                          </td>
+                          <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+                        <!-- accountNo -->
+                        <ng-container matColumnDef="accountNo" sticky>
+                          <th mat-header-cell *matHeaderCellDef columnElevationLeft class="new-line">
+                            {{ 'FINANCE.ACCOUNT_NO_ADVANCE' | translate }}
+                          </th>
+                          <td mat-cell *matCellDef="let element; let j = index" columnElevationLeft>
+                            {{ element.advanceReceiveAccountNo || '-' }}
+                          </td>
+                          <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+                        <!-- expenseType -->
+                        <ng-container matColumnDef="expenseType">
+                          <th mat-header-cell *matHeaderCellDef class="new-line">
+                            {{ 'FINANCE.LIST' | translate }}
+                          </th>
+                          <td mat-cell *matCellDef="let element" class="new-line">
+                            {{ element.advanceReceiveTypeCode || '' }}
+                            {{ element.advanceReceiveTypeDesc || '-' }}
+                          </td>
+                          <td mat-footer-cell *matFooterCellDef class="text-right">
+                            {{ 'FINANCE.TOTAL_AMOUNT' | translate }}
+                          </td>
+                        </ng-container>
+                        <!-- preTransferAmount -->
+                        <ng-container matColumnDef="preTransferAmount">
+                          <th mat-header-cell *matHeaderCellDef class="new-line text-right">
+                            {{ 'FINANCE.PRE_TRANSFER_AMOUNT' | translate }}
+                          </th>
+                          <td mat-cell *matCellDef="let element" class="text-right">
+                            {{ (element.payTransferBefore | numberDecimal) || '-' }}
+                          </td>
+                          <td mat-footer-cell *matFooterCellDef class="text-right">
+                            {{ getSumPayTransferBefore(i) | numberDecimal }}
+                          </td>
+                        </ng-container>
+                        <!-- transferAmount -->
+                        <ng-container matColumnDef="transferAmount">
+                          <th mat-header-cell *matHeaderCellDef class="new-line text-right">
+                            {{ 'FINANCE.TRANSFER_AMOUNT_BAHT' | translate }}
+                          </th>
+                          <td mat-cell *matCellDef="let element; let j = index" class="text-right">
+                            <div
+                              *ngIf="
+                                (isCreate || isOwnTaskEdit || (isFromTask && !isApprove)) &&
+                                  element.payTransfer !== 0.0 && element.payTransferBefore !== 0.0;
+                                else view
+                              ">
+                              <mat-form-field
+                                class="no-label input-sm required"
+                                [class.border-black-40]="!!element.payTransfer">
+                                <input
+                                  type="number"
+                                  matInput
+                                  (keyup)="onUpdatePayTransfer($event, i, j)"
+                                  class="text-right"
+                                  [value]="element.payTransfer || ''"
+                                  placeholder="ระบุ"
+                                  autocomplete="off"
+                                  required />
+                              </mat-form-field>
+                              <div *ngIf="element.payTransfer > element.payTransferBefore" class="fill-red mt-3">
+                                ต้องไม่มากกว่า“จำนวนเงินก่อนโอน”
+                              </div>
+                              <div
+                                *ngIf="!element.payTransfer || element.payTransfer === 0.0 || element.payTransfer === 0"
+                                class="fill-red mt-3">
+                                {{ 'FINANCE.WARNING_INPUT' | translate }}
+                              </div>
+                              <spig-error-msg
+                                [control]="getControl('payTransfer')"
+                                [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+                              </spig-error-msg>
+                            </div>
+                            <ng-template #view>
+                              {{ (element.payTransfer | numberDecimal) || '-' }}
+                            </ng-template>
+                          </td>
+                          <td mat-footer-cell *matFooterCellDef class="text-right">
+                            {{ getSumPayTransfer(i) | numberDecimal }}
+                          </td>
+                        </ng-container>
+                        <!-- expenseGroup -->
+                        <ng-container matColumnDef="expenseGroup">
+                          <th mat-header-cell *matHeaderCellDef>
+                            {{ 'FINANCE.EXPENSE_GROUP' | translate }}
+                          </th>
+                          <td mat-cell *matCellDef="let element; let j = index">
+                            <div
+                              *ngIf="
+                                (isCreate || isOwnTaskEdit || (isFromTask && !isApprove)) &&
+                                  element.payTransfer !== 0.0 && element.payTransferBefore !== 0.0;
+                                else view
+                              ">
+                              <spig-dropdown
+                                classInput="input-xsm icon"
+                                [config]="getadvancePaymentGroup(element, i, j)"
+                                [options]="advancePaymentGroupOptions"
+                                (selectedOption)="onSelectAdvancePaymentGroup($event, i, j)">
+                              </spig-dropdown>
+                              <div *ngIf="!element.groupPayTransferDesc && isSubmit" class="fill-red mt-3">
+                                {{ 'FINANCE.WARNING_INPUT' | translate }}
+                              </div>
+                            </div>
+                            <ng-template #view>
+                              {{ getGroupPayTransfer(element.groupPayTransferCode) }}
+                            </ng-template>
+                          </td>
+                          <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+                        <!-- advanceDate -->
+                        <ng-container matColumnDef="advanceDate">
+                          <th mat-header-cell *matHeaderCellDef>
+                            {{ 'FINANCE.ADVANCE_DATE' | translate }}
+                          </th>
+                          <td mat-cell *matCellDef="let element">
+                            {{ element.advanceReceivePayDate | buddhistEra: 'DD/MM/yyyy' || '-' }}
+                          </td>
+                          <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+                        <!-- accountCode -->
+                        <ng-container matColumnDef="accountCode">
+                          <th mat-header-cell *matHeaderCellDef>
+                            {{ 'FINANCE.ACCOUNT_CODE' | translate }}
+                          </th>
+                          <td mat-cell *matCellDef="let element; let j = index">
+                            {{ element.accountCode || '-' }} - {{ element.accountName || '-' }}
+                          </td>
+                          <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+                        <!-- status -->
+                        <ng-container matColumnDef="status" stickyEnd>
+                          <th mat-header-cell *matHeaderCellDef columnElevationRight>
+                            {{ 'FINANCE.STATUS' | translate }}
+                          </th>
+                          <td mat-cell *matCellDef="let element">
+                            <div
+                              class="status-label"
+                              [ngClass]="{
+                                'status-success': element.processStatus === 'COMPLETED',
+                                'status-failed': element.processStatus === 'NOT_COMPLETE',
+                              }">
+                              {{ (element.processStatus === 'COMPLETED' ? 'สำเร็จ' : 'ไม่สำเร็จ') || '-' }}
+                            </div>
+                          </td>
+                          <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+                        <!-- comment-->
+                        <ng-container matColumnDef="comment" stickyEnd>
+                          <th mat-header-cell *matHeaderCellDef class="new-line text-center" columnElevationRight>
+                            {{ 'FINANCE.COMMENT' | translate }}
+                          </th>
+                          <td
+                            mat-cell
+                            *matCellDef="let element; let j = index"
+                            class="text-center"
+                            columnElevationRight>
+                            <span class="link" (click)="onClickRemark(i, j, element)">
+                              {{ 'FINANCE.REMARKS_PAYMENT_DIALOG.LABEL_REMARKS_ADVANCE' | translate }}
+                            </span>
+                          </td>
+                          <td mat-footer-cell *matFooterCellDef></td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="displayColumn"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayColumn"></tr>
+                        <tr mat-footer-row *matFooterRowDef="displayColumn"></tr>
+                      </table>
+                    </div>
+                    <ng-container *ngIf="data.length === 0" [ngTemplateOutlet]="dataNotFound"> </ng-container>
+                  </div>
+
+                  <!-- dataNotFound -->
+                  <ng-template #dataNotFound>
+                    <div class="table-content">
+                      <div class="table-scroll" table-scroll>
+                        <table mat-table>
+                          <!-- no -->
+                          <ng-container matColumnDef="no">
+                            <th class="text-center" mat-header-cell *matHeaderCellDef>
+                              {{ 'COMMON.LABEL_NO' | translate }}
+                            </th>
+                          </ng-container>
+                          <!-- accountNo -->
+                          <ng-container matColumnDef="accountNo">
+                            <th mat-header-cell *matHeaderCellDef class="new-line text-center">
+                              {{ 'FINANCE.ACCOUNT_NO_ADVANCE' | translate }}
+                            </th>
+                          </ng-container>
+                          <!-- expenseType -->
+                          <ng-container matColumnDef="expenseType">
+                            <th mat-header-cell *matHeaderCellDef class="new-line">
+                              {{ 'FINANCE.LIST' | translate }}
+                            </th>
+                          </ng-container>
+                          <!-- preTransferAmount -->
+                          <ng-container matColumnDef="preTransferAmount">
+                            <th mat-header-cell *matHeaderCellDef class="new-line text-right">
+                              {{ 'FINANCE.PRE_TRANSFER_AMOUNT' | translate }}
+                            </th>
+                          </ng-container>
+                          <!-- transferAmount -->
+                          <ng-container matColumnDef="transferAmount">
+                            <th mat-header-cell *matHeaderCellDef class="new-line text-right">
+                              {{ 'FINANCE.TRANSFER_AMOUNT_BAHT' | translate }}
+                            </th>
+                          </ng-container>
+                          <!-- expenseGroup -->
+                          <ng-container matColumnDef="expenseGroup">
+                            <th mat-header-cell *matHeaderCellDef>
+                              {{ 'FINANCE.EXPENSE_GROUP' | translate }}
+                            </th>
+                          </ng-container>
+                          <!-- advanceDate -->
+                          <ng-container matColumnDef="advanceDate">
+                            <th mat-header-cell *matHeaderCellDef>
+                              {{ 'FINANCE.ADVANCE_DATE' | translate }}
+                            </th>
+                          </ng-container>
+                          <!-- accountCode -->
+                          <ng-container matColumnDef="accountCode">
+                            <th mat-header-cell *matHeaderCellDef>
+                              {{ 'FINANCE.ACCOUNT_CODE' | translate }}
+                            </th>
+                          </ng-container>
+                          <!-- status -->
+                          <ng-container matColumnDef="status" stickyEnd>
+                            <th mat-header-cell *matHeaderCellDef columnElevationRight>
+                              {{ 'FINANCE.STATUS' | translate }}
+                            </th>
+                          </ng-container>
+                          <!-- comment -->
+                          <ng-container matColumnDef="comment" stickyEnd>
+                            <th mat-header-cell *matHeaderCellDef class="new-line text-center" columnElevationRight>
+                              {{ 'FINANCE.COMMENT' | translate }}
+                            </th>
+                          </ng-container>
+                          <tr mat-header-row *matHeaderRowDef="displayColumn"></tr>
+                        </table>
+                      </div>
+                      <app-message-empty [message]="'COMMON.LABEL_PREFIX_NOT_FOUND'"></app-message-empty>
+                    </div>
+                  </ng-template>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </div>
+          </div>
+          <div class="mt-2em">
+            <span class="bold mr-2em">{{ 'FINANCE.TOTAL_AMOUNT_ADVANCE' | translate }}</span>
+            <span>{{ totalNetPayTransfer | numberDecimal }}</span>
+          </div>
+          <ng-template #emptyList>
+            <app-message-empty [message]="'FINANCE.WARNING_NO_ITEM'"></app-message-empty>
+          </ng-template>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>

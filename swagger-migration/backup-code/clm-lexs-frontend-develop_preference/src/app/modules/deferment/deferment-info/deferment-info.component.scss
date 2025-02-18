@@ -1,0 +1,28 @@
+@import '/src/styles/colors';
+@import '/src/styles/mixins';
+
+.main-info-card {
+  @include mat-card-content-box;
+
+  .table-content {
+    padding: 16px 0;
+  }
+}
+
+.mat-column-no {
+  min-width: 40px;
+  max-width: 40px;
+}
+
+.mat-column-date {
+  left: calc(40px + 16px + 16px) !important;
+}
+
+.command-button {
+  width: auto !important;
+  height: 56px !important;
+}
+
+.border-red {
+  color: $krungthai-red-700;
+}

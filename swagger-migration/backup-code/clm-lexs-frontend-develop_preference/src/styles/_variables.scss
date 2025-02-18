@@ -1,0 +1,52 @@
+@import './colors';
+@import './typography';
+
+$body-bg: map_get($ktb-palette-biz-gray, 50);
+
+/* For Login screen */
+$login-bg-style: image;
+$login-bg-color: $body-bg;
+$login-bg-gradient: true;
+$login-bg-gradient-color-left: map_get($ktb-palette-precious-blue, 50) 0%;
+$login-bg-gradient-color-right: map_get($ktb-palette-blue, 200) 100%;
+$login-bg-image: url(/assets/images/bg_lines.svg) center/cover no-repeat;
+$login-campaign-image: url(/assets/images/login_ktb_logo.png) left/90% no-repeat;
+$login-campaign-width: 650px;
+$login-area-drop-shadow: true;
+$login-area-bg-color: $white;
+$login-form-width: 408px;
+$login-form-area-width: 360px;
+$login-form-logo: url(/assets/images/lexs_login_logo.svg) center/contain no-repeat !default;
+$login-height-logo: 60px;
+
+/* For Title bar */
+$title-bar-bg-gradient: false;
+/* in case not gradient then use solid color */
+$title-bar-bg-color: $white;
+$title-bar-logo: url(/assets/images/lexs-titlebar-logo-white.svg) left/contain no-repeat !default;
+$title-bar-logo-height: 25px;
+$title-bar-icon-height-lg: 24px;
+$title-bar-icon-height-md: 24px;
+$title-bar-icon-color: $white;
+$title-bar-text-color: $white;
+$title-bar-text-size: 16px;
+$title-bar-show-separator: false;
+
+$menu-item-font-size: 14px;
+
+/* For Nav bar */
+$nav-bar-bg-gradient: true !default;
+$nav-bar-gradient-color-left: map_get($ktb-palette-blue, 600) !default;
+$nav-bar-gradient-color-right: map_get($ktb-palette-blue, 700) !default;
+$nav-bar-bg-color: map_get($ktb-palette-blue, 700) !default;
+
+/* For Side nav */
+$side-nav-width-collapse: 64px;
+$side-nav-width-expand: 250px;
+
+/* for Action bar */
+$action-bar-container-height: 72px !default;
+
+/* For Button */
+$button-allow-gradient: false;
+$button-flat-force-drop-shadow: true;

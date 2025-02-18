@@ -1,0 +1,70 @@
+@import '/src/styles/colors';
+@import '/src/styles/typography';
+
+.related-info-status {
+  margin: 8px;
+}
+
+.invalid {
+  color: map_get($ktb-palette-red, 400) !important;
+  padding-bottom: 0.8em;
+  padding-left: 0.5em;
+}
+
+.info-container {
+  background: $white;
+  border-radius: 8px;
+  border: 1px solid map-get($ktb-palette-biz-black, 10);
+  /* Elevation/E1 */
+  box-shadow: 0px 2px 4px map-get($ktb-palette-biz-black, B008);
+  padding: 0 16px;
+  margin: 1em;
+
+  .title {
+    padding: 1.5em;
+  }
+
+  .upload-options {
+    margin: 1.5em;
+    .radio-btn {
+      margin-right: 3em;
+      font-family: 'KrungthaiFastRegular';
+      font-weight: 500;
+      font-size: $font-description;
+      line-height: 125%;
+    }
+  }
+
+  .btn-group {
+    margin: 1em;
+    padding-bottom: 1em;
+    .btn {
+      margin-right: 1em;
+    }
+  }
+
+  .section-container {
+    padding-top: 10px;
+    padding-left: 1em;
+    padding-right: 1em;
+    background: $white;
+    margin-top: 1em;
+    .title-content {
+      .title-text {
+        margin: 0 0.5em;
+        font-size: $font-sub-content;
+        display: flex;
+        align-items: center;
+        .padding-between {
+          margin-top: 0.2em;
+          margin-left: 0.5em;
+        }
+      }
+    }
+  }
+
+  .input-container {
+    padding-top: 1em;
+    padding-bottom: 1em;
+  }
+}

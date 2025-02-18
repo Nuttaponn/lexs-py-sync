@@ -1,0 +1,329 @@
+<spig-title-bar
+  [logo]="true"
+  logopos="left"
+  [menuicon]="true"
+  (menuClick)="onExpandMenu()"
+  menuiconpos="left"
+  menuiconname="icon-Menu-Burger"
+  [ngClass]="{ 'title-bar-icon-highlight': menuDisplayMode === 'over' }">
+  <ng-container additionalInfo *ngIf="currentUser?.roleCode === 'ADMIN'">
+    <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="10px" class="mr-1em">
+      <div class="user-view">
+        <div class="view-label">
+          <span>{{ 'MAIN.TITLE_BAR_VIEW_AS' | translate }}</span>
+        </div>
+        <div>
+          <spig-dropdown
+            classInput="input-xsm long title-bar-dropdown"
+            [config]="dropDownHeaderConfig"
+            [options]="optionValues"
+            [formControl]="viewAsCtrl"
+            (selectedOption)="onSelectViewAs($event)"></spig-dropdown>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container notifications>
+    <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="10px">
+      <div (click)="onNotificationClick()" class="mr-20 cursor-pointer" fxLayout="row" fxLayoutAlign="center center">
+        <mat-icon
+          *ngIf="!notificationCount"
+          svgIcon="icon-Notification"
+          class="icon icon-small-xl mr-7 mb-3"></mat-icon>
+        <span *ngIf="notificationCount" class="badge-notification">{{ notificationCount }}</span>
+        <span>การแจ้งเตือน</span>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container userInfo>
+    <div
+      fxLayout="row"
+      fxLayoutAlign="end center"
+      fxLayoutGap="10px"
+      class="mr-1em"
+      (click)="isUserExpand = !isUserExpand">
+      <div class="profile-circle" fxLayout="column" fxLayoutAlign="center center">
+        <mat-icon svgIcon="icon-User" class="icon icon-medium"></mat-icon>
+      </div>
+      <div class="user-details">
+        <div>
+          <span>{{ currentUser?.name }}&nbsp;{{ currentUser?.surname }}</span>
+        </div>
+        <div class="user-details-light">
+          <span
+            >{{ currentUser?.roleName }} ({{ currentUser?.subRoleName }}) - {{ currentUser?.organizationName }}</span
+          >
+        </div>
+      </div>
+      <div>
+        <span class="chevron" [ngClass]="{ top: isUserExpand, bottom: !isUserExpand }"></span>
+      </div>
+    </div>
+  </ng-container>
+</spig-title-bar>
+<div class="pull-down-row">
+  <div class="slide" [ngClass]="{ show: isUserExpand }">
+    <div class="slide-row show-hover" (click)="onClickLogout()">
+      <mat-icon svgIcon="icon-Exit" class="icon icon-medium"></mat-icon>
+      <span> {{ 'MAIN.LABEL_LOGOUT' | translate }}</span>
+    </div>
+  </div>
+</div>
+<mat-sidenav-container class="example-container">
+  <mat-sidenav
+    class="custom-notification-sidenav"
+    [mode]="notificationMode === 'side' ? 'over' : 'side'"
+    [ngClass]="notificationMode === 'side' ? 'expand' : 'over'"
+    [position]="'end'"
+    [fixedInViewport]="true"
+    [(opened)]="notificationState">
+    <app-inbox-notification
+      #notificationComponent
+      [notificationCount]="notificationCount"
+      [onUpdate]="notificationState"
+      [onPanelClose]="onPanelClose"
+      (closeNotification)="onCloseNotification()"></app-inbox-notification>
+  </mat-sidenav>
+  <mat-sidenav
+    [(opened)]="menuState"
+    [mode]="menuDisplayMode"
+    [ngClass]="menuDisplayMode === 'side' ? 'collapse' : 'expand'"
+    [position]="'start'"
+    [fixedInViewport]="true">
+    <spig-menu (select)="onSelectMenu($event)" [menuicon]="false">
+      <!-- TODO: expose menu on R1.3 drop 2 onward -->
+      <spig-menu-item
+        *ngIf="menuMap?.get('dashboard')?.show"
+        class="sample-menu"
+        [ngClass]="{ selected: selectedMenu === 'dashboard' }"
+        name="dashboard"
+        [matTooltip]="'MAIN.MENU_DASHBOARD' | translate"
+        [matTooltipPosition]="'after'"
+        matTooltipClass="menu-tooltip">
+        <a mat-icon-button>
+          <mat-icon svgIcon="icon-Home-Dashboard" class="icon icon-medium"></mat-icon>
+        </a>
+        <ng-container *ngIf="menuDisplayMode === 'over'">
+          <p>{{ 'MAIN.MENU_DASHBOARD' | translate }}</p>
+        </ng-container>
+      </spig-menu-item>
+
+      <spig-menu-item
+        *ngIf="menuMap?.get('taskPool')?.show"
+        class="sample-menu"
+        [ngClass]="{ selected: selectedMenu === 'taskPool' }"
+        name="taskPool"
+        [matTooltip]="'MAIN.MENU_TASKS_POOL' | translate"
+        [matTooltipPosition]="'after'"
+        matTooltipClass="menu-tooltip">
+        <a mat-icon-button *ngIf="taskPoolCount === 0">
+          <mat-icon svgIcon="icon-Task-Add" class="icon icon-medium"></mat-icon>
+        </a>
+        <div class="notification-badge" *ngIf="taskPoolCount !== 0">
+          <span>{{ taskPoolCount <= 9 ? taskPoolCount : '9+' }}</span>
+        </div>
+        <ng-container *ngIf="menuDisplayMode === 'over'">
+          <p>{{ 'MAIN.MENU_TASKS_POOL' | translate }}</p>
+        </ng-container>
+      </spig-menu-item>
+
+      <spig-menu-item
+        *ngIf="menuMap?.get('task')?.show"
+        class="sample-menu"
+        [ngClass]="{ selected: selectedMenu === 'task' }"
+        name="task"
+        [matTooltip]="'MAIN.MENU_TASKS' | translate"
+        [matTooltipPosition]="'after'"
+        matTooltipClass="menu-tooltip">
+        <a mat-icon-button>
+          <mat-icon svgIcon="icon-Task-List" class="icon icon-medium"></mat-icon>
+        </a>
+        <ng-container *ngIf="menuDisplayMode === 'over'">
+          <p>{{ 'MAIN.MENU_TASKS' | translate }}</p>
+        </ng-container>
+      </spig-menu-item>
+      <spig-menu-item
+        *ngIf="menuMap?.get('lawsuit')?.show"
+        class="sample-menu"
+        [ngClass]="{ selected: selectedMenu === 'lawsuit' }"
+        name="lawsuit"
+        [matTooltip]="'MAIN.MENU_LAWSUIT' | translate"
+        [matTooltipPosition]="'after'"
+        matTooltipClass="menu-tooltip">
+        <a mat-icon-button>
+          <mat-icon svgIcon="icon-License" class="icon icon-medium"></mat-icon>
+        </a>
+        <ng-container *ngIf="menuDisplayMode === 'over'">
+          <p>{{ 'MAIN.MENU_LAWSUIT' | translate }}</p>
+        </ng-container>
+      </spig-menu-item>
+      <spig-menu-item
+        *ngIf="menuMap?.get('customer')?.show"
+        class="sample-menu"
+        [ngClass]="{ selected: selectedMenu === 'customer' }"
+        name="customer"
+        [matTooltip]="'MAIN.MENU_CUSTOMERS' | translate"
+        [matTooltipPosition]="'after'"
+        matTooltipClass="menu-tooltip">
+        <a mat-icon-button>
+          <mat-icon svgIcon="icon-Customer" class="icon icon-medium"></mat-icon>
+        </a>
+        <ng-container *ngIf="menuDisplayMode === 'over'">
+          <p>{{ 'MAIN.MENU_CUSTOMERS' | translate }}</p>
+        </ng-container>
+      </spig-menu-item>
+      <!-- TODO: expose menu on R1.3 drop 2 onward -->
+      <!-- TODO: Add ngIf condition for show Receipt in SP5 -->
+      <spig-menu-item
+        *ngIf="menuMap?.get('expense')?.show || menuMap?.get('receipt')?.show || menuMap?.get('advance')?.show"
+        [ngClass]="{ selected: selectedMenu === 'finance' }"
+        name="finance"
+        [matTooltip]="'MAIN.MENU_FINANCE' | translate"
+        [matTooltipPosition]="'after'"
+        matTooltipClass="menu-tooltip"
+        #financeMenuItem>
+        <div>
+          <div class="sample-menu" [ngClass]="{ selected: selectedMenu === 'finance' }">
+            <a mat-icon-button (click)="onExpandFinanceMenu()">
+              <mat-icon svgIcon="icon-Finance" class="icon icon-medium"></mat-icon>
+            </a>
+            <ng-container *ngIf="menuDisplayMode === 'over'">
+              <p>{{ 'MAIN.MENU_FINANCE' | translate }}</p>
+            </ng-container>
+            <a
+              mat-icon-button
+              class="icon-end"
+              *ngIf="menuDisplayMode === 'over'"
+              (click)="financeMenuItem.toggleSubMenuOpen()">
+              <mat-icon
+                *ngIf="financeMenuItem.isSubMenuOpened"
+                svgIcon="icon-Direction-Up"
+                class="icon icon-small"></mat-icon>
+              <mat-icon
+                *ngIf="!financeMenuItem.isSubMenuOpened"
+                svgIcon="icon-Direction-Down"
+                class="icon icon-small"></mat-icon>
+            </a>
+          </div>
+          <div *ngIf="financeMenuItem.isSubMenuOpened" class="sub-menu-container">
+            <spig-menu (select)="onSelectMenu($event)" [menuicon]="false">
+              <spig-menu-item *ngIf="menuMap?.get('expense')?.show" class="mb-24" name="expense">
+                <p class="sample-sub-menu" [ngClass]="{ selected: selectedSubMenu === 'expense' }">
+                  {{ 'MAIN.MENU_EXPENSE' | translate }}
+                </p>
+              </spig-menu-item>
+              <spig-menu-item *ngIf="menuMap?.get('receipt')?.show" class="mb-24" name="receipt">
+                <p class="sample-sub-menu" [ngClass]="{ selected: selectedSubMenu === 'receipt' }">
+                  {{ 'MAIN.MENU_RECEIPT' | translate }}
+                </p>
+              </spig-menu-item>
+              <spig-menu-item *ngIf="menuMap?.get('advance')?.show" class="pb-20" name="advance">
+                <p class="sample-sub-menu" [ngClass]="{ selected: selectedSubMenu === 'advance' }">
+                  {{ 'MAIN.MENU_ADVANCE' | translate }}
+                </p>
+              </spig-menu-item>
+            </spig-menu>
+          </div>
+        </div>
+      </spig-menu-item>
+      <spig-menu-item
+        *ngIf="menuMap?.get('dopa')?.show"
+        class="sample-menu"
+        [ngClass]="{ selected: selectedMenu === 'dopa' }"
+        name="dopa"
+        [matTooltip]="'MAIN.MENU_DOPA' | translate"
+        [matTooltipPosition]="'after'"
+        matTooltipClass="menu-tooltip">
+        <a mat-icon-button>
+          <mat-icon svgIcon="icon-Person-Board" class="icon icon-medium"></mat-icon>
+        </a>
+        <ng-container *ngIf="menuDisplayMode === 'over'">
+          <p>{{ 'MAIN.MENU_DOPA' | translate }}</p>
+        </ng-container>
+      </spig-menu-item>
+      <spig-menu-item
+        *ngIf="menuMap?.get('external-documents')?.show"
+        class="sample-menu"
+        [ngClass]="{ selected: selectedMenu === 'external-documents' }"
+        name="external-documents"
+        [matTooltip]="'MAIN.MENU_EXTERNAL_DOCUMENTS' | translate"
+        [matTooltipPosition]="'after'"
+        matTooltipClass="menu-tooltip">
+        <a mat-icon-button>
+          <mat-icon svgIcon="icon-Dashboard" class="icon icon-medium"></mat-icon>
+        </a>
+        <ng-container *ngIf="menuDisplayMode === 'over'">
+          <p>{{ 'MAIN.MENU_EXTERNAL_DOCUMENTS' | translate }}</p>
+        </ng-container>
+      </spig-menu-item>
+
+      <spig-menu-item
+        class="sample-menu"
+        [ngClass]="{ selected: selectedMenu === 'preference' }"
+        name="preference"
+        [matTooltip]="'MAIN.MENU_PREFERENCE' | translate"
+        [matTooltipPosition]="'after'"
+        matTooltipClass="menu-tooltip">
+        <a mat-icon-button>
+          <mat-icon svgIcon="icon-menu-preference" class="icon icon-medium"></mat-icon>
+        </a>
+        <ng-container *ngIf="menuDisplayMode === 'over'">
+          <p>{{ 'MAIN.MENU_PREFERENCE' | translate }}</p>
+        </ng-container>
+      </spig-menu-item>
+
+      <span footerMenu>
+        <spig-menu (select)="onSelectMenu($event)" [menuicon]="false">
+          <spig-menu-item
+            *ngIf="menuMap?.get('reports')?.show"
+            class="sample-menu"
+            [ngClass]="{ selected: selectedMenu === 'reports' }"
+            name="reports"
+            [matTooltip]="'MAIN.MENU_REPORTS' | translate"
+            [matTooltipPosition]="'after'"
+            matTooltipClass="menu-tooltip">
+            <a mat-icon-button>
+              <mat-icon svgIcon="icon-Notepad" class="icon icon-medium"></mat-icon>
+            </a>
+            <ng-container *ngIf="menuDisplayMode === 'over'">
+              <p>{{ 'MAIN.MENU_REPORTS' | translate }}</p>
+            </ng-container>
+          </spig-menu-item>
+          <spig-menu-item
+            *ngIf="menuMap?.get('user')?.show"
+            class="sample-menu"
+            [ngClass]="{ selected: selectedMenu === 'user' }"
+            name="user"
+            [matTooltip]="'MAIN.MENU_USERS' | translate"
+            [matTooltipPosition]="'after'"
+            matTooltipClass="menu-tooltip">
+            <a mat-icon-button>
+              <mat-icon svgIcon="icon-User" class="icon icon-medium"></mat-icon>
+            </a>
+            <ng-container *ngIf="menuDisplayMode === 'over'">
+              <p>{{ 'MAIN.MENU_USERS' | translate }}</p>
+            </ng-container>
+          </spig-menu-item>
+          <spig-menu-item
+            *ngIf="menuMap?.get('config')?.show"
+            class="sample-menu"
+            [ngClass]="{ selected: selectedMenu === 'config' }"
+            name="config"
+            [matTooltip]="'MAIN.MENU_CONFIGURATION' | translate"
+            [matTooltipPosition]="'after'"
+            matTooltipClass="menu-tooltip">
+            <a mat-icon-button>
+              <mat-icon svgIcon="icon-setting" class="icon icon-medium"></mat-icon>
+            </a>
+            <ng-container *ngIf="menuDisplayMode === 'over'">
+              <p>{{ 'MAIN.MENU_CONFIGURATION' | translate }}</p>
+            </ng-container>
+          </spig-menu-item>
+        </spig-menu>
+      </span>
+    </spig-menu>
+  </mat-sidenav>
+  <mat-sidenav-content class="main-content">
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>

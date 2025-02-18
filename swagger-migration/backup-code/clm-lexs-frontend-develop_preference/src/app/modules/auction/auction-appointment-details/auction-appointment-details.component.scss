@@ -1,0 +1,14 @@
+::ng-deep app-auction-appointment-details {
+  .sub-expansion:not(:last-child) {
+    border-bottom: none;
+  }
+
+  .mat-expansion-panel-content {
+    font: 400 16px/20px KrungthaiFastRegular;
+  }
+
+  /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version. */
+  .btn-wrapper .mat-button-wrapper {
+    white-space: normal !important;
+  }
+}

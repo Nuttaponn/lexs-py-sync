@@ -1,0 +1,198 @@
+<div class="content-container">
+  <mat-card appearance="outlined" class="mt-16 mb-16 mat-elevation-z">
+    <div class="title-row mb-1em" fxLayout="row" fxLayoutAlign="space-between center">
+      <div fxLayoutAlign="flex-start stretch" fxLayoutGap="24">
+        <div>
+          <h5 class="ml-05em">{{ 'DOC_PREP.TITLE' | translate }}</h5>
+        </div>
+
+        <ng-container>
+          <div fxLayout>
+            <label>
+              <mat-icon
+                svgIcon="icon-Doc-circle"
+                class="icon default-cursor icon-hide-show fill-gold"
+                [class.fill-krungthai-green]="
+                  seizurePropertyService.docStatus.currentSeizure === seizurePropertyService.docStatus.totalSeizure &&
+                  seizurePropertyService.docStatus.totalSeizure > 0
+                "
+                [class.fill-gold]="
+                  seizurePropertyService.docStatus.currentSeizure !== seizurePropertyService.docStatus.totalSeizure
+                ">
+              </mat-icon>
+              <span class="ml-8 mr-8">ความพร้อมสำหรับการยึดทรัพย์:</span>
+            </label>
+            <h5>
+              {{ seizurePropertyService.docStatus.currentSeizure }}/{{ seizurePropertyService.docStatus.totalSeizure }}
+            </h5>
+          </div>
+        </ng-container>
+      </div>
+      <div>
+        <ng-container>
+          <button
+            *ngIf="actionOnScreen.canRejectOriginal"
+            type="button"
+            mat-stroked-button
+            class="long-button mat-primary"
+            color="warn"
+            (click)="rejectOriginalCopy('ADD')">
+            <mat-icon svgIcon="icon-Dismiss-Square" class="icon icon-md"> </mat-icon>
+            <ng-container> ปฏิเสธรับต้นฉบับเกิน </ng-container>
+          </button>
+          &nbsp;
+          <button
+            *ngIf="actionOnScreen.canDownloadReturnOriginal"
+            id="btn-doc-prep-download"
+            type="button"
+            mat-stroked-button
+            class="long-button"
+            (click)="downloadReturnOriginalCover()">
+            <mat-icon svgIcon="icon-Arrow-Download" class="icon icon-md fill-black"></mat-icon>
+            ดาวน์โหลดใบนำส่งคืนต้นฉบับ
+          </button>
+        </ng-container>
+        <ng-container *ngIf="actionOnScreen.canDownload">
+          <button
+            id="btn-doc-prep-download"
+            type="button"
+            [class.mat-stroked-button]="true"
+            [class.mat-black]="true"
+            [class.border-black]="true"
+            class="long-button mat-primary"
+            (click)="download()">
+            <mat-icon svgIcon="icon-Arrow-Download" class="icon icon-md fill-black"></mat-icon>
+            {{ 'DOC_PREP.BTN_DOWNLOAD_DOCS' | translate }}
+          </button>
+        </ng-container>
+        <ng-container *ngIf="actionOnScreen.canSeeSubMenu">
+          <button class="long-button ml-10" type="button" mat-stroked-button [matMenuTriggerFor]="actionMenu">
+            <mat-icon svgIcon="icon-Option" class="icon btn-icon icon-sm"></mat-icon>
+          </button>
+          <mat-menu class="deb-menu-item" #actionMenu="matMenu" xPosition="before">
+            <div class="pt-12 pb-12 pl-16 pr-16" (click)="receiveAll()">
+              <div class="cursor-pointer" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+                <div>
+                  <mat-icon svgIcon="icon-Selected" class="icon icon-small-xl"></mat-icon>
+                </div>
+                <div>รับต้นฉบับทั้งหมด</div>
+              </div>
+            </div>
+            <div class="pt-12 pb-12 pl-16 pr-16" (click)="rejectAll()">
+              <div class="cursor-pointer" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+                <div>
+                  <mat-icon svgIcon="icon-Dismiss-Square" class="icon icon-small-xl"></mat-icon>
+                </div>
+                <div>ปฏิเสธรับต้นฉบับทั้งหมด</div>
+              </div>
+            </div>
+          </mat-menu>
+        </ng-container>
+      </div>
+    </div>
+    <mat-divider [inset]="true"></mat-divider>
+
+    <mat-card-content>
+      <mat-accordion>
+        <app-doc-litigation
+          [documents]="lgDocuments"
+          [forAsset]="true"
+          class="mt-10"
+          [readyForAsset]="readyForLitigation.readyForAsset || false"
+          title="เอกสารเกี่ยวกับการดำเนินคดี"></app-doc-litigation>
+        <app-doc-borrower-guarantor
+          *ngIf="currentDocPerson && currentDocPerson.length > 0"
+          [_isSeizureDoc]="true"
+          [_mode]="'VIEW'"></app-doc-borrower-guarantor>
+
+        <app-common-document-table
+          [isViewOnly]="isOwnerTask"
+          [displayedColumns]="displayColl"
+          [config]="titleDeedConfig"
+          [_documents]="seizurePropertyMode === 'UPDATE_E05_02_3C' ? documentsTitleDeedUpdate : documentsTitleDeed"
+          [readyFor]="readyForTitleDeed"
+          *ngIf="alreadyInit"
+          (onEvent)="onEvent($event)"></app-common-document-table>
+        <app-common-document-table
+          [displayedColumns]="displayReport"
+          [config]="reportConfig"
+          [readyFor]="readyForCollateral"
+          [_documents]="documentsCollateralAppraisal"
+          *ngIf="alreadyInit"
+          (onEvent)="onEvent($event)"></app-common-document-table>
+
+        <app-document-header
+          *ngIf="actionOnScreen.canSeeExcessDoc"
+          title="ต้นฉบับเกิน"
+          [isMain]="true"
+          [readyForLitigation]="false"
+          [expanded]="isOpened"
+          [forLitigation]="false"
+          [forDoc]="true"
+          [readyForDoc]="null"
+          [forNoticeLetter]="false"
+          (expand)="expandPanel()">
+        </app-document-header>
+
+        <mat-accordion class="expansion-info">
+          <mat-expansion-panel [expanded]="isOpened" *ngIf="actionOnScreen.canSeeExcessDoc">
+            <div class="table-content">
+              <div class="table-scroll">
+                <table mat-table [dataSource]="excessDocuments">
+                  <ng-container matColumnDef="index" sticky>
+                    <th mat-header-cell *matHeaderCellDef class="text-center">{{ 'COMMON.LABEL_NO' | translate }}</th>
+                    <td mat-cell *matCellDef="let element; let i = index" class="text-center">{{ i + 1 }}</td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="documentName">
+                    <th mat-header-cell *matHeaderCellDef>{{ 'DOC_PREP.COLUMN_DOC_NAME' | translate }}</th>
+                    <td mat-cell *matCellDef="let element; let i = index">
+                      {{ element.name || '-' }}
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="pageCount">
+                    <th mat-header-cell *matHeaderCellDef>จำนวนหน้าที่เกิน</th>
+                    <td mat-cell *matCellDef="let element">
+                      <span>{{ element.number }}</span>
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="submittedTimestamp">
+                    <th mat-header-cell *matHeaderCellDef>วันที่ส่งกลับ</th>
+                    <td mat-cell *matCellDef="let element">
+                      <span>{{ (element.submittedTimestamp | buddhistEra: 'DD/MM/yyyy') || '-' }}</span>
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_COMMAND' | translate }}</th>
+                    <td mat-cell *matCellDef="let element">
+                      <ng-container
+                        *ngIf="
+                          !element.submittedTimestamp &&
+                          mode !== 'VIEW' &&
+                          mode !== 'EDIT' &&
+                          actionOnScreen.canRejectOriginal
+                        ">
+                        <span class="link-red" (click)="remove(element)">ลบ</span>
+                        &nbsp; &nbsp;
+                        <span class="link" (click)="rejectOriginalCopy('EDIT', element)">{{
+                          'COMMON.BUTTON_EDIT' | translate
+                        }}</span>
+                      </ng-container>
+                    </td>
+                  </ng-container>
+                  <tr mat-header-row *matHeaderRowDef="displayOverDocs"></tr>
+                  <tr mat-row *matRowDef="let row; columns: displayOverDocs" class="bg-red-50"></tr>
+                </table>
+                <ng-container [ngTemplateOutlet]="dataNotFound" *ngIf="excessDocuments?.length === 0"> </ng-container>
+              </div>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </mat-accordion>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<ng-template #dataNotFound>
+  <app-message-empty [message]="'DOC_PREP.NOT_FOUND_DOC'"></app-message-empty>
+</ng-template>

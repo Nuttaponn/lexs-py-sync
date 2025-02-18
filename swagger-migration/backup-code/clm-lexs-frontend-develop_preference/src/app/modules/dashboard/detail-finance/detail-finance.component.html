@@ -1,0 +1,147 @@
+<app-action-bar
+  (backButtonHandler)="onBack()"
+  [hasCancelButton]="false"
+  [hasSaveButton]="false"
+  [hasPrimaryButton]="false"
+  [showNavBarInformation]="true">
+  <ng-container navBarInformationTemplate>
+    <mat-icon svgIcon="icon-Customer" class="icon icon-xmedium default-cursor"></mat-icon>
+    <span class="ml-8 bold">{{ 'DASHBOARD.TITLE_FINANCE_KTBLAW' | translate }}</span>
+  </ng-container>
+</app-action-bar>
+<div class="content-below-action-bar-area">
+  <div class="dashboard-content">
+    <div class="mb-16">
+      <app-dashboard-sub-tab
+        [tabs]="tabInfo"
+        (subTabChange)="onTabChange($event)"
+        [currentSubTab]="currentTab"></app-dashboard-sub-tab>
+    </div>
+    <div class="content-container">
+      <div class="title-content" fxLayout="row" fxLayoutAlign="start center">
+        <mat-icon svgIcon="icon-Finance" class="icon icon-medium default-cursor"></mat-icon>
+        <h5 class="title-text">{{ 'DASHBOARD.TITLE_ALL_FINANCE' | translate }}</h5>
+      </div>
+      <div class="search-filter-content">
+        <app-search-controller
+          *ngIf="searchControllerOptions"
+          [template]="'FINANCE_DASHBOARD'"
+          [searchType]="'BY_FINANCE_DASHBOARD'"
+          [condition]="expenseSearch"
+          (searchEvent)="onSearchResult($event)"
+          [advancedSearchButtonTextOverride]="'SEARCH_CONTROL.BTN_ADVANCED_SEARCH'"
+          [reload]="reloadSearch">
+        </app-search-controller>
+        <div class="pt-8" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="12px">
+          <div fxFlex="80" fxLayoutGap="10px">
+            <button
+              mat-stroked-button
+              id="button-save-file"
+              class="xsmall-aw-button overflow-ellipsis"
+              (click)="onSaveFile()">
+              <mat-icon svgIcon="icon-Download" class="icon icon-sm btn-icon"></mat-icon>
+              {{ 'COMMON.BUTTON_SAVE_EXCEL_FILE' | translate }}
+            </button>
+          </div>
+          <div fxFlex>
+            <spig-dropdown
+              classInput="input-xsm long icon"
+              [config]="sortingConfig"
+              [options]="sortingOptions"
+              [formControl]="sortingControl"
+              (selectedOption)="sortSelected($event)"></spig-dropdown>
+          </div>
+        </div>
+      </div>
+      <div class="data-table-content">
+        <ng-container *ngTemplateOutlet="expenseTable; context: { list: data.length > 0 ? data : [{}] }">
+        </ng-container>
+        <div *ngIf="data.length === 0">
+          <ng-container *ngTemplateOutlet="searchEmpty"></ng-container>
+        </div>
+        <spig-paginator
+          *ngIf="data.length > 0"
+          [result]="pageResultConfig"
+          [action]="pageActionConfig"
+          (pageEvent)="pageEvent($event)">
+        </spig-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+<ng-template #expenseTable let-dataSource="list">
+  <div class="table-scroll section" table-scroll>
+    <table mat-table [dataSource]="dataSource" id="table" [class.empty]="data.length === 0">
+      <!-- no Column -->
+      <ng-container matColumnDef="no" sticky>
+        <th class="text-center" mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_NO' | translate }}</th>
+        <td class="text-center" mat-cell *matCellDef="let element; let i = index">
+          {{ pageResultConfig.fromIndex + i }}
+        </td>
+      </ng-container>
+      <!-- expenseRequestNo Column -->
+      <ng-container matColumnDef="expenseRequestNo" sticky>
+        <th mat-header-cell *matHeaderCellDef columnElevationLeft class="new-line">
+          {{ 'FINANCE.EXPENSE_REQUEST_NO' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" columnElevationLeft>
+          <span class="link" (click)="goToExpenseDetail(element)">{{ element.expenseNo }}</span>
+        </td>
+      </ng-container>
+      <!-- number Column -->
+      <ng-container matColumnDef="number">
+        <th mat-header-cell *matHeaderCellDef class="text-right">
+          {{ 'FINANCE.NUMBER' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" class="text-right">
+          {{ element.numberOfClaims }}
+        </td>
+      </ng-container>
+      <!-- requestedAmount Column -->
+      <ng-container matColumnDef="requestedAmount">
+        <th mat-header-cell *matHeaderCellDef class="text-right new-line min-w-100">
+          {{ 'FINANCE.REQUEST_AMOUNT' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" class="text-right">{{ element.expenseAmount | numberDecimal }}</td>
+      </ng-container>
+      <!-- SLA Column -->
+      <ng-container matColumnDef="daysSla">
+        <th mat-header-cell *matHeaderCellDef class="text-right new-line min-w-100">
+          {{ 'FINANCE.SLA_CURRENT_STEP' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" class="text-right">{{ element.daysSla }}</td>
+      </ng-container>
+      <!-- Task Date Column -->
+      <ng-container matColumnDef="taskDate">
+        <th mat-header-cell *matHeaderCellDef>{{ 'FINANCE.TASK_DATE' | translate }}</th>
+        <td mat-cell *matCellDef="let element">{{ element.createdDate | buddhistEra: 'DD/MM/yyyy' }}</td>
+      </ng-container>
+      <!-- personInCharge column -->
+      <ng-container matColumnDef="personInCharge">
+        <th mat-header-cell *matHeaderCellDef>{{ 'FINANCE.MAKER' | translate }}</th>
+        <td mat-cell *matCellDef="let element">{{ element.displayCreatedByName }}</td>
+      </ng-container>
+      <!-- bookingStatus column-->
+      <ng-container matColumnDef="bookingStatus" stickyEnd>
+        <th mat-header-cell *matHeaderCellDef class="new-line text-center" columnElevationRight>
+          {{ 'FINANCE.BOOKING_STATUS' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" class="text-center" columnElevationRight>
+          <div
+            class="status-label size-normal"
+            [ngClass]="element.statusCode | financeStatusBtn: 'EXPENSE_STATUS' : element.expenseStatus">
+            {{ element.expenseStatusName }}
+          </div>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </div>
+</ng-template>
+
+<ng-template #searchEmpty>
+  <div>
+    <app-message-empty [message]="'COMMON.SEARCH_EMPTY'"></app-message-empty>
+  </div>
+</ng-template>

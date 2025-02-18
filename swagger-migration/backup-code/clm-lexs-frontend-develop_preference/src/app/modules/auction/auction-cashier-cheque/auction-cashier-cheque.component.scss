@@ -1,0 +1,35 @@
+@import '/src/styles/colors';
+
+.fill-orange {
+  color: map-get($ktb-palette-golden-yellow, 700);
+}
+
+.d-inline-block {
+  display: inline-block;
+}
+
+.fs-14 {
+  font-size: 14px;
+}
+
+.fill-krungthai-green {
+  color: $krungthai-green;
+}
+
+::ng-deep app-auction-cashier-cheque {
+  .bd-8 {
+    border-radius: 8px;
+  }
+  .expansion-inside .mat-expansion-panel-body {
+    padding: 16px 0;
+  }
+  .mat-mdc-select {
+    margin-left: 0px !important;
+  }
+  .mat-expansion-panel-content {
+    font: 16px KrungthaiFastRegular;
+  }
+  .new-line {
+    white-space: pre;
+  }
+}

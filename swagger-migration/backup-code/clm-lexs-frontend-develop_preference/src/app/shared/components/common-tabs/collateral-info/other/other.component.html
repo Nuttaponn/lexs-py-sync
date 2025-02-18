@@ -1,0 +1,363 @@
+<div fxLayout class="space-around content mt-20" [formGroup]="control" *ngIf="control">
+  <div fxLayout="column" fxFlex="20">
+    <div class="collateral-info header mx-width-pct-60">{{ 'CUSTOMER.OTHER_INFO' | translate }}</div>
+  </div>
+  <div fxLayout="column" fxFlex>
+    <div fxLayout fxLayoutAlign="space-between center">
+      <ng-container *ngIf="mode === MODE.ADD || mode === MODE.EDIT">
+        <div fxFlex="49">
+          <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+            <mat-label>{{ 'CUSTOMER.LABEL_AVERAGE_COST_BATH' | translate }}</mat-label>
+            <input
+              type="text"
+              matInput
+              [placeholder]="'CUSTOMER.LABEL_AVERAGE_COST_BATH' | translate"
+              appNumberOnly="integer"
+              maxlength="18"
+              formControlName="totalAppraisalValue" />
+          </mat-form-field>
+        </div>
+        <div fxFlex="49">
+          <spig-datepicker
+            [classInput]="'input-s icon border-black-40'"
+            class="date-picker-block"
+            [label]="'CUSTOMER.LABEL_APPRAISAL_DATE'"
+            formControlName="appraisalDate">
+          </spig-datepicker>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="mode === MODE.VIEW">
+        <div fxFlex="49">
+          <div class="collateral-info title">{{ 'CUSTOMER.LABEL_AVERAGE_COST_BATH' | translate }}</div>
+          <div class="collateral-info detail">
+            {{ (getControl('totalAppraisalValue')?.value | numberDecimal) || '-' }}
+          </div>
+        </div>
+        <div fxFlex="49">
+          <div class="collateral-info title">{{ 'CUSTOMER.LABEL_APPRAISAL_DATE' | translate }}</div>
+          <div class="collateral-info detail">{{ getControl('appraisalDate')?.value || '-' }}</div>
+        </div>
+      </ng-container>
+    </div>
+    <div fxLayout fxLayoutAlign="space-between " class="mt-20">
+      <ng-container *ngIf="mode === MODE.ADD || mode === MODE.EDIT">
+        <div fxFlex="49" fxLayout="column">
+          <spig-dropdown
+            [classInput]="'input-s icon border-black-40'"
+            [config]="configTypes"
+            [options]="obligationTypeOptions"
+            formControlName="obligationType"></spig-dropdown>
+          <spig-error-msg [control]="getControl('obligationType')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+          </spig-error-msg>
+        </div>
+        <div fxFlex="49">
+          <spig-dropdown
+            [classInput]="'input-s icon border-black-40'"
+            [config]="configStatus"
+            [options]="obligationStatusOption"
+            formControlName="obligationStatus"></spig-dropdown>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="mode === MODE.VIEW">
+        <div fxFlex="49">
+          <div class="collateral-info title">{{ 'CUSTOMER.LABEL_OBLIGATION_TYPE' | translate }}</div>
+          <div class="collateral-info detail">{{ getControl('obligationTypeDesc')?.value || '-' }}</div>
+        </div>
+        <div fxFlex="49">
+          <div class="collateral-info title">{{ 'CUSTOMER.LABEL_OBLIGATION_STATUS' | translate }}</div>
+          <div class="collateral-info detail">{{ getControl('obligationStatusDesc')?.value || '-' }}</div>
+        </div>
+      </ng-container>
+    </div>
+
+    <!-- display with conditions -->
+    <ng-container *ngIf="getControl('obligationType')?.value === 'MORTAGE'">
+      <div fxLayout fxLayoutAlign="space-between center" class="mt-20">
+        <ng-container *ngIf="mode === MODE.ADD || mode === MODE.EDIT">
+          <div fxFlex="49">
+            <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+              <mat-label>{{ 'CUSTOMER.LABEL_MORTGAGE_AMOUNT' | translate }}</mat-label>
+              <input
+                type="text"
+                matInput
+                [placeholder]="'CUSTOMER.LABEL_MORTGAGE_AMOUNT' | translate"
+                appNumberOnly="integer"
+                maxlength="18"
+                formControlName="mortgageAmount" />
+            </mat-form-field>
+          </div>
+          <div fxFlex="49">
+            <spig-datepicker
+              class="date-picker-block"
+              [classInput]="'input-s icon border-black-40'"
+              [label]="'CUSTOMER.LABEL_DUE_DATE'"
+              formControlName="dueDate">
+            </spig-datepicker>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="mode === MODE.VIEW">
+          <div fxFlex="49">
+            <div class="collateral-info title">{{ 'CUSTOMER.LABEL_MORTGAGE_AMOUNT' | translate }}</div>
+            <div class="collateral-info detail">{{ (getControl('mortgageAmount')?.value | numberDecimal) || '-' }}</div>
+          </div>
+          <div fxFlex="49">
+            <div class="collateral-info title">{{ 'CUSTOMER.LABEL_DUE_DATE' | translate }}</div>
+            <div class="collateral-info detail">{{ getControl('dueDate')?.value || '-' }}</div>
+          </div>
+        </ng-container>
+      </div>
+      <div fxLayout fxLayoutAlign="space-between center" class="mt-20">
+        <ng-container *ngIf="mode === MODE.ADD || mode === MODE.EDIT">
+          <div fxFlex>
+            <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+              <mat-label>{{ 'CUSTOMER.LABEL_MORTGAGEE' | translate }}</mat-label>
+              <input
+                type="text"
+                matInput
+                [placeholder]="'CUSTOMER.LABEL_MORTGAGEE' | translate"
+                formControlName="mortgageeName" />
+            </mat-form-field>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="mode === MODE.VIEW">
+          <div fxFlex>
+            <div class="collateral-info title">{{ 'CUSTOMER.LABEL_MORTGAGEE' | translate }}</div>
+            <div class="collateral-info detail">{{ getControl('mortgageeName')?.value || '-' }}</div>
+          </div>
+        </ng-container>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="getControl('obligationType')?.value === 'PAWN'">
+      <div fxLayout fxLayoutAlign="space-between center" class="mt-20">
+        <ng-container *ngIf="mode === MODE.ADD || mode === MODE.EDIT">
+          <div fxFlex="49">
+            <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+              <mat-label>{{ 'CUSTOMER.LABEL_PAWN_AMOUNT' | translate }}</mat-label>
+              <input
+                type="text"
+                matInput
+                [placeholder]="'CUSTOMER.LABEL_PAWN_AMOUNT' | translate"
+                appNumberOnly="integer"
+                maxlength="18"
+                formControlName="pawnAmount" />
+            </mat-form-field>
+          </div>
+          <div fxFlex="49">
+            <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+              <mat-label>{{ 'CUSTOMER.LABEL_PAWNER' | translate }}</mat-label>
+              <input
+                type="text"
+                matInput
+                [placeholder]="'CUSTOMER.LABEL_PAWNER' | translate"
+                formControlName="pawnName" />
+            </mat-form-field>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="mode === MODE.VIEW">
+          <div fxFlex="49">
+            <div class="collateral-info title">{{ 'CUSTOMER.LABEL_PAWN_AMOUNT' | translate }}</div>
+            <div class="collateral-info detail">{{ (getControl('pawnAmount')?.value | numberDecimal) || '-' }}</div>
+          </div>
+          <div fxFlex="49">
+            <div class="collateral-info title">{{ 'CUSTOMER.LABEL_PAWNER' | translate }}</div>
+            <div class="collateral-info detail">{{ getControl('pawnName')?.value || '-' }}</div>
+          </div>
+        </ng-container>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="getControl('obligationType')?.value === 'CONSIGNMENT'">
+      <div fxLayout fxLayoutAlign="space-between center" class="mt-20">
+        <ng-container *ngIf="mode === MODE.ADD || mode === MODE.EDIT">
+          <div fxFlex="49">
+            <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+              <mat-label>{{ 'CUSTOMER.LABEL_CONSIGNMENT_AMOUNT' | translate }}</mat-label>
+              <input
+                type="text"
+                matInput
+                [placeholder]="'CUSTOMER.LABEL_CONSIGNMENT_AMOUNT' | translate"
+                appNumberOnly="integer"
+                maxlength="18"
+                formControlName="consignmentAmount" />
+            </mat-form-field>
+          </div>
+          <div fxFlex="49">
+            <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+              <mat-label>{{ 'CUSTOMER.LABEL_REDEEM_PERIOD' | translate }}</mat-label>
+              <input
+                type="text"
+                matInput
+                [placeholder]="'CUSTOMER.LABEL_REDEEM_PERIOD' | translate"
+                appNumberOnly="integer"
+                maxlength="18"
+                formControlName="redeemPeriod" />
+            </mat-form-field>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="mode === MODE.VIEW">
+          <div fxFlex="49">
+            <div class="collateral-info title">{{ 'CUSTOMER.LABEL_CONSIGNMENT_AMOUNT' | translate }}</div>
+            <div class="collateral-info detail">
+              {{ (getControl('consignmentAmount')?.value | numberDecimal) || '-' }}
+            </div>
+          </div>
+          <div fxFlex="49">
+            <div class="collateral-info title">{{ 'CUSTOMER.LABEL_REDEEM_PERIOD' | translate }}</div>
+            <div class="collateral-info detail">{{ getControl('redeemPeriod')?.value || '-' }}</div>
+          </div>
+        </ng-container>
+      </div>
+      <div fxLayout fxLayoutAlign="space-between center" class="mt-20">
+        <ng-container *ngIf="mode === MODE.ADD || mode === MODE.EDIT">
+          <div fxFlex="49">
+            <spig-datepicker
+              class="date-picker-block"
+              [classInput]="'input-s icon border-black-40'"
+              [label]="'CUSTOMER.LABEL_DUE_DATE'"
+              formControlName="dueDate">
+            </spig-datepicker>
+          </div>
+          <div fxFlex="49">
+            <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+              <mat-label>{{ 'CUSTOMER.LABEL_CONSIGNMENT_SELLER' | translate }}</mat-label>
+              <input
+                type="text"
+                matInput
+                [placeholder]="'CUSTOMER.LABEL_CONSIGNMENT_SELLER' | translate"
+                formControlName="consignmentSellerName" />
+            </mat-form-field>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="mode === MODE.VIEW">
+          <div fxFlex="49">
+            <div class="collateral-info title">{{ 'CUSTOMER.LABEL_DUE_DATE' | translate }}</div>
+            <div class="collateral-info detail">{{ getControl('dueDate')?.value || '-' }}</div>
+          </div>
+          <div fxFlex="49">
+            <div class="collateral-info title">{{ 'CUSTOMER.LABEL_CONSIGNMENT_SELLER' | translate }}</div>
+            <div class="collateral-info detail">{{ getControl('consignmentSellerName')?.value || '-' }}</div>
+          </div>
+        </ng-container>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="getControl('obligationType')?.value === 'HIRE_PUECHASE'">
+      <div fxLayout fxLayoutAlign="space-between center" class="mt-20">
+        <ng-container *ngIf="mode === MODE.ADD || mode === MODE.EDIT">
+          <div fxFlex="49">
+            <spig-datepicker
+              class="date-picker-block"
+              [classInput]="'input-s icon border-black-40'"
+              [label]="'CUSTOMER.LABEL_DUE_DATE'"
+              formControlName="dueDate">
+            </spig-datepicker>
+          </div>
+          <div fxFlex="49">
+            <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+              <mat-label>{{ 'CUSTOMER.LABEL_LEASE_PERIOD' | translate }}</mat-label>
+              <input
+                type="number"
+                maxlength="4"
+                matInput
+                [placeholder]="'CUSTOMER.LABEL_LEASE_PERIOD' | translate"
+                formControlName="leasePeriod" />
+            </mat-form-field>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="mode === MODE.VIEW">
+          <div fxFlex="49">
+            <div class="collateral-info title">{{ 'CUSTOMER.LABEL_DUE_DATE' | translate }}</div>
+            <div class="collateral-info detail">{{ getControl('dueDate')?.value || '-' }}</div>
+          </div>
+          <div fxFlex="49">
+            <div class="collateral-info title">{{ 'CUSTOMER.LABEL_LEASE_PERIOD' | translate }}</div>
+            <div class="collateral-info detail">{{ getControl('leasePeriod')?.value || '-' }}</div>
+          </div>
+        </ng-container>
+      </div>
+      <div fxLayout fxLayoutAlign="space-between center" class="mt-20">
+        <ng-container *ngIf="mode === MODE.ADD || mode === MODE.EDIT">
+          <div fxFlex="49">
+            <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+              <mat-label>{{ 'CUSTOMER.LABEL_REMAINING_PERIOD' | translate }}</mat-label>
+              <input
+                type="number"
+                maxlength="4"
+                matInput
+                [placeholder]="'CUSTOMER.LABEL_REMAINING_PERIOD' | translate"
+                formControlName="remainingPeriod" />
+            </mat-form-field>
+          </div>
+          <div fxFlex="49">
+            <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+              <mat-label>{{ 'COMMON.LABEL_REMARKS' | translate }}</mat-label>
+              <input type="text" matInput [placeholder]="'COMMON.LABEL_REMARKS' | translate" formControlName="remark" />
+            </mat-form-field>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="mode === MODE.VIEW">
+          <div fxFlex="49">
+            <div class="collateral-info title">{{ 'CUSTOMER.LABEL_REMAINING_PERIOD' | translate }}</div>
+            <div class="collateral-info detail">{{ getControl('remainingPeriod')?.value || '-' }}</div>
+          </div>
+          <div fxFlex="49">
+            <div class="collateral-info title">{{ 'COMMON.LABEL_REMARKS' | translate }}</div>
+            <div class="collateral-info detail">{{ getControl('remark')?.value || '-' }}</div>
+          </div>
+        </ng-container>
+      </div>
+    </ng-container>
+
+    <!-- button line -->
+    <div fxLayout fxLayoutAlign="space-between center" class="mt-20">
+      <ng-container *ngIf="mode === MODE.ADD || mode === MODE.EDIT">
+        <div fxFlex="49">
+          <spig-datepicker
+            class="date-picker-block"
+            [classInput]="'input-s icon border-black-40'"
+            [label]="'CUSTOMER.LABEL_ISSUE_DATE'"
+            formControlName="issueDate">
+          </spig-datepicker>
+        </div>
+        <div fxFlex="49">
+          <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+            <mat-label>{{ 'CUSTOMER.LABEL_FOUND_PROPERTY_PROCESS_TYPE' | translate }}</mat-label>
+            <input
+              type="text"
+              matInput
+              [placeholder]="'CUSTOMER.LABEL_FOUND_PROPERTY_PROCESS_TYPE' | translate"
+              formControlName="foundPropertyProcessType" />
+          </mat-form-field>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="mode === MODE.VIEW">
+        <div fxFlex="49">
+          <div class="collateral-info title">{{ 'CUSTOMER.LABEL_ISSUE_DATE' | translate }}</div>
+          <div class="collateral-info detail">{{ getControl('issueDate')?.value || '-' }}</div>
+        </div>
+        <div fxFlex="49">
+          <div class="collateral-info title">{{ 'CUSTOMER.LABEL_FOUND_PROPERTY_PROCESS_TYPE' | translate }}</div>
+          <div class="collateral-info detail">{{ getControl('foundPropertyProcessType')?.value || '-' }}</div>
+        </div>
+      </ng-container>
+    </div>
+    <div fxLayout fxLayoutAlign="space-between center" class="mt-20">
+      <ng-container *ngIf="mode === MODE.ADD || mode === MODE.EDIT">
+        <div fxFlex>
+          <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+            <mat-label>{{ 'CUSTOMER.LABEL_FOUND_PROPERTY_REMARK' | translate }}</mat-label>
+            <input
+              type="text"
+              matInput
+              [placeholder]="'CUSTOMER.LABEL_FOUND_PROPERTY_REMARK' | translate"
+              formControlName="foundPropertyRemark" />
+          </mat-form-field>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="mode === MODE.VIEW">
+        <div fxFlex>
+          <div class="collateral-info title">{{ 'CUSTOMER.LABEL_FOUND_PROPERTY_REMARK' | translate }}</div>
+          <div class="collateral-info detail">{{ getControl('foundPropertyRemark')?.value || '-' }}</div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>

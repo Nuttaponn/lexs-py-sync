@@ -1,0 +1,69 @@
+<div class="content-container">
+  <div class="inner-container-padding-24">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+      <div class="title-text">
+        <h5 class="mt-12 mb-12 mr-12">เอกสารดำเนินการ</h5>
+      </div>
+      <div fxLayout="row">
+        <div class="description" (click)="isOpened = !isOpened">
+          <mat-icon
+            [svgIcon]="isOpened ? 'icon-Slide-Hide' : 'icon-Expand'"
+            class="icon icon-xmedium icon-hide-show fill-blue mr-5">
+          </mat-icon
+          >{{ isOpened ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate) }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <mat-accordion>
+    <mat-expansion-panel [expanded]="isOpened" hideToggle>
+      <mat-divider class="no-margin"></mat-divider>
+      <form [formGroup]="auctionSubmitResultForm">
+        <div class="mb-16 mt-24" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+          <div fxLayout="column" fxFlex="15">
+            <h6>{{ 'COMMON.LABEL_DOCUMENT_LIST' | translate }}</h6>
+          </div>
+          <div fxLayout="column" fxFlex="90" fxLayoutGap="15px">
+            <ng-container *ngIf="!isUploadReadOnly">
+              <div>
+                <app-message-banner type="warn-normal" [icon]="'icon-Error'">
+                  <ul class="mt-5 mb-5">
+                    <li>
+                      <span>{{ 'PROCESSING_DOCUMENT.SUB_MSG1' | translate }}</span>
+                    </li>
+                    <li>
+                      <span>{{ 'PROCESSING_DOCUMENT.SUB_MSG2' | translate }}</span>
+                    </li>
+                  </ul>
+                </app-message-banner>
+              </div>
+            </ng-container>
+            <app-upload-multi-file-content
+              [uploadMultiInfo]="uploadMultiInfo"
+              [list]="documentUpload"
+              [column]="documentColumns"
+              (uploadFileEvent)="uploadFileEvent($event)"
+              [readonly]="isUploadReadOnly"
+              [labelAcceptFile]="isUploadReadOnly ? '' : 'UPLOAD_FILE.LABEL_HINT_DOCUMENT_PDF_JPG_JPEG_2'">
+            </app-upload-multi-file-content>
+            <ng-container *ngIf="!isUploadReadOnly">
+              <div class="checkbox-container" fxLayout="row" fxLayoutAlign="start center">
+                <input
+                  class="elm-check elm-radio-check"
+                  formControlName="attendAuctionFlag"
+                  type="checkbox"
+                  id="attendAuctionFlag" />
+                <label for="attendAuctionFlag"
+                  >ทนายความไปดูแลการขาย
+                  <span class="text-gray-900 opacity-60-percent"
+                    >(กรุณาอัปโหลดรายงานการขายก่อนเลือก checkbox)</span
+                  ></label
+                >
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </form>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

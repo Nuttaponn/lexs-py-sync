@@ -1,0 +1,176 @@
+<div class="content-container">
+  <div fxLayout="row" class="title-text">
+    <h5 class="mt-24 mb-12 ml-24 mr-24">
+      {{ 'INVESTIGATE_PROPERTY.INVESTIGATE_PROPERTY_DOCUMENTS_LIST' | translate }}
+    </h5>
+  </div>
+  <div class="m-25">
+    <app-message-banner
+      [icon]="'icon-Error'"
+      *ngIf="mainMessageBanner"
+      type="warn-normal"
+      [message]="mainMessageBanner">
+    </app-message-banner>
+  </div>
+  <div *ngFor="let data of litigationDocuments; let i = index">
+    <div class="inner-container-padding pt-0">
+      <div fxLayout="row" fxLayoutAlign="space-between center" class="expand-header bg-l-gray pl-16 pr-16">
+        <div fxLayoutAlign="flex-start stretch" fxLayoutGap="15">
+          <div class="flex-align-self-center">
+            <mat-icon svgIcon="icon-Hat" class="icon icon-xmedium icon-hide-show fill-blue"> </mat-icon>
+          </div>
+          <div fxLayoutAlign="start center" fxLayoutGap="15">
+            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="8">
+              <h6>{{ 'INVESTIGATE_PROPERTY.ORDER' | translate }} {{ i + 1 }}</h6>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="8">
+              <h6>{{ 'INVESTIGATE_PROPERTY.LITIGATION_DOCUMENT' | translate }}</h6>
+            </div>
+          </div>
+        </div>
+        <div fxLayout="row">
+          <div class="description width-btn-sh" (click)="data.isOpened = !data.isOpened">
+            <mat-icon
+              [svgIcon]="data.isOpened ? 'icon-Slide-Hide' : 'icon-Expand'"
+              class="icon icon-xmedium icon-hide-show fill-blue mr-5">
+            </mat-icon
+            >{{ (data.isOpened ? 'COMMON.ICON_EXPANSION_HIDE' : 'COMMON.ICON_EXPANSION_SHOW') | translate }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <mat-accordion>
+      <mat-expansion-panel [expanded]="data.isOpened" hideToggle>
+        <div class="table-content">
+          <app-upload-multi-file-content
+            [mode]="mode"
+            [uploadMultiInfo]="uploadMultiInfo"
+            [list]="data.documentUpload"
+            [column]="documentColumns"
+            [readonly]="isViewMode"
+            (uploadFileEvent)="uploadFileLitigationDocumentsEvent($event, i)"
+            [labelAcceptFile]="
+              documentTouched && documentErrors ? '' : 'UPLOAD_FILE.LABEL_HINT_DOCUMENT_PDF_JPG_JPEG_2'
+            ">
+          </app-upload-multi-file-content>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+  <div *ngFor="let data of dataList; let i = index">
+    <div class="inner-container-padding pt-0">
+      <div fxLayout="row" fxLayoutAlign="space-between center" class="expand-header bg-l-gray pl-16 pr-16">
+        <div fxLayoutAlign="flex-start stretch" fxLayoutGap="15">
+          <div *ngIf="!isSeleted" fxLayoutAlign="start center" fxLayoutGap="15">
+            <div fxLayoutAlign="start center" fxLayoutGap="4">
+              <h6 class="my-0">
+                <mat-icon [svgIcon]="'icon-List-Multiple'" class="icon default-cursor icon-hide-show"> </mat-icon>
+              </h6>
+            </div>
+            <h6 class="my-0">
+              {{ 'INVESTIGATE_PROPERTY.ORDER' | translate }} {{ i + 2 }}
+              {{ 'INVESTIGATE_PROPERTY.LITIGATION_DOCUMENT' | translate }}
+            </h6>
+          </div>
+          <div *ngIf="isSeleted" fxLayoutAlign="start center" fxLayoutGap="15">
+            <div
+              [class.mt-17]="data.personStatus !== 'DEATH'"
+              fxLayout="row"
+              fxLayoutAlign="center center"
+              fxLayoutGap="8">
+              <ng-container *ngIf="data.personStatus === 'DEATH'; else elseTemplate">
+                <mat-icon [svgIcon]="'icon-Hat'" class="icon icon-xmedium default-cursor icon-hide-show fill-gray">
+                </mat-icon>
+              </ng-container>
+              <ng-template #elseTemplate>
+                <div class="elm-form">
+                  <input
+                    type="checkbox"
+                    [disabled]="true"
+                    [checked]="data.activeFlag"
+                    (change)="updateFlag($event, data)"
+                    class="elm-check inactive md-line"
+                    [id]="i" /><label [for]="i"></label>
+                </div>
+              </ng-template>
+            </div>
+
+            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="8">
+              <h6>{{ 'INVESTIGATE_PROPERTY.ORDER' | translate }} {{ i + 2 }}</h6>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="8">
+              <ng-container *ngIf="data.useCIF; else elseTaxTemplate">
+                <label>{{ 'INVESTIGATE_PROPERTY.CIF' | translate }}: </label>
+                <h6>{{ data.cifNo }}</h6>
+              </ng-container>
+              <ng-template #elseTaxTemplate>
+                <label class="wrap-line-break">{{ 'INVESTIGATE_PROPERTY.TAX_NO' | translate }}: </label>
+                <h6>{{ data.taxNo }}</h6>
+              </ng-template>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="8">
+              <label>{{ 'INVESTIGATE_PROPERTY.FULL_NAME' | translate }}: </label>
+              <ng-container *ngIf="data.personStatus === 'DEATH'; else elseNameTemplate">
+                <h6>{{ data.name }}(เสียชีวิต)</h6>
+              </ng-container>
+              <ng-template #elseNameTemplate>
+                <h6>{{ data.name }}</h6>
+              </ng-template>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="8">
+              <label>{{ 'INVESTIGATE_PROPERTY.STATUS' | translate }}: </label>
+              <h6>{{ 'INVESTIGATE_PROPERTY.RELATION.' + data.relation | translate }}</h6>
+            </div>
+          </div>
+        </div>
+        <ng-container *ngIf="data.personStatus !== 'DEATH'">
+          <div fxLayout="row">
+            <div class="description width-btn-sh" (click)="data.isOpened = !data.isOpened">
+              <mat-icon
+                [svgIcon]="data.isOpened ? 'icon-Slide-Hide' : 'icon-Expand'"
+                class="icon icon-xmedium icon-hide-show fill-blue mr-5">
+              </mat-icon
+              >{{ (data.isOpened ? 'COMMON.ICON_EXPANSION_HIDE' : 'COMMON.ICON_EXPANSION_SHOW') | translate }}
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+    <mat-accordion>
+      <mat-expansion-panel [expanded]="data.isOpened" hideToggle>
+        <div class="mb-8">
+          <ng-container *ngIf="data?.orderedRecentlyFlag">
+            <app-message-banner
+              [icon]="'icon-Error'"
+              type="warn-normal"
+              [message]="'INVESTIGATE_PROPERTY.DOCS_LIST.WARNING_NOT_EXCEED'"
+              [class.margin-bottom]="data.relatedLitigations && data.relatedLitigations.length > 0">
+            </app-message-banner>
+          </ng-container>
+          <ng-container *ngIf="data.relatedLitigations && data.relatedLitigations.length > 0">
+            <app-message-banner
+              [icon]="'icon-Error'"
+              type="warn-normal"
+              [message]="'จำเลยนี้อยู่ระหว่างการสืบทรัพย์ในเลขที่กฎหมาย: ' + data.content">
+            </app-message-banner>
+          </ng-container>
+        </div>
+        <div class="table-content">
+          <app-upload-multi-file-content
+            [mode]="mode"
+            [uploadMultiInfo]="uploadMultiInfo"
+            [list]="data.documentUpload"
+            [column]="documentColumns"
+            [readonly]="isViewMode"
+            (uploadFileEvent)="uploadFileEvent($event, i)"
+            [labelAcceptFile]="
+              getControl(i).touched && getControl(i).invalid ? '' : 'UPLOAD_FILE.LABEL_HINT_DOCUMENT_PDF_JPG_JPEG_2'
+            ">
+          </app-upload-multi-file-content>
+          <spig-error-msg [control]="getControl(i)" [customErrorMsg]="'UPLOAD_FILE.ERROR_FILE_UPLOAD_REQUIRED'">
+          </spig-error-msg>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+</div>

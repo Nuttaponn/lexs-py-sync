@@ -1,0 +1,17 @@
+<ng-container *ngIf="isShowWarning">
+  <div class="content-container mt-0 mr-0 ml-0 mb-10">
+    <app-message-banner type="warn-normal" [message]="messageBanner"></app-message-banner>
+  </div>
+</ng-container>
+<div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="50px">
+  <div fxFlex="15">
+    <h5>{{ 'WITHDRAWN_SEIZURE_PROPERTY.COLLATERAL.MOVE_LIST_LABEL' | translate }}</h5>
+  </div>
+  <div fxFlex>
+    <spig-dropdown
+      classInput="input-md"
+      [formControl]="control"
+      [config]="dropdownConfig"
+      [options]="groupTypeOptions"></spig-dropdown>
+  </div>
+</div>

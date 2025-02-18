@@ -1,0 +1,89 @@
+@import 'variables';
+
+@include font-face(KrungthaiFastRegular, $font-assets-path, 'KrungthaiFast-Regular');
+@include font-face(KrungthaiFastBold, $font-assets-path, 'KrungthaiFast-Bold', 'ttf', bold);
+@include font-face(KrungthaiFastItalic, $font-assets-path, 'KrungthaiFast-Italic', 'ttf', normal, italic);
+@include font-face(KrungthaiFastBoldItalic, $font-assets-path, 'KrungthaiFast-BoldItalic', 'ttf', bold, italic);
+@include font-face(KrungthaiFastLight, $font-assets-path, 'KrungthaiFast-Light');
+@include font-face(KrungthaiFastLightItalic, $font-assets-path, 'KrungthaiFast-LightItalic', 'ttf', normal, italic);
+@include font-face(KrungthaiFastUltraLight, $font-assets-path, 'KrungthaiFast-UltraLight');
+@include font-face(KrungthaiFastUltraLightItalic, $font-assets-path, 'KrungthaiFast-UltraLightItalic', 'ttf', normal, italic);
+@include font-face(ThonburiRegular, $font-assets-path, 'Thonburi');
+@include font-face(ThonburiBold, $font-assets-path, 'ThonburiBold', 'ttf', bold);
+@include font-face(Roboto-Regular, $font-assets-path, 'Roboto-Regular');
+@include font-face(Roboto-Bold, $font-assets-path, 'ThonburiBold', 'ttf', bold);
+
+$general-font-family: 'KrungthaiFastRegular';
+$form-font-family: 'Thonburi';
+
+@mixin font-size($size) {
+  font-family: KrungthaiFastBold;
+  font-size: $size;
+
+  &.regular {
+    font-family: KrungthaiFastRegular;
+    font-size: $size;
+  }
+
+  &.light {
+    font-family: KrungthaiFastLight;
+    font-size: $size;
+  }
+
+  &.primary {
+    color: $primary;
+  }
+
+  &.secondary {
+    color: $secondary;
+  }
+
+  &.success {
+    color: $success;
+  }
+
+  &.info {
+    color: $info;
+  }
+
+  &.warning {
+    color: $warning;
+  }
+
+  &.danger {
+    color: $danger;
+  }
+}
+
+body {
+  font-family: $form-font-family;
+  font-size: 16px;
+}
+
+a {
+  font-family: $general-font-family;
+}
+
+h1 {
+  @include font-size(36px);
+}
+
+h2 {
+  @include font-size(30px);
+}
+
+h3 {
+  @include font-size(24px);
+}
+
+h4 {
+  @include font-size(20px);
+}
+
+h5 {
+  @include font-size(18px);
+}
+
+h6 {
+  @include font-size(16px);
+}

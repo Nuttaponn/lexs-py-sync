@@ -1,0 +1,61 @@
+@import '/src/styles/colors';
+@import '/src/styles/typography';
+@import '/src/styles/mixins';
+
+.related-info-card {
+  @include mat-card-content-box;
+
+  &.pending-add {
+    background-color: map-get($ktb-palette-blue, 50);
+    border: solid map-get($ktb-palette-blue, 400) 1px;
+  }
+
+  &.pending-update {
+    background-color: map-get($ktb-palette-golden-yellow, 0);
+    border: solid $krungthai-golden-yellow 1px;
+  }
+
+  &.pending-delete {
+    background-color: map-get($ktb-palette-red, 50);
+    border: solid map-get($ktb-palette-red, 500) 1px;
+  }
+
+  .related-info-header {
+    .title {
+      padding: 0 12px;
+
+      .grade-label {
+        background: map-get($ktb-palette-biz-gray, 100);
+        border-radius: 4px;
+        font-size: $font-sub-description;
+        padding: 4px 8px;
+        color: map-get($ktb-palette-biz-gray, 700);
+      }
+    }
+
+    .sub-title {
+      padding: 12px;
+
+      span {
+        font-size: $font-sub-description;
+      }
+    }
+  }
+
+  .related-info-status {
+    margin: 8px;
+  }
+
+  .mat-mdc-card-content {
+    .table-content {
+      padding: 16px 0;
+
+      .header {
+        font-size: $font-description;
+        padding-bottom: 16px;
+        padding-left: 10px;
+        color: map-get($ktb-palette-biz-gray, 700);
+      }
+    }
+  }
+}

@@ -1,0 +1,35 @@
+.loader-overlay {
+  background: rgba(0, 0, 0, 0.6);
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+$loader-bg: transparent !default;
+$loader-font-color: white !default;
+
+.loader-overlay > div {
+  background: $loader-bg;
+  padding: 15px;
+  text-align: center;
+  color: $loader-font-color;
+  border-radius: 4px;
+  left: 50%;
+}
+.loader-overlay > div > .spinner-box {
+  width: fit-content;
+  transform: translate(-50%, 0);
+  margin-left: 50%;
+}
+.loader-overlay > div > h4 {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  font-size: 20px;
+  white-space: pre-line;
+}

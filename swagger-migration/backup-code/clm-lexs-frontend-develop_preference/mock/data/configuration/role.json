@@ -1,0 +1,74 @@
+[
+  {
+    "roleCode": "STRAREGY_AMD",
+    "roleName": "ฝ่ายกลยุทธ์ AMD"
+  },
+  {
+    "roleCode": "AMD_RESTRUCTURE",
+    "roleName": "AMD Restructure"
+  },
+  {
+    "roleCode": "BC",
+    "roleName": "BC"
+  },
+  {
+    "roleCode": "CBC",
+    "roleName": "CBC"
+  },
+  {
+    "roleCode": "KLAW_USER",
+    "roleName": "KLAW user"
+  },
+  {
+    "roleCode": "KLAW_FINANCIAL",
+    "roleName": "KLAW การเงิน"
+  },
+  {
+    "roleCode": "KLAW_SECRETARY",
+    "roleName": "KLAW secretary"
+  },
+  {
+    "roleCode": "PROSECUTION_DEPARTMENT",
+    "roleName": "ฝ่ายดำเนินคดี"
+  },
+  {
+    "roleCode": "EXECUTION_DEPARTMENT",
+    "roleName": "ฝ่ายบังคับคดี"
+  },
+  {
+    "roleCode": "FINANCIAL1",
+    "roleName": "ฝ่ายการเงิน1"
+  },
+  {
+    "roleCode": "FINANCIAL2",
+    "roleName": "ฝ่ายการเงิน2"
+  },
+  {
+    "roleCode": "FINANCIAL3",
+    "roleName": "ฝ่ายการเงิน3"
+  },
+  {
+    "roleCode": "ALLOTMENT",
+    "roleName": "Allotment Team"
+  },
+  {
+    "roleCode": "ADMIN",
+    "roleName": "BU Owner"
+  },
+  {
+    "roleCode": "USER_ADMIN",
+    "roleName": "User Admin"
+  },
+  {
+    "roleCode": "INTERNAL_AUDITOR",
+    "roleName": "ตรวจสอบภายใน"
+  },
+  {
+    "roleCode": "EXTERNAL_AUDITOR",
+    "roleName": "ตรวจสอบภายนอก"
+  },
+  {
+    "roleCode": "AMD_PREVENTION",
+    "roleName": "AMD Prevention"
+  }
+]

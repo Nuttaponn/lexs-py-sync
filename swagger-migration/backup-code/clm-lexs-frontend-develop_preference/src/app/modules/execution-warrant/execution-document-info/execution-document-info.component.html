@@ -1,0 +1,76 @@
+<div class="content-container" *ngIf="taskCode === 'R2E04-03-3A' || isRecordDocs">
+  <app-record-docs
+    [cifNo]="cifNo"
+    [mode]="mode === 'EDIT' && hasSubmitPermission ? 'EDIT' : 'VIEW'"
+    [litigationCaseId]="litigationCaseId">
+  </app-record-docs>
+</div>
+<app-related-accounts
+  [writOfExecType]="writOfExecType"
+  [mode]="mode === 'EDIT' && hasSubmitPermission ? 'EDIT' : 'VIEW'"
+  [litigationCaseId]="litigationCaseId"></app-related-accounts>
+<div class="content-container" *ngIf="taskCode !== 'R2E04-03-3A'">
+  <mat-card appearance="outlined" class="card">
+    <div class="header">
+      <div class="title" fxLayout="row" fxLayoutAlign="space-between center">
+        <div fxLayout="row" fxLayoutGap="16px">
+          <h5 class="pt-16 pb-16 pl-16 pr-16">{{ 'EXECUTION_WARRANT.LABEL_DOCUMENT_LIST' | translate }}</h5>
+        </div>
+        <div fxLayout="row">
+          <div class="description mr-4" (click)="isOpened = !isOpened">
+            <mat-icon
+              [svgIcon]="isOpened ? 'icon-Slide-Hide' : 'icon-Expand'"
+              class="icon icon-xmedium icon-hide-show fill-blue mr-5">
+            </mat-icon
+            >{{ isOpened ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate) }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <mat-card-content>
+      <mat-accordion class="expansion-info">
+        <mat-expansion-panel [expanded]="isOpened" hideToggle class="p-0">
+          <mat-divider></mat-divider>
+          <br />
+          <app-doc-litigation
+            [documents]="litigationCaseDocuments"
+            [forAsset]="true"
+            class="mt-10"
+            [readyForAsset]="true"
+            title="เอกสารเกี่ยวกับการดำเนินคดี"></app-doc-litigation>
+          <app-document-header
+            title="เอกสารเกี่ยวกับบัญชี (ชั้นดำเนินคดี)"
+            [isMain]="true"
+            [showDropdown]="true"
+            [dropdownOptions]="accountDropdownOptions"
+            (dropdownSelect)="onDropdownSelected($event)"
+            [forLitigation]="false"
+            [forNoticeLetter]="false"
+            [forAsset]="true"
+            [readyForDoc]="true"
+            (expand)="onExpansionPanelToggle()"
+            [readyForAsset]="true"
+            [readyForNotice]="true"
+            [readyForLitigation]="true"
+            [expanded]="showMainAccount"></app-document-header>
+          <mat-expansion-panel [expanded]="showMainAccount">
+            <div *ngFor="let account of accountsSet[currentValue]?.commitments; let i = index">
+              <mat-expansion-panel [expanded]="true">
+                <app-common-document-table
+                  [_documents]="account.documents"
+                  [displayedColumns]="displayedColumnsAccount"
+                  [details]="account.details"
+                  [readyFor]="account.readyFor"
+                  [config]="account.config"></app-common-document-table>
+              </mat-expansion-panel>
+            </div>
+          </mat-expansion-panel>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<ng-template #dataNotFound>
+  <app-message-empty [message]="'DOC_PREP.NOT_FOUND_DOC'"></app-message-empty>
+</ng-template>

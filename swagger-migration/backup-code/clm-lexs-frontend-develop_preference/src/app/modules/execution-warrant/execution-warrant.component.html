@@ -1,0 +1,38 @@
+<app-action-bar
+  (backButtonHandler)="onBack()"
+  [showNavBarInformation]="true"
+  [hasSaveButton]="actionBar.hasSave"
+  [saveButtonText]="actionBar.saveText || 'COMMON.BUTTON_SAVE'"
+  (saveButtonHandler)="onSave()"
+  [hasPrimaryButton]="actionBar.hasPrimary"
+  [primaryButtonText]="actionBar.primaryText || ''"
+  [primaryButtonIcon]="actionBar.primaryIcon || 'icon-Selected'"
+  (primaryButtonHandler)="onSubmit()">
+  <ng-container navBarInformationTemplate>
+    <mat-icon
+      [svgIcon]="mode !== 'VIEW' ? 'icon-Task-List' : 'icon-Box-Bag-Circle'"
+      class="icon icon-xmedium default-cursor"></mat-icon>
+    <span class="ml-8">{{ title | translate }}</span>
+    <span *ngIf="!!statusName" class="ml-12 status-label status-pending">{{ statusName }}</span>
+  </ng-container>
+</app-action-bar>
+
+<div class="content-below-action-bar-area">
+  <div class="mt-24 mb-24">
+    <div class="m-25" *ngIf="mode !== 'VIEW' && hasSubmitPermission && msgBanner">
+      <app-message-banner type="black-info" [message]="msgBanner"> </app-message-banner>
+    </div>
+    <nav mat-tab-nav-bar class="tab-content-info" [tabPanel]="tabPanel">
+      <a
+        mat-tab-link
+        *ngFor="let tab of tabsInfo; let i = index"
+        (click)="onRouterLink(tab)"
+        [active]="tab.index === tabIndex"
+        >{{ tab.label | translate }}
+      </a>
+    </nav>
+    <mat-tab-nav-panel #tabPanel>
+      <router-outlet></router-outlet>
+    </mat-tab-nav-panel>
+  </div>
+</div>

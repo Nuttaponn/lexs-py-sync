@@ -1,0 +1,148 @@
+<div class="content-container">
+  <div class="inner-container-padding-24">
+    <div class="mt-12">
+      <!-- *ngIf="specificFlag === 'EXECUTION'" -->
+      <ng-container class="lexs-title">
+        <div class="mb-16" fxLayout="row" fxLayoutAlign="space-between center">
+          <div class="title-text">
+            <h5 class="mt-12 mb-12 mr-12">{{ 'รายการประกาศบน LEXS ที่รอจับคู่' | translate }}</h5>
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-container class="lexs-ddl">
+        <div [formGroup]="searchCtrl" class="search-section pb-16" fxLayout="row" fxLayoutAlign="center start" fxLayoutGap="12px">
+          <div fxFlex>
+            <spig-dropdown
+              classInput="input-xsm icon no-border"
+              [config]="redCaseNoConfig"
+              [options]="redCaseNoOptions"
+              (selectedOption)="onSelectedOption(TABLE_FILTER_KEY.redCaseNo)"
+              formControlName="redCaseNo">
+            </spig-dropdown>
+          </div>
+          <div fxFlex>
+            <spig-dropdown
+              classInput="input-xsm icon no-border"
+              [config]="legalExecutionOfficeConfig"
+              [options]="legalExecutionOfficeOptions"
+              (selectedOption)="onSelectedOption(TABLE_FILTER_KEY.lawCourtId)"
+              formControlName="legalExecutionOffice">
+            </spig-dropdown>
+          </div>
+          <div fxFlex>
+            <spig-dropdown
+              [formControl]="sortControl"
+              classInput="input-xsm icon"
+              [config]="dropdownDocNoSortConfig"
+              [options]="docNoSortOption"
+              (selectedOption)="sortSelected($event)"></spig-dropdown>
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-container class="lexs-table">
+        <!-- [class.can-scroll]="!['RE_SELECT', 'EDIT', 'MATCH'].includes(buttonType)" -->
+        <div
+          class="table-scroll section"
+          table-scroll>
+          <!-- multiTemplateDataRows -->
+          <table mat-table [dataSource]="tableDataSource.filteredData">
+            <!-- Selection Column -->
+            <ng-container matColumnDef="selection">
+              <th class="text-center" mat-header-cell *matHeaderCellDef>
+                <mat-checkbox
+                  (change)="$event ? toggleAllRows() : null"
+                  [checked]="selection.hasValue() && isAllSelected()"
+                  [indeterminate]="selection.hasValue() && !isAllSelected()">
+                </mat-checkbox>
+              </th>
+              <td class="text-center" mat-cell *matCellDef="let element">
+                <mat-checkbox
+                  (click)="$event.stopPropagation()"
+                  (change)="$event ? onCheckboxChange(element) : null"
+                  [checked]="selection.isSelected(element)">
+                  <!-- .id -->
+                </mat-checkbox>
+              </td>
+            </ng-container>
+
+            <!-- ลำดับ -->
+            <ng-container matColumnDef="no">
+              <th class="text-center" mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_NO' | translate }}</th>
+              <td class="text-center" mat-cell *matCellDef="let element; let i = index">
+                {{ pageSize * (pageIndex - 1) + i + 1 }}
+              </td>
+            </ng-container>
+
+            <!-- คดีหมายเลขแดง -->
+            <ng-container matColumnDef="redCaseNo">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'EXTERNAL_DOCUMENTS_SEARCH_CONTROL.LABEL_RED_CASE_NO' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element">
+                <span class="fill-red">{{ element.redCaseNo || '-' }}</span>
+              </td>
+            </ng-container>
+
+            <!-- สำนักงานบังคับคดี -->
+            <ng-container matColumnDef="ledName">
+              <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_LEGAL_EXECUTION_DEPARTMENT' | translate }}</th>
+              <td mat-cell *matCellDef="let element">
+                <span>{{ element.ledName || '-' }}</span>
+              </td>
+            </ng-container>
+
+            <!-- ชื่อศาล -->
+            <ng-container matColumnDef="civilCourtName">
+              <th mat-header-cell *matHeaderCellDef>{{ 'AUC_ANNOUNEMENT.COURT_NAME' | translate }}</th>
+              <td mat-cell *matCellDef="let element">
+                <span>{{ element.civilCourtName || '-' }}</span>
+              </td>
+            </ng-container>
+
+            <!-- วันที่ยึดทรัพย์ -->
+            <ng-container matColumnDef="seizureDate">
+              <th mat-header-cell *matHeaderCellDef>วันที่ยึดทรัพย์</th>
+              <td mat-cell *matCellDef="let element">
+                <p>{{ element.seizureDate ? (element.seizureDate | buddhistEra: 'DD/MM/yyyy') : '-' }}</p>
+              </td>
+            </ng-container>
+
+            <!-- ประเภทสำนักงานบังคับคดี -->
+            <ng-container matColumnDef="ledType">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'AUCTION_LED_CARD.SEIZED_CALLATERALS.LEGAL_EXECUTION_OFFICE_TYPE' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element">
+                <span class="link" (click)="navigateToSeizureProperty(element)">
+                  {{ ('SEIZURE_OFFICE_TYPE.' + element.ledType | translate) || '-' }}
+                </span>
+              </td>
+            </ng-container>
+
+            <!-- Header Row -->
+            <tr mat-header-row *matHeaderRowDef="tableColumns; sticky: true"></tr>
+            <!-- Data Rows -->
+            <tr mat-row *matRowDef="let row; columns: tableColumns"></tr>
+          </table>
+
+          <app-message-empty
+            *ngIf="tableDataSource.data.length === 0 || tableDataSource.filteredData.length === 0"
+            [message]="'COMMON.SEARCH_NOT_FOUND'">
+          </app-message-empty>
+        </div>
+
+         <!-- Paginator -->
+        <!-- <ng-container *ngIf=""> -->
+        <app-paginator
+          *ngIf="tableDataSource.data.length > 0"
+          #paginator
+          [pageSize]="pageSize"
+          [length]="tableDataSource.data.length"
+          (page)="onPaging($event)"></app-paginator>
+        <!-- </ng-container> -->
+      </ng-container>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,37 @@
+<app-action-bar
+  (backButtonHandler)="onBack()"
+  [hasCancelButton]="actionBar.hasCancel"
+  (cancelButtonHandler)="onCancel()"
+  [hasRejectButton]="actionBar.hasReject"
+  [rejectButtonIcon]="actionBar.rejectIcon || 'icon-Dismiss-Square'"
+  [rejectButtonText]="actionBar.rejectText || ''"
+  (rejectButtonHandler)="onReject()"
+  [hasPrimaryButton]="actionBar.hasPrimary"
+  [primaryButtonIcon]="actionBar.primaryIcon || 'icon-Selected'"
+  [primaryButtonText]="actionBar.primaryText || ''"
+  (primaryButtonHandler)="onSubmit()"
+  [hasSaveButton]="actionBar.hasSave"
+  (saveButtonHandler)="onSave()"
+  [saveButtonText]="actionBar.saveText || 'COMMON.BUTTON_SAVE'"
+  [showNavBarInformation]="true">
+  <ng-container navBarInformationTemplate>
+    <div>
+      <mat-icon svgIcon="icon-Finance" class="icon icon-xmedium default-cursor"></mat-icon>
+      <span class="ml-05em">{{ title | translate }}</span>
+    </div>
+  </ng-container>
+</app-action-bar>
+
+<app-refund-info
+  *ngIf="refundInfoForm && !showDetailAsKcorp"
+  [isViewMode]="isViewMode"
+  [refundInfoForm]="refundInfoForm"
+  [isDownLoad]="isDownLoad"
+  [isViewCreditNote]="isViewCreditNote"
+  [isPendingNoSuccess]="isPendingNoSuccess"></app-refund-info>
+<app-refund-info-kcorp
+  *ngIf="refundInfoFormKcorp && showDetailAsKcorp"
+  [isDownLoad]="isDownLoad"
+  [isViewMode]="isViewMode"
+  [isViewCreditNote]="isViewCreditNote"
+  [refundInfoFormKcorp]="refundInfoFormKcorp"></app-refund-info-kcorp>

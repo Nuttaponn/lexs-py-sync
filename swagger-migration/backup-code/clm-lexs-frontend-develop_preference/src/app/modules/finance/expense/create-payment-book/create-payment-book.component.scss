@@ -1,0 +1,73 @@
+@import '/src/styles/colors';
+
+.container {
+  padding: 24px;
+
+  .header {
+    padding: 20px 0 20px 0;
+
+    .title {
+      h4 {
+        display: flex;
+        margin: 0;
+      }
+    }
+  }
+
+  .accordion-headers-title {
+    padding: 10px;
+    background-color: map-get($ktb-palette-blue, 50);
+  }
+
+  .box-input {
+    display: flex;
+    align-items: center;
+    background-color: map-get($ktb-palette-biz-gray, 200);
+    border: 1px solid map-get($ktb-palette-biz-gray, 50);
+    border-radius: 8px;
+    height: 40px;
+    padding: 0 12px;
+  }
+}
+
+.table-scroll {
+
+  .action-delete,
+  .action-edit {
+    color: map-get($ktb-palette-precious-blue, 50);
+    cursor: pointer;
+  }
+}
+
+:host ::ng-deep {
+  .tax-expansion-panel {
+    margin-top: 0;
+    background-color: map-get($ktb-palette-blue, 50);
+  }
+
+  /* FIXED(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version. */
+  .radio-green.mat-mdc-radio-checked .mdc-radio__outer-circle {
+    border-color: $krungthai-green !important;
+  }
+
+  /* FIXED(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version. */
+  .radio-red.mat-mdc-radio-checked .mdc-radio__outer-circle {
+    border-color: $krungthai-red !important;
+  }
+}
+
+::ng-deep app-create-payment-book {
+
+  .mat-expansion-panel-content,
+  .fn-16 {
+    font-size: 16px !important;
+  }
+
+  .no-padding .mat-expansion-panel-body {
+    padding: 0px;
+  }
+
+  p::first-line {
+    white-space: normal;
+  }
+}

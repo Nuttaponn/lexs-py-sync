@@ -1,0 +1,62 @@
+@import '/src/styles/colors';
+
+.tab-container {
+  background-color: map_get($ktb-palette-blue, 40);
+  border: 1px solid map-get($ktb-palette-biz-black, 10);
+  box-shadow: 0px 2px 4px map-get($ktb-palette-biz-black, B008);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.tabs-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+.tab {
+  background-color: map-get($bule-soft-cyan, 03);
+  padding: 16px;
+  position: relative;
+  cursor: pointer;
+
+  &:first-child {
+    border-radius: 8px 0 0 0;
+  }
+
+  &:last-child {
+    border-radius: 0 8px 0 0;
+  }
+
+  &:not(.active) {
+    background-color: transparent;
+  }
+
+  &.active {
+    z-index: 150;
+    box-shadow: 0px 0px 6px map-get($ktb-palette-biz-black, B008);
+  }
+
+  .tab-header-content {
+    align-self: stretch;
+  }
+
+  .color-strip {
+    border-radius: 4px;
+    width: 12px;
+    min-width: 12px;
+    margin-right: 12px;
+  }
+
+  h4 {
+    margin: 0;
+  }
+}
+
+.tab-content {
+  padding: 16px;
+  background: map-get($bule-soft-cyan, 03);
+  box-shadow: 0px -2px 4px map-get($ktb-palette-biz-black, B008);
+  border-radius: 0 0 8px 8px;
+  position: relative;
+  z-index: 100;
+}

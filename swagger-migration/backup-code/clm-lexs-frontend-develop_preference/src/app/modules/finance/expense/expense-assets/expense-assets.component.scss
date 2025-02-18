@@ -1,0 +1,32 @@
+@use '/src/styles/colors' as colors;
+
+.status-label > h3 {
+  font-weight: 700;
+  color: map-get($map: colors.$ktb-palette-biz-black, $key: 100);
+}
+
+.p-32 {
+  padding: 32px;
+}
+
+.px-28 {
+  padding-left: 28px;
+  padding-right: 28px;
+}
+
+.selected-label {
+  font-weight: 700;
+}
+
+.mat-column-collateralDetails {
+  white-space: pre-line;
+}
+
+.min-width-352 {
+  min-width: 352px;
+}
+
+.my-10 {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}

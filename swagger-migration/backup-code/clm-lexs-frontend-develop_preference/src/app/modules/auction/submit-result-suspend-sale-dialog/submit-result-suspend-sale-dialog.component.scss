@@ -1,0 +1,14 @@
+.content {
+  .sub-container {
+    .check-box {
+      font-family: 'KrungthaiFastRegular';
+      border-radius: 3px;
+    }
+  }
+}
+
+::ng-deep app-submit-result-suspend-sale-dialog {
+  .banner-container {
+    margin: 2px;
+  }
+}

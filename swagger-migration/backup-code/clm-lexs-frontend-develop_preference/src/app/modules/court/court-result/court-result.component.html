@@ -1,0 +1,1884 @@
+<div
+  class="content-below-action-bar-area m-20"
+  [ngClass]="{
+    'no-padding': taskCodeMemorandumCourt.includes(taskCode) && ['PENDING_APPROVAL', 'AWAITING'].includes(statusCode),
+  }">
+  <mat-card appearance="outlined" class="info-container" [formGroup]="courtVerdictForm">
+    <mat-card-title fxLayout="row" *ngIf="statusCode !== 'PENDING_APPROVAL' && statusCode !== 'AWAITING'">
+      <ng-container *ngIf="!taskCodeMemorandumCourt.includes(taskCode); else memoTitleTempalte">
+        <h5 class="title bold" *ngIf="!!courtVDetail?.courtLevel">
+          {{ 'COURT.COURT_RESULT' | translate }}
+        </h5>
+      </ng-container>
+      <ng-template #memoTitleTempalte>
+        <h5 class="title bold">
+          {{ courtVDetail.courtLevel ? ('COURT.RESULT_' + courtVDetail.courtLevel | translate) : '' }}
+        </h5>
+      </ng-template>
+      <span *ngIf="courtVDetail.caseEnd" class="status-label status-failed case-end">
+        {{ 'COURT.CASE_END' | translate }}
+      </span>
+    </mat-card-title>
+    <mat-card-title fxLayout="row" *ngIf="statusCode === 'PENDING_APPROVAL' || statusCode === 'AWAITING'">
+      <h5 class="title">
+        {{ 'COURT.RESULT_LEVEL' | translate }}
+      </h5>
+    </mat-card-title>
+    <mat-divider [inset]="true"></mat-divider>
+
+    <div class="sub-container" fxLayout="row">
+      <h6 class="mr-24" fxFlex="15">
+        {{ 'COURT.INFO' | translate }}
+      </h6>
+      <div fxFlex="70">
+        <div fxLayout="row" fxLayoutGap="16px" class="mb-16">
+          <div fxFlex="49">
+            <span class="thin-letter"> {{ 'COMMON.LABEL_BLACK_CASE_NO' | translate }}</span>
+            <div>{{ courtVerdictForm.get('civilCourtBlackCaseNo')?.value || '-' }}</div>
+          </div>
+          <div fxFlex="49">
+            <span class="thin-letter"> {{ 'COURT.COURT_NAME' | translate }}</span>
+            <div>
+              {{ courtVerdictForm.get('courtName')?.value || '-' }}
+            </div>
+          </div>
+        </div>
+        <div
+          fxLayout="row"
+          fxLayoutGap="16px"
+          class="mb-16"
+          *ngIf="appealTasks.includes(taskCode) || supremeTasks.includes(taskCode)">
+          <div fxFlex="49">
+            <span class="thin-letter"> {{ 'COMMON.LABEL_RED_CASE_NO_2' | translate }}</span>
+            <div>{{ courtVerdictForm.get('redCaseNo')?.value || '-' }}</div>
+          </div>
+        </div>
+        <div class="data-table-content">
+          <div class="table-scroll">
+            <app-defendant-table
+              [defendants]="courtVDetail.defendants || []"
+              [showOrder]="false"
+              [showId]="true"
+              [isSelectable]="false">
+            </app-defendant-table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ng-container *ngIf="appealTasks.includes(taskCode) || supremeTasks.includes(taskCode)">
+      <!-- ข้อมูลทุนทรัพย์ -->
+      <div class="sub-container" fxLayout="row">
+        <h6 class="mr-24" fxFlex="15">{{ 'COURT.LABEL_CAPITAL_INFO' | translate }}</h6>
+        <div fxFlex="70">
+          <div fxLayout="column" fxFlex="70" fxLayoutGap="16px" class="mb-16">
+            <span class="thin-letter">{{ 'COURT.LABEL_CAPITAL_AMOUNT' | translate }}</span>
+            <div>{{ (courtVDetail.capitalAmount | numberDecimal) || '-' }}</div>
+          </div>
+        </div>
+      </div>
+      <!-- ข้อมูลหลักประกัน -->
+      <div class="sub-container" fxLayout="row" fxLayoutAlign="space-between center">
+        <h6 class="mr-24" fxFlex="15">{{ 'COURT.LABEL_COLLATERAL_INFO' | translate }}</h6>
+        <div class="description" (click)="handleCollateralPanel()">
+          <mat-icon
+            [svgIcon]="isCollateralOpened ? 'icon-Slide-Hide' : 'icon-Expand'"
+            class="icon icon-hide-show icon-xmedium fill-blue mr-5">
+          </mat-icon
+          >{{
+            isCollateralOpened ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate)
+          }}
+        </div>
+      </div>
+      <!-- ตารางข้อมูล -->
+      <div class="sub-container">
+        <mat-accordion>
+          <mat-expansion-panel [expanded]="isCollateralOpened" hideToggle>
+            <div class="data-table-content">
+              <div class="table-scroll">
+                <table mat-table [dataSource]="courtCollateralSource.filteredData">
+                  <ng-container matColumnDef="no" sticky>
+                    <th mat-header-cell *matHeaderCellDef class="text-center">
+                      {{ 'COMMON.LABEL_NO' | translate }}
+                    </th>
+                    <td mat-cell *matCellDef="let elementl; let i = index" class="text-center">
+                      {{ i + 1 }}
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="collateralId" sticky>
+                    <th mat-header-cell *matHeaderCellDef>{{ 'COURT.LABEL_COLLATERAL_ID' | translate }}</th>
+                    <td mat-cell *matCellDef="let element">
+                      {{ element.collateralId || '-' }}
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="collateralDetails">
+                    <th mat-header-cell *matHeaderCellDef>{{ 'COURT.LABEL_COLLATERAL_DETAIL' | translate }}</th>
+                    <td mat-cell *matCellDef="let element">
+                      {{ element.collateralDetails || '-' }}
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="ownerFullName" stickyEnd>
+                    <th mat-header-cell *matHeaderCellDef>{{ 'COURT.LABEL_COLLATERAL_OWNER' | translate }}</th>
+                    <td mat-cell *matCellDef="let element">
+                      {{ element.ownerFullName || '-' }}
+                    </td>
+                  </ng-container>
+                  <tr mat-header-row *matHeaderRowDef="collateralColumns"></tr>
+                  <tr mat-row *matRowDef="let row; columns: collateralColumns"></tr>
+                </table>
+                <ng-container
+                  *ngIf="courtCollateralSource.data.length === 0"
+                  [ngTemplateOutlet]="dataNotFound"></ng-container>
+              </div>
+            </div>
+            <app-paginator
+              #paginator
+              *ngIf="courtCollateralSource.filteredData.length > 0"
+              [pageSize]="pageSize"
+              [length]="courtCollateralSource.data.length"
+              (page)="onPaging($event)"></app-paginator>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>
+    </ng-container>
+
+    <div class="sub-container" fxLayout="row" *ngIf="actionOnScreen.blackCase">
+      <h6 class="mr-24" fxFlex="15">
+        {{ 'COMMON.LABEL_BLACK_CASE_NO' | translate }}
+        <div *ngIf="courtVDetail?.courtLevel === 'APPEAL'">
+          {{ 'COURT.APPEAL' | translate }}
+        </div>
+        <div *ngIf="courtVDetail?.courtLevel === 'SUPREME'">
+          {{ 'COURT.SUPREAM' | translate }}
+        </div>
+      </h6>
+      <div fxFlex="70">
+        <div
+          fxLayout="row"
+          fxLayoutGap="16px"
+          class="mb-16"
+          *ngIf="!isViewMode && !appealTasks.includes(taskCode) && !supremeTasks.includes(taskCode)">
+          <div fxFlex="19">
+            <spig-dropdown
+              class="mb-05em mr-16"
+              formControlName="elementBlackCaseCiosCode"
+              classInput="input-normal icon"
+              [config]="ciosCaseTypeConfig"
+              [options]="ciosCaseTypeOptions">
+            </spig-dropdown>
+            <spig-error-msg
+              [control]="getControl('elementBlackCaseCiosCode')"
+              [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'"></spig-error-msg>
+          </div>
+          <div fxFlex="19">
+            <mat-form-field class="no-label full-width">
+              <input
+                type="text"
+                matInput
+                placeholder="{{ 'COURT.SPECIFY' | translate }}"
+                maxlength="6"
+                formControlName="elementBlackCaseRunning"
+                autocomplete="off" />
+            </mat-form-field>
+            <spig-error-msg
+              [control]="getControl('elementBlackCaseRunning')"
+              [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'"></spig-error-msg>
+          </div>
+          <div fxFlex="19">
+            <spig-dropdown
+              class="mb-05em mr-16"
+              formControlName="elementBlackCaseYear"
+              classInput="input-normal icon"
+              [config]="redYearConfig"
+              [options]="redYearOption">
+            </spig-dropdown>
+            <spig-error-msg
+              [control]="getControl('elementBlackCaseYear')"
+              [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'"></spig-error-msg>
+          </div>
+        </div>
+        <div fxLayout="row" fxLayoutGap="16px" class="mb-16" *ngIf="isViewMode">
+          <div *ngIf="courtVDetail?.courtLevel === 'APPEAL' || courtVDetail?.courtLevel === 'CIVIL'">
+            {{ courtVerdictForm.get('appealCourtBlackCaseNo')?.value || '-' }}
+          </div>
+          <div *ngIf="courtVDetail?.courtLevel === 'SUPREME'">
+            {{ courtVerdictForm.get('supremeCourtBlackCaseNo')?.value || '-' }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="sub-container" fxLayout="row">
+      <h6 class="mr-24" fxFlex="15">
+        {{ 'COMMON.LABEL_RED_CASE_NO_2' | translate }}
+        <div *ngIf="actionOnScreen.redCase">
+          {{ 'COURT.APPEAL' | translate }}
+        </div>
+        <div *ngIf="courtVDetail?.courtLevel === 'SUPREME'">
+          {{ 'COURT.SUPREAM' | translate }}
+        </div>
+      </h6>
+      <div fxFlex="70">
+        <div fxLayout="row" fxLayoutGap="16px" class="mb-16" *ngIf="!isViewMode && !isViewRedCase">
+          <div fxFlex="19">
+            <spig-dropdown
+              class="mb-05em mr-16"
+              formControlName="elementRedCaseCiosCode"
+              classInput="input-normal icon"
+              [config]="ciosCaseTypeConfig"
+              [options]="ciosCaseTypeOptions">
+            </spig-dropdown>
+            <spig-error-msg
+              [control]="getControl('elementRedCaseCiosCode')"
+              [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'"></spig-error-msg>
+          </div>
+          <div fxFlex="19">
+            <mat-form-field class="no-label full-width">
+              <input
+                type="text"
+                maxlength="6"
+                appNumberOnly
+                matInput
+                placeholder="{{ 'COURT.SPECIFY' | translate }}"
+                formControlName="elementRedCaseRunning"
+                autocomplete="off" />
+            </mat-form-field>
+            <spig-error-msg
+              [control]="getControl('elementRedCaseRunning')"
+              [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'"></spig-error-msg>
+          </div>
+          <div fxFlex="19">
+            <spig-dropdown
+              class="mb-05em mr-16"
+              formControlName="elementRedCaseYear"
+              classInput="input-normal icon"
+              [config]="redYearConfig"
+              [options]="redYearOption">
+            </spig-dropdown>
+            <spig-error-msg
+              [control]="getControl('elementRedCaseYear')"
+              [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'"></spig-error-msg>
+          </div>
+        </div>
+        <div fxLayout="row" fxLayoutGap="16px" class="mb-16" *ngIf="isViewMode || isViewRedCase">
+          <div>
+            {{ courtVerdictForm.get('redCaseNo')?.value || '-' }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ข้อมูลคำพิพากษา -->
+    <div class="sub-container" fxLayout="row">
+      <h6 class="mr-24" fxFlex="15">
+        {{ 'COURT.VERDICT_INFO' | translate }}
+      </h6>
+      <div fxFlex="70">
+        <div fxLayout="row" fxLayoutGap="16px" class="mb-16">
+          <div fxFlex="49">
+            <span class="thin-letter" *ngIf="courtVDetail?.courtLevel === 'CIVIL'">
+              {{ 'COMMON.LABEL_COURT_VERDICT_DATE' | translate }}
+            </span>
+            <span class="thin-letter" *ngIf="courtVDetail?.courtLevel === 'APPEAL'">
+              {{ 'COURT.VERDICT_APPEAL_DATE' | translate }}
+            </span>
+            <span class="thin-letter" *ngIf="courtVDetail?.courtLevel === 'SUPREME'">
+              {{ 'COURT.VERDICT_SUPREAM_DATE' | translate }}
+            </span>
+            <div>{{ (courtVerdictForm.get('courtVerdictDate')?.value | buddhistEra: 'DD/MM/yyyy') || '-' }}</div>
+          </div>
+        </div>
+        <div fxLayout="row" fxLayoutGap="16px" class="mb-16">
+          <div fxFlex="49">
+            <!-- ประเภทคำพิพากษา/คำสั่ง* -->
+            <spig-dropdown
+              class="mb-05em mr-16"
+              [required]="true"
+              *ngIf="!isViewMode && !appealTasks.includes(taskCode) && !supremeTasks.includes(taskCode)"
+              formControlName="courtVerdictTypeCode"
+              (selectedOption)="onChangeCourtVerdictType($event)"
+              classInput="input-normal icon"
+              [config]="courtVerdictTypeConfig"
+              [options]="courtVerdictTypeOptions">
+            </spig-dropdown>
+            <div *ngIf="isViewMode || appealTasks.includes(taskCode) || supremeTasks.includes(taskCode)">
+              <span class="thin-letter">
+                {{ 'COURT.VERDICT_TYPE' | translate }}
+              </span>
+              <div>{{ courtVerdictForm.get('courtVerdictTypeDesc')?.value || '-' }}</div>
+            </div>
+          </div>
+          <div fxFlex="49" *ngIf="actionOnScreen.courtVerdict">
+            <!-- คำพิพากษา/คำสั่ง* -->
+            <spig-dropdown
+              class="mb-05em mr-16"
+              [required]="true"
+              *ngIf="!isViewMode && !appealTasks.includes(taskCode) && !supremeTasks.includes(taskCode)"
+              classInput="input-normal icon"
+              formControlName="courtVerdictCode"
+              (selectedOption)="onChangeCourtVerdict($event)"
+              [config]="courtVerdictConfig"
+              [options]="courtVerdictOptions">
+            </spig-dropdown>
+            <div *ngIf="isViewMode || appealTasks.includes(taskCode) || supremeTasks.includes(taskCode)">
+              <span class="thin-letter">
+                {{ 'COURT.VERDICT_TYPE_ORDER' | translate }}
+              </span>
+              <div>{{ courtVerdictForm.get('courtVerdictDesc')?.value || '-' }}</div>
+            </div>
+          </div>
+          <div fxFlex="49" *ngIf="actionOnScreen.courtDate">
+            <!-- วันที่จำหน่ายคดี -->
+            <spig-datepicker
+              formControlName="disposeCaseDate"
+              [classInput]="'input-s icon border-black-40'"
+              *ngIf="!isViewMode && !appealTasks.includes(taskCode) && !supremeTasks.includes(taskCode)"
+              [required]="actionOnScreen.courtDate"
+              [label]="'COURT.DISPOSE_CASE_DATE'"
+              class="display-grid">
+            </spig-datepicker>
+            <div *ngIf="isViewMode || appealTasks.includes(taskCode) || supremeTasks.includes(taskCode)">
+              <span class="thin-letter">
+                {{ 'COURT.DISPOSE_CASE_DATE' | translate }}
+              </span>
+              <div>{{ (courtVerdictForm.get('disposeCaseDate')?.value | buddhistEra: 'DD/MM/yyyy') || '-' }}</div>
+            </div>
+          </div>
+        </div>
+        <!-- เหตุผลที่ยกฟ้อง -->
+        <div fxLayout="row" fxLayoutGap="16px" class="mb-16" *ngIf="actionOnScreen.courtSubVerdict">
+          <div fxFlex="49">
+            <spig-dropdown
+              class="mb-05em mr-16"
+              *ngIf="!isViewMode && !appealTasks.includes(taskCode) && !supremeTasks.includes(taskCode)"
+              classInput="input-normal icon"
+              formControlName="courtSubVerdictCode"
+              [config]="courtSubVerdictConfig"
+              [options]="courtSubVerdictOptions">
+            </spig-dropdown>
+            <div *ngIf="isViewMode || appealTasks.includes(taskCode) || supremeTasks.includes(taskCode)">
+              <span class="thin-letter">
+                {{ 'COURT.REASON' | translate }}
+              </span>
+              <div>{{ courtVerdictForm.get('courtSubVerdictDesc')?.value || '-' }}</div>
+            </div>
+          </div>
+        </div>
+        <div fxLayout="row" fxLayoutGap="16px" class="mb-16">
+          <div fxFlex="49" *ngIf="actionOnScreen.otherCourtFeeTypeCode">
+            <!-- ประเภทค่าฤชาธรรมเนียม* -->
+            <spig-dropdown
+              class="mb-05em mr-16"
+              [required]="true"
+              *ngIf="!isViewMode && !appealTasks.includes(taskCode) && !supremeTasks.includes(taskCode)"
+              classInput="input-normal icon"
+              formControlName="otherCourtFeeTypeCode"
+              (selectedOption)="onChangeCourtFeeType($event)"
+              [config]="courtFeeTypeConfig"
+              [options]="courtFeeTypeOptions">
+            </spig-dropdown>
+            <div *ngIf="isViewMode || appealTasks.includes(taskCode) || supremeTasks.includes(taskCode)">
+              <span class="thin-letter">
+                {{ 'COURT.FEE_TYPE' | translate }}
+              </span>
+              <div>{{ courtVerdictForm.get('otherCourtFeeTypeDesc')?.value || '-' }}</div>
+            </div>
+          </div>
+          <div fxFlex="49" *ngIf="actionOnScreen.otherCourtFeeCode">
+            <!-- ศาลสั่งคืนธนาคารบางส่วน -->
+            <spig-dropdown
+              class="mb-05em mr-16"
+              [required]="true"
+              *ngIf="
+                !isViewMode &&
+                courtVerdictForm.get('otherCourtFeeTypeCode')?.value === '2' &&
+                !appealTasks.includes(taskCode) &&
+                !supremeTasks.includes(taskCode)
+              "
+              (selectedOption)="onChangeOtherCourtFeeType($event)"
+              classInput="input-normal icon"
+              [config]="courtFeeSubTypeConfig1"
+              formControlName="otherCourtFeeCode"
+              [options]="courtFeeSubTypeOptions">
+            </spig-dropdown>
+            <!-- * ศาลไม่สั่งคืนธนาคาร* -->
+            <spig-dropdown
+              class="mb-05em mr-16"
+              [required]="true"
+              *ngIf="
+                !isViewMode &&
+                courtVerdictForm.get('otherCourtFeeTypeCode')?.value === '3' &&
+                !appealTasks.includes(taskCode) &&
+                !supremeTasks.includes(taskCode)
+              "
+              (selectedOption)="onChangeOtherCourtFeeType($event)"
+              classInput="input-normal icon"
+              [config]="courtFeeSubTypeConfig2"
+              formControlName="otherCourtFeeCode"
+              [options]="courtFeeSubTypeOptions">
+            </spig-dropdown>
+            <div *ngIf="isViewMode || appealTasks.includes(taskCode) || supremeTasks.includes(taskCode)">
+              <span class="thin-letter" *ngIf="courtVerdictForm.get('otherCourtFeeTypeCode')?.value === '2'">
+                {{ 'COURT.COURT_RETURN_BAMK' | translate }}
+              </span>
+              <span class="thin-letter" *ngIf="courtVerdictForm.get('otherCourtFeeTypeCode')?.value === '3'">
+                {{ 'COURT.COURT_NO_RETURN_BAMK' | translate }}
+              </span>
+              <div
+                *ngIf="
+                  courtVerdictForm.get('otherCourtFeeTypeCode')?.value === '2' ||
+                  courtVerdictForm.get('otherCourtFeeTypeCode')?.value === '3'
+                ">
+                {{ courtVerdictForm.get('otherCourtFeeDesc')?.value || '-' }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div fxLayout="row" fxLayoutGap="16px" class="mb-16">
+          <div fxFlex="100">
+            <mat-form-field
+              class="full-width"
+              *ngIf="!isViewMode && !appealTasks.includes(taskCode) && !supremeTasks.includes(taskCode)">
+              <mat-label>
+                {{ 'COMMON.LABEL_REMARKS' | translate }}
+              </mat-label>
+              <textarea
+                maxlength="10000"
+                matInput
+                formControlName="remark"
+                cols="20"
+                rows="20"
+                class="comment-textarea form-control no-resize"></textarea>
+            </mat-form-field>
+            <div *ngIf="isViewMode || appealTasks.includes(taskCode) || supremeTasks.includes(taskCode)">
+              <span class="thin-letter"> {{ 'COMMON.LABEL_REMARKS' | translate }}</span>
+              <div>{{ courtVerdictForm.get('remark')?.value || '-' }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- เอกสารผลการพิพากษา -->
+    <div class="sub-container" fxLayout="row">
+      <h6 class="mr-24" fxFlex="15">
+        {{ 'COURT.VERDICT_DOC' | translate }}
+      </h6>
+      <div fxFlex="70">
+        <app-upload-multi-file-content
+          [uploadMultiInfo]="uploadMultiInfo"
+          [readonly]="
+            isViewMode ||
+            (taskCode !== 'MEMORANDUM_COURT_FIRST_INSTANCE' &&
+              taskCode !== 'MEMORANDUM_COURT_APPEAL' &&
+              taskCode !== 'MEMORANDUM_SUPREME_COURT')
+          "
+          (uploadFileEvent)="uploadFileEvent($event)"
+          [list]="displayCourtVerdictDocuments"
+          [column]="documentColumns"
+          [uploadFor]="courtVDetail.courtLevel || ''"
+          [labelAcceptFile]="''">
+        </app-upload-multi-file-content>
+        <spig-error-msg
+          [control]="getControl('requireVerdictDoc')"
+          [customErrorMsg]="'UPLOAD_FILE.ERROR_FILE_UPLOAD_REQUIRED'"></spig-error-msg>
+      </div>
+    </div>
+
+    <!-- ข้อมูลบัญชี และภาระหนี้ LEX2-1236-->
+
+    <div class="mt-10 pt-1 court-container" *ngIf="false">
+      <mat-accordion class="accordion">
+        <div fxLayout="row" fxLayoutAlign="space-between center" class="mt-16 ml-12 mr-12 title">
+          <div fxLayout="row">
+            <h6 class="mt-2">
+              {{ 'COURT.ACCOUNT_DETAIL_AND_LIABILITIES' | translate }}
+            </h6>
+            &nbsp; &nbsp;
+            <label for="" class="mt-2"> 2 {{ 'COURT.ACCOUNT' | translate }} </label>
+          </div>
+          <div fxLayout="row" fxLayoutGap="24px" class="align-items-baseline">
+            <div class="description cur-pointer" (click)="expandPanel()">
+              <mat-icon
+                [svgIcon]="hided ? 'icon-Slide-Hide' : 'icon-Expand'"
+                class="icon icon-hide-show fill-blue"></mat-icon
+              >{{ hided ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate) }}
+            </div>
+          </div>
+        </div>
+
+        <mat-expansion-panel [expanded]="hided">
+          <div class="data-table-content">
+            <div class="table-scroll">
+              <table mat-table [dataSource]="[1]">
+                <ng-container matColumnDef="no">
+                  <th mat-header-cell *matHeaderCellDef class="text-center">
+                    {{ 'COURT.ACCOUNT_NO' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let element; let i = index" class="text-center">xxxx</td>
+                </ng-container>
+                <ng-container matColumnDef="x1">
+                  <th mat-header-cell *matHeaderCellDef>
+                    {{ 'COURT.TYPE_OF_DEPT' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let element" class="new-line">xxx</td>
+                </ng-container>
+                <ng-container matColumnDef="x2">
+                  <th mat-header-cell *matHeaderCellDef>
+                    {{ 'COURT.TOTAL_DEPT' | translate }}
+                    {{ 'COURT.FILE_A_LAWSUIT' | translate }}/{{ 'COURT.JUDGMENT' | translate }} ({{
+                      'COURT.BAHT' | translate
+                    }})
+                  </th>
+                  <td mat-cell *matCellDef="let element">
+                    <div class="mb-10 mt-10">
+                      <div class="mb-10">100,000.00</div>
+                      <mat-form-field class="no-label input-sm-icon search-input-field">
+                        <input
+                          type="text"
+                          matInput
+                          autocomplete="off"
+                          placeholder="{{ 'COURT.DEPT_BURDEN' | translate }}" />
+                      </mat-form-field>
+                      <spig-error-msg [customErrorMsg]="'SEARCH_CONTROL.ERROR_SEARCH_CONDITION'"></spig-error-msg>
+                    </div>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="x3">
+                  <th mat-header-cell *matHeaderCellDef>
+                    {{ 'COURT.PRINCIPAL_FILED_A_LAWSUIT' | translate }}/ {{ 'COURT.JUDGMENT' | translate }} ({{
+                      'COURT.BAHT' | translate
+                    }})
+                  </th>
+                  <td mat-cell *matCellDef="let element">
+                    <div class="mb-10 mt-10">
+                      <div class="mb-10">100,000.00</div>
+                      <mat-form-field class="no-label input-sm-icon search-input-field">
+                        <input
+                          type="text"
+                          matInput
+                          placeholder="{{ 'COURT.DEPT_BURDEN' | translate }}"
+                          autocomplete="off" />
+                      </mat-form-field>
+                      <spig-error-msg [customErrorMsg]="'SEARCH_CONTROL.ERROR_SEARCH_CONDITION'"></spig-error-msg>
+                    </div>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="x4">
+                  <th mat-header-cell *matHeaderCellDef>
+                    {{ 'COURT.INTEREST_FILED' | translate }}/ {{ 'COURT.JUDGMENT' | translate }} ({{
+                      'COURT.BAHT' | translate
+                    }})
+                  </th>
+                  <td mat-cell *matCellDef="let element">
+                    <div class="mb-10 mt-10">
+                      <div class="mb-10">100,000.00</div>
+                      <mat-form-field class="no-label input-sm-icon search-input-field">
+                        <input
+                          type="text"
+                          matInput
+                          placeholder="{{ 'COURT.DEPT_BURDEN' | translate }}"
+                          autocomplete="off" />
+                      </mat-form-field>
+                      <spig-error-msg [customErrorMsg]="'SEARCH_CONTROL.ERROR_SEARCH_CONDITION'"></spig-error-msg>
+                    </div>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="x5">
+                  <th mat-header-cell *matHeaderCellDef class="text-center">
+                    {{ 'COURT.INTEREST_RATE' | translate }}
+                    {{ 'COURT.END_UP_SUING' | translate }}/{{ 'COURT.JUDGMENT' | translate }} (%)
+                  </th>
+                  <td mat-cell *matCellDef="let element; let i = index">
+                    <div class="mb-10 mt-10">
+                      <div class="mb-10">100,000.00</div>
+                      <mat-form-field class="no-label input-sm-icon search-input-field">
+                        <input
+                          type="text"
+                          matInput
+                          placeholder="{{ 'COURT.DEPT_BURDEN' | translate }}"
+                          autocomplete="off" />
+                      </mat-form-field>
+                      <spig-error-msg [customErrorMsg]="'SEARCH_CONTROL.ERROR_SEARCH_CONDITION'"></spig-error-msg>
+                    </div>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="x6">
+                  <th mat-header-cell *matHeaderCellDef class="text-center">
+                    {{ 'COURT.INTEREST_START_DATE_FILE_A_LAWSUIT_JUDGMENT' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let element; let i = index" class="text-center">
+                    <spig-datepicker classInput="xsmall" class="date-picker-block"></spig-datepicker>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="x7">
+                  <th mat-header-cell *matHeaderCellDef class="text-center">
+                    {{ 'COURT.TDR_INFORMATION' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let element; let i = index" class="text-center">xxx</td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="accountColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: accountColumns"></tr>
+              </table>
+            </div>
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+
+    <!-- ค่าฤชาธรรมเนียมที่ศาลสั่งเป็นภาระของลูกหนี้ -->
+    <div class="sub-container" *ngIf="actionOnScreen.courtFee">
+      <h6 class="mr-24">
+        {{ 'COURT.COURT_FEE_CUSTOMER' | translate }}
+      </h6>
+      <div class="data-table-content">
+        <div class="table-scroll">
+          <!-- has only onw row -->
+          <table mat-table [dataSource]="courtVDetail.courtFee || []">
+            <ng-container matColumnDef="no">
+              <th mat-header-cell *matHeaderCellDef class="text-center">
+                {{ 'COMMON.LABEL_NO' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element; let i = index; let last = last" class="text-center">
+                <div *ngIf="!last">
+                  {{ i + 1 }}
+                </div>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="transactionName">
+              <th mat-header-cell *matHeaderCellDef>{{ 'COURT.TRANSACTION' | translate }}</th>
+              <td mat-cell *matCellDef="let element; let last = last">
+                <div *ngIf="!last">
+                  {{ element?.transactionName || '-' }}
+                </div>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="transactionDate">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'COURT.TRANSACTION_DATE' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element; let last = last">
+                <div *ngIf="!last">
+                  {{ (element?.transactionDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                </div>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="courtLevel">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'COURT.COURT_LG' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element; let last = last">
+                <div *ngIf="!last">
+                  {{ element?.courtLevel || '-' }}
+                </div>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="accountNo">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'COURT.ACCOUNT_NO' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element; let last = last">
+                <div *ngIf="!last">
+                  {{ element?.accountNo || '-' }}
+                </div>
+                <div *ngIf="last">
+                  {{ 'COURT.TOTAL' | translate }}
+                </div>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="initialAmount">
+              <th mat-header-cell *matHeaderCellDef class="text-right">
+                {{ 'COURT.INITIAL_AMOUNT' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element; let last = last" class="text-right">
+                <div *ngIf="!last">
+                  {{ (element?.initialAmount | numberDecimal) || '-' }}
+                </div>
+                <div *ngIf="last">
+                  {{ (courtVDetail.totalInitialAmount | numberDecimal) || '-' }}
+                </div>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="netAmount">
+              <th mat-header-cell *matHeaderCellDef class="text-right">
+                {{ 'COURT.NET_AMOUNT' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element; let last = last" class="text-right">
+                <div *ngIf="!last">
+                  {{ element?.netAmount | numberDecimal }}
+                </div>
+                <div *ngIf="last">
+                  {{ (courtVDetail.totalNetAmount | numberDecimal) || '-' }}
+                </div>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="courtRefundAmount">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'COURT.REFUND_AMOUNT' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element; let last = last">
+                <div *ngIf="!last">
+                  <mat-form-field
+                    class="no-label input-sm"
+                    *ngIf="
+                      !isViewMode && !appealApproveTasks.includes(taskCode) && !supremeApproveTasks.includes(taskCode)
+                    ">
+                    <input
+                      type="text"
+                      matInput
+                      placeholder="{{ 'COURT.SPECIFY' | translate }}"
+                      [value]="element.courtRefundAmount || ''"
+                      (change)="onCourtRefundChange($event, element)"
+                      (input)="checkChanged(element)"
+                      autocomplete="off" />
+                  </mat-form-field>
+
+                  <!-- <div *ngIf="isViewMode || appealTasks.includes(taskCode) || supremeTasks.includes(taskCode)"> -->
+                  <div
+                    class="text-right"
+                    *ngIf="
+                      isViewMode || appealApproveTasks.includes(taskCode) || supremeApproveTasks.includes(taskCode)
+                    ">
+                    {{ (element?.courtRefundAmount | numberDecimal) || '-' }}
+                  </div>
+                </div>
+                <div *ngIf="last" class="text-right">
+                  {{ (courtVDetail.totalCourtRefundAmount | numberDecimal) || '-' }}
+                </div>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'COURT.STATUS' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element; let last = last">
+                <div *ngIf="!last">
+                  {{ element?.status || '-' }}
+                </div>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="courtFeeColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: courtFeeColumns"></tr>
+          </table>
+          <ng-container
+            *ngIf="!courtVDetail?.courtFee || courtVDetail?.courtFee?.length === 0"
+            [ngTemplateOutlet]="dataNotFound">
+          </ng-container>
+        </div>
+      </div>
+      <br />
+
+      <app-message-banner
+        *ngIf="!isViewMode && !appealTasks.includes(taskCode) && !supremeTasks.includes(taskCode)"
+        type="gray-info"
+        [message]="'COURT.BANNER_DOWNLOAD_MSG'"
+        actionButtonClass=" icon-black icon-small-xm"
+        [actionButtonBorder]="false"
+        (actionButtonHandler)="download()"
+        actionButtonIcon="icon-Arrow-Download"
+        [actionButton]="'COURT.BANNER_DOWNLOAD_ACTION_BTN' | translate">
+      </app-message-banner>
+    </div>
+
+    <!-- ค่าทนายความที่ศาลสั่งเป็นภาระของลูกหนี้ -->
+    <div class="sub-container mt-20">
+      <h6 class="mr-24">
+        {{ 'COURT.DEBTOR_LAWYER_FEE' | translate }}
+      </h6>
+      <div class="data-table-content">
+        <div class="table-scroll">
+          <table mat-table [dataSource]="courtVDetail.debtorLawyerFee || []">
+            <ng-container matColumnDef="no">
+              <th mat-header-cell *matHeaderCellDef class="text-center">
+                {{ 'COMMON.LABEL_NO' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element; let i = index; let last = last" class="text-center">
+                <div *ngIf="!last">
+                  {{ i + 1 }}
+                </div>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="courtName" class="text-center">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'COURT.TRANSACTION' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element; let last = last">
+                <div *ngIf="!last">
+                  {{ element?.courtName }}
+                </div>
+                <div *ngIf="last" class="text-end">
+                  {{ 'COURT.TOTAL' | translate }}
+                </div>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="initialAmount">
+              <th mat-header-cell *matHeaderCellDef class="text-end">
+                <div [innerHTML]="'COURT.BANK_AMOUNT' | translate"></div>
+              </th>
+              <td mat-cell *matCellDef="let element; let last = last" class="text-end">
+                <div *ngIf="!last">
+                  <mat-form-field
+                    class="no-label input-sm text-end"
+                    *ngIf="!isViewMode && !appealTasks.includes(taskCode) && !supremeTasks.includes(taskCode)">
+                    <input
+                      type="text"
+                      matInput
+                      placeholder="{{ 'COURT.SPECIFY' | translate }}"
+                      (change)="onInitialAmountChange($event, element)"
+                      [value]="element.initialAmount || ''"
+                      autocomplete="off" />
+                  </mat-form-field>
+                  <div *ngIf="isViewMode || appealTasks.includes(taskCode) || supremeTasks.includes(taskCode)">
+                    {{ (element?.initialAmount | numberDecimal) || '-' }}
+                  </div>
+                </div>
+                <div *ngIf="last">
+                  {{ total.TotalDebtorInitialAmount | numberDecimal }}
+                </div>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="paidAmount">
+              <th mat-header-cell *matHeaderCellDef class="text-end">
+                <div [innerHTML]="'COURT.PAID_AMOUNT' | translate"></div>
+              </th>
+              <td mat-cell *matCellDef="let element; let last = last" class="text-end">
+                <div *ngIf="!last">
+                  <mat-form-field
+                    class="no-label input-sm text-end"
+                    *ngIf="!isViewMode && !appealTasks.includes(taskCode) && !supremeTasks.includes(taskCode)">
+                    <input
+                      type="text"
+                      matInput
+                      [value]="element?.paidAmount || ''"
+                      placeholder="{{ 'COURT.SPECIFY' | translate }}"
+                      (change)="onDebtorPaidAmountChange($event, element)"
+                      autocomplete="off" />
+                  </mat-form-field>
+                  <div *ngIf="isViewMode || appealTasks.includes(taskCode) || supremeTasks.includes(taskCode)">
+                    {{ (element.paidAmount | numberDecimal) || '-' }}
+                  </div>
+                </div>
+                <div *ngIf="last">
+                  {{ total.TotalDebtorPaidAmount | numberDecimal }}
+                </div>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="remainingAmount">
+              <th mat-header-cell *matHeaderCellDef class="text-end">
+                <div [innerHTML]="'COURT.REMAINING_AMOUNT' | translate"></div>
+              </th>
+              <td mat-cell *matCellDef="let element; let last = last" class="text-end">
+                <div *ngIf="!last">
+                  <!-- <mat-form-field
+                    class="no-label input-sm"
+                    *ngIf="!isViewMode && !appealTasks.includes(taskCode) && !supremeTasks.includes(taskCode)">
+                    <input
+                      type="text"
+                      matInput
+                      [value]="element?.remainingAmount || ''"
+                      (change)="onRemainingAmountChange($event, element)"
+                      placeholder="{{ 'COURT.SPECIFY' | translate }}"
+                      autocomplete="off" />
+                  </mat-form-field> -->
+                  <!-- <div *ngIf="isViewMode || appealTasks.includes(taskCode) || supremeTasks.includes(taskCode)"> -->
+                  <div class="text-right">
+                    {{ (element.remainingAmount | numberDecimal) || '-' }}
+                  </div>
+                </div>
+                <div *ngIf="last">
+                  {{ total.TotalDebtorRemainingAmount | numberDecimal }}
+                </div>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="lawyerFeeColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: lawyerFeeColumns"></tr>
+          </table>
+          <ng-container *ngIf="courtVDetail?.debtorLawyerFee?.length === 0" [ngTemplateOutlet]="dataNotFound">
+          </ng-container>
+        </div>
+      </div>
+    </div>
+
+    <!-- การขยายระยะเวลาอุทธรณ์ -->
+    <div class="sub-container" fxLayout="row" *ngIf="actionOnScreen.canExtendAppeal && !isViewMode">
+      <h6
+        class="mr-24"
+        fxFlex="15"
+        *ngIf="
+          ((courtAppeal | json) === '{}' &&
+            (courtVDetail.courtLevel === 'CIVIL' || courtVDetail.courtLevel === 'APPEAL')) ||
+          ((courtAppeal | json) !== '{}' && courtVDetail.courtLevel === 'CIVIL')
+        ">
+        {{ 'COURT.EXTEND_APPLEAL' | translate }}
+      </h6>
+      <h6
+        class="mr-24"
+        fxFlex="15"
+        *ngIf="
+          ((courtAppeal | json) !== '{}' && courtVDetail.courtLevel === 'APPEAL') ||
+          courtVDetail.courtLevel === 'SUPREME'
+        ">
+        {{ 'COURT.EXTEND_SUPREME' | translate }}
+      </h6>
+      <div fxFlex="70">
+        <div class="data-table-content">
+          <div class="table-scroll">
+            <table mat-table [dataSource]="courtVDetail.extendAppeals || []">
+              <ng-container matColumnDef="no">
+                <th mat-header-cell *matHeaderCellDef class="text-center">
+                  {{ 'COMMON.LABEL_NO' | translate }}
+                </th>
+                <td mat-cell *matCellDef="let elementl; let i = index" class="text-center">
+                  {{ i + 1 }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="extendDate">
+                <th mat-header-cell *matHeaderCellDef>
+                  <span
+                    *ngIf="
+                      ((courtAppeal | json) === '{}' &&
+                        (courtVDetail.courtLevel === 'CIVIL' || courtVDetail.courtLevel === 'APPEAL')) ||
+                      ((courtAppeal | json) !== '{}' && courtVDetail.courtLevel === 'CIVIL')
+                    ">
+                    {{ 'COURT.EXTEND_DATE' | translate }}
+                  </span>
+
+                  <span
+                    *ngIf="
+                      ((courtAppeal | json) !== '{}' && courtVDetail.courtLevel === 'APPEAL') ||
+                      courtVDetail.courtLevel === 'SUPREME'
+                    ">
+                    {{ 'COURT.EXTEND_DATE_APPEAL' | translate }}
+                  </span>
+                </th>
+                <td mat-cell *matCellDef="let element">
+                  {{ (element?.extendDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="imageName">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ 'COURT.DOCUMENT_NAME' | translate }}
+                </th>
+                <td mat-cell *matCellDef="let element">
+                  <div [class.link]="element?.attachment?.imageId" (click)="onViewDocument(element)">
+                    {{ element?.attachment?.documentTemplate?.documentName || '-' }}
+                  </div>
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="extendAppealColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: extendAppealColumns"></tr>
+            </table>
+            <ng-container *ngIf="courtVDetail?.extendAppeals?.length === 0" [ngTemplateOutlet]="dataNotFound">
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="sub-container"
+      fxLayout="row"
+      *ngIf="
+        (!isViewMode && !appealTasks.includes(taskCode) && !supremeTasks.includes(taskCode)) ||
+        courtVDetail.testimonyStatus === 'FINISHED'
+      ">
+      <h6 class="mr-24" fxFlex="15">
+        {{ 'COURT.CASE_END_CASE' | translate }}
+      </h6>
+      <div fxFlex="70">
+        <div class="mb-16">
+          <div class="elm-form mb-16" fxLayout="row">
+            <input
+              class="elm-radio-check elm-check mr-1em"
+              (click)="onClickCaseEnd($event)"
+              type="checkbox"
+              [checked]="courtVerdictForm.get('caseEnd')?.value"
+              formControlName="caseEnd" />
+            <label class="elm-check-label">
+              {{ 'COURT.CASE_END' | translate }}
+            </label>
+          </div>
+        </div>
+        <div *ngIf="courtVerdictForm.get('caseEnd')?.value" fxLayout="row" fxLayoutGap="16px" class="mb-16">
+          <div fxFlex="49">
+            <spig-dropdown
+              class="mb-05em mr-16"
+              formControlName="caseEndCode"
+              (selectedOption)="onSelectedCaseEndCode($event)"
+              [config]="caseEndConfig"
+              [options]="caseEndOption"
+              classInput="input-normal icon">
+            </spig-dropdown>
+          </div>
+        </div>
+        <div class="mb-16 mt-10">
+          <app-message-banner [message]="'COURT.BANNER_AFFIDAVIT_CASE_MSG'" type="fail"> </app-message-banner>
+        </div>
+        <div class="mb-16" *ngIf="courtVerdictForm.get('caseEnd')?.value">
+          <app-upload-multi-file-content
+            [uploadMultiInfo]="uploadMultiInfo"
+            [readonly]="isViewMode && courtVDetail.testimonyStatus !== 'FINISHED'"
+            (uploadFileEvent)="uploadFileEventLEXSF052($event)"
+            [list]="documentUpload"
+            [column]="documentColumns"
+            [labelAcceptFile]="''">
+          </app-upload-multi-file-content>
+        </div>
+        <spig-error-msg
+          [control]="getControl('requireRedCaseDoc')"
+          [customErrorMsg]="'UPLOAD_FILE.ERROR_FILE_UPLOAD_REQUIRED'"></spig-error-msg>
+      </div>
+    </div>
+  </mat-card>
+
+  <!-- [LEX2-34] การบันทึกขอพิจารณายื่นอุทธรณ์ -->
+  <ng-container
+    *ngIf="
+      (isViewMode && courtVDetail?.courtLevel === 'CIVIL') ||
+      ['CONSIDER_APPEAL', 'APPROVE_APPEAL', 'CONDITIONAL_APPEAL'].includes(taskCode)
+    ">
+    <mat-card
+      appearance="outlined"
+      class="info-container mt-16"
+      [formGroup]="consAppealCtrl"
+      *ngIf="
+        (isViewMode && courtVDetail?.courtLevel === 'CIVIL') ||
+        (taskCode === 'CONSIDER_APPEAL' && ['IN_PROGRESS', 'PENDING', 'PENDING_APPROVAL'].includes(statusCode)) ||
+        (taskCode === 'APPROVE_APPEAL' && statusCode === 'PENDING_APPROVAL') ||
+        (taskCode === 'CONDITIONAL_APPEAL' && statusCode === 'IN_PROGRESS')
+      ">
+      <mat-card-title>
+        <h5 class="title">{{ 'COURT.LABEL_COMMENTS_OF_LAWYER' | translate }}</h5>
+      </mat-card-title>
+      <mat-divider [inset]="true"></mat-divider>
+
+      <ng-container
+        *ngIf="
+          !isViewMode && taskCode === 'CONSIDER_APPEAL' && ['IN_PROGRESS', 'PENDING'].includes(statusCode);
+          else viewCourtAppealTemplate
+        ">
+        <div class="mt-24" *ngIf="statusCode === 'IN_PROGRESS'">
+          <app-message-banner type="warn-normal" [message]="'COURT.BANNER_NOTATION_WARNING'"> </app-message-banner>
+        </div>
+        <div class="sub-container" fxLayout="row">
+          <h6 class="mr-24" fxFlex="15">{{ 'COURT.LABEL_REQUEST_APPROVAL' | translate }}</h6>
+          <div fxLayout="column" fxFlex="70" fxLayoutGap="16px" class="mb-16">
+            <mat-radio-group formControlName="appealPurpose" (change)="onSelectAppealPurpose($event)">
+              <div class="mb-16">
+                <mat-radio-button color="accent" value="REQUEST_APPEAL">{{
+                  'COURT.LABEL_REQUEST_APPEAL' | translate
+                }}</mat-radio-button>
+              </div>
+              <div class="mb-16">
+                <mat-radio-button color="accent" value="STOP_APPEAL">{{
+                  'COURT.LABEL_STOP_APPEAL' | translate
+                }}</mat-radio-button>
+              </div>
+              <div>
+                <mat-radio-button color="accent" value="KTB_LAW_STOP_APPEAL">{{
+                  'COURT.LABEL_KTB_LAW_STOP_APPEAL' | translate
+                }}</mat-radio-button>
+              </div>
+            </mat-radio-group>
+            <spig-error-msg
+              [control]="getConsAppealCtrl('appealPurpose')"
+              [customErrorMsg]="'COURT.ERROR_MSG_REQUIRED_REQUEST_APPROVAL'"></spig-error-msg>
+          </div>
+        </div>
+        <div class="sub-container" fxLayout="row">
+          <h6 class="mr-24" fxFlex="15">{{ 'COURT.LABEL_MORE_INFO' | translate }}</h6>
+          <div fxLayout="column" fxFlex="70" fxLayoutGap="16px" class="mb-16">
+            <div>
+              <mat-form-field class="full-width">
+                <mat-label>{{ 'COURT.LABEL_LAWYER_COMMENTS' | translate }}</mat-label>
+                <textarea
+                  matInput
+                  maxlength="10000"
+                  class="large no-resize"
+                  formControlName="appealDescription"></textarea>
+              </mat-form-field>
+              <spig-error-msg
+                [control]="getConsAppealCtrl('appealDescription')"
+                [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'"></spig-error-msg>
+            </div>
+            <div>
+              <app-upload-multi-file-content
+                [readonly]="false"
+                [uploadMultiInfo]="courtAppealDocsInfo"
+                (uploadFileEvent)="uploadFileAppealEvent($event)"
+                [list]="courtAppealDocs"
+                [column]="courtAppealDocsColumns"
+                [labelAcceptFile]="''">
+              </app-upload-multi-file-content>
+              <span *ngIf="getErrotCourtAppealDocuments()">
+                <p class="error-msg">{{ 'UPLOAD_FILE.ERROR_FILE_UPLOAD_REQUIRED' | translate }}</p>
+              </span>
+            </div>
+            <div fxLayout="row">
+              <div fxLayout="column" fxFlex="50">
+                <span class="thin-letter">{{ 'COURT.LABEL_APPEAL_DUE_DATE' | translate }}</span>
+                <div>
+                  {{ courtAppeal.appealDueDate ? (courtAppeal.appealDueDate | buddhistEra: 'DD/MM/yyyy') : '-' }}
+                </div>
+              </div>
+              <div fxLayout="column" fxFlex>
+                <span class="thin-letter">{{ 'COURT.LABEL_DAY_TO_APPEAL_DUE_DATE' | translate }}</span>
+                <div>{{ courtAppeal.dayToAppealDueDate || '0' }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+      <ng-template #viewCourtAppealTemplate>
+        <div class="sub-container" fxLayout="row">
+          <h6 class="mr-24" fxFlex="15">{{ 'COURT.LABEL_APPEAL_INFO' | translate }}</h6>
+          <div fxLayout="column" fxFlex="70" fxLayoutGap="16px" class="mb-16">
+            <span class="thin-letter">{{ 'COURT.LABEL_REQUEST_APPROVAL' | translate }}</span>
+            <div>{{ courtAppeal.appealPurpose ? (courtAppeal.appealPurpose | appealPurpose) : '-' }}</div>
+          </div>
+        </div>
+        <div class="sub-container" fxLayout="row">
+          <h6 class="mr-24" fxFlex="15">{{ 'COURT.LABEL_MORE_INFO' | translate }}</h6>
+          <div fxLayout="column" fxFlex="70" fxLayoutGap="16px" class="mb-16">
+            <div>
+              <span class="thin-letter">{{ 'COURT.LABEL_LAWYER_COMMENTS' | translate }}</span>
+              <div>{{ courtAppeal.appealDescription || '-' }}</div>
+            </div>
+            <div>
+              <app-upload-multi-file-content
+                [readonly]="true"
+                [list]="courtAppealDocs"
+                [column]="courtAppealDocsColumns">
+              </app-upload-multi-file-content>
+            </div>
+            <div fxLayout="row">
+              <div fxLayout="column" fxFlex="50">
+                <span class="thin-letter">{{ 'COURT.LABEL_APPEAL_DUE_DATE' | translate }}</span>
+                <div>
+                  {{ courtAppeal.appealDueDate ? (courtAppeal.appealDueDate | buddhistEra: 'DD/MM/yyyy') : '-' }}
+                </div>
+              </div>
+              <div fxLayout="column" fxFlex>
+                <span class="thin-letter">{{ 'COURT.LABEL_DAY_TO_APPEAL_DUE_DATE' | translate }}</span>
+                <div>{{ courtAppeal.dayToAppealDueDate || '0' }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </mat-card>
+
+    <!-- การอนุมัติยื่นอุทธรณ์ (กบม.) -->
+    <mat-card
+      appearance="outlined"
+      class="info-container mt-16"
+      [formGroup]="consAppealCtrl"
+      *ngIf="
+        (isViewMode && courtVDetail?.courtLevel === 'CIVIL') ||
+        (taskCode === 'APPROVE_APPEAL' && statusCode === 'PENDING_APPROVAL') ||
+        (taskCode === 'CONDITIONAL_APPEAL' && statusCode === 'IN_PROGRESS')
+      ">
+      <mat-card-title>
+        <h5 class="title">
+          {{
+            !isViewMode && taskCode === 'APPROVE_APPEAL' && statusCode === 'PENDING_APPROVAL'
+              ? ('COURT.LABEL_CONSIDER_APPEAL' | translate)
+              : ('COURT.LABEL_APPROVER_COMMENT' | translate)
+          }}
+        </h5>
+      </mat-card-title>
+      <mat-divider [inset]="true"></mat-divider>
+
+      <ng-container
+        *ngIf="
+          !isViewMode && taskCode === 'APPROVE_APPEAL' && statusCode === 'PENDING_APPROVAL';
+          else viewKbdApproveTemplate
+        ">
+        <div class="sub-container" fxLayout="row">
+          <h6 class="mr-24" fxFlex="15">{{ 'COURT.LABEL_COMMENTS_OF_BANK' | translate }}</h6>
+          <div fxFlex="70" fxLayoutGap="16px" class="mb-16">
+            <mat-form-field class="full-width">
+              <mat-label>{{ 'COURT.LABEL_COMMENT' | translate }}</mat-label>
+              <textarea
+                matInput
+                maxlength="10000"
+                class="large no-resize"
+                formControlName="bankRemark"
+                (change)="onBankCommentChange($event)"></textarea>
+            </mat-form-field>
+            <spig-error-msg
+              [control]="getConsAppealCtrl('bankRemark')"
+              [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'"></spig-error-msg>
+          </div>
+        </div>
+        <div class="sub-container" fxLayout="row">
+          <h6 class="mr-24" fxFlex="15">{{ 'COURT.LABEL_DOCUMENT_PROCESS' | translate }}</h6>
+          <div fxFlex="70" fxLayoutGap="16px" class="mb-16">
+            <app-upload-multi-file-content
+              [uploadFor]="taskCode"
+              [uploadMultiInfo]="courtAppealDocsInfo"
+              [readonly]="false"
+              (uploadFileEvent)="uploadFileAppealEvent($event)"
+              [list]="processDocs"
+              [column]="courtAppealDocsColumns"
+              [btnUpload]="[
+                'COURT.BTN_UPLOAD_DOWNLOAD_DOC',
+                'COURT.BTN_UPLOAD_SAVE_DOC',
+                'COURT.BTN_UPLOAD_SIGNED_DOC',
+              ]"
+              [labelAcceptFile]="''">
+            </app-upload-multi-file-content>
+            <span *ngIf="getErrotCourtAppealDocuments()">
+              <p class="error-msg">{{ 'UPLOAD_FILE.ERROR_FILE_UPLOAD_REQUIRED' | translate }}</p>
+            </span>
+          </div>
+        </div>
+        <div class="sub-container" fxLayout="row">
+          <h6 class="mr-24" fxFlex="15">{{ 'COURT.LABEL_CONSIDER_RESULT' | translate }}</h6>
+          <div fxFlex="70" fxLayoutGap="16px" class="mb-16">
+            <div fxLayout="column" fxLayoutGap="16px" class="mb-16">
+              <mat-radio-group formControlName="approverDecision" (change)="onApproveDecisionChange($event)">
+                <div class="mb-16">
+                  <mat-radio-button color="accent" value="TO_APPEAL">{{
+                    'COURT.OPTION_APPEAL' | translate
+                  }}</mat-radio-button>
+                </div>
+                <div class="mb-16">
+                  <mat-radio-button color="accent" value="TO_STOP_APPEAL">{{
+                    'COURT.OPTION_STOP_APPEAL' | translate
+                  }}</mat-radio-button>
+                </div>
+                <div>
+                  <mat-radio-button color="accent" value="CONDITIONAL_APPEAL">{{
+                    'COURT.OPTION_CONDITIONAL_APPEAL' | translate
+                  }}</mat-radio-button>
+                </div>
+              </mat-radio-group>
+              <spig-error-msg
+                [control]="getConsAppealCtrl('approverDecision')"
+                [customErrorMsg]="'COURT.ERROR_MSG_REQUIRED_CONSIDER_RESULT'"></spig-error-msg>
+              <mat-form-field class="full-width">
+                <mat-label>{{ 'COMMON.LABEL_REMARKS' | translate }}</mat-label>
+                <textarea
+                  matInput
+                  maxlength="10000"
+                  class="large no-resize"
+                  formControlName="approverRemark"></textarea>
+              </mat-form-field>
+              <spig-error-msg
+                [control]="getConsAppealCtrl('approverRemark')"
+                [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'"></spig-error-msg>
+              <div fxLayout="row" fxLayoutGap="24px">
+                <div fxFlex="50">
+                  <spig-dropdown
+                    classInput="input-normal icon"
+                    formControlName="deductionForGuarantor"
+                    [config]="deductionForGuarantorConfig"
+                    [options]="deductionForGuarantorOptions">
+                  </spig-dropdown>
+                </div>
+                <div fxLayout="column" fxFlex>
+                  <span class="thin-letter">{{ 'COURT.LABEL_APPROVE_DATE' | translate }}</span>
+                  <div>
+                    {{ courtAppeal.approveDate ? (courtAppeal.approveDate | buddhistEra: 'DD/MM/yyyy') : '-' }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="sub-container" fxLayout="row">
+          <ng-container
+            [ngTemplateOutlet]="downloadDocInstruction"
+            [ngTemplateOutletContext]="{ isView: false }"></ng-container>
+        </div>
+      </ng-container>
+      <ng-template #viewKbdApproveTemplate>
+        <div class="sub-container" fxLayout="row">
+          <h6 class="mr-24" fxFlex="15">{{ 'COURT.LABEL_COMMENTS_OF_BANK' | translate }}</h6>
+          <div fxFlex="70" fxLayoutGap="16px" class="mb-16">
+            <span class="thin-letter">{{ 'COURT.LABEL_COMMENT' | translate }}</span>
+            <div>{{ courtAppeal.bankRemark || '-' }}</div>
+          </div>
+        </div>
+        <div class="sub-container" fxLayout="row">
+          <h6 class="mr-24" fxFlex="15">{{ 'COURT.LABEL_DOCUMENT_PROCESS' | translate }}</h6>
+          <div fxFlex="70" fxLayoutGap="16px" class="mb-16">
+            <app-upload-multi-file-content [readonly]="true" [list]="processDocs" [column]="courtAppealDocsColumns">
+            </app-upload-multi-file-content>
+          </div>
+        </div>
+        <div class="sub-container" fxLayout="row">
+          <h6 class="mr-24" fxFlex="15">{{ 'COURT.LABEL_CONSIDER_RESULT' | translate }}</h6>
+          <div fxFlex="70">
+            <div fxLayout="column" class="mb-16">
+              <span class="thin-letter">{{ 'COURT.LABEL_CONSIDER_RESULT' | translate }}</span>
+              <div>{{ courtAppeal.approverDecision ? (courtAppeal.approverDecision | approverDecision) : '-' }}</div>
+            </div>
+            <div fxLayout="column" class="mb-16">
+              <span class="thin-letter">{{ 'COURT.LABEL_APPROVER_COMMENT' | translate }}</span>
+              <div>{{ courtAppeal.approverRemark || '-' }}</div>
+            </div>
+            <div fxLayout="row" fxLayoutGap="24px">
+              <div fxFlex="50">
+                <span class="thin-letter">{{ 'COURT.LABEL_DEDUCTION_GUARANTOR' | translate }}</span>
+                <div>{{ courtAppeal.deductionForGuarantor || '-' }}</div>
+              </div>
+              <div fxLayout="column" fxFlex>
+                <span class="thin-letter">{{ 'COURT.LABEL_APPROVE_DATE' | translate }}</span>
+                <div>{{ courtAppeal.approveDate ? (courtAppeal.approveDate | buddhistEra: 'DD/MM/yyyy') : '-' }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="sub-container" fxLayout="row">
+          <ng-container
+            [ngTemplateOutlet]="downloadDocInstruction"
+            [ngTemplateOutletContext]="{ isView: true }"></ng-container>
+        </div>
+      </ng-template>
+    </mat-card>
+
+    <!-- บันทึกอุทธรณ์/งดอุทธรณ์แบบมีเงื่อนไข -->
+    <mat-card
+      appearance="outlined"
+      class="info-container mt-16"
+      [formGroup]="consAppealCtrl"
+      *ngIf="
+        (isViewMode && courtVDetail?.courtLevel === 'CIVIL') ||
+        (taskCode === 'CONDITIONAL_APPEAL' && statusCode === 'IN_PROGRESS')
+      ">
+      <mat-card-title>
+        <h5 class="title">{{ 'COURT.LABEL_APPEAL_WITH_CONDITION' | translate }}</h5>
+      </mat-card-title>
+      <mat-divider [inset]="true"></mat-divider>
+
+      <ng-container
+        *ngIf="
+          !isViewMode && taskCode === 'CONDITIONAL_APPEAL' && statusCode === 'IN_PROGRESS';
+          else viewCourtAppealTemplate
+        ">
+        <div class="sub-container" fxLayout="row">
+          <h6 class="mr-24" fxFlex="15">{{ 'COURT.LABEL_APPEAL' | translate }}</h6>
+          <div fxFlex="70" fxLayoutGap="16px" class="mb-16">
+            <mat-radio-group formControlName="conditionalAppeal" (change)="onConditionalAppealChange($event)">
+              <div class="mb-16">
+                <mat-radio-button color="accent" value="APPEAL">{{
+                  'COURT.OPTION_APPEAL' | translate
+                }}</mat-radio-button>
+                <ng-container
+                  *ngIf="consAppealCtrl.get('conditionalAppeal')?.value === 'APPEAL'"
+                  [ngTemplateOutlet]="remarkTemplate"></ng-container>
+              </div>
+              <div class="mb-16">
+                <mat-radio-button color="accent" value="STOP_APPEAL">{{
+                  'COURT.OPTION_STOP_APPEAL' | translate
+                }}</mat-radio-button>
+                <ng-container
+                  *ngIf="consAppealCtrl.get('conditionalAppeal')?.value === 'STOP_APPEAL'"
+                  [ngTemplateOutlet]="remarkTemplate"></ng-container>
+              </div>
+            </mat-radio-group>
+            <spig-error-msg
+              [control]="getConsAppealCtrl('conditionalAppeal')"
+              [customErrorMsg]="'COURT.ERROR_MSG_REQUIRED_CONSIDER_RESULT'"></spig-error-msg>
+          </div>
+        </div>
+        <ng-template #remarkTemplate>
+          <div class="mt-24 ml-20">
+            <mat-form-field class="full-width">
+              <mat-label>{{ 'COMMON.LABEL_REMARKS' | translate }}</mat-label>
+              <textarea
+                matInput
+                maxlength="10000"
+                class="small no-resize"
+                formControlName="conditionalRemark"></textarea>
+            </mat-form-field>
+            <spig-error-msg
+              [control]="getConsAppealCtrl('conditionalRemark')"
+              [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'"></spig-error-msg>
+          </div>
+        </ng-template>
+        <div class="sub-container" fxLayout="row">
+          <h6 class="mr-24" fxFlex="15">{{ 'COMMON.LABEL_ADDITIONAL_DOCUMENTS' | translate }}</h6>
+          <div fxLayout="column" fxFlex="70" fxLayoutGap="16px" class="mb-16">
+            <div>
+              <app-upload-multi-file-content
+                [uploadMultiInfo]="courtAppealDocsInfo"
+                [readonly]="false"
+                (uploadFileEvent)="uploadFileAppealEvent($event)"
+                [list]="additionalDocs"
+                [column]="courtAppealDocsColumns"
+                [labelAcceptFile]="''">
+              </app-upload-multi-file-content>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+      <ng-template #viewCourtAppealTemplate>
+        <div class="sub-container" fxLayout="row">
+          <h6 class="mr-24" fxFlex="15">{{ 'COURT.LABEL_APPEAL' | translate }}</h6>
+          <div fxFlex="70" fxLayoutGap="16px" class="mb-16">
+            <div class="mb-24">
+              <span class="thin-letter">{{ 'COURT.LABEL_RESULT_APPEAL_WITH_CONDITION' | translate }}</span>
+              <div>{{ courtAppeal.appealPurpose ? (courtAppeal.appealPurpose | appealPurpose) : '-' }}</div>
+            </div>
+            <div>
+              <span class="thin-letter">{{ 'COMMON.LABEL_REMARKS' | translate }}</span>
+              <div>{{ courtAppeal.conditionalRemark || '-' }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="sub-container" fxLayout="row">
+          <h6 class="mr-24" fxFlex="15">{{ 'COMMON.LABEL_ADDITIONAL_DOCUMENTS' | translate }}</h6>
+          <div fxLayout="column" fxFlex="70" fxLayoutGap="16px" class="mb-16">
+            <div>
+              <app-upload-multi-file-content
+                [readonly]="true"
+                [list]="additionalDocs"
+                [column]="courtAppealDocsColumns">
+              </app-upload-multi-file-content>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </mat-card>
+  </ng-container>
+
+  <!-- [LEX2-40] การบันทึกขอพิจารณายื่นฎีกา -->
+  <ng-container
+    *ngIf="
+      (isViewMode && ['APPEAL', 'SUPREME'].includes(courtVDetail?.courtLevel || '')) ||
+      ['CONSIDER_SUPREME_COURT', 'APPROVE_SUPREME_COURT', 'CONDITIONAL_SUPREME_COURT'].includes(taskCode)
+    ">
+    <mat-card
+      appearance="outlined"
+      class="info-container mt-16"
+      [formGroup]="consAppealCtrl"
+      *ngIf="
+        (isViewMode && ['APPEAL', 'SUPREME'].includes(courtVDetail?.courtLevel || '')) ||
+        (taskCode === 'CONSIDER_SUPREME_COURT' &&
+          ['IN_PROGRESS', 'PENDING', 'PENDING_APPROVAL'].includes(statusCode)) ||
+        (taskCode === 'APPROVE_SUPREME_COURT' && statusCode === 'PENDING_APPROVAL') ||
+        (taskCode === 'CONDITIONAL_SUPREME_COURT' && statusCode === 'IN_PROGRESS')
+      ">
+      <mat-card-title>
+        <h5 class="title">{{ 'COURT.LABEL_COMMENTS_OF_LAWYER' | translate }}</h5>
+      </mat-card-title>
+      <mat-divider [inset]="true"></mat-divider>
+
+      <ng-container
+        *ngIf="
+          !isViewMode &&
+            taskCode === 'CONSIDER_SUPREME_COURT' &&
+            (statusCode === 'PENDING' || statusCode === 'IN_PROGRESS');
+          else viewCourtSupremeTemplate
+        ">
+        <div class="mt-24" *ngIf="statusCode === 'IN_PROGRESS'">
+          <app-message-banner type="warn-normal" [message]="'COURT.BANNER_NOTATION_WARNING'"> </app-message-banner>
+        </div>
+        <div class="sub-container" fxLayout="row">
+          <h6 class="mr-24" fxFlex="15">{{ 'COURT.LABEL_REQUEST_APPROVAL' | translate }}</h6>
+          <div fxLayout="column" fxFlex="70" fxLayoutGap="16px" class="mb-16">
+            <mat-radio-group formControlName="appealPurpose" (change)="onSelectAppealPurpose($event)">
+              <div class="mb-16">
+                <mat-radio-button color="accent" value="REQUEST_PETITION">{{
+                  'COURT.LABEL_REQUEST_PETITION' | translate
+                }}</mat-radio-button>
+              </div>
+              <div class="mb-16">
+                <mat-radio-button color="accent" value="STOP_PETITION">{{
+                  'COURT.LABEL_STOP_PETITION' | translate
+                }}</mat-radio-button>
+              </div>
+              <div>
+                <mat-radio-button color="accent" value="KTB_LAW_STOP_PETITION">{{
+                  'COURT.LABEL_KTB_LAW_STOP_PETITION' | translate
+                }}</mat-radio-button>
+              </div>
+            </mat-radio-group>
+            <spig-error-msg
+              [control]="getConsAppealCtrl('appealPurpose')"
+              [customErrorMsg]="'COURT.ERROR_MSG_REQUIRED_REQUEST_APPROVAL'"></spig-error-msg>
+          </div>
+        </div>
+        <div class="sub-container" fxLayout="row">
+          <h6 class="mr-24" fxFlex="15">{{ 'COURT.LABEL_MORE_INFO' | translate }}</h6>
+          <div fxLayout="column" fxFlex="70" fxLayoutGap="16px" class="mb-16">
+            <div>
+              <mat-form-field class="full-width">
+                <mat-label>{{ 'COURT.LABEL_LAWYER_COMMENTS' | translate }}</mat-label>
+                <textarea
+                  matInput
+                  maxlength="10000"
+                  class="large no-resize"
+                  formControlName="appealDescription"></textarea>
+              </mat-form-field>
+              <spig-error-msg
+                [control]="getConsAppealCtrl('appealDescription')"
+                [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'"></spig-error-msg>
+            </div>
+            <div>
+              <app-upload-multi-file-content
+                [readonly]="false"
+                [uploadMultiInfo]="courtAppealDocsInfo"
+                (uploadFileEvent)="uploadFileAppealEvent($event)"
+                [list]="courtAppealDocs"
+                [column]="courtAppealDocsColumns"
+                [labelAcceptFile]="''">
+              </app-upload-multi-file-content>
+              <span *ngIf="getErrotCourtAppealDocuments()">
+                <p class="error-msg">{{ 'UPLOAD_FILE.ERROR_FILE_UPLOAD_REQUIRED' | translate }}</p>
+              </span>
+            </div>
+            <div fxLayout="row">
+              <div fxLayout="column" fxFlex="50">
+                <span class="thin-letter">{{ 'COURT.LABEL_SUPREME_DUE_DATE' | translate }}</span>
+                <div>
+                  {{ courtAppeal.appealDueDate ? (courtAppeal.appealDueDate | buddhistEra: 'DD/MM/yyyy') : '-' }}
+                </div>
+              </div>
+              <div fxLayout="column" fxFlex>
+                <span class="thin-letter">{{ 'COURT.LABEL_DAY_TO_SUPREME_DUE_DATE' | translate }}</span>
+                <div>{{ courtAppeal.dayToAppealDueDate || '0' }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+      <ng-template #viewCourtSupremeTemplate>
+        <div class="sub-container" fxLayout="row">
+          <h6 class="mr-24" fxFlex="15">{{ 'COURT.LABEL_SUPREME_INFO' | translate }}</h6>
+          <div fxLayout="column" fxFlex="70" fxLayoutGap="16px" class="mb-16">
+            <span class="thin-letter">{{ 'COURT.LABEL_REQUEST_APPROVAL' | translate }}</span>
+            <div>{{ courtAppeal.appealPurpose ? (courtAppeal.appealPurpose | appealPurpose) : '-' }}</div>
+          </div>
+        </div>
+        <div class="sub-container" fxLayout="row">
+          <h6 class="mr-24" fxFlex="15">{{ 'COURT.LABEL_MORE_INFO' | translate }}</h6>
+          <div fxLayout="column" fxFlex="70" fxLayoutGap="16px" class="mb-16">
+            <div>
+              <span class="thin-letter">{{ 'COURT.LABEL_LAWYER_COMMENTS' | translate }}</span>
+              <div>{{ courtAppeal.appealDescription || '-' }}</div>
+            </div>
+            <div>
+              <app-upload-multi-file-content
+                [readonly]="true"
+                [list]="courtAppealDocs"
+                [column]="courtAppealDocsColumns">
+              </app-upload-multi-file-content>
+            </div>
+            <div fxLayout="row">
+              <div fxLayout="column" fxFlex="50">
+                <span class="thin-letter">{{ 'COURT.LABEL_SUPREME_DUE_DATE' | translate }}</span>
+                <div>
+                  {{ courtAppeal.appealDueDate ? (courtAppeal.appealDueDate | buddhistEra: 'DD/MM/yyyy') : '-' }}
+                </div>
+              </div>
+              <div fxLayout="column" fxFlex>
+                <span class="thin-letter">{{ 'COURT.LABEL_DAY_TO_SUPREME_DUE_DATE' | translate }}</span>
+                <div>{{ courtAppeal.dayToAppealDueDate || '0' }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </mat-card>
+
+    <!-- การอนุมัติยื่นฎีกา(กบม.) -->
+    <mat-card
+      appearance="outlined"
+      class="info-container mt-16"
+      [formGroup]="consAppealCtrl"
+      *ngIf="
+        (isViewMode && ['APPEAL', 'SUPREME'].includes(courtVDetail?.courtLevel || '')) ||
+        (taskCode === 'APPROVE_SUPREME_COURT' && statusCode === 'PENDING_APPROVAL') ||
+        (taskCode === 'CONDITIONAL_SUPREME_COURT' && statusCode === 'IN_PROGRESS')
+      ">
+      <mat-card-title>
+        <h5 class="title">
+          {{
+            !isViewMode && taskCode === 'APPROVE_SUPREME_COURT' && statusCode === 'PENDING_APPROVAL'
+              ? ('COURT.LABEL_CONSIDER_SUPREME' | translate)
+              : ('COURT.LABEL_APPROVER_COMMENT' | translate)
+          }}
+        </h5>
+      </mat-card-title>
+      <mat-divider [inset]="true"></mat-divider>
+
+      <ng-container
+        *ngIf="
+          !isViewMode && taskCode === 'APPROVE_SUPREME_COURT' && statusCode === 'PENDING_APPROVAL';
+          else viewKbdSupremeTemplate
+        ">
+        <div class="sub-container" fxLayout="row">
+          <h6 class="mr-24" fxFlex="15">{{ 'COURT.LABEL_COMMENTS_OF_BANK' | translate }}</h6>
+          <div fxFlex="70" fxLayoutGap="16px" class="mb-16">
+            <mat-form-field class="full-width">
+              <mat-label>{{ 'COURT.LABEL_COMMENT' | translate }}</mat-label>
+              <textarea
+                matInput
+                maxlength="10000"
+                class="large no-resize"
+                formControlName="bankRemark"
+                (change)="onBankCommentChange($event)"></textarea>
+            </mat-form-field>
+            <spig-error-msg
+              [control]="getConsAppealCtrl('bankRemark')"
+              [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'"></spig-error-msg>
+          </div>
+        </div>
+        <div class="sub-container" fxLayout="row">
+          <h6 class="mr-24" fxFlex="15">{{ 'COURT.LABEL_DOCUMENT_PROCESS' | translate }}</h6>
+          <div fxFlex="70" fxLayoutGap="16px" class="mb-16">
+            <app-upload-multi-file-content
+              [uploadFor]="taskCode"
+              [uploadMultiInfo]="courtAppealDocsInfo"
+              [readonly]="false"
+              (uploadFileEvent)="uploadFileAppealEvent($event)"
+              [list]="processDocs"
+              [column]="courtAppealDocsColumns"
+              [btnUpload]="[
+                'COURT.BTN_UPLOAD_DOWNLOAD_DOC',
+                'COURT.BTN_UPLOAD_SAVE_DOC',
+                'COURT.BTN_UPLOAD_SIGNED_DOC',
+              ]"
+              [labelAcceptFile]="''">
+            </app-upload-multi-file-content>
+            <span *ngIf="getErrotCourtAppealDocuments()">
+              <p class="error-msg">{{ 'UPLOAD_FILE.ERROR_FILE_UPLOAD_REQUIRED' | translate }}</p>
+            </span>
+          </div>
+        </div>
+        <div class="sub-container" fxLayout="row">
+          <h6 class="mr-24" fxFlex="15">{{ 'COURT.LABEL_CONSIDER_RESULT' | translate }}</h6>
+          <div fxFlex="70" fxLayoutGap="16px" class="mb-16">
+            <div fxLayout="column" fxLayoutGap="16px" class="mb-16">
+              <mat-radio-group formControlName="approverDecision" (change)="onApproveDecisionChange($event)">
+                <div class="mb-16">
+                  <mat-radio-button color="accent" value="TO_PETITION">{{
+                    'COURT.OPTION_PETITION' | translate
+                  }}</mat-radio-button>
+                </div>
+                <div class="mb-16">
+                  <mat-radio-button color="accent" value="TO_STOP_PETITION">{{
+                    'COURT.OPTION_STOP_PETITION' | translate
+                  }}</mat-radio-button>
+                </div>
+                <div>
+                  <mat-radio-button color="accent" value="CONDITIONAL_PETITION">{{
+                    'COURT.OPTION_CONDITIONAL_PETITION' | translate
+                  }}</mat-radio-button>
+                </div>
+              </mat-radio-group>
+              <spig-error-msg
+                [control]="getConsAppealCtrl('approverDecision')"
+                [customErrorMsg]="'COURT.ERROR_MSG_REQUIRED_CONSIDER_RESULT'"></spig-error-msg>
+              <mat-form-field class="full-width">
+                <mat-label>{{ 'COMMON.LABEL_REMARKS' | translate }}</mat-label>
+                <textarea
+                  matInput
+                  maxlength="10000"
+                  class="large no-resize"
+                  formControlName="approverRemark"></textarea>
+              </mat-form-field>
+              <spig-error-msg
+                [control]="getConsAppealCtrl('approverRemark')"
+                [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'"></spig-error-msg>
+              <div fxLayout="row" fxLayoutGap="24px">
+                <div fxFlex="50">
+                  <spig-dropdown
+                    classInput="input-normal icon"
+                    formControlName="deductionForGuarantor"
+                    [config]="deductionForGuarantorConfig"
+                    [options]="deductionForGuarantorOptions">
+                  </spig-dropdown>
+                </div>
+                <div fxLayout="column" fxFlex>
+                  <span class="thin-letter">{{ 'COURT.LABEL_APPROVE_DATE' | translate }}</span>
+                  <div>
+                    {{ courtAppeal.approveDate ? (courtAppeal.approveDate | buddhistEra: 'DD/MM/yyyy') : '-' }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="sub-container" fxLayout="row">
+          <ng-container
+            [ngTemplateOutlet]="downloadDocInstruction"
+            [ngTemplateOutletContext]="{ isView: false }"></ng-container>
+        </div>
+      </ng-container>
+      <ng-template #viewKbdSupremeTemplate>
+        <div class="sub-container" fxLayout="row">
+          <h6 class="mr-24" fxFlex="15">{{ 'COURT.LABEL_COMMENTS_OF_BANK' | translate }}</h6>
+          <div fxFlex="70" fxLayoutGap="16px" class="mb-16">
+            <span class="thin-letter">{{ 'COURT.LABEL_COMMENT' | translate }}</span>
+            <div>{{ courtAppeal.bankRemark || '-' }}</div>
+          </div>
+        </div>
+        <div class="sub-container" fxLayout="row">
+          <h6 class="mr-24" fxFlex="15">{{ 'COURT.LABEL_DOCUMENT_PROCESS' | translate }}</h6>
+          <div fxFlex="70" fxLayoutGap="16px" class="mb-16">
+            <app-upload-multi-file-content [readonly]="true" [list]="processDocs" [column]="courtAppealDocsColumns">
+            </app-upload-multi-file-content>
+          </div>
+        </div>
+        <div class="sub-container" fxLayout="row">
+          <h6 class="mr-24" fxFlex="15">{{ 'COURT.LABEL_CONSIDER_RESULT' | translate }}</h6>
+          <div fxFlex="70">
+            <div fxLayout="column" class="mb-16">
+              <span class="thin-letter">{{ 'COURT.LABEL_CONSIDER_RESULT' | translate }}</span>
+              <div>{{ courtAppeal.approverDecision ? (courtAppeal.approverDecision | approverDecision) : '-' }}</div>
+            </div>
+            <div fxLayout="column" class="mb-16">
+              <span class="thin-letter">{{ 'COURT.LABEL_APPROVER_COMMENT' | translate }}</span>
+              <div>{{ courtAppeal.approverRemark || '-' }}</div>
+            </div>
+            <div fxLayout="row" fxLayoutGap="24px">
+              <div fxFlex="50">
+                <span class="thin-letter">{{ 'COURT.LABEL_DEDUCTION_GUARANTOR' | translate }}</span>
+                <div>{{ courtAppeal.deductionForGuarantor || '-' }}</div>
+              </div>
+              <div fxLayout="column" fxFlex>
+                <span class="thin-letter">{{ 'COURT.LABEL_APPROVE_DATE' | translate }}</span>
+                <div>{{ courtAppeal.approveDate ? (courtAppeal.approveDate | buddhistEra: 'DD/MM/yyyy') : '-' }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="sub-container" fxLayout="row">
+          <ng-container
+            [ngTemplateOutlet]="downloadDocInstruction"
+            [ngTemplateOutletContext]="{ isView: true }"></ng-container>
+        </div>
+      </ng-template>
+    </mat-card>
+
+    <!-- บันทึกฎีกา/งดฎีกาแบบมีเงื่อนไข -->
+    <mat-card
+      appearance="outlined"
+      class="info-container mt-16"
+      [formGroup]="consAppealCtrl"
+      *ngIf="
+        (isViewMode && ['APPEAL', 'SUPREME'].includes(courtVDetail?.courtLevel || '')) ||
+        (taskCode === 'CONDITIONAL_SUPREME_COURT' && statusCode === 'IN_PROGRESS')
+      ">
+      <mat-card-title>
+        <h5 class="title">{{ 'COURT.LABEL_SUSPEND_APPEAL_WITH_CONDITION' | translate }}</h5>
+      </mat-card-title>
+      <mat-divider [inset]="true"></mat-divider>
+
+      <ng-container
+        *ngIf="
+          !isViewMode && taskCode === 'CONDITIONAL_SUPREME_COURT' && statusCode === 'IN_PROGRESS';
+          else viewCourtAppealTemplate
+        ">
+        <div class="sub-container" fxLayout="row">
+          <h6 class="mr-24" fxFlex="15">{{ 'COURT.LABEL_SUPREME' | translate }}</h6>
+          <div fxFlex="70" fxLayoutGap="16px" class="mb-16">
+            <mat-radio-group formControlName="conditionalAppeal" (change)="onConditionalAppealChange($event)">
+              <div class="mb-16">
+                <mat-radio-button color="accent" value="PETITION">{{
+                  'COURT.OPTION_PETITION' | translate
+                }}</mat-radio-button>
+                <ng-container
+                  *ngIf="consAppealCtrl.get('conditionalAppeal')?.value === 'PETITION'"
+                  [ngTemplateOutlet]="remarkTemplate"></ng-container>
+              </div>
+              <div class="mb-16">
+                <mat-radio-button color="accent" value="STOP_PETITION">{{
+                  'COURT.OPTION_STOP_PETITION' | translate
+                }}</mat-radio-button>
+                <ng-container
+                  *ngIf="consAppealCtrl.get('conditionalAppeal')?.value === 'STOP_PETITION'"
+                  [ngTemplateOutlet]="remarkTemplate"></ng-container>
+              </div>
+            </mat-radio-group>
+            <spig-error-msg
+              [control]="getConsAppealCtrl('conditionalAppeal')"
+              [customErrorMsg]="'COURT.ERROR_MSG_REQUIRED_CONSIDER_RESULT'"></spig-error-msg>
+          </div>
+        </div>
+        <ng-template #remarkTemplate>
+          <div class="mt-24 ml-20">
+            <mat-form-field class="full-width">
+              <mat-label>{{ 'COMMON.LABEL_REMARKS' | translate }}</mat-label>
+              <textarea
+                matInput
+                maxlength="10000"
+                class="small no-resize"
+                formControlName="conditionalRemark"></textarea>
+            </mat-form-field>
+            <spig-error-msg
+              [control]="getConsAppealCtrl('conditionalRemark')"
+              [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'"></spig-error-msg>
+          </div>
+        </ng-template>
+        <div class="sub-container" fxLayout="row">
+          <h6 class="mr-24" fxFlex="15">{{ 'COMMON.LABEL_ADDITIONAL_DOCUMENTS' | translate }}</h6>
+          <div fxLayout="column" fxFlex="70" fxLayoutGap="16px" class="mb-16">
+            <div>
+              <app-upload-multi-file-content
+                [uploadMultiInfo]="courtAppealDocsInfo"
+                [readonly]="false"
+                (uploadFileEvent)="uploadFileAppealEvent($event)"
+                [list]="additionalDocs"
+                [column]="courtAppealDocsColumns"
+                [labelAcceptFile]="''">
+              </app-upload-multi-file-content>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+      <ng-template #viewCourtAppealTemplate>
+        <div class="sub-container" fxLayout="row">
+          <h6 class="mr-24" fxFlex="15">{{ 'COURT.LABEL_SUPREME' | translate }}</h6>
+          <div fxFlex="70" fxLayoutGap="16px" class="mb-16">
+            <div class="mb-24">
+              <span class="thin-letter">{{ 'COURT.LABEL_RESULT_SUPREME_WITH_CONDITION' | translate }}</span>
+              <div>{{ courtAppeal.appealPurpose ? (courtAppeal.appealPurpose | appealPurpose) : '-' }}</div>
+            </div>
+            <div>
+              <span class="thin-letter">{{ 'COMMON.LABEL_REMARKS' | translate }}</span>
+              <div>{{ courtAppeal.conditionalRemark || '-' }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="sub-container" fxLayout="row">
+          <h6 class="mr-24" fxFlex="15">{{ 'COMMON.LABEL_ADDITIONAL_DOCUMENTS' | translate }}</h6>
+          <div fxLayout="column" fxFlex="70" fxLayoutGap="16px" class="mb-16">
+            <div>
+              <app-upload-multi-file-content
+                [readonly]="true"
+                [list]="additionalDocs"
+                [column]="courtAppealDocsColumns">
+              </app-upload-multi-file-content>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </mat-card>
+  </ng-container>
+</div>
+
+<ng-template #dataNotFound>
+  <app-message-empty [message]="'DOC_PREP.NOT_FOUND_DOC'"></app-message-empty>
+</ng-template>
+
+<ng-template let-value="isView" #downloadDocInstruction>
+  <h6 class="mr-24" fxFlex="15">{{ 'COURT.DOCUMENT_INSTRUCTION' | translate }}</h6>
+  <div fxFlex="70">
+    <button
+      mat-flat-button
+      color="primary"
+      class="medium-aw-button overflow-ellipsis primary-button"
+      (click)="onDownloadDocInstruction(value)">
+      <mat-icon [svgIcon]="'icon-Arrow-Download'" class="icon icon-medium mr-10"></mat-icon>
+      {{ 'COURT.DOWNLOAD_DOCUMENT_INSTRUCTION' | translate }}
+    </button>
+  </div>
+</ng-template>

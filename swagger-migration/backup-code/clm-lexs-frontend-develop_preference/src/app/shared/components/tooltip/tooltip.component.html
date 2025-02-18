@@ -1,0 +1,66 @@
+<div class="cdk-tooltip">
+  <div>
+    <div #trigger="cdkOverlayOrigin" cdkOverlayOrigin>
+      <ng-content></ng-content>
+    </div>
+    <ng-container *ngIf="icon.length === 0; else iconToggle">
+      <div (click)="toggleIcon()" #trigger="cdkOverlayOrigin" cdkOverlayOrigin>
+        <ng-content select="[bodytoggle]"></ng-content>
+      </div>
+    </ng-container>
+    <ng-template #iconToggle>
+      <mat-icon
+        class="icon"
+        (click)="toggleIcon()"
+        *ngIf="!isOpen"
+        [ngClass]="iconClass"
+        [svgIcon]="icon[0]"
+        #trigger="cdkOverlayOrigin"
+        cdkOverlayOrigin>
+      </mat-icon>
+      <mat-icon
+        class="icon"
+        *ngIf="isOpen"
+        [ngClass]="iconClass"
+        [svgIcon]="icon[1]"
+        #trigger="cdkOverlayOrigin"
+        cdkOverlayOrigin>
+      </mat-icon>
+    </ng-template>
+  </div>
+  <ng-template
+    cdkConnectedOverlay
+    [cdkConnectedOverlayOrigin]="trigger"
+    [cdkConnectedOverlayOpen]="isOpen"
+    [cdkConnectedOverlayPositions]="positionPairs"
+    (overlayOutsideClick)="toggle()">
+    <div class="cdk-tooltip-content">
+      <ng-container *ngFor="let item of params">
+        <div class="tooltip-header" *ngIf="item.header">
+          {{ item.header }}
+        </div>
+        <div class="tooltip-title" *ngIf="item.title">
+          {{ item.title }}
+        </div>
+        <div
+          class="tooltip-content"
+          *ngIf="item.content"
+          [innerHtml]="item.content"
+          [ngClass]="item.contentClasses!"
+          (click)="onClickContent(item)"></div>
+        <div *ngIf="item.link && item.link.name && item.link.icon && item.link.url">
+          <a class="label-link" target="_blank" [href]="item.link.url"
+            >{{ item.link.name
+            }}<mat-icon class="ml-8 icon" [ngClass]="iconClass" [svgIcon]="item.link.icon"> </mat-icon
+          ></a>
+        </div>
+      </ng-container>
+      <div *ngIf="hyperlink">
+        <a class="label-link" target="_blank" [href]="hyperlink.url"
+          >{{ hyperlink.name
+          }}<mat-icon class="ml-8 icon" [ngClass]="iconClass" [svgIcon]="hyperlink.icon || ''"> </mat-icon
+        ></a>
+      </div>
+    </div>
+  </ng-template>
+</div>

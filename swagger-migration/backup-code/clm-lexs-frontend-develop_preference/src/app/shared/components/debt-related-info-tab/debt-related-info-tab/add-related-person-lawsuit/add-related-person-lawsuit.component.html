@@ -1,0 +1,264 @@
+<div mat-dialog-title class="modal-title">
+  <div class="alert-modal-title-icon" id="alert-modal-title-icon">
+    <mat-icon svgIcon="icon-Plus"></mat-icon>
+  </div>
+  <strong id="dialog-title-text" class="dialog-title-margin">
+    {{ 'DEBT_RELATED_INFO_TAB.ADD_RELATE_PERSON_LAWSUIT.TITLE' | translate }}
+  </strong>
+</div>
+<mat-divider [inset]="true" class="ml-0"></mat-divider>
+<mat-dialog-content class="mat-dialog-content">
+  <div class="container">
+    <div class="header-stepper">
+      <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+        <div fxLayout="column" fxFlex="75">
+          <div class="md-stepper-horizontal">
+            <ng-container *ngFor="let item of stepper; let i = index">
+              <div class="md-step" [ngClass]="{ active: item.active }">
+                <div class="md-step-circle">
+                  <span>{{ i + 1 }}</span>
+                </div>
+                <div class="md-step-title">{{ item.title | translate }}</div>
+                <div class="md-step-bar-left"></div>
+                <div class="md-step-bar-right"></div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="content">
+      <ng-container *ngIf="!!!stepper[1].active">
+        <app-message-banner
+          [type]="'warn-normal'"
+          [message]="'DEBT_RELATED_INFO_TAB.ADD_RELATE_PERSON_LAWSUIT.BANNER_MESSAGE'">
+        </app-message-banner>
+        <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px" class="mt-24">
+          <div fxLayout="column" fxFlex="25">
+            <h6>{{ 'DEBT_RELATED_INFO_TAB.ADD_RELATE_PERSON_LAWSUIT.LABEL_PAYEE_INSTEAD_INFO' | translate }}</h6>
+          </div>
+          <div fxLayout="column" class="full-width">
+            <ng-container
+              [ngTemplateOutlet]="addPayeeInsteadTemplate"
+              [ngTemplateOutletContext]="{ list: personInfoList }"></ng-container>
+            <p class="error-msg mt-10" *ngIf="selection.selected.length === 0 && stepper[0].isNextClicked === true">
+              {{ 'LAWSUIT.DIALOG_ALERT_TABLE_SELECTED' | translate }}
+            </p>
+          </div>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="!!stepper[1].active">
+        <app-message-banner [type]="'info'" [message]="formatMessage()"> </app-message-banner>
+        <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px" class="mt-24">
+          <div fxLayout="column" fxFlex="25">
+            <h6>
+              {{ 'LAWSUIT.INDICTMENT.CASE_INFO' | translate }}
+            </h6>
+          </div>
+          <div fxLayout="column" class="full-width">
+            <ng-container
+              [ngTemplateOutlet]="lawsuitInfoTemplate"
+              [ngTemplateOutletContext]="{ list: lawsuitInfoList }"></ng-container>
+            <p class="error-msg mt-10" *ngIf="(lawSelect === null || lawSelect === undefined) && isSaveClicked">
+              {{ 'LAWSUIT.DIALOG_ALERT_TABLE_SELECTED' | translate }}
+            </p>
+          </div>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px" class="mt-15">
+          <div fxLayout="column" fxFlex="25">
+            <h6>
+              {{ 'COMMON.LABEL_REASON' | translate }}
+            </h6>
+          </div>
+          <div fxLayout="column" class="full-width">
+            <mat-form-field fxFlex class="border-black-40">
+              <mat-label>
+                {{ 'DEBT_RELATED_INFO_TAB.ADD_RELATE_PERSON_LAWSUIT.LABEL_REASON_ADD' | translate }}
+              </mat-label>
+              <textarea
+                [formControl]="remark"
+                required
+                maxlength="1000"
+                matInput
+                class="form-control no-resize"
+                cols="20"
+                rows="5"></textarea>
+            </mat-form-field>
+            <spig-error-msg [control]="remark" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'"> </spig-error-msg>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions class="mat-dialog-actions">
+  <div id="actions-left-button">
+    <button
+      id="btn-dialog-back"
+      class="long-button"
+      *ngIf="checkNextIsActive"
+      type="button"
+      mat-button
+      (click)="backButtonClicked()">
+      <mat-icon svgIcon="icon-Arrow-Left" class="icon icon-xs"></mat-icon>
+      {{ 'COMMON.BUTTON_BACK' | translate }}
+    </button>
+  </div>
+  <div id="actions-right-button">
+    <button id="btn-dialog-close" class="long-button" type="button" mat-button mat-dialog-close>
+      {{ 'COMMON.BUTTON_CANCEL' | translate }}
+    </button>
+    <button
+      id="btn-dialog-active"
+      class="long-button"
+      *ngIf="stepper[stepper.length - 1].active === false"
+      type="button"
+      mat-flat-button
+      color="primary"
+      (click)="rightButtonNextClicked()">
+      <mat-icon svgIcon="icon-Arrow-Right" class="icon icon-xs"></mat-icon>
+      {{ 'COMMON.BUTTON_CONTINUE2' | translate }}
+    </button>
+    <button
+      id="btn-dialog-active"
+      class="long-button"
+      *ngIf="stepper[stepper.length - 1].active === true"
+      type="button"
+      mat-flat-button
+      color="primary"
+      (click)="rightButtonSaveClicked()">
+      <mat-icon svgIcon="icon-Plus" class="icon icon-xs"></mat-icon>
+      {{ 'DEBT_RELATED_INFO_TAB.ADD_RELATE_PERSON_LAWSUIT.BTN_CONFIRM_ADD' | translate }}
+    </button>
+  </div>
+</mat-dialog-actions>
+<!-- ข้อมูลผู้รับชำระหนี้แทนและจำเลยร่วม -->
+<ng-template #addPayeeInsteadTemplate let-dataSource="list">
+  <div class="table-scroll" id="table">
+    <table mat-table [dataSource]="dataSource">
+      <ng-container matColumnDef="selected">
+        <th mat-header-cell *matHeaderCellDef>
+          <mat-checkbox
+            (change)="$event ? masterToggle() : null"
+            [checked]="selection.hasValue() && isAllSelected"
+            [indeterminate]="selection.hasValue() && !isAllSelected"
+            [aria-label]="checkboxLabel()"
+            [disabled]="personInfoList.length === 0">
+          </mat-checkbox>
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <mat-checkbox
+            (click)="$event.stopPropagation()"
+            (change)="$event ? selection.toggle(row) : null"
+            [checked]="selection.isSelected(row)"
+            [aria-label]="checkboxLabel(row)"
+            [disabled]="personInfoList.length === 0">
+          </mat-checkbox>
+        </td>
+      </ng-container>
+      <!-- ชื่อ-นามสกุล Column -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'COMMON.LABEL_FULL_NAME' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div>
+            {{ element?.name || '-' }}
+          </div>
+        </td>
+      </ng-container>
+      <!-- ความสัมพันธ์ Column -->
+      <ng-container matColumnDef="relationDesc">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'LAWSUIT.INDICTMENT.RELATION' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div>
+            {{ 'LAWSUIT.MAPPING.RELATION.' + element.relation | translate }}
+          </div>
+        </td>
+      </ng-container>
+      <!-- เลขประจำตัวประชาชน/เลขประจำตัวผู้เสียภาษี Column -->
+      <ng-container matColumnDef="identificationNo">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'CUSTOMER.COLUMN_NATIONAL_ID_TAX_ID' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div>
+            {{ element?.identificationNo || '-' }}
+          </div>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="personInfoListHeader"></tr>
+      <tr mat-row *matRowDef="let row; columns: personInfoListHeader"></tr>
+    </table>
+    <ng-container
+      *ngIf="personInfoList.length === 0"
+      [ngTemplateOutlet]="dataNotFound"
+      [ngTemplateOutletContext]="{
+        value: 'COMMON.LABEL_PREFIX_NOT_FOUND',
+      }">
+    </ng-container>
+  </div>
+</ng-template>
+<!-- ข้อมูลคดีความ -->
+<ng-template #lawsuitInfoTemplate let-dataSource="list">
+  <div class="table-scroll" id="table">
+    <table mat-table [dataSource]="dataSource">
+      <ng-container matColumnDef="selected">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let row">
+          <mat-radio-group [(ngModel)]="lawSelect">
+            <mat-radio-button [value]="row"></mat-radio-button>
+          </mat-radio-group>
+        </td>
+      </ng-container>
+      <!-- คดีหมายเลขดำ Column -->
+      <ng-container matColumnDef="blackCaseNo">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'COMMON.LABEL_BLACK_CASE_NO' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div>
+            {{ element?.blackCaseNo || '-' }}
+          </div>
+        </td>
+      </ng-container>
+      <!-- คดีหมายเลขแดง Column -->
+      <ng-container matColumnDef="redCaseNo">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'COMMON.LABEL_RED_CASE_NO_2' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div>
+            {{ element?.redCaseNo || '-' }}
+          </div>
+        </td>
+      </ng-container>
+      <!-- ประเภทคดี Column -->
+      <ng-container matColumnDef="caseType">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'LAWSUIT.INDICTMENT.CASE_TYPE' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div>
+            {{ element?.caseType?.name || '-' }}
+          </div>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="lawsuitInfoListHeader"></tr>
+      <tr mat-row *matRowDef="let row; columns: lawsuitInfoListHeader"></tr>
+    </table>
+    <ng-container
+      *ngIf="lawsuitInfoList.length === 0"
+      [ngTemplateOutlet]="dataNotFound"
+      [ngTemplateOutletContext]="{
+        value: 'COMMON.LABEL_PREFIX_NOT_FOUND',
+      }">
+    </ng-container>
+  </div>
+</ng-template>
+
+<ng-template let-value="value" #dataNotFound>
+  <app-message-empty message="{{ value }}"></app-message-empty>
+</ng-template>

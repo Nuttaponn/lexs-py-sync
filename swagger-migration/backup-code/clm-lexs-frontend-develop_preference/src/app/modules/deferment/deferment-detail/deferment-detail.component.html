@@ -1,0 +1,2001 @@
+<mat-tab-group
+  class="tab-group-content m-20"
+  [ngClass]="{ 'invisible-tabs': hideTabFlag }"
+  mat-align-tabs="start"
+  (selectedTabChange)="onTabChanged($event)"
+  [selectedIndex]="tabIndex">
+  <mat-tab label="0">
+    <ng-template mat-tab-label>
+      <ng-container
+        *ngIf="
+          hasCeased === true ||
+            hasAutoCreate === 'AUTO_CREATE_DRAFT_CESSATION' ||
+            cessationState === 'CESSATION_PENDING_APPROVED';
+          else tabLabelDeferment
+        ">
+        {{ 'LAWSUIT.DEFERMENT.CESSATION_DETAIL' | translate }}
+      </ng-container>
+      <ng-template #tabLabelDeferment>
+        {{
+          !isExecution
+            ? ('LAWSUIT.DEFERMENT.DEFERMENT_DETAIL' | translate)
+            : ('LAWSUIT.DEFERMENT.EXECUTION_DEFERMENT_DETAIL' | translate)
+        }}
+      </ng-template>
+    </ng-template>
+    <ng-container *ngIf="taskCode === 'R2E07-05-E' && statusCode === 'PENDING'">
+      <app-deferment-statements [dataStatementForm]="dataForm" [mode]="'EDIT'"> </app-deferment-statements>
+    </ng-container>
+    <mat-card appearance="outlined" class="info-container" [formGroup]="dataForm">
+      <mat-card-title class="mb-0">
+        <h5 class="title">
+          <ng-container
+            *ngIf="
+              !(defermentState === defermentStateEnum.DEFERMENT && hasCancelDeferment) &&
+              !(isExecution && hasCancelDeferment) &&
+              !hasCeased &&
+              cessationState !== 'CESSATION_PENDING_APPROVED' &&
+              !(hasAutoCreate === 'AUTO_CREATE_DRAFT_CESSATION')
+            ">
+            {{
+              (!isExecution ? 'LAWSUIT.DEFERMENT.DEFERMENT_CASE' : 'LAWSUIT.DEFERMENT.EXECUTION_DEFERMENT_CASE')
+                | translate
+            }}
+          </ng-container>
+          <ng-container
+            *ngIf="
+              (defermentState === defermentStateEnum.DEFERMENT && hasCancelDeferment) ||
+              (isExecution && hasCancelDeferment)
+            ">
+            {{
+              (!isExecution ? 'LAWSUIT.DEFERMENT.CANCEL_DEFERMENT' : 'LAWSUIT.DEFERMENT.CANCEL_DEFERMENT_EXECUTION')
+                | translate
+            }}
+          </ng-container>
+          <ng-container
+            *ngIf="
+              (hasCeased && !hasCancelCessation) ||
+              cessationState === 'CESSATION_PENDING_APPROVED' ||
+              hasAutoCreate === 'AUTO_CREATE_DRAFT_CESSATION'
+            ">
+            {{ 'LAWSUIT.DEFERMENT.CESSATION_CASE' | translate }}
+          </ng-container>
+          <ng-container *ngIf="hasCeased && hasCancelCessation">
+            {{ 'LAWSUIT.DEFERMENT.CANCEL_CESSATION' | translate }}
+          </ng-container>
+        </h5>
+      </mat-card-title>
+      <mat-divider [inset]="true"></mat-divider>
+      <div
+        fxLayout="row"
+        class="mt-30 mb-30"
+        *ngIf="
+          ((defermentState === 'NORMAL_PENDING_APPROVED' || defermentState === 'DEFERMENT_PENDING_APPROVED') &&
+            !isExecution &&
+            mode !== 'EDIT' &&
+            !hasCeased) ||
+          (isExecution && defermentMessageBanner?.type && mode !== 'EDIT' && isViewMode && !hasCeased)
+        ">
+        <div
+          class="banner-content full-width"
+          *ngIf="!!defermentMessageBanner?.type && !!defermentMessageBanner?.message">
+          <app-message-banner
+            [type]="defermentMessageBanner.type || ''"
+            [message]="defermentMessageBanner.message || ''">
+          </app-message-banner>
+        </div>
+      </div>
+      <div
+        fxLayout="row"
+        class="mt-30 mb-30"
+        *ngIf="cessationState === 'CESSATION_PENDING_APPROVED' && mode !== 'EDIT' && isViewMode">
+        <div
+          class="banner-content full-width"
+          *ngIf="!!cessationMessageBanner?.type && !!cessationMessageBanner?.message">
+          <app-message-banner
+            [type]="cessationMessageBanner.type || ''"
+            [message]="cessationMessageBanner.message || ''">
+          </app-message-banner>
+        </div>
+      </div>
+
+      <!-- Additional UI for cancel deferment LEX2-56 -->
+      <!-- ข้อมูลการยกเลิกชะลอคดี -->
+      <div
+        class="sub-container"
+        fxLayout="row"
+        fxLayoutGap="24px"
+        *ngIf="
+          (defermentState === defermentStateEnum.DEFERMENT && hasCancelDeferment) || (isExecution && hasCancelDeferment)
+        ">
+        <div fxFlex="15">
+          <h6>
+            {{
+              isExecution
+                ? ('LAWSUIT.DEFERMENT.CANCEL_DEFERMENT_EXECUTION_INFO' | translate)
+                : ('LAWSUIT.DEFERMENT.CANCEL_DEFERMENT_INFO' | translate)
+            }}
+          </h6>
+        </div>
+        <div fxFlex="85">
+          <div fxLayout="row">
+            <div fxFlex="49">
+              <spig-datepicker
+                [classInput]="'input-full-field border-black-40'"
+                formControlName="cancelDate"
+                [min]="currentDate"
+                [max]="dataForm.get('endDate')?.value"
+                [required]="true"
+                [label]="isExecution ? 'วันที่ยกเลิกชะลอบังคับคดี' : 'วันที่ยกเลิกชะลอการดำเนินคดี'"></spig-datepicker>
+            </div>
+          </div>
+          <div class="mt-16">
+            <mat-form-field fxFlex class="mb-16">
+              <mat-label>{{
+                (isExecution
+                  ? 'LAWSUIT.DEFERMENT.CANCEL_DEFERMENT_REASON_EXEC'
+                  : 'LAWSUIT.DEFERMENT.CANCEL_DEFERMENT_REASON'
+                ) | translate
+              }}</mat-label>
+              <textarea
+                matInput
+                class="form-control no-resize"
+                cols="10"
+                rows="5"
+                maxlength="500"
+                formControlName="cancelReason"></textarea>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+
+      <!-- ภาระหนี้หรือหลักประกัน  ยกเลิกชะลอ-->
+      <div
+        class="sub-container"
+        *ngIf="
+          (defermentState === defermentStateEnum.DEFERMENT && hasCancelDeferment) || (isExecution && hasCancelDeferment)
+        ">
+        <div class="elm-form mb-16" fxLayout="row" fxLayoutGap="24px" fxLayoutAlign="start start">
+          <div fxFlex="15">
+            <h6>
+              {{ 'LAWSUIT.DEFERMENT.DEBT_OR_GUARANTEE' | translate }}
+            </h6>
+          </div>
+          <div fxFlex="85">
+            <div class="elm-form mb-16" fxLayout="row">
+              <input
+                class="elm-radio-check elm-check mr-1em"
+                type="checkbox"
+                formControlName="cancelWithDebtChanges"
+                (change)="onCancelWithDebtChanges($event)"
+                [checked]="dataForm.get('cancelWithDebtChanges')?.value"
+                [disabled]="false" />
+              <label class="elm-check-label">{{ 'LAWSUIT.DEFERMENT.CANCEL_WITH_DEBT_CHANGES' | translate }}</label>
+            </div>
+            <app-upload-multi-file-content
+              *ngIf="dataForm.get('cancelWithDebtChanges')?.value"
+              [uploadMultiInfo]="uploadMultiInfo"
+              (uploadContract)="uploadContract()"
+              (uploadFileEvent)="uploadFileEvent($event)"
+              (uploadCommitment)="uploadCommitment()"
+              [list]="documentUpload"
+              [uploadFor]="'DEFERMENT'"
+              [column]="documentColumns"
+              [labelAcceptFile]="''">
+            </app-upload-multi-file-content>
+
+            <div *ngIf="!hasSufficientDoc && dataForm.get('cancelWithDebtChanges')?.value" class="mt-16 color-red">
+              {{ 'LAWSUIT.DEFERMENT.ERROR_MSG_REQUIRED_UPLOAD_DOCUMENT' | translate }}
+            </div>
+          </div>
+        </div>
+      </div>
+      <ng-container *ngIf="!isExecution; else execution">
+        <!-- ข้อมูลการชะลอดำเนินคดี-->
+        <div
+          *ngIf="
+            !hasCeased &&
+            cessationState !== 'CESSATION_PENDING_APPROVED' &&
+            !(hasAutoCreate === 'AUTO_CREATE_DRAFT_CESSATION')
+          "
+          class="sub-container"
+          fxLayout="row"
+          fxLayoutGap="24px">
+          <div fxFlex="15">
+            <h6>
+              {{
+                !isExecution ? ('LAWSUIT.DEFERMENT.INFO' | translate) : ('LAWSUIT.DEFERMENT.EXECUTION_INFO' | translate)
+              }}
+            </h6>
+          </div>
+          <div fxFlex="85">
+            <div fxLayout="row" fxLayoutGap="16px" *ngIf="!isViewMode && !hasExtendDeferment" class="mb-16">
+              <div fxFlex="49">
+                <ng-container
+                  *ngIf="
+                    !(
+                      mode === 'EDIT' &&
+                      (dataForm.get('defermentTaskStatus')?.value === 'REVISE' ||
+                        (dataForm.get('defermentTaskStatus')?.value === 'DRAFT' &&
+                          dataForm.get('extendDeferment')?.value === true))
+                    )
+                  ">
+                  <spig-datepicker
+                    [classInput]="'input-full-field border-black-40'"
+                    formControlName="startDate"
+                    (inputChange)="onDateChange()"
+                    [min]="currentDate"
+                    [label]="'LAWSUIT.DEFERMENT.START_FOLLOW_DATE'"></spig-datepicker>
+                  <spig-error-msg [control]="getControl('startDate')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+                  </spig-error-msg
+                ></ng-container>
+                <ng-container
+                  *ngIf="
+                    mode === 'EDIT' &&
+                    (dataForm.get('defermentTaskStatus')?.value === 'REVISE' ||
+                      (dataForm.get('defermentTaskStatus')?.value === 'DRAFT' &&
+                        dataForm.get('extendDeferment')?.value === true))
+                  ">
+                  <span class="thin-letter">{{ 'LAWSUIT.DEFERMENT.START_FOLLOW_DATE' | translate }}</span>
+                  <div>
+                    {{ (dataForm.get('startDate')?.value | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                  </div>
+                </ng-container>
+              </div>
+              <div fxFlex="49">
+                <spig-datepicker
+                  [classInput]="'input-full-field border-black-40'"
+                  formControlName="endDate"
+                  (inputChange)="onDateChange()"
+                  [min]="dataForm.get('startDate')?.value"
+                  [label]="
+                    isExecution ? 'LAWSUIT.DEFERMENT.DEAD_LINE_EXEC' : 'LAWSUIT.DEFERMENT.DEAD_LINE'
+                  "></spig-datepicker>
+                <spig-error-msg [control]="getControl('endDate')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+                </spig-error-msg>
+              </div>
+            </div>
+            <div
+              fxLayout="row"
+              fxLayoutGap="16px"
+              *ngIf="isViewMode && approverId && defermentState === 'DEFERMENT_PENDING_APPROVED'"
+              class="mb-16">
+              <div fxFlex="49">
+                <span class="thin-letter">{{ 'COMMON.LABEL_LITIGATION_ID' | translate }}</span>
+                <div>{{ headerDetails.litigationId || '-' }}</div>
+              </div>
+              <div fxFlex="49">
+                <span class="thin-letter">{{ 'COMMON.LABEL_CIF_NO' | translate }}</span>
+                <div>{{ headerDetails.customerId || '-' }}</div>
+              </div>
+            </div>
+            <div
+              fxLayout="row"
+              fxLayoutGap="16px"
+              *ngIf="isViewMode && (!hasExtendDeferment || viewModeExtendDeferment)"
+              class="mb-16">
+              <div fxFlex="49">
+                <span class="thin-letter">{{ 'LAWSUIT.DEFERMENT.START_FOLLOW_DATE' | translate }}</span>
+                <div>
+                  {{ (dataForm.get('startDate')?.value | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                </div>
+              </div>
+              <div fxFlex="49">
+                <span class="thin-letter">{{
+                  (isExecution ? 'LAWSUIT.DEFERMENT.DEAD_LINE_EXEC' : 'LAWSUIT.DEFERMENT.DEAD_LINE') | translate
+                }}</span>
+                <div>
+                  {{ (dataForm.get('endDate')?.value | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                </div>
+              </div>
+            </div>
+            <div
+              fxLayout="row"
+              fxLayoutGap="16px"
+              *ngIf="isViewMode && hasExtendDeferment && !viewModeExtendDeferment"
+              class="mb-16">
+              <div fxFlex="49">
+                <span class="thin-letter">{{ 'LAWSUIT.DEFERMENT.START_FOLLOW_DATE' | translate }}</span>
+                <div>
+                  {{ (dataForm.get('startDate')?.value | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                </div>
+              </div>
+              <div fxFlex="49">
+                <spig-datepicker
+                  [classInput]="'input-full-field border-black-40'"
+                  formControlName="endDate"
+                  (inputChange)="onDateChange()"
+                  [min]="dataForm.get('startDate')?.value"
+                  [label]="'LAWSUIT.DEFERMENT.DEAD_LINE'"></spig-datepicker>
+                <spig-error-msg [control]="getControl('endDate')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+                </spig-error-msg>
+              </div>
+            </div>
+
+            <div class="mb-16 mt-16" *ngIf="!isViewMode || hasExtendDeferment">
+              <app-message-banner
+                [message]="'LAWSUIT.DEFERMENT.WARNING_OVER_1_YEAR'"
+                type="fail"
+                *ngIf="isResponseUnit && defermentDuration + (deferment.totalDefermentDaysResponseUnit || 0) > 365">
+              </app-message-banner>
+
+              <app-message-banner
+                [message]="'LAWSUIT.DEFERMENT.WARNING_OVER_1_YEAR'"
+                type="fail"
+                *ngIf="
+                  isAMDResponseUnit && defermentDuration + (deferment.totalDefermentDaysAmdResponseUnit || 0) > 365
+                ">
+              </app-message-banner>
+            </div>
+
+            <div fxLayout="row" fxLayoutGap="16px" class="mb-16">
+              <div fxFlex="49" class="numaric-field">
+                <span class="thin-letter">{{ 'LAWSUIT.DEFERMENT.DURATION' | translate }}</span>
+                <div>{{ defermentDuration }}</div>
+              </div>
+              <div
+                *ngIf="defermentState === defermentStateEnum.DEFERMENT && !hasExtendDeferment"
+                fxFlex="49"
+                class="numaric-field">
+                <span class="thin-letter">{{ 'LAWSUIT.DEFERMENT.APPROVAL_DATE' | translate }}</span>
+                <div>
+                  {{ (dataForm.get('approveDate')?.value | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                </div>
+              </div>
+            </div>
+            <div *ngIf="hasExtendDeferment" fxLayout="row" class="mb-16" fxLayoutGap="16px">
+              <div class="numaric-field" fxFlex="49">
+                <span class="thin-letter">{{ 'LAWSUIT.DEFERMENT.CUMULATIVE_DURATION' | translate }}</span>
+                <div>
+                  {{
+                    isResponseUnit
+                      ? defermentDuration + (deferment.totalDefermentDaysResponseUnit || 0)
+                      : deferment.totalDefermentDaysResponseUnit || 0
+                  }}
+                </div>
+              </div>
+              <div class="numaric-field" fxFlex="49">
+                <span class="thin-letter">{{ 'LAWSUIT.DEFERMENT.CUMULATIVE_DURATION_AMD' | translate }}</span>
+                <div>
+                  {{
+                    isAMDResponseUnit
+                      ? defermentDuration + (deferment.totalDefermentDaysAmdResponseUnit || 0)
+                      : deferment.totalDefermentDaysAmdResponseUnit || 0
+                  }}
+                </div>
+              </div>
+            </div>
+            <div *ngIf="hasCancelDeferment || !hasExtendDeferment" fxLayout="row" class="mb-16" fxLayoutGap="16px">
+              <div class="numaric-field" fxFlex="49">
+                <span class="thin-letter">{{ 'LAWSUIT.DEFERMENT.CUMULATIVE_DURATION' | translate }}</span>
+                <div>
+                  {{
+                    (defermentState === 'NORMAL' || mode === 'EDIT' || (mode === 'ADD' && isExecution)) &&
+                    isResponseUnit &&
+                    !['APPROVED', 'REJECTED'].includes(defermentTaskStatus || '')
+                      ? defermentDuration + (deferment.totalDefermentDaysResponseUnit || 0)
+                      : deferment.totalDefermentDaysResponseUnit || 0
+                  }}
+                </div>
+              </div>
+              <div class="numaric-field" fxFlex="49">
+                <span class="thin-letter">{{ 'LAWSUIT.DEFERMENT.CUMULATIVE_DURATION_AMD' | translate }}</span>
+                <div>
+                  {{
+                    (defermentState === 'NORMAL' || mode === 'EDIT' || (mode === 'ADD' && isExecution)) &&
+                    isAMDResponseUnit &&
+                    !['APPROVED', 'REJECTED'].includes(defermentTaskStatus || '')
+                      ? defermentDuration + (deferment.totalDefermentDaysAmdResponseUnit || 0)
+                      : deferment.totalDefermentDaysAmdResponseUnit || 0
+                  }}
+                </div>
+              </div>
+            </div>
+            <ng-container *ngIf="!isViewMode || hasExtendDeferment">
+              <div fxLayout="row" class="mb-16">
+                <div fxFlex="49">
+                  <span class="thin-letter">{{ 'LAWSUIT.DEFERMENT.APPROVAL' | translate }}</span>
+                  <div>
+                    {{ dataForm.get('defermentApproverName')?.value || '-' }}
+                  </div>
+                </div>
+                <div
+                  *ngIf="
+                    dataForm.get('defermentApproverCode')?.value === '4' ||
+                    (isExecution && dataForm.get('defermentApproverCode')?.value === '2')
+                  "
+                  fxFlex="49"
+                  class="ml-1em">
+                  <spig-dropdown
+                    [config]="dlaConfig"
+                    [options]="dlaOption"
+                    [required]="true"
+                    classInput="input-normal"
+                    formControlName="dlaAuthorityCode"
+                    (selectedOption)="onSelectDLA($event)">
+                  </spig-dropdown>
+                </div>
+              </div>
+            </ng-container>
+            <ng-container *ngIf="isViewMode && !hasExtendDeferment">
+              <div fxLayout="row" class="mb-16" fxLayoutGap="16px">
+                <div class="mb-16" fxFlex="49">
+                  <span class="thin-letter">{{ 'LAWSUIT.DEFERMENT.APPROVAL' | translate }}</span>
+                  <div>
+                    {{ dataForm.get('defermentApproverName')?.value || '-' }}
+                  </div>
+                </div>
+                <div *ngIf="dataForm.get('dlaAuthorityName')?.value" class="mb-16" fxFlex="49">
+                  <span class="thin-letter">{{ 'LAWSUIT.DEFERMENT.DLA' | translate }}</span>
+                  <div>
+                    {{ dataForm.get('dlaAuthorityName')?.value || '-' }}
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+            <div fxLayout="row" class="mb-16" *ngIf="!isViewMode || (hasExtendDeferment && !viewModeExtendDeferment)">
+              <div fxFlex="100">
+                <spig-dropdown
+                  [config]="defermentReason"
+                  [options]="defermentReasonOptions"
+                  classInput="input-normal"
+                  formControlName="defermentReasonCode"
+                  (selectedOption)="onSelectDefermentReason($event)">
+                </spig-dropdown>
+                <spig-error-msg
+                  [control]="getControl('defermentReasonCode')"
+                  [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+                </spig-error-msg>
+              </div>
+            </div>
+            <div fxLayout="row" class="mb-16" *ngIf="isViewMode && (!hasExtendDeferment || viewModeExtendDeferment)">
+              <div fxFlex="100">
+                <span class="thin-letter">{{
+                  (isExecution ? 'LAWSUIT.DEFERMENT.REASON_EXEC' : 'LAWSUIT.DEFERMENT.REASON') | translate
+                }}</span>
+                <div *ngIf="dataForm.get('defermentReasonName')?.value !== 'อื่นๆ'">
+                  {{ dataForm.get('defermentReasonName')?.value || '-' }}
+                </div>
+                <div *ngIf="dataForm.get('defermentReasonName')?.value === 'อื่นๆ'">
+                  {{ dataForm.get('defermentReasonOther')?.value || '-' }}
+                </div>
+              </div>
+            </div>
+            <div
+              fxLayout="row"
+              class="mb-16"
+              *ngIf="
+                dataForm.get('defermentReasonCode')?.value === '1013' &&
+                ((!isViewMode && !viewModeExtendDeferment) || hasExtendDeferment)
+              ">
+              <mat-form-field fxFlex="100" class="mb-16">
+                <mat-label>{{ 'LAWSUIT.DEFERMENT.INPUT_REASON' | translate }}</mat-label>
+                <textarea
+                  matInput
+                  formControlName="defermentReasonOther"
+                  class="form-control no-resize"
+                  cdkTextareaAutosize
+                  #autosize="cdkTextareaAutosize"
+                  rows="1"
+                  maxlength="500"
+                  required></textarea>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+        <!-- ข้อมูลการยกเลิกยุติคดี -->
+        <div
+          class="sub-container"
+          fxLayout="row"
+          fxLayoutGap="24px"
+          *ngIf="cessationState === defermentStateEnum.CESSATION && hasCancelCessation">
+          <div fxFlex="15">
+            <h6>
+              {{ 'LAWSUIT.DEFERMENT.CANCEL_CESSATION_INFO' | translate }}
+            </h6>
+          </div>
+          <div fxFlex="85">
+            <div fxLayout="row">
+              <div fxFlex="49">
+                <spig-datepicker
+                  [classInput]="'input-full-field border-black-40'"
+                  formControlName="cancelDate"
+                  [min]="currentDate"
+                  [label]="'LAWSUIT.DEFERMENT.CANCEL_CESSATION_DATE'"></spig-datepicker>
+              </div>
+            </div>
+            <div fxLayout="row" class="mt-16 mb-16">
+              <div fxFlex="80">
+                <mat-form-field fxFlex class="mb-16">
+                  <mat-label>{{ 'LAWSUIT.DEFERMENT.CANCEL_CESSATION_REASON' | translate }}</mat-label>
+                  <textarea
+                    matInput
+                    formControlName="cancelReason"
+                    class="form-control no-resize"
+                    cols="10"
+                    rows="3"
+                    maxlength="500"
+                    required></textarea>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- ภาระหนี้หรือหลักประกัน ยกเลิกยุติ-->
+        <div class="sub-container" *ngIf="cessationState === defermentStateEnum.CESSATION && hasCancelCessation">
+          <div class="elm-form mb-16" fxLayout="row" fxLayoutGap="24px">
+            <div fxFlex="15">
+              <h6>
+                {{ 'LAWSUIT.DEFERMENT.DEBT_OR_GUARANTEE' | translate }}
+              </h6>
+            </div>
+            <div fxFlex="85">
+              <div class="elm-form mb-16" fxLayout="row">
+                <input
+                  class="elm-radio-check elm-check mr-1em"
+                  type="checkbox"
+                  formControlName="cancelWithDebtChanges"
+                  (change)="onCancelWithDebtChanges($event)"
+                  [checked]="dataForm.get('cancelWithDebtChanges')?.value"
+                  [disabled]="false" />
+                <label class="elm-check-label">{{ 'LAWSUIT.DEFERMENT.CANCEL_WITH_DEBT_CHANGES' | translate }}</label>
+              </div>
+              <app-upload-multi-file-content
+                *ngIf="dataForm.get('cancelWithDebtChanges')?.value"
+                [uploadMultiInfo]="uploadMultiInfo"
+                (uploadContract)="uploadContract()"
+                (uploadFileEvent)="uploadFileEvent($event)"
+                (uploadCommitment)="uploadCommitment()"
+                [list]="documentUpload"
+                [uploadFor]="'DEFERMENT'"
+                [column]="documentColumns"
+                [labelAcceptFile]="''">
+              </app-upload-multi-file-content>
+
+              <div *ngIf="!hasSufficientDoc" class="mt-16 color-red">
+                {{ 'LAWSUIT.DEFERMENT.ERROR_MSG_REQUIRED_UPLOAD_DOCUMENT' | translate }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- ข้อมูลการยุติดำเนินคดี -->
+        <div
+          class="sub-container"
+          fxLayout="row"
+          fxLayoutGap="24px"
+          *ngIf="
+            hasCeased ||
+            (cessationState === 'CESSATION_PENDING_APPROVED' && !hasAutoCreate) ||
+            hasAutoCreate === 'AUTO_CREATE_DRAFT_CESSATION'
+          ">
+          <div fxFlex="15">
+            <h6>
+              {{ 'LAWSUIT.DEFERMENT.CESSATION_INFO' | translate }}
+            </h6>
+          </div>
+          <div fxFlex="85">
+            <div fxLayout="row" fxLayoutGap="16px" class="mb-16 mt-1em">
+              <div fxFlex="49" *ngIf="!isViewMode">
+                <spig-datepicker
+                  [classInput]="'input-full-field border-black-40'"
+                  formControlName="endDate"
+                  [min]="currentDate"
+                  [label]="'LAWSUIT.DEFERMENT.CESSATION_DATE'"></spig-datepicker>
+              </div>
+              <div
+                class="mb-16"
+                *ngIf="
+                  isViewMode &&
+                  !(cessationState === defermentStateEnum.CESSATION) &&
+                  cessationState !== defermentStateEnum.CESSATION_PENDING_APPROVED
+                ">
+                <span class="thin-letter">{{ 'LAWSUIT.DEFERMENT.CESSATION_DATE' | translate }}</span>
+                <div>
+                  {{ (dataForm.get('endDate')?.value | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                </div>
+              </div>
+              <ng-container *ngIf="isViewMode && cessationState === defermentStateEnum.CESSATION && hasCancelCessation">
+                <div fxFlex="49">
+                  <span class="thin-letter">{{ 'LAWSUIT.DEFERMENT.CESSATION_DATE' | translate }}</span>
+                  <div>
+                    {{ (dataForm.get('endDate')?.value | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                  </div>
+                </div>
+                <div fxFlex="49">
+                  <span class="thin-letter">
+                    {{ 'LAWSUIT.DEFERMENT.CESSATION_APPROVAL_DATE' | translate }}
+                  </span>
+                  <div>
+                    {{ (dataForm.get('approveDate')?.value | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                  </div>
+                </div>
+              </ng-container>
+
+              <!-- else -->
+              <div
+                *ngIf="
+                  !(isViewMode && cessationState === defermentStateEnum.CESSATION && hasCancelCessation) &&
+                  cessationState !== defermentStateEnum.NORMAL &&
+                  hasAutoCreate !== 'AUTO_CREATE_DRAFT_CESSATION' &&
+                  hasAutoCreate !== 'SAVE_DRAFT_CESSATION' &&
+                  taskCode !== 'REQUEST_REVISE_CESSATION' &&
+                  taskCode !== 'SAVE_DRAFT_CESSATION' &&
+                  mode !== 'EDIT'
+                "
+                fxLayout="row"
+                class="mb-16">
+                <div fxFlex="100">
+                  <span class="thin-letter">{{ 'LAWSUIT.DEFERMENT.CESSATION_DATE' | translate }}</span>
+                  <div>
+                    {{ (dataForm.get('endDate')?.value | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayoutGap="16px" class="mb-16 mt-1em" *ngIf="!isViewMode">
+              <div fxFlex="49">
+                <span class="thin-letter">
+                  {{ 'LAWSUIT.DEFERMENT.APPROVAL' | translate }}
+                </span>
+                <div>
+                  {{ dataForm.get('defermentApproverName')?.value || '-' }}
+                </div>
+              </div>
+              <div *ngIf="dataForm.get('defermentApproverCode')?.value === '1'" fxFlex="49">
+                <spig-dropdown
+                  [config]="dlaConfig"
+                  [options]="dlaOption"
+                  [required]="true"
+                  classInput="input-normal"
+                  formControlName="dlaAuthorityCode"
+                  (selectedOption)="onSelectDLA($event)">
+                </spig-dropdown>
+              </div>
+            </div>
+            <div
+              fxLayout="row"
+              fxLayoutGap="16px"
+              class="mb-16 mt-1em"
+              *ngIf="
+                (isViewMode &&
+                  (cessationState === defermentStateEnum.CESSATION ||
+                    cessationState === defermentStateEnum.CESSATION_PENDING_APPROVED)) ||
+                hasCancelCessation
+              ">
+              <div fxFlex="49">
+                <span class="thin-letter">
+                  {{ 'LAWSUIT.DEFERMENT.APPROVAL' | translate }}
+                </span>
+                <div>
+                  {{ dataForm.get('defermentApproverName')?.value || '-' }}
+                </div>
+              </div>
+              <div fxFlex="49">
+                <span class="thin-letter">
+                  {{ 'LAWSUIT.DEFERMENT.DLA' | translate }}
+                </span>
+                <div>
+                  {{ dataForm.get('dlaAuthorityName')?.value || '-' }}
+                </div>
+              </div>
+            </div>
+            <div fxLayout="row" class="mt-16 mb-16" *ngIf="!isViewMode">
+              <div fxFlex="100">
+                <spig-dropdown
+                  [config]="cessationReason"
+                  [options]="cessationReasonOptions"
+                  [required]="true"
+                  classInput="input-normal"
+                  formControlName="defermentReasonCode"
+                  (selectedOption)="onSelectCessationReason($event)">
+                </spig-dropdown>
+              </div>
+            </div>
+            <div fxLayout="row" class="mb-16" *ngIf="isViewMode">
+              <div fxFlex="100">
+                <span class="thin-letter">{{ 'LAWSUIT.DEFERMENT.CESSATION_REASON' | translate }}</span>
+                <div *ngIf="dataForm.get('defermentReasonName')?.value !== 'อื่นๆ'">
+                  {{ dataForm.get('defermentReasonName')?.value || '-' }}
+                </div>
+                <div *ngIf="dataForm.get('defermentReasonName')?.value === 'อื่นๆ'">
+                  {{ dataForm.get('defermentReasonOther')?.value || '-' }}
+                </div>
+              </div>
+            </div>
+            <div
+              fxLayout="row"
+              class="mt-16 mb-16"
+              *ngIf="dataForm.get('defermentReasonCode')?.value === '5' && !isViewMode">
+              <mat-form-field fxFlex="100" class="mb-16">
+                <mat-label>{{ 'LAWSUIT.DEFERMENT.INPUT_REASON' | translate }}</mat-label>
+                <textarea
+                  matInput
+                  formControlName="defermentReasonOther"
+                  class="form-control no-resize"
+                  cdkTextareaAutosize
+                  #autosize="cdkTextareaAutosize"
+                  rows="1"
+                  maxlength="500"
+                  required></textarea>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+
+        <!-- ข้อมูลทรัพย์จำนอง -->
+
+        <!-- เลขที่กฎหมายภายใต้ CIF No. เดียวกัน-->
+        <div class="sub-container" fxLayout="row" fxLayoutGap="24px">
+          <div fxFlex="15">
+            <h6 *ngIf="!isExecution">
+              {{ 'LAWSUIT.DEFERMENT.LG_ID_UNDER_CIF_NO' | translate }}
+            </h6>
+            <h6 *ngIf="isExecution">{{ 'LAWSUIT.DEFERMENT.MORTGAGE_INFO' | translate }}</h6>
+          </div>
+          <div fxFlex="85" class="overflow-hidden">
+            <div fxLayout="row" fxLayoutGap="16px" class="mb-16">
+              <div fxFlex="49">
+                <span class="thin-letter">{{ 'COMMON.LABEL_CIF_NO' | translate }}</span>
+                <div>
+                  {{ headerDetails.customerId || dataForm.get('customerId')?.value || '-' }}
+                </div>
+              </div>
+              <div fxFlex="49">
+                <span class="thin-letter">{{ 'FINANCE.DEBTOR_NAME' | translate }}</span>
+                <div>{{ headerDetails.customerName || '-' }}</div>
+              </div>
+            </div>
+            <div
+              fxLayout="row"
+              fxLayoutGap="16px"
+              class="mb-16"
+              *ngIf="isExecution && !isViewMode && !hasExtendDeferment">
+              <div fxFlex="49">
+                <button mat-flat-button color="primary" class="medium-aw-button" (click)="selectSeizure(1)">
+                  <mat-icon svgIcon="icon-Search" class="icon icon-medium mr-10"></mat-icon>
+                  เลือกทรัพย์จำนอง
+                </button>
+              </div>
+            </div>
+            <div>
+              <div class="table-scroll" id="table" *ngIf="CIFTable && CIFTable.length > 0 && !isExecution">
+                <table mat-table [dataSource]="CIFTable">
+                  <ng-container matColumnDef="check" *ngIf="!isViewMode">
+                    <th mat-header-cell *matHeaderCellDef>
+                      <mat-checkbox
+                        (change)="$event ? masterToggle() : null"
+                        [checked]="isAllSelected()"
+                        [indeterminate]="indeterminate && !isAllSelected()"
+                        [aria-label]="checkboxLabel()">
+                      </mat-checkbox>
+                    </th>
+                    <!--For mocking purpose, PENDING TO DO: binding logic once api spec's finalized -->
+                    <td mat-cell *matCellDef="let row; let i = index; let element">
+                      <mat-checkbox
+                        *ngIf="element.enabled"
+                        [ngClass]="CIFTable[i].checked ? 'lg-checkbox-checked' : 'lg-checkbox-unchecked'"
+                        (click)="$event.stopPropagation(); checkData(row)"
+                        (change)="$event ? selection.toggle(row) : null"
+                        [checked]="selection.isSelected(row)"
+                        [aria-label]="checkboxLabel(row)">
+                      </mat-checkbox>
+                      <div *ngIf="!element.enabled">
+                        <app-tooltip
+                          [params]="[
+                            {
+                              content: 'LAWSUIT.DEFERMENT.TOOLTIP_CANNOT_SELECT_LG_ID_UNDER_CIF_NO' | translate,
+                            },
+                          ]"
+                          [icon]="['icon-Pause-Circle-Grey', 'icon-Pause-Circle-Grey']"
+                          [iconClass]="['icon-xmedium']"
+                          [isDeferment]="true"></app-tooltip>
+                      </div>
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="check" *ngIf="isViewMode">
+                    <th class="text-center" mat-header-cell *matHeaderCellDef>
+                      {{ 'COMMON.LABEL_NO' | translate }}
+                    </th>
+                    <td class="text-center" mat-cell *matCellDef="let element; let i = index">
+                      {{ i + 1 }}
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef></td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="lgid">
+                    <th mat-header-cell *matHeaderCellDef>
+                      {{ 'COMMON.LABEL_LITIGATION_ID' | translate }}
+                    </th>
+                    <td mat-cell *matCellDef="let element">
+                      <span class="link" (click)="goToDebtSummary(element.litigationId)">
+                        {{ element.litigationId || '-' }}
+                      </span>
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="status">
+                    <th mat-header-cell *matHeaderCellDef>
+                      {{ 'CUSTOMER.LIABILITY.CASE_STATUS' | translate }}
+                    </th>
+                    <td mat-cell *matCellDef="let element">
+                      <div class="status-label status-normal size-auto">
+                        {{ element.legalStatus || '-' }}
+                      </div>
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="date">
+                    <th mat-header-cell *matHeaderCellDef>
+                      {{ 'COMMON.LABEL_DATE' | translate }}
+                    </th>
+                    <td mat-cell *matCellDef="let element">
+                      {{ (element.litigationDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                    </td>
+                  </ng-container>
+                  <tr mat-header-row *matHeaderRowDef="CIFColumn"></tr>
+                  <tr mat-row *matRowDef="let row; columns: CIFColumn"></tr>
+                </table>
+              </div>
+              <ng-container
+                *ngIf="(!CIFTable || CIFTable?.length === 0) && !isExecution"
+                [ngTemplateOutlet]="dataNotFoundCIF">
+              </ng-container>
+              <div class="mb-16">
+                <app-seizure-property-list
+                  *ngIf="isExecution && seizureCollaterals && seizureCollaterals.length > 0"
+                  [list]="seizureCollaterals"
+                  [viewOnly]="true"
+                  [showHeader]="true"
+                  [headerText]="'ทรัพย์ที่จะชะลอยึด'"
+                  [canEdit]="isExecution && !isViewMode && !hasExtendDeferment"
+                  [tableColumns]="collateralColumns"
+                  (onEditTable)="onEditSezure(1)"></app-seizure-property-list>
+              </div>
+              <div class="mb-16">
+                <app-seizure-property-list
+                  *ngIf="isExecution && saleCollaterals && saleCollaterals.length > 0"
+                  [list]="saleCollaterals"
+                  [viewOnly]="true"
+                  [showHeader]="true"
+                  [canEdit]="isExecution && !isViewMode && !hasExtendDeferment"
+                  [headerText]="'ทรัพย์ที่จะชะลอขาย'"
+                  [tableColumns]="collateralColumns"
+                  (onEditTable)="onEditSezure(1)"></app-seizure-property-list>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ข้อมูลลูกหนี้-->
+        <div class="sub-container" fxLayout="row" fxLayoutGap="24px">
+          <div fxFlex="15">
+            <h6>
+              {{ 'LAWSUIT.DEFERMENT.DEBTOR_INFO' | translate }}
+            </h6>
+          </div>
+          <div fxFlex="85">
+            <div fxLayout="column">
+              <div>
+                <h6 class="mb-16">
+                  {{ 'LAWSUIT.DEFERMENT.SUMMARY_DEBT_AND_COLLATERAL' | translate }}
+                </h6>
+                <div class="table-scroll" id="table" *ngIf="cifSubTable && cifSubTable.length > 0">
+                  <table mat-table [dataSource]="cifSubTable">
+                    <ng-container matColumnDef="no">
+                      <th class="text-center" mat-header-cell *matHeaderCellDef>
+                        {{ 'COMMON.LABEL_NO' | translate }}
+                      </th>
+                      <td class="text-center" mat-cell *matCellDef="let element; let i = index">
+                        {{ i + 1 }}
+                      </td>
+                      <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+                    <ng-container matColumnDef="litigationId">
+                      <th mat-header-cell *matHeaderCellDef>
+                        {{ 'COMMON.LABEL_LITIGATION_ID' | translate }}
+                      </th>
+                      <td mat-cell *matCellDef="let element">
+                        <span class="link" (click)="goToDebtSummary(element.litigationId)">
+                          {{ element.litigationId || '-' }}
+                        </span>
+                      </td>
+                      <td mat-footer-cell *matFooterCellDef class="text-right">
+                        <b>รวมทั้งหมด</b>
+                      </td>
+                    </ng-container>
+                    <ng-container matColumnDef="principle">
+                      <th mat-header-cell *matHeaderCellDef class="text-right">เงินต้น (บาท)</th>
+                      <td mat-cell *matCellDef="let element" class="text-right">
+                        {{ element.outstandingBalance || '0' | numberDecimal }}
+                      </td>
+                      <td mat-footer-cell *matFooterCellDef class="text-right">
+                        <span class="bold">{{ cifSubTable | arraySum: 'outstandingBalance' | numberDecimal }}</span>
+                      </td>
+                    </ng-container>
+                    <ng-container matColumnDef="debt">
+                      <th mat-header-cell *matHeaderCellDef class="text-right">ภาระหนี้รวม (บาท)</th>
+                      <td mat-cell *matCellDef="let element" class="text-right">
+                        {{ element.totalDebt || '0' | numberDecimal }}
+                      </td>
+                      <td mat-footer-cell *matFooterCellDef class="text-right">
+                        <span class="bold">{{ cifSubTable | arraySum: 'totalDebt' | numberDecimal }}</span>
+                      </td>
+                    </ng-container>
+                    <ng-container matColumnDef="estimate">
+                      <th mat-header-cell *matHeaderCellDef class="text-right">ราคาประเมินรวม (บาท)</th>
+                      <td mat-cell *matCellDef="let element" class="text-right">
+                        {{ element.appraisalPrice || '0' | numberDecimal }}
+                      </td>
+                      <td mat-footer-cell *matFooterCellDef></td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="CIFSubColumn"></tr>
+                    <tr mat-row *matRowDef="let row; columns: CIFSubColumn"></tr>
+                    <tr
+                      mat-footer-row
+                      class="sticky-footer"
+                      *matFooterRowDef="['no', 'litigationId', 'principle', 'debt', 'estimate']"></tr>
+                  </table>
+                </div>
+                <ng-container *ngIf="!cifSubTable || cifSubTable?.length === 0" [ngTemplateOutlet]="dataNotFoundCIFSub">
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="sub-container" fxLayout="row" fxLayoutGap="24px">
+          <div fxFlex="15"></div>
+          <div fxFlex="85">
+            <div class="mb-20" fxLayout="column">
+              <div
+                *ngIf="
+                  isTextarea &&
+                  (!isViewMode || hasExtendDeferment) &&
+                  !viewModeExtendDeferment &&
+                  !hasCeased &&
+                  hasAutoCreate !== 'AUTO_CREATE_DRAFT_CESSATION'
+                "
+                fxLayout="column"
+                class="pt-20">
+                <mat-form-field fxFlex class="mb-16">
+                  <mat-label>{{ 'LAWSUIT.DEFERMENT.CUSTOMER_HISTORY_BRIEF' | translate }}</mat-label>
+                  <textarea
+                    matInput
+                    formControlName="customerHistory"
+                    class="form-control no-resize"
+                    cols="10"
+                    rows="10"
+                    maxlength="4000"
+                    required></textarea>
+                </mat-form-field>
+                <mat-form-field fxFlex class="mb-16">
+                  <mat-label>{{ 'LAWSUIT.DEFERMENT.ORIGIN_AND_NECESSITY' | translate }}</mat-label>
+                  <textarea
+                    matInput
+                    formControlName="originAndNecessity"
+                    class="form-control no-resize"
+                    cols="10"
+                    rows="10"
+                    maxlength="4000"
+                    required></textarea>
+                </mat-form-field>
+                <mat-form-field fxFlex class="mb-16">
+                  <mat-label>{{
+                    (isExecution ? 'LAWSUIT.DEFERMENT.DEFERMENT_REASON_EXEC' : 'LAWSUIT.DEFERMENT.DEFERMENT_REASON')
+                      | translate
+                  }}</mat-label>
+                  <textarea
+                    matInput
+                    formControlName="defermentReason"
+                    class="form-control no-resize"
+                    cols="10"
+                    rows="10"
+                    maxlength="4000"
+                    required></textarea>
+                </mat-form-field>
+                <mat-form-field fxFlex class="mb-16">
+                  <mat-label>{{ 'LAWSUIT.DEFERMENT.SUMMARY_APPROVE' | translate }}</mat-label>
+                  <textarea
+                    matInput
+                    formControlName="conclusionDeferment"
+                    class="form-control no-resize"
+                    cols="10"
+                    rows="10"
+                    maxlength="4000"
+                    required></textarea>
+                </mat-form-field>
+              </div>
+              <div
+                *ngIf="
+                  ((isViewMode && !hasExtendDeferment) || viewModeExtendDeferment) &&
+                  !hasCeased &&
+                  cessationState !== 'CESSATION_PENDING_APPROVED'
+                "
+                class="pt-20"
+                fxLayout="column">
+                <div fxFlex class="mb-16">
+                  <span class="thin-letter">{{ 'LAWSUIT.DEFERMENT.CUSTOMER_HISTORY_BRIEF' | translate }}</span>
+                  <div class="pre-line">
+                    {{ dataForm.get('customerHistory')?.value || '-' }}
+                  </div>
+                </div>
+                <div fxFlex class="mb-16">
+                  <span class="thin-letter">{{ 'LAWSUIT.DEFERMENT.ORIGIN_AND_NECESSITY' | translate }}</span>
+                  <div class="pre-line">
+                    {{ dataForm.get('originAndNecessity')?.value || '-' }}
+                  </div>
+                </div>
+                <div fxFlex class="mb-16">
+                  <span class="thin-letter">{{
+                    (isExecution ? 'LAWSUIT.DEFERMENT.DEFERMENT_REASON_EXEC' : 'LAWSUIT.DEFERMENT.DEFERMENT_REASON')
+                      | translate
+                  }}</span>
+                  <div class="pre-line">
+                    {{ dataForm.get('defermentReason')?.value || '-' }}
+                  </div>
+                </div>
+                <div fxFlex class="mb-16">
+                  <span class="thin-letter">{{ 'LAWSUIT.DEFERMENT.SUMMARY_APPROVE' | translate }}</span>
+                  <div class="pre-line">
+                    {{ dataForm.get('conclusionDeferment')?.value || '-' }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- เอกสารประกอบการชะลอดำเนินคดี -->
+        <div class="sub-container" fxLayout="row" fxLayoutGap="24px">
+          <!-- !(
+          defermentState === defermentStateEnum.DEFERMENT &&
+          hasCancelDeferment
+        ) && -->
+          <div fxFlex="15">
+            <h6
+              *ngIf="
+                !hasCeased &&
+                !(hasAutoCreate === 'AUTO_CREATE_DRAFT_CESSATION') &&
+                !(cessationState === 'CESSATION_PENDING_APPROVED' && !hasAutoCreate)
+              "
+              class="break-line">
+              {{
+                !isExecution
+                  ? ('LAWSUIT.DEFERMENT.DOCUMENT_CASE' | translate)
+                  : ('LAWSUIT.DEFERMENT.DOCUMENT_CASE_EXEC' | translate)
+              }}
+            </h6>
+            <h6
+              *ngIf="
+                hasCeased ||
+                (cessationState === 'CESSATION_PENDING_APPROVED' && !hasAutoCreate) ||
+                hasAutoCreate === 'AUTO_CREATE_DRAFT_CESSATION'
+              ">
+              {{ 'LAWSUIT.DEFERMENT.DOCUMENT_CASE_CESSATION' | translate }}
+            </h6>
+          </div>
+
+          <div fxFlex="85" *ngIf="hasCeased && hasCancelCessation">
+            <app-upload-multi-file-content
+              [uploadMultiInfo]="uploadMultiInfo"
+              (uploadContract)="uploadContract()"
+              [readonly]="(isViewMode && !hasExtendDeferment) || viewModeExtendDeferment"
+              (uploadFileEvent)="uploadFileEvent($event)"
+              (uploadCommitment)="uploadCommitment()"
+              [list]="documentUploadCancelCessation"
+              [uploadFor]="'DEFERMENT'"
+              [column]="documentColumns"
+              [labelAcceptFile]="''">
+            </app-upload-multi-file-content>
+          </div>
+          <div fxFlex="85" *ngIf="!hasCancelCessation">
+            <app-upload-multi-file-content
+              [uploadMultiInfo]="uploadMultiInfo"
+              (uploadContract)="uploadContract()"
+              [readonly]="(isViewMode && !hasExtendDeferment) || viewModeExtendDeferment"
+              (uploadFileEvent)="uploadFileEvent($event)"
+              (uploadCommitment)="uploadCommitment()"
+              [list]="isExecution && hasCancelDeferment ? readOnlyDocuments : documentUpload"
+              [uploadFor]="'DEFERMENT'"
+              [column]="documentColumns"
+              [labelAcceptFile]="''">
+            </app-upload-multi-file-content>
+          </div>
+        </div>
+      </ng-container>
+      <!-- ============================= Execution ==================================== -->
+      <ng-template #execution>
+        <div
+          *ngIf="(mode === 'EDIT' || mode === 'ADD') && (saleCollaterals.length > 0 || collateralSets.length > 0)"
+          class="banner-content full-width mt-20">
+          <app-message-banner type="info" [message]="'WITHDRAWN_SEIZURE_PROPERTY.COLLATERAL.DOCUMENT_TITLE_EXT_BANNER'">
+          </app-message-banner>
+        </div>
+        <!-- ข้อมูลลูกหนี้ -->
+        <div class="sub-container" fxLayout="row" fxLayoutGap="24px">
+          <div fxFlex="15">
+            <h6>
+              {{ 'LAWSUIT.DEFERMENT.DEBTOR_INFO' | translate }}
+            </h6>
+          </div>
+          <div fxFlex="85" class="overflow-hidden">
+            <div fxLayout="row" fxLayoutGap="16px" class="mb-16">
+              <div fxFlex="49">
+                <span class="thin-letter">{{ 'COMMON.LABEL_CIF_NO' | translate }}</span>
+                <div>
+                  {{ deferment.headerDetails?.customerId || dataForm.get('customerId')?.value || '-' }}
+                </div>
+              </div>
+              <div fxFlex="49">
+                <span class="thin-letter">{{ 'FINANCE.DEBTOR_NAME' | translate }}</span>
+                <div>{{ deferment.headerDetails?.customerName || '-' }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- ============================= INITIAL Execution ==================================== -->
+        <ng-container *ngIf="state === 'INITIAL'; else executionMain">
+          <div class="sub-container" fxLayout="row" fxLayoutGap="24px">
+            <div fxFlex="15">
+              <h6>
+                {{ 'LAWSUIT.DEFERMENT.PROPERTY_INFO_NO_ANNOUNCE_AUCTION' | translate }}
+              </h6>
+            </div>
+            <div fxFlex="85" class="overflow-hidden">
+              <div fxLayout="row" fxLayoutGap="16px" class="mb-16">
+                <div fxFlex="49">
+                  <button mat-flat-button color="primary" class="medium-aw-button" (click)="selectSeizure(1)">
+                    <mat-icon svgIcon="icon-Search" class="icon icon-medium mr-10"></mat-icon>
+                    {{ 'LAWSUIT.DEFERMENT.SELECT_PROPERTY_INFO_NO_ANNOUNCE_AUCTION' | translate }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="sub-container" fxLayout="row" fxLayoutGap="24px">
+            <div fxFlex="15">
+              <h6>
+                {{ 'LAWSUIT.DEFERMENT.PROPERTY_INFO_ANNOUNCE_AUCTION' | translate }}
+              </h6>
+            </div>
+            <div fxFlex="85" class="overflow-hidden">
+              <div fxLayout="row" fxLayoutGap="16px" class="mb-16">
+                <div fxFlex="49">
+                  <button mat-flat-button color="primary" class="medium-aw-button" (click)="selectSeizure(2)">
+                    <mat-icon svgIcon="icon-Search" class="icon icon-medium mr-10"></mat-icon>
+                    {{ 'LAWSUIT.DEFERMENT.SELECT_PROPERTY_INFO_ANNOUNCE_AUCTION' | translate }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+        <!-- ============================= MAIN Execution ==================================== -->
+        <ng-template #executionMain>
+          <div
+            *ngIf="!isViewMode || (isViewMode && (seizureCollaterals.length > 0 || saleCollaterals.length > 0))"
+            class="sub-container"
+            fxLayout="row"
+            fxLayoutGap="24px">
+            <div fxFlex="15">
+              <h6>{{ 'LAWSUIT.DEFERMENT.PROPERTY_INFO_NO_ANNOUNCE_AUCTION' | translate }}</h6>
+            </div>
+            <div fxFlex="85" class="overflow-hidden">
+              <ng-container
+                *ngIf="seizureCollaterals.length > 0 || saleCollaterals.length > 0; else selectNoAnnounceCollaterals">
+                <div class="mb-16">
+                  <app-seizure-property-list
+                    *ngIf="seizureCollaterals && seizureCollaterals.length > 0"
+                    [showHeader]="true"
+                    [list]="seizureCollaterals"
+                    [viewOnly]="true"
+                    [headerText]="'LAWSUIT.DEFERMENT.PROPERTY_SEIZURE' | translate"
+                    [canEdit]="!isViewMode && !hasExtendDeferment"
+                    [tableColumns]="collateralColumns"
+                    (onEditTable)="onEditSezure(1)"></app-seizure-property-list>
+                </div>
+                <div class="mb-16">
+                  <app-seizure-property-list
+                    *ngIf="saleCollaterals && saleCollaterals.length > 0"
+                    [showHeader]="true"
+                    [list]="saleCollaterals"
+                    [viewOnly]="true"
+                    [canEdit]="!isViewMode && !hasExtendDeferment"
+                    [headerText]="'LAWSUIT.DEFERMENT.PROPERTY_SALE_NO_ANNOUNCE_AUCTION' | translate"
+                    [tableColumns]="collateralColumns"
+                    (onEditTable)="onEditSezure(1)"></app-seizure-property-list>
+                </div>
+              </ng-container>
+              <ng-template #selectNoAnnounceCollaterals>
+                <div fxLayout="row" fxLayoutGap="16px" class="mb-16">
+                  <div fxFlex="49">
+                    <button mat-flat-button color="primary" class="medium-aw-button" (click)="selectSeizure(1)">
+                      <mat-icon svgIcon="icon-Search" class="icon icon-medium mr-10"></mat-icon>
+                      {{ 'LAWSUIT.DEFERMENT.SELECT_PROPERTY_INFO_NO_ANNOUNCE_AUCTION' | translate }}
+                    </button>
+                  </div>
+                </div>
+              </ng-template>
+            </div>
+          </div>
+          <div
+            *ngIf="seizureCollaterals.length > 0 || saleCollaterals.length > 0"
+            class="sub-container"
+            fxLayout="row"
+            fxLayoutGap="24px">
+            <div fxFlex="15">
+              <h6>{{ 'LAWSUIT.DEFERMENT.PROPERTY_DATE_NO_ANNOUNCE_AUCTION' | translate }}</h6>
+            </div>
+            <div *ngIf="!isViewMode" fxFlex="85" class="overflow-hidden">
+              <div fxFlex="40" class="mr-15">
+                <spig-datepicker
+                  [classInput]="'input-full-field border-black-40'"
+                  [required]="true"
+                  [label]="'LAWSUIT.DEFERMENT.START_FOLLOW_DATE'"
+                  [min]="currentDate"
+                  formControlName="noAuctionDefermentStartDate"
+                  (inputChange)="onDateChange()"></spig-datepicker>
+                <spig-error-msg
+                  [control]="getControl('noAuctionDefermentStartDate')"
+                  [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+                </spig-error-msg>
+              </div>
+              <div fxFlex="40">
+                <spig-datepicker
+                  [classInput]="'input-full-field border-black-40'"
+                  [required]="true"
+                  [label]="'LAWSUIT.DEFERMENT.DEAD_LINE_EXEC'"
+                  [min]="dataForm.get('noAuctionDefermentStartDate')?.value"
+                  formControlName="noAuctionDefermentEndDate"
+                  (inputChange)="onDateChange()"></spig-datepicker>
+                <spig-error-msg
+                  [control]="getControl('noAuctionDefermentEndDate')"
+                  [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+                </spig-error-msg>
+              </div>
+            </div>
+            <div *ngIf="isViewMode && !hasExtendDeferment" fxFlex="85" class="overflow-hidden">
+              <div fxLayout="row" fxLayoutGap="16px" class="mb-16">
+                <div fxFlex="49">
+                  <span class="thin-letter">{{ 'LAWSUIT.DEFERMENT.START_FOLLOW_DATE' | translate }}</span>
+                  <div>
+                    {{ (dataForm.get('noAuctionDefermentStartDate')?.value | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                  </div>
+                </div>
+                <div fxFlex="49">
+                  <span class="thin-letter">{{ 'LAWSUIT.DEFERMENT.DEAD_LINE_EXEC' | translate }}</span>
+                  <div>
+                    {{ (dataForm.get('noAuctionDefermentEndDate')?.value | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="hasExtendDeferment" fxFlex="85" class="overflow-hidden">
+              <div fxLayout="row" fxLayoutGap="16px" class="mb-16">
+                <div fxFlex="49">
+                  <span class="thin-letter">{{ 'LAWSUIT.DEFERMENT.START_FOLLOW_DATE' | translate }}</span>
+                  <div>
+                    {{ (dataForm.get('noAuctionDefermentStartDate')?.value | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                  </div>
+                </div>
+                <div fxFlex="49">
+                  <spig-datepicker
+                    [classInput]="'input-full-field border-black-40'"
+                    [required]="true"
+                    [label]="'LAWSUIT.DEFERMENT.DEAD_LINE_EXEC'"
+                    [min]="dataForm.get('noAuctionDefermentStartDate')?.value"
+                    formControlName="noAuctionDefermentEndDate"
+                    (inputChange)="onDateChange()"></spig-datepicker>
+                  <spig-error-msg
+                    [control]="getControl('noAuctionDefermentEndDate')"
+                    [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+                  </spig-error-msg>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            *ngIf="!isViewMode || (isViewMode && collateralSets.length > 0)"
+            class="sub-container"
+            fxLayout="row"
+            fxLayoutGap="24px">
+            <div fxFlex="15">
+              <h6>{{ 'LAWSUIT.DEFERMENT.PROPERTY_INFO_ANNOUNCE_AUCTION' | translate }}</h6>
+            </div>
+            <div fxFlex="85" class="overflow-hidden">
+              <ng-container *ngIf="collateralSets.length > 0; else selectAnnounceCollaterals">
+                <div class="mb-16">
+                  <app-announce-property-list
+                    *ngIf="collateralSets && collateralSets.length > 0"
+                    [showHeader]="true"
+                    [list]="collateralSets"
+                    [viewOnly]="true"
+                    [headerText]="'LAWSUIT.DEFERMENT.PROPERTY_SALE_ANNOUNCE_AUCTION' | translate"
+                    [canEdit]="!isViewMode && !hasExtendDeferment"
+                    [tableColumns]="collateralSetsColumns"
+                    [hasExtendDeferment]="hasExtendDeferment"
+                    (onEditTable)="onEditSezure(2)"
+                    (onChangeAppointment)="setExecutionDate()"></app-announce-property-list>
+                </div>
+              </ng-container>
+              <ng-template #selectAnnounceCollaterals>
+                <div fxLayout="row" fxLayoutGap="16px" class="mb-16">
+                  <div fxFlex="49">
+                    <button mat-flat-button color="primary" class="medium-aw-button" (click)="selectSeizure(2)">
+                      <mat-icon svgIcon="icon-Search" class="icon icon-medium mr-10"></mat-icon>
+                      {{ 'LAWSUIT.DEFERMENT.SELECT_PROPERTY_INFO_ANNOUNCE_AUCTION' | translate }}
+                    </button>
+                  </div>
+                </div>
+              </ng-template>
+            </div>
+          </div>
+          <div class="sub-container" fxLayout="row" fxLayoutGap="24px">
+            <div fxFlex="15">
+              <h6>{{ 'LAWSUIT.DEFERMENT.EXECUTION_INFO' | translate }}</h6>
+            </div>
+            <div fxFlex="85">
+              <div fxLayout="row" fxLayoutGap="16px" class="mb-16">
+                <div fxFlex="49">
+                  <span class="thin-letter">{{ 'LAWSUIT.DEFERMENT.START_DATE_EXECUTION' | translate }}</span>
+                  <div>
+                    {{ (dataForm.get('startDate')?.value | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                  </div>
+                </div>
+                <div fxFlex="49">
+                  <span class="thin-letter">{{ 'LAWSUIT.DEFERMENT.END_DATE_EXECUTION' | translate }}</span>
+                  <div>
+                    {{ (dataForm.get('endDate')?.value | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                  </div>
+                </div>
+              </div>
+              <!-- วันครบกําหนดชะลอสะสม เกิน 1 ปี -->
+              <div class="mb-16 mt-16" *ngIf="!isViewMode || hasExtendDeferment">
+                <app-message-banner
+                  [message]="'LAWSUIT.DEFERMENT.WARNING_OVER_1_YEAR'"
+                  type="fail"
+                  *ngIf="isResponseUnit && defermentDuration + (deferment.totalDefermentDaysResponseUnit || 0) > 365">
+                </app-message-banner>
+                <app-message-banner
+                  [message]="'LAWSUIT.DEFERMENT.WARNING_OVER_1_YEAR'"
+                  type="fail"
+                  *ngIf="
+                    isAMDResponseUnit && defermentDuration + (deferment.totalDefermentDaysAmdResponseUnit || 0) > 365
+                  ">
+                </app-message-banner>
+              </div>
+              <!-- จำนวนวันชะลอครั้งนี้ (วัน) -->
+              <div fxLayout="row" fxLayoutGap="16px" class="mb-16">
+                <div fxFlex="49" class="numaric-field">
+                  <span class="thin-letter">{{ 'LAWSUIT.DEFERMENT.DURATION' | translate }}</span>
+                  <div>{{ defermentDuration }}</div>
+                </div>
+              </div>
+
+              <div fxLayout="row" class="mb-16" fxLayoutGap="16px">
+                <!-- จำนวนวันชะลอสะสม ตาม Response unit (วัน) -->
+                <div class="numaric-field" fxFlex="49">
+                  <span class="thin-letter">{{ 'LAWSUIT.DEFERMENT.CUMULATIVE_DURATION' | translate }}</span>
+                  <div>
+                    {{
+                      isResponseUnit && (!isViewMode || hasExtendDeferment)
+                        ? defermentDuration + (deferment.totalDefermentDaysResponseUnit || 0)
+                        : deferment.totalDefermentDaysResponseUnit || 0
+                    }}
+                  </div>
+                </div>
+                <!-- จำนวนวันชะลอสะสม ตาม AMD response unit (วัน) -->
+                <div class="numaric-field" fxFlex="49">
+                  <span class="thin-letter">{{ 'LAWSUIT.DEFERMENT.CUMULATIVE_DURATION_AMD' | translate }}</span>
+                  <div>
+                    {{
+                      isAMDResponseUnit && (!isViewMode || hasExtendDeferment)
+                        ? defermentDuration + (deferment.totalDefermentDaysAmdResponseUnit || 0)
+                        : deferment.totalDefermentDaysAmdResponseUnit || 0
+                    }}
+                  </div>
+                </div>
+              </div>
+
+              <ng-container *ngIf="!isViewMode || hasExtendDeferment">
+                <div fxLayout="row" class="mb-16" fxLayoutGap="16px">
+                  <!-- อำนาจการอนุมัติ -->
+                  <div fxFlex="49">
+                    <span class="thin-letter">{{ 'LAWSUIT.DEFERMENT.APPROVAL' | translate }}</span>
+                    <div>
+                      {{ dataForm.get('defermentApproverName')?.value || '-' }}
+                    </div>
+                  </div>
+                  <div *ngIf="dataForm.get('defermentApproverCode')?.value === '2'" fxFlex="49" class="ml-1em">
+                    <spig-dropdown
+                      [config]="dlaConfig"
+                      [options]="dlaOption"
+                      [required]="false"
+                      classInput="input-normal"
+                      formControlName="dlaAuthorityCode"
+                      (selectedOption)="onSelectDLA($event)">
+                    </spig-dropdown>
+                  </div>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="isViewMode && !hasExtendDeferment">
+                <div fxLayout="row" class="mb-16" fxLayoutGap="16px">
+                  <!-- อำนาจการอนุมัติ -->
+                  <div fxFlex="49">
+                    <span class="thin-letter">{{ 'LAWSUIT.DEFERMENT.APPROVAL' | translate }}</span>
+                    <div>
+                      {{ dataForm.get('defermentApproverName')?.value || '-' }}
+                    </div>
+                  </div>
+                  <!-- DLA -->
+                  <div
+                    fxFlex="49"
+                    *ngIf="!((this.dataForm?.get('defermentApproverCode')?.value || '').toString() === '1')">
+                    <span class="thin-letter">
+                      {{ 'LAWSUIT.DEFERMENT.DLA' | translate }}
+                    </span>
+                    <div>
+                      {{ dataForm.get('dlaAuthorityName')?.value || '-' }}
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+              <!-- เหตุผลการชะลอบังคับคดี -->
+              <div *ngIf="!isViewMode || hasExtendDeferment" fxLayout="row" class="mb-16">
+                <div fxFlex="100">
+                  <spig-dropdown
+                    [config]="executionReasonConfig"
+                    [options]="defermentReasonOptions"
+                    classInput="input-normal"
+                    formControlName="defermentReasonCode"
+                    (selectedOption)="onSelectDefermentReason($event)">
+                  </spig-dropdown>
+                  <spig-error-msg
+                    [control]="getControl('defermentReasonCode')"
+                    [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+                  </spig-error-msg>
+                </div>
+              </div>
+              <div fxLayout="row" class="mb-16" *ngIf="isViewMode && !hasExtendDeferment">
+                <div fxFlex="100">
+                  <span class="thin-letter">{{ 'LAWSUIT.DEFERMENT.REASON_EXEC' | translate }}</span>
+                  <div *ngIf="dataForm.get('defermentReasonName')?.value !== 'อื่นๆ'">
+                    {{ dataForm.get('defermentReasonName')?.value || '-' }}
+                  </div>
+                  <div *ngIf="dataForm.get('defermentReasonName')?.value === 'อื่นๆ'">
+                    {{ dataForm.get('defermentReasonOther')?.value || '-' }}
+                  </div>
+                </div>
+              </div>
+              <div
+                fxLayout="row"
+                class="mb-16"
+                *ngIf="dataForm.get('defermentReasonCode')?.value === '1013' && (!isViewMode || hasExtendDeferment)">
+                <mat-form-field fxFlex="100" class="mb-16">
+                  <mat-label>{{ 'LAWSUIT.DEFERMENT.INPUT_REASON' | translate }}</mat-label>
+                  <textarea
+                    matInput
+                    formControlName="defermentReasonOther"
+                    class="form-control no-resize"
+                    cdkTextareaAutosize
+                    #autosize="cdkTextareaAutosize"
+                    rows="1"
+                    maxlength="500"
+                    required></textarea>
+                </mat-form-field>
+              </div>
+              <br />
+              <!-- สรุปภาระหนี้และหลักประกัน -->
+              <div fxLayout="row">
+                <div fxFlex="100">
+                  <div fxLayout="column">
+                    <div>
+                      <h6 class="mb-16">
+                        {{ 'LAWSUIT.DEFERMENT.SUMMARY_DEBT_AND_COLLATERAL' | translate }}
+                      </h6>
+                      <div class="table-scroll" id="table" *ngIf="cifSubTable && cifSubTable.length > 0">
+                        <table mat-table [dataSource]="cifSubTable">
+                          <ng-container matColumnDef="no">
+                            <th class="text-center" mat-header-cell *matHeaderCellDef>
+                              {{ 'COMMON.LABEL_NO' | translate }}
+                            </th>
+                            <td class="text-center" mat-cell *matCellDef="let element; let i = index">
+                              {{ i + 1 }}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                          </ng-container>
+                          <ng-container matColumnDef="litigationId">
+                            <th mat-header-cell *matHeaderCellDef>
+                              {{ 'COMMON.LABEL_LITIGATION_ID' | translate }}
+                            </th>
+                            <td mat-cell *matCellDef="let element">
+                              <span class="link" (click)="goToDebtSummary(element.litigationId)">
+                                {{ element.litigationId || '-' }}
+                              </span>
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef class="text-right">
+                              <b>{{ 'COMMON.TOTAL' | translate }}</b>
+                            </td>
+                          </ng-container>
+                          <ng-container matColumnDef="principle">
+                            <th mat-header-cell *matHeaderCellDef class="text-right">เงินต้น (บาท)</th>
+                            <td mat-cell *matCellDef="let element" class="text-right">
+                              {{ element.outstandingBalance || '0' | numberDecimal }}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef class="text-right">
+                              <span class="bold">{{
+                                cifSubTable | arraySum: 'outstandingBalance' | numberDecimal
+                              }}</span>
+                            </td>
+                          </ng-container>
+                          <ng-container matColumnDef="debt">
+                            <th mat-header-cell *matHeaderCellDef class="text-right">
+                              {{ 'LAWSUIT.HEAD_COLUMN_TOTAL_DEBT' | translate }}
+                            </th>
+                            <td mat-cell *matCellDef="let element" class="text-right">
+                              {{ element.totalDebt || '0' | numberDecimal }}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef class="text-right">
+                              <span class="bold">{{ cifSubTable | arraySum: 'totalDebt' | numberDecimal }}</span>
+                            </td>
+                          </ng-container>
+                          <ng-container matColumnDef="estimate">
+                            <th mat-header-cell *matHeaderCellDef class="text-right">
+                              {{ 'CUSTOMER.ESTIMATE_PRICE_BATH' | translate }}
+                            </th>
+                            <td mat-cell *matCellDef="let element" class="text-right">
+                              {{ element.appraisalPrice || '0' | numberDecimal }}
+                            </td>
+                            <td mat-footer-cell *matFooterCellDef></td>
+                          </ng-container>
+                          <tr mat-header-row *matHeaderRowDef="CIFSubColumn"></tr>
+                          <tr mat-row *matRowDef="let row; columns: CIFSubColumn"></tr>
+                          <tr
+                            mat-footer-row
+                            class="sticky-footer"
+                            *matFooterRowDef="['no', 'litigationId', 'principle', 'debt', 'estimate']"></tr>
+                        </table>
+                      </div>
+                      <ng-container
+                        *ngIf="!cifSubTable || cifSubTable?.length === 0"
+                        [ngTemplateOutlet]="dataNotFoundCIFSub">
+                      </ng-container>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            *ngIf="dataForm.get('defermentApproverCode')?.value !== '2'"
+            class="sub-container"
+            fxLayout="row"
+            fxLayoutGap="24px">
+            <div fxFlex="15"></div>
+            <div fxFlex="85">
+              <div class="mb-20" fxLayout="column">
+                <div
+                  *ngIf="
+                    isTextarea &&
+                    (!isViewMode || hasExtendDeferment) &&
+                    !viewModeExtendDeferment &&
+                    !hasCeased &&
+                    hasAutoCreate !== 'AUTO_CREATE_DRAFT_CESSATION'
+                  "
+                  fxLayout="column"
+                  class="pt-20">
+                  <mat-form-field fxFlex class="mb-16">
+                    <mat-label>{{ 'LAWSUIT.DEFERMENT.CUSTOMER_HISTORY_BRIEF' | translate }}</mat-label>
+                    <textarea
+                      matInput
+                      formControlName="customerHistory"
+                      class="form-control no-resize"
+                      cols="10"
+                      rows="10"
+                      maxlength="4000"
+                      required></textarea>
+                  </mat-form-field>
+                  <mat-form-field fxFlex class="mb-16">
+                    <mat-label>{{ 'LAWSUIT.DEFERMENT.ORIGIN_AND_NECESSITY' | translate }}</mat-label>
+                    <textarea
+                      matInput
+                      formControlName="originAndNecessity"
+                      class="form-control no-resize"
+                      cols="10"
+                      rows="10"
+                      maxlength="4000"
+                      required></textarea>
+                  </mat-form-field>
+                  <mat-form-field fxFlex class="mb-16">
+                    <mat-label>{{ 'LAWSUIT.DEFERMENT.DEFERMENT_REASON_EXEC' | translate }}</mat-label>
+                    <textarea
+                      matInput
+                      formControlName="defermentReason"
+                      class="form-control no-resize"
+                      cols="10"
+                      rows="10"
+                      maxlength="4000"
+                      required></textarea>
+                  </mat-form-field>
+                  <mat-form-field fxFlex class="mb-16">
+                    <mat-label>{{ 'LAWSUIT.DEFERMENT.SUMMARY_APPROVE' | translate }}</mat-label>
+                    <textarea
+                      matInput
+                      formControlName="conclusionDeferment"
+                      class="form-control no-resize"
+                      cols="10"
+                      rows="10"
+                      maxlength="4000"
+                      required></textarea>
+                  </mat-form-field>
+                </div>
+                <div
+                  *ngIf="
+                    ((isViewMode && !hasExtendDeferment) || viewModeExtendDeferment) &&
+                    !hasCeased &&
+                    cessationState !== 'CESSATION_PENDING_APPROVED'
+                  "
+                  class="pt-20"
+                  fxLayout="column">
+                  <div fxFlex class="mb-16">
+                    <span class="thin-letter">{{ 'LAWSUIT.DEFERMENT.CUSTOMER_HISTORY_BRIEF' | translate }}</span>
+                    <div class="pre-line">
+                      {{ dataForm.get('customerHistory')?.value || '-' }}
+                    </div>
+                  </div>
+                  <div fxFlex class="mb-16">
+                    <span class="thin-letter">{{ 'LAWSUIT.DEFERMENT.ORIGIN_AND_NECESSITY' | translate }}</span>
+                    <div class="pre-line">
+                      {{ dataForm.get('originAndNecessity')?.value || '-' }}
+                    </div>
+                  </div>
+                  <div fxFlex class="mb-16">
+                    <span class="thin-letter">{{ 'LAWSUIT.DEFERMENT.DEFERMENT_REASON_EXEC' | translate }}</span>
+                    <div class="pre-line">
+                      {{ dataForm.get('defermentReason')?.value || '-' }}
+                    </div>
+                  </div>
+                  <div fxFlex class="mb-16">
+                    <span class="thin-letter">{{ 'LAWSUIT.DEFERMENT.SUMMARY_APPROVE' | translate }}</span>
+                    <div class="pre-line">
+                      {{ dataForm.get('conclusionDeferment')?.value || '-' }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- เอกสารประกอบการชะลอบังคับคดี -->
+          <div class="sub-container" fxLayout="row" fxLayoutGap="24px">
+            <div fxFlex="15">
+              <h6 class="break-line">
+                {{ 'LAWSUIT.DEFERMENT.DOCUMENT_CASE_EXEC' | translate }}
+              </h6>
+            </div>
+            <div fxFlex="85">
+              <app-upload-multi-file-content
+                [uploadMultiInfo]="uploadMultiInfo"
+                (uploadContract)="uploadContract()"
+                [readonly]="(isViewMode && !hasExtendDeferment) || viewModeExtendDeferment"
+                (uploadFileEvent)="uploadFileEvent($event)"
+                (uploadCommitment)="uploadCommitment()"
+                [list]="hasCancelDeferment ? readOnlyDocuments : documentUpload"
+                uploadFor="DEFERMENT"
+                [column]="documentColumns"
+                [labelAcceptFile]="isViewMode ? '' : 'UPLOAD_FILE.LABEL_HINT_DOCUMENT_PDF_JPG_JPEG_2'">
+              </app-upload-multi-file-content>
+            </div>
+          </div>
+          <!-- เอกสารที่เกี่ยวข้อง -->
+          <div class="sub-container mb-16" *ngIf="saleCollaterals.length > 0 || collateralSets.length > 0">
+            <app-withdrawn-seizure-property-upload-document
+              [documentUpload]="relatedDocumentUpload"
+              [isUploadReadOnly]="(isViewMode && !hasExtendDeferment) || viewModeExtendDeferment"
+              [uploadMultiInfo]="uploadMultiInfo"
+              [formUploadControl]="getSuspendAuctionDocumentsControls"
+              [uploadFor]="'EXECUTION_RELATED'"
+              (onDownLoadForm)="downLoadForm()"
+              (onUploadFileEvent)="uploadRelateFileEvent($event)">
+            </app-withdrawn-seizure-property-upload-document>
+          </div>
+        </ng-template>
+      </ng-template>
+      <!-- หนังสือสั่งการ -->
+      <div
+        class="sub-container"
+        fxLayout="row"
+        fxLayoutGap="24px"
+        *ngIf="
+          (defermentState !== 'NORMAL' || hasCeased) &&
+          !isExecution &&
+          !hasExtendDeferment &&
+          !(hasCeased && (cessationState === undefined || cessationState === 'NORMAL')) &&
+          !taskId &&
+          mode !== 'EDIT' &&
+          isViewMode
+        ">
+        <div fxFlex="15">
+          <h6>
+            {{ 'LAWSUIT.DEFERMENT.DOCUMENT_INSTRUCTION' | translate }}
+          </h6>
+        </div>
+        <div *ngIf="isViewMode" fxFlex="20">
+          <button
+            type="button"
+            mat-flat-button
+            color="primary"
+            class="medium-fw-button"
+            [disabled]="isDisable"
+            (click)="onDownload()">
+            <mat-icon svgIcon="icon-Download" class="icon-xmedium"></mat-icon>
+            {{ 'LAWSUIT.DEFERMENT.DOWNLOAD_DOCUMENT_INSTRUCTION' | translate }}
+          </button>
+        </div>
+        <div *ngIf="!isViewMode" fxFlex="20">
+          <button
+            type="button"
+            mat-flat-button
+            color="primary"
+            class="medium-fw-button"
+            [disabled]="cessationState === 'CESSATION' ? false : isDisable"
+            (click)="onDownload()">
+            <mat-icon svgIcon="icon-Download" class="icon-xmedium"></mat-icon>
+            {{ 'LAWSUIT.DEFERMENT.DOWNLOAD_DOCUMENT_INSTRUCTION' | translate }}
+          </button>
+        </div>
+      </div>
+      <!-- ประวัติการอนุมัติ -->
+      <div
+        *ngIf="
+          (cessationState === 'CESSATION_PENDING_APPROVED' ||
+            defermentState === 'NORMAL_PENDING_APPROVED' ||
+            defermentState === 'DEFERMENT_PENDING_APPROVED' ||
+            defermentState === 'DEFERMENT' ||
+            isDetailView ||
+            hasCancelDeferment ||
+            hasCancelCessation ||
+            defermentTaskStatus === 'REVISE' ||
+              defermentTaskStatus === 'APPROVED' ||
+              (defermentTaskStatus === 'REJECTED' && isExecution)) &&
+          mode !== 'EDIT' &&
+          !hasExtendDeferment &&
+          isViewMode
+        "
+        class="sub-container"
+        fxLayout="row"
+        fxLayoutGap="24px">
+        <div fxFlex="15">
+          <h6>
+            {{ 'LAWSUIT.DEFERMENT.HISTORY' | translate }}
+          </h6>
+        </div>
+        <div fxFlex="85">
+          <div
+            class="table-scroll"
+            id="table"
+            *ngIf="defermentApprovalHistoryInfos && defermentApprovalHistoryInfos.length > 0">
+            <table mat-table [dataSource]="defermentApprovalHistoryInfos">
+              <ng-container matColumnDef="no">
+                <th class="text-center mat-column-no" mat-header-cell *matHeaderCellDef>
+                  {{ 'COMMON.LABEL_NO' | translate }}
+                </th>
+                <td class="text-center mat-column-no" mat-cell *matCellDef="let element; let i = index">
+                  {{ i + 1 }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="approver">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ 'LAWSUIT.DEFERMENT.APPROVER' | translate }}
+                </th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.approverId || '-' }} -
+                  {{ element.approverName || '-' }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="level">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ 'LAWSUIT.DEFERMENT.LEVEL' | translate }}
+                </th>
+                <td mat-cell *matCellDef="let element">
+                  <span *ngIf="element.approveActor === ARPPROVE_ACTOR_ENUM.Faction">{{
+                    'LAWSUIT.DEFERMENT.ARPPROVE_ACTOR_FACTION' | translate
+                  }}</span>
+                  <span *ngIf="element.approveActor === ARPPROVE_ACTOR_ENUM.Group">{{
+                    'LAWSUIT.DEFERMENT.ARPPROVE_ACTOR_GROUP' | translate
+                  }}</span>
+                  <span *ngIf="element.approveActor === ARPPROVE_ACTOR_ENUM.Organization">{{
+                    'LAWSUIT.DEFERMENT.ARPPROVE_ACTOR_ORGANIZATION' | translate
+                  }}</span>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="result">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ 'LAWSUIT.DEFERMENT.RESULT' | translate }}
+                </th>
+                <td mat-cell *matCellDef="let element">
+                  <span *ngIf="element.approveResult === ARPPROVE_RESULT_ENUM.Approve">{{
+                    'COMMON.LABEL_APPROVE' | translate
+                  }}</span>
+                  <span *ngIf="element.approveResult === ARPPROVE_RESULT_ENUM.Reject">{{
+                    'COMMON.LABEL_NOT_APPROVE' | translate
+                  }}</span>
+                  <span *ngIf="element.approveResult === ARPPROVE_RESULT_ENUM.Agree">{{
+                    'LAWSUIT.DEFERMENT.LABEL_AGREE' | translate
+                  }}</span>
+                  <span *ngIf="element.approveResult === ARPPROVE_RESULT_ENUM.NotAgree">{{
+                    'COMMON.BUTTON_NOT_AGREE' | translate
+                  }}</span>
+                  <span *ngIf="element.approveResult === ARPPROVE_RESULT_ENUM.Revise">{{
+                    'COMMON.LABEL_SEND_BACK_EDIT' | translate
+                  }}</span>
+
+                  <!-- To update binding & value -->
+                  <app-tooltip
+                    *ngIf="
+                      element.approveResult === ARPPROVE_RESULT_ENUM.Revise ||
+                      element.approveResult === ARPPROVE_RESULT_ENUM.NotAgree ||
+                      element.approveResult === ARPPROVE_RESULT_ENUM.Reject
+                    "
+                    [params]="[
+                      {
+                        title: 'COMMON.LABEL_REASON' | translate,
+                        content: '<b>' + element.reason + '</b>',
+                      },
+                    ]"
+                    [iconClass]="['icon-xsmall', 'fill-blue']"></app-tooltip>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="date">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ 'LAWSUIT.DEFERMENT.OPERATING_DATE' | translate }}
+                </th>
+                <td mat-cell *matCellDef="let element">
+                  {{ (element.approveDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="defermentColumn"></tr>
+              <tr mat-row *matRowDef="let row; columns: defermentColumn"></tr>
+            </table>
+          </div>
+          <ng-container
+            *ngIf="!defermentApprovalHistoryInfos || defermentApprovalHistoryInfos?.length === 0"
+            [ngTemplateOutlet]="dataNotFound">
+          </ng-container>
+        </div>
+      </div>
+    </mat-card>
+    <!-- dataNotFound -->
+    <ng-template #dataNotFound>
+      <div class="table-content">
+        <div class="table-scroll">
+          <table mat-table [dataSource]="defermentApprovalHistoryInfos">
+            <ng-container matColumnDef="no">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'COMMON.LABEL_NO' | translate }}
+              </th>
+            </ng-container>
+            <ng-container matColumnDef="approver">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'LAWSUIT.DEFERMENT.APPROVER' | translate }}
+              </th>
+            </ng-container>
+            <ng-container matColumnDef="level">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'LAWSUIT.DEFERMENT.LEVEL' | translate }}
+              </th>
+            </ng-container>
+            <ng-container matColumnDef="result">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'LAWSUIT.DEFERMENT.RESULT' | translate }}
+              </th>
+            </ng-container>
+            <ng-container matColumnDef="date">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'LAWSUIT.DEFERMENT.OPERATING_DATE' | translate }}
+              </th>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="defermentColumn"></tr>
+            <tr mat-row *matRowDef="let row; columns: defermentColumn"></tr>
+          </table>
+        </div>
+        <app-message-empty [message]="'LAWSUIT.DEFERMENT.HISTORY_NOT_FOUND'"></app-message-empty>
+      </div>
+    </ng-template>
+
+    <!-- dataNotFound CIF -->
+    <ng-template #dataNotFoundCIF>
+      <div class="table-content">
+        <div class="table-scroll" table-scroll>
+          <table mat-table [dataSource]="defermentApprovalHistoryInfos">
+            <ng-container matColumnDef="check">
+              <th mat-header-cell *matHeaderCellDef>
+                <mat-checkbox [disabled]="true"></mat-checkbox>
+              </th>
+            </ng-container>
+            <ng-container matColumnDef="lgid">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'LAWSUIT.DEFERMENT.DURATION' | translate }}
+              </th>
+            </ng-container>
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'LAWSUIT.DEFERMENT.CANCEL_DATE' | translate }}
+              </th>
+            </ng-container>
+            <ng-container matColumnDef="date">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ (isExecution ? 'LAWSUIT.DEFERMENT.REASON_EXEC' : 'LAWSUIT.DEFERMENT.REASON') | translate }}
+              </th>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="CIFColumn"></tr>
+            <tr mat-row *matRowDef="let row; columns: CIFColumn"></tr>
+          </table>
+        </div>
+        <app-message-empty [message]="'LAWSUIT.DEFERMENT.HISTORY_NOT_FOUND'"></app-message-empty>
+      </div>
+    </ng-template>
+
+    <!-- dataNotFound CIFSub -->
+    <ng-template #dataNotFoundCIFSub>
+      <div class="table-content">
+        <div class="table-scroll" table-scroll>
+          <table mat-table [dataSource]="defermentApprovalHistoryInfos">
+            <ng-container matColumnDef="no">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'COMMON.LABEL_NO' | translate }}
+              </th>
+            </ng-container>
+            <ng-container matColumnDef="litigationId">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'COMMON.LABEL_LITIGATION_ID' | translate }}
+              </th>
+            </ng-container>
+            <ng-container matColumnDef="principle">
+              <th mat-header-cell *matHeaderCellDef>เงินต้น (บาท)</th>
+            </ng-container>
+            <ng-container matColumnDef="debt">
+              <th mat-header-cell *matHeaderCellDef>ภาระหนี้รวม (บาท)</th>
+            </ng-container>
+            <ng-container matColumnDef="estimate">
+              <th mat-header-cell *matHeaderCellDef>ราคาประเมินรวม (บาท)</th>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="CIFSubColumn"></tr>
+            <tr mat-row *matRowDef="let row; columns: CIFSubColumn"></tr>
+          </table>
+        </div>
+        <app-message-empty [message]="isExecution ? notFoundMsgCIF : 'ไม่พบประวัติ'"></app-message-empty>
+      </div>
+    </ng-template>
+    <ng-container *ngIf="showDefermentStatements">
+      <app-deferment-statements [dataStatementForm]="dataForm" [mode]="mode"></app-deferment-statements>
+    </ng-container>
+  </mat-tab>
+
+  <mat-tab label="1">
+    <ng-template mat-tab-label>{{ 'LAWSUIT.DEFERMENT.APPROVE_LIST' | translate }}</ng-template>
+
+    <app-deferment-info
+      [dataForm]="dataForm"
+      [_btnAction]="_btnAction"
+      [dataTable]="dataTable"
+      [litigationId]="litigationId"
+      [hasCeased]="hasCeased"
+      [tabIndex]="tabIndex"
+      [defermentCategory]="defermentCategory"
+      [initialDataTable]="initialDataTable"
+      (detailView)="checkDetailView($event)"></app-deferment-info>
+  </mat-tab>
+
+  <mat-tab label="2" *ngIf="defermentRole !== DefermentRoleEnum.Other">
+    <ng-template mat-tab-label>{{ 'LAWSUIT.DEFERMENT.APPROVE_HISTORY' | translate }}</ng-template>
+
+    <app-deferment-info
+      [dataForm]="dataForm"
+      [_btnAction]="_btnAction"
+      [dataTable]="dataTable"
+      [litigationId]="litigationId"
+      [hasCeased]="hasCeased"
+      [tabIndex]="tabIndex"
+      [defermentCategory]="defermentCategory"
+      [initialDataTable]="initialDataTable"
+      (detailView)="checkDetailView($event)"></app-deferment-info>
+  </mat-tab>
+</mat-tab-group>

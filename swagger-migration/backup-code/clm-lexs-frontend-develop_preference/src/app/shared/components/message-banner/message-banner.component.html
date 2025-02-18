@@ -1,0 +1,43 @@
+<div class="banner-container full-width {{ type }}">
+  <div
+    class="element-inline full-width {{ size }}"
+    fxLayout="row"
+    fxLayoutAlign="space-between center"
+    [ngClass]="type === 'fail-highlight' ? 'banner-content-fail-highlight' : 'banner-content'">
+    <div class="full-width" fxLayout="row" fxLayoutAlign="start">
+      <mat-icon class="icon icon-md mr-10" [svgIcon]="icon"></mat-icon>
+      <div [ngClass]="messageContainerClass" fxLayout="column" fxLayoutAlign="center">
+        <span
+          class="element-inline full-width {{ type }}"
+          [ngClass]="messageClass"
+          *ngIf="displayMessage"
+          [innerHtml]="displayMessage"></span>
+        <ul class="mt-5 mb-5 ml-25" *ngFor="let item of subMessage">
+          <li>
+            <h6>
+              {{ item }}
+            </h6>
+          </li>
+        </ul>
+        <ng-content></ng-content>
+      </div>
+      <app-tooltip
+        class="ml-16 mt-2"
+        *ngIf="toolTipParams && toolTipParams.length > 0"
+        [params]="toolTipParams"
+        [iconClass]="'icon-small fill-black'"></app-tooltip>
+    </div>
+    <button
+      id="btn-msg-ban-action"
+      fxLayout="row"
+      fxLayoutAlign="start center"
+      fxLayoutGap="8"
+      class="element-inline btn {{ actionButtonClass }}"
+      [ngClass]="actionButtonBorder ? 'border' : 'non-border'"
+      *ngIf="actionButton"
+      (click)="actionButtonClicked()">
+      <mat-icon *ngIf="actionButtonIcon" class=" {{ iconClass }}  " [svgIcon]="actionButtonIcon"></mat-icon>
+      <span class="no-wrap" [innerHTML]="actionButton | translate"></span>
+    </button>
+  </div>
+</div>

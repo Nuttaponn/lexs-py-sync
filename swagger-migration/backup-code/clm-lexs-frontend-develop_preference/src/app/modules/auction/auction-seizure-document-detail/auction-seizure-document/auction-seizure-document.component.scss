@@ -1,0 +1,35 @@
+@import '/src/styles/colors';
+
+.d-inti {
+  display: initial;
+}
+
+::ng-deep app-auction-seizure-document {
+  .order-cell {
+    width: 5%;
+  }
+  .left {
+    left: 30%;
+  }
+
+  .bg-color-gray {
+    .mat-badge-content {
+      background: map-get($ktb-palette-biz-gray, 200);
+      width: 25px;
+      border-radius: 45%;
+      color: $black;
+    }
+  }
+  .sub-expansion:not(:last-child) {
+    border-bottom: none;
+  }
+  app-common-document-table .app-document-header {
+    .expand-button {
+      padding-right: 15px;
+      text-align: end;
+    }
+    .ml-6 {
+      margin-left: 5px !important;
+    }
+  }
+}

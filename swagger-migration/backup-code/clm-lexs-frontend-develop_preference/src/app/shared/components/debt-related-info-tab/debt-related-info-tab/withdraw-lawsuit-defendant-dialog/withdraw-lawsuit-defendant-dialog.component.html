@@ -1,0 +1,168 @@
+<div class="container">
+  <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px" class="mt-15">
+    <div fxLayout="column" fxFlex="25">
+      <h6>
+        <!-- ข้อมูลผู้เกี่ยวข้อง -->
+        {{ 'CUSTOMER.RELATED_PERSON_INFO' | translate }}
+      </h6>
+    </div>
+    <div fxLayout="column" fxFlex="75" class="full-width">
+      <ng-container
+        [ngTemplateOutlet]="relatePersonInfoTemplate"
+        [ngTemplateOutletContext]="{ list: relatePersonInfoList }"></ng-container>
+    </div>
+  </div>
+  <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px" class="mt-15">
+    <div fxLayout="column" fxFlex="25">
+      <h6>
+        <!-- เอกสารเพิ่มเติม -->
+        {{ 'LAWSUIT.TRIAL.DOCUMENT' | translate }}
+      </h6>
+    </div>
+    <div fxLayout="column" fxFlex="75" class="full-width">
+      <ng-container
+        [ngTemplateOutlet]="documentTemplate"
+        [ngTemplateOutletContext]="{ list: documents }"></ng-container>
+    </div>
+  </div>
+  <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px" class="mt-15">
+    <div fxLayout="column" fxFlex="25">
+      <h6>
+        <!-- เหตุผล -->
+        {{ 'COMMON.LABEL_REASON' | translate }}
+      </h6>
+    </div>
+    <div fxLayout="column" fxFlex="75" class="full-width">
+      <span class="fill-black-70">
+        <!-- เหตุผลที่ลบ -->
+        {{ 'DEBT_RELATED_INFO_TAB.REMOVE_RELATE_PERSON_LEGAL.LABEL_REASON_REMOVE' | translate }}
+      </span>
+      <div class="color-biz-black-100">
+        {{ reason || '-' }}
+      </div>
+    </div>
+  </div>
+  <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px" class="mt-15">
+    <div fxLayout="column" fxFlex="25">
+      <h6>
+        {{ 'DEBT_RELATED_INFO_TAB.WITHDRAW_LAWSUIT_DEFENDANT_DIALOG.DOC_PETITION_TITLE' | translate }}
+      </h6>
+    </div>
+    <div fxLayout="column" fxFlex="75" class="full-width">
+      <app-upload-multi-file-content
+        [list]="docs"
+        [column]="docColumn"
+        [labelAcceptFile]="''"
+        [uploadMultiInfo]="uploadInfo"
+        [readonly]="false"
+        (uploadFileEvent)="onUploadFileEvent($event)">
+      </app-upload-multi-file-content>
+      <p *ngIf="isSaveClicked && (!fileList || fileList?.length === 0)" class="error-msg mt-10">
+        {{ 'DEBT_RELATED_INFO_TAB.WITHDRAW_LAWSUIT_DEFENDANT_DIALOG.DOC_PETITION_REQUIRED_ERROR' | translate }}
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ข้อมูลผู้เกี่ยวข้อง -->
+<ng-template #relatePersonInfoTemplate let-dataSource="list">
+  <div class="table-scroll" id="table">
+    <table mat-table [dataSource]="dataSource">
+      <!-- ลำดับ Column -->
+      <ng-container matColumnDef="no">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'COMMON.LABEL_NO' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element; let i = index">
+          <div>
+            {{ i + 1 }}
+          </div>
+        </td>
+      </ng-container>
+      <!-- ชื่อ-นามสกุล Column -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'COMMON.LABEL_FULL_NAME' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div>
+            {{ element?.name || '-' }}
+          </div>
+        </td>
+      </ng-container>
+      <!-- ความสัมพันธ์ Column -->
+      <ng-container matColumnDef="relationDesc">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'LAWSUIT.INDICTMENT.RELATION' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div>
+            {{ 'LAWSUIT.MAPPING.RELATION.' + element.relation | translate }}
+          </div>
+        </td>
+      </ng-container>
+      <!-- เลขประจำตัวประชาชน/เลขประจำตัวผู้เสียภาษี Column -->
+      <ng-container matColumnDef="identificationNo">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'CUSTOMER.COLUMN_NATIONAL_ID_TAX_ID' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div>
+            {{ element?.identificationNo || '-' }}
+          </div>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="relatePersonInfoHeader"></tr>
+      <tr mat-row *matRowDef="let row; columns: relatePersonInfoHeader"></tr>
+    </table>
+    <ng-container *ngIf="relatePersonInfoList.length === 0" [ngTemplateOutlet]="dataNotFound"></ng-container>
+  </div>
+</ng-template>
+<!-- เอกสารเพิ่มเติม -->
+<ng-template #documentTemplate let-dataSource="list">
+  <div class="table-scroll" id="doc-table">
+    <table mat-table [dataSource]="dataSource">
+      <!-- ลำดับ Column -->
+      <ng-container matColumnDef="no">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'COMMON.LABEL_NO' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element; let i = index">
+          <div>
+            {{ i + 1 }}
+          </div>
+        </td>
+      </ng-container>
+      <!-- ชื่อเอกสาร Column -->
+      <ng-container matColumnDef="documentName">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'UPLOAD_FILE.MULTI_COLUMN_DOCUMENT_NAME' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div class="link" (click)="onDownloadDocument(element)">
+            {{ element?.documentTemplate?.documentName || '-' }}
+          </div>
+        </td>
+      </ng-container>
+      <!-- วันที่อัปโหลด Column -->
+      <ng-container matColumnDef="documentDate">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'UPLOAD_FILE.MULTI_COLUMN_UPLOAD_DATE' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div>
+            {{ (element?.documentDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="documentHeader"></tr>
+      <tr mat-row *matRowDef="let row; columns: documentHeader"></tr>
+    </table>
+    <ng-container *ngIf="documents.length === 0" [ngTemplateOutlet]="dataNotFound"></ng-container>
+  </div>
+</ng-template>
+
+<ng-template #dataNotFound>
+  <app-message-empty [message]="'COMMON.LABEL_PREFIX_NOT_FOUND'"></app-message-empty>
+</ng-template>

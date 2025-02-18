@@ -1,0 +1,70 @@
+<mat-toolbar class="main-titlebar">
+  <mat-toolbar-row class="main-titlebar-row"
+    [class.button-left]="menuicon && menuiconpos === 'left'">
+    <!-- Left part of title bar -->
+    <div class="user-info-block">
+      <button id="btn-menu-icon-left"
+        *ngIf="menuicon && menuiconpos === 'left'"
+        type="button"
+        aria-label="Toggle user info"
+        mat-icon-button
+        (click)="onMenuClick()">
+        <mat-icon svgIcon="{{menuiconname}}"
+          class="icon icon-medium"></mat-icon>
+      </button>
+      <div id="text-menu-left"
+        class="menu-text"
+        *ngIf="menuicon && menuiconpos === 'left'">{{menutext}}</div>
+      <span class="separator primary"
+        *ngIf="menuicon && menuiconpos === 'left'"></span>
+      <!-- <div *ngIf="logo && logopos === 'left'" id="logo-title-bar-right" class="titlebar-logo"></div> -->
+      <div *ngIf="logo && logopos === 'left'"
+        id="logo-title-bar-right"
+        class="titlebar-logo-container">
+        <span class="titlebar-logo"></span>
+        <span *ngIf="titlebartext"
+          class="title-bar-text">{{titlebartext}}</span>
+      </div>
+    </div>
+    <!-- Center part of title bar -->
+    <div id="text-title"
+      class="title-text">
+      {{titleText}}
+    </div>
+    <div class="flex-end-container">
+      <div class="user-info-block">
+        <div>
+          <ng-content select="[additionalInfo]"></ng-content>
+        </div>
+      </div>
+      <div class="user-info-block">
+        <div>
+          <ng-content select="[notifications]"></ng-content>
+        </div>
+      </div>
+      <!-- Right part of title bar -->
+      <div class="user-info-block">
+        <div>
+          <ng-content select="[userInfo]"></ng-content>
+        </div>
+        <div *ngIf="logo && logopos === 'right'"
+          id="logo-title-bar-right"
+          class="titlebar-logo"></div>
+        <span class="separator"
+          *ngIf="menuicon && menuiconpos === 'right'"></span>
+        <div id="text-menu-right"
+          class="menu-text"
+          *ngIf="menuicon && menuiconpos === 'right'">{{menutext}}</div>
+        <button id="btn-menu-icon-right"
+          *ngIf="menuicon && menuiconpos === 'right'"
+          type="button"
+          aria-label="Toggle user info"
+          mat-icon-button
+          (click)="onMenuClick()">
+          <mat-icon svgIcon="{{menuiconname}}"
+            class="icon icon-medium"></mat-icon>
+        </button>
+      </div>
+    </div>
+  </mat-toolbar-row>
+</mat-toolbar>

@@ -1,0 +1,59 @@
+<div class="container">
+  <div fxLayout="column">
+    <app-upload-file-content
+      [isUpload]="!!seizureUploadForm.imageId"
+      [title]="seizureUploadDialogConfig.title"
+      [upload_title]="seizureUploadDialogConfig.upload_title || seizureUploadDialogConfig.title"
+      [readState]="'payment'"
+      [taskCode]="_taskCode"
+      [isReadDocument]="true"
+      [isSubmited]="seizureUploadDialogConfig.isSubmitted"
+      [seizureLedId]="seizureLedIdValid"
+      [seizureUploadForm]="seizureUploadForm"
+      [uploadInfo]="seizureUploadDialogConfig.uploadInfo"
+      [isDisabledBtnUpload]="!uploadableBtn"
+      [acceptFile]="['application/pdf']"
+      (uploadError)="onUploadError($event)"
+      (readDocumentEvent)="onUploadSuccess($event)"
+      [isRequired]="true"
+      [invalidAmount]="seizureUploadForm.amount?.toString() !== seizureUploadFormControl.value?.toString()">
+    </app-upload-file-content>
+  </div>
+  <div class="mt-24" fxLayout="column">
+    <mat-form-field>
+      <mat-label [class.invalid]="seizureUploadFormControl.invalid">ค่าใช้จ่ายบังคับคดี (บาท)</mat-label>
+      <input appNumberOnly="number" [formControl]="seizureUploadFormControl" matInput autocomplete="off" />
+    </mat-form-field>
+    <spig-error-msg class="mt-4" [control]="seizureUploadFormControl" [customErrorMsg]="'กรุณาระบุค่าใช้จ่ายบังคับคดี'">
+    </spig-error-msg>
+  </div>
+
+  <!-- display after get error from upload document -->
+  <ng-container *ngIf="messageType">
+    <ng-container [ngSwitch]="messageType">
+      <ng-container *ngSwitchCase="'error'">
+        <ng-container
+          *ngIf="errorMsg !== 'F033'"
+          [ngTemplateOutlet]="msgBannerTemplate"
+          [ngTemplateOutletContext]="{ msg: errorMsg }"></ng-container>
+      </ng-container>
+      <ng-container *ngSwitchCase="'success'">
+        <ng-container
+          [ngTemplateOutlet]="msgBannerTemplate"
+          [ngTemplateOutletContext]="{ msg: successMsg }"></ng-container>
+      </ng-container>
+      <ng-container *ngSwitchCase="'invalid'">
+        <ng-container
+          [ngTemplateOutlet]="msgBannerTemplate"
+          [ngTemplateOutletContext]="{ msg: invalidMsg }"></ng-container>
+      </ng-container>
+      <ng-container *ngSwitchDefault></ng-container>
+    </ng-container>
+  </ng-container>
+</div>
+
+<ng-template let-msg="msg" #msgBannerTemplate>
+  <div class="mt-24">
+    <app-message-banner [message]="msg"></app-message-banner>
+  </div>
+</ng-template>

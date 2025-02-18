@@ -1,0 +1,342 @@
+<ng-container [formGroup]="auctionOrderFormGroup">
+  <div class="mt-24" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+    <div fxLayout="column" fxFlex="15">
+      <h6 [innerHTML]="'AUCTION_EFILING.WRIT_OF_EXECUTE.WRIT_TITLE' | translate"></h6>
+    </div>
+    <div fxLayout="row" fxFlex fxLayoutGap="16px">
+      <div fxFlex="33">
+        <ng-container *ngIf="isEditMode()">
+          <spig-datepicker
+            class="date-picker-block"
+            [classInput]="'input-s icon no-border'"
+            [label]="'AUCTION_EFILING.WRIT_OF_EXECUTE.DATE_COMMAND'"
+            [max]="currentDate"
+            [min]="minDate"
+            formControlName="commandTimestamp"></spig-datepicker>
+          <spig-error-msg [control]="getControl('commandTimestamp')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+          </spig-error-msg>
+        </ng-container>
+        <ng-container *ngIf="isViewMode()">
+          <span class="thin-letter">{{ 'AUCTION_EFILING.WRIT_OF_EXECUTE.DATE_COMMAND' | translate }}</span>
+          <div class="mt-8">
+            <span>{{ (dataViewMode?.commandTimestamp | buddhistEra: 'DD/MM/yyyy') || '-' }}</span>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-24" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+    <div fxLayout="column" fxFlex="15">
+      <h6>{{ 'AUCTION_EFILING.DOCUMENT.DOCUMENT_UPLOAD_TITLE' | translate }}</h6>
+    </div>
+    <div fxLayout="column" fxFlex="86">
+      <app-upload-multi-file-content
+        [uploadMultiInfo]="uploadMultiInfo"
+        [readonly]="isDocumentViewMode"
+        [list]="documentUpload"
+        [column]="documentColumns"
+        [labelAcceptFile]="
+          mode === MODE.VIEW ||
+          [
+            VIEW_TYPE.UPLOAD_RECEIPT_PENDING_VIEW_ACCESS,
+            VIEW_TYPE.EDIT_ACCESS,
+            VIEW_TYPE.APPROVAL_ACCESS,
+            VIEW_TYPE.UPLOAD_RECEIPT_VIEW_ACCESS,
+          ].includes(dataViewMode?.status) ||
+          isRequireUploadDocument
+            ? ''
+            : 'UPLOAD_FILE.LABEL_HINT_DOCUMENT_PDF_JPG_JPEG'
+        "
+        (uploadFileEvent)="onUploadFileContent($event)"></app-upload-multi-file-content>
+    </div>
+  </div>
+
+  <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+    <div fxLayout="column" fxFlex="15">
+      <h6>&nbsp;</h6>
+    </div>
+    <div fxLayout="column" fxFlex="86">
+      <div *ngIf="isRequireUploadDocument">
+        <span class="error-msg sub-desc">{{ 'UPLOAD_FILE.ERROR_FILE_UPLOAD_REQUIRED' | translate }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-24" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+    <div fxLayout="column" fxFlex="15">
+      <h6>{{ 'AUCTION_EFILING.SUMMON_FOR_SURCHARGE.REASON_TITLE' | translate }}</h6>
+    </div>
+    <div fxLayout="column" fxFlex="33">
+      <ng-container *ngIf="isEditMode()">
+        <mat-form-field>
+          <mat-label>{{ 'COMMON.LABEL_REMARKS' | translate }}</mat-label>
+          <textarea matInput maxlength="500" formControlName="reason"></textarea>
+        </mat-form-field>
+      </ng-container>
+      <ng-container *ngIf="isViewMode()">
+        <span class="thin-letter">{{ 'COMMON.LABEL_REMARKS' | translate }}</span>
+        <div class="mt-8">
+          <span>{{ dataViewMode?.reason || '-' }}</span>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+
+  <div *ngIf="isViewMode()" class="mt-24" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+    <div fxLayout="column" fxFlex="15">
+      <h6>{{ 'AUCTION_EFILING.SUMMON_FOR_SURCHARGE.DEPARTMENT' | translate }}</h6>
+    </div>
+    <div fxLayout="row" fxFlex fxLayoutGap="16px">
+      <div fxFlex="33">
+        <span class="thin-letter">{{ 'COMMON.LABEL_OFFICE_LAWYER' | translate }}</span>
+        <div class="mt-8">
+          <span>{{ 'COMMON.MAIN_BRANCE_KTB_OFFICE_CODE_NAME' | translate }}</span>
+        </div>
+      </div>
+      <div fxFlex="33">
+        <span class="thin-letter">{{ 'AUCTION_EFILING.SUMMON_FOR_SURCHARGE.LAWYER_NAME' | translate }}</span>
+        <div class="mt-8">
+          <span>{{ dataViewMode?.fullName || '-' }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="mt-24"
+    *ngIf="dataViewMode?.status === VIEW_TYPE.REJECT_ACCESS"
+    fxLayout="row"
+    fxLayoutAlign="start start"
+    fxLayoutGap="16px">
+    <div fxLayout="column" fxFlex="15">
+      <h6>{{ 'AUCTION_EFILING.SUMMON_FOR_SURCHARGE.REASON_EDIT' | translate }}</h6>
+    </div>
+    <div fxLayout="column" fxFlex="40">
+      <ng-container>
+        <span class="thin-letter">{{ 'AUCTION_EFILING.SUMMON_FOR_SURCHARGE.REASON_EDIT_BACK' | translate }}</span>
+        <div class="mt-8">
+          <span>{{ dataViewMode?.rejectReason || '-' }}</span>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+
+  <div class="mt-24" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+    <div fxLayout="column" fxFlex="15">
+      <h6>{{ 'AUCTION_EFILING.SUMMON_FOR_SURCHARGE.ORDER_AMOUNT' | translate }}</h6>
+    </div>
+    <div fxLayout="row" fxFlex fxLayoutGap="16px">
+      <div fxFlex="33">
+        <ng-container *ngIf="isEditMode()">
+          <mat-form-field class="input-full-field" appearance="fill">
+            <mat-label>{{ 'AUCTION_EFILING.SUMMON_FOR_SURCHARGE.AMOUNT' | translate }}</mat-label>
+            <input
+              matInput
+              [mask]="'separator.2'"
+              [thousandSeparator]="','"
+              formControlName="totalAmountPaid"
+              [required]="true" />
+          </mat-form-field>
+          <spig-error-msg [control]="getControl('totalAmountPaid')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+          </spig-error-msg>
+        </ng-container>
+        <ng-container *ngIf="isViewMode()">
+          <span class="thin-letter">{{ 'AUCTION_EFILING.SUMMON_FOR_SURCHARGE.AMOUNT' | translate }}</span>
+          <div class="mt-8">
+            <span>{{ (dataViewMode?.totalAmountPaid | numberDecimal) || '-' }}</span>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-24" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+    <div fxLayout="column" fxFlex="15">
+      <h6>{{ 'AUCTION_EFILING.SUMMON_FOR_SURCHARGE.PAYABLE' | translate }}</h6>
+    </div>
+    <div fxLayout="column" fxFlex="30">
+      <div>
+        <span class="thin-letter">{{ 'AUCTION_EFILING.SUMMON_FOR_SURCHARGE.PLACE_OF_PAYMENT' | translate }}</span>
+      </div>
+      <div class="mb-12 mr-12 mt-8">
+        <span>{{ ledName || dataViewMode?.ledName || '-' }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-24" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+    <div fxLayout="column" fxFlex="15">
+      <h6>{{ 'AUCTION_EFILING.SUMMON_FOR_SURCHARGE.RESPONSIBLE_LAWYER' | translate }}</h6>
+    </div>
+    <div fxLayout="row" fxFlex fxLayoutGap="16px">
+      <div fxLayout="column" fxFlex="33">
+        <div>
+          <span class="thin-letter">{{ 'AUCTION_EFILING.SUMMON_FOR_SURCHARGE.LAWYER_NAME' | translate }}</span>
+        </div>
+        <div class="mb-12 mr-12 mt-8">
+          <span>{{ lawyerName || dataViewMode?.lawyerName || '-' }}</span>
+        </div>
+      </div>
+      <div fxLayout="column" fxFlex="33">
+        <ng-container *ngIf="isEditMode()">
+          <mat-form-field class="input-full-field" appearance="fill">
+            <mat-label>{{ 'AUCTION_EFILING.SUMMON_FOR_SURCHARGE.PHONE' | translate }}</mat-label>
+            <input matInput formControlName="assignedLawyerMobileNo" [required]="true" />
+          </mat-form-field>
+          <spig-error-msg
+            [control]="getControl('assignedLawyerMobileNo')"
+            [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+          </spig-error-msg>
+        </ng-container>
+        <ng-container *ngIf="isViewMode()">
+          <span class="thin-letter">{{ 'AUCTION_EFILING.SUMMON_FOR_SURCHARGE.PHONE' | translate }}</span>
+          <div class="mt-8">
+            <span>{{ (dataViewMode?.assignedLawyerMobileNo | phone) || '-' }}</span>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-24" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+    <div fxLayout="column" fxFlex="15">
+      <h6 [innerHTML]="'AUCTION_EFILING.SUMMON_FOR_SURCHARGE.COLLECTING_CASHIER_CHECK' | translate"></h6>
+    </div>
+    <div fxLayout="row" fxFlex fxLayoutGap="16px">
+      <div fxLayout="column" fxFlex="33">
+        <ng-container *ngIf="isEditMode()">
+          <spig-dropdown
+            classInput="input-normal icon"
+            [required]="true"
+            formControlName="receivedByLawyerId"
+            [placeholder]="'AUCTION_EFILING.SUMMON_FOR_SURCHARGE.LAWYER_NAME' | translate"
+            [options]="lawyerCashierChequeOptions"
+            [config]="lawyerConfig"
+            (selectedOption)="
+              changeLawyer($event, auctionOrderFormGroup.get('receivedByLawyerMobileNo'))
+            "></spig-dropdown>
+        </ng-container>
+        <ng-container *ngIf="isViewMode()">
+          <span class="thin-letter">{{ 'AUCTION_EFILING.SUMMON_FOR_SURCHARGE.LAWYER_NAME' | translate }}</span>
+          <div class="mt-8">
+            <span>{{ receiveLawyerFullName || '-' }}</span>
+          </div>
+        </ng-container>
+      </div>
+      <div fxLayout="column" fxFlex="33">
+        <ng-container *ngIf="isEditMode()">
+          <mat-form-field class="input-full-field" appearance="fill">
+            <mat-label>{{ 'AUCTION_EFILING.SUMMON_FOR_SURCHARGE.PHONE' | translate }}</mat-label>
+            <input matInput formControlName="receivedByLawyerMobileNo" [required]="true" />
+          </mat-form-field>
+          <spig-error-msg
+            [control]="getControl('receivedByLawyerMobileNo')"
+            [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+          </spig-error-msg>
+        </ng-container>
+        <ng-container *ngIf="isViewMode()">
+          <span class="thin-letter">{{ 'AUCTION_EFILING.SUMMON_FOR_SURCHARGE.PHONE' | translate }}</span>
+          <div class="mt-8">
+            <span>{{ (dataViewMode?.receivedByLawyerMobileNo | phone) || '-' }}</span>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-24" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+    <div fxLayout="column" fxFlex="15">
+      <h6 [innerHTML]="'AUCTION_DETAIL.CASHIER_CHEQUE_COLLATERAL.CHEQUE_LIST' | translate"></h6>
+    </div>
+    <div fxLayout="row" fxFlex fxLayoutGap="16px">
+      <div fxLayout="column" fxFlex="33">
+        <ng-container *ngIf="isEditMode()">
+          <spig-dropdown
+            classInput="input-normal icon"
+            [required]="true"
+            formControlName="branchCode"
+            [placeholder]="'AUCTION_DETAIL.CASHIER_CHEQUE_COLLATERAL.BRANCH_ISSUED_CASHIER_CHEQUE' | translate"
+            [options]="listCashierChequeOptions"
+            [config]="branchConfig"></spig-dropdown>
+        </ng-container>
+        <ng-container *ngIf="isViewMode()">
+          <span class="thin-letter">{{
+            'AUCTION_DETAIL.CASHIER_CHEQUE_COLLATERAL.BRANCH_ISSUED_CASHIER_CHEQUE' | translate
+          }}</span>
+          <div class="mt-8">
+            <span>
+              {{
+                dataViewMode?.branchCode || dataViewMode?.branchName
+                  ? dataViewMode?.branchCode + ' - ' + dataViewMode?.branchName
+                  : '-'
+              }}
+            </span>
+          </div>
+        </ng-container>
+      </div>
+      <div fxLayout="column" fxFlex="33">
+        <ng-container *ngIf="isEditMode()">
+          <spig-datepicker
+            class="date-picker-block"
+            [classInput]="'input-s icon no-border'"
+            [label]="'AUCTION_DETAIL.CASHIER_CHEQUE_COLLATERAL.RECEIVE_CASHIER_DATE'"
+            [min]="currentDate"
+            formControlName="receiveCashierDate"></spig-datepicker>
+          <spig-error-msg [control]="getControl('receiveCashierDate')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+          </spig-error-msg>
+        </ng-container>
+        <ng-container *ngIf="isViewMode()">
+          <span class="thin-letter">{{
+            'AUCTION_DETAIL.CASHIER_CHEQUE_COLLATERAL.RECEIVE_CASHIER_DATE' | translate
+          }}</span>
+          <div class="mt-8">
+            <span>{{ (dataViewMode?.receiveCashierDate | buddhistEra: 'DD/MM/yyyy') || '-' }}</span>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-24" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+    <div fxLayout="column" fxFlex="15">
+      <h6>&nbsp;</h6>
+    </div>
+    <div fxLayout="column" fxFlex="67.5">
+      <table mat-table [dataSource]="cashierChequeDataSource.data">
+        <ng-container matColumnDef="no">
+          <th mat-header-cell *matHeaderCellDef class="text-center">
+            {{ 'COMMON.LABEL_NO' | translate }}
+          </th>
+          <td mast-cell *matCellDef="let element; index as i" class="text-center">
+            <span class="font-table">{{ i + 1 }}</span>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="paymentAmount">
+          <th mat-header-cell *matHeaderCellDef class="text-right">
+            {{ 'AUCTION_EFILING.TABLE.PAYMENT_AMOUNT' | translate }}
+          </th>
+          <td mast-cell *matCellDef="let element" class="text-right">
+            <span class="font-table">
+              {{
+                auctionOrderFormGroup.get('totalAmountPaid')?.value !== null
+                  ? (auctionOrderFormGroup.get('totalAmountPaid')?.value | numberDecimal)
+                  : ''
+              }}
+            </span>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="paymentDate">
+          <th mat-header-cell *matHeaderCellDef>
+            {{ 'AUCTION_DETAIL.CASHIER_CHEQUE_COLLATERAL.PAYMENT_DATE' | translate }}
+          </th>
+          <td mast-cell *matCellDef="let element">
+            <span class="font-table">{{ (dateTimeStampValue | buddhistEra: 'DD/MM/yyyy') || '-' }}</span>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="tableEfilingDisplays"></tr>
+        <tr mat-row *matRowDef="let row; columns: tableEfilingDisplays"></tr>
+      </table>
+    </div>
+  </div>
+</ng-container>

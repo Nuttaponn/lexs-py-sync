@@ -1,0 +1,16 @@
+::ng-deep spig-menu {
+  .container {
+    .footer {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+    }
+  }
+
+  .sub-menu-container {
+    display: block;
+    position: absolute;
+    padding-top: 150px;
+    padding-left: 40px;
+  }
+}

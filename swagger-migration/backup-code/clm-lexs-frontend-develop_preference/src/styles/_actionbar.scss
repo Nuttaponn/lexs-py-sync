@@ -1,0 +1,356 @@
+@import './variables';
+
+//Action bar
+.action-bar-wrapper {
+  width: 100%;
+  height: auto;
+  right: 0px;
+  position: fixed;
+  z-index: 199;
+}
+
+$line-height: 56px;
+
+.action-bar-container {
+  @include flex-row-align-center;
+  padding: 8px 24px 8px 0;
+  margin-left: $side-nav-width-collapse;
+  gap: 12px;
+  height: $action-bar-container-height;
+  right: 0px;
+  background: $white;
+  box-shadow: 0px 0.8px 0px rgba(15, 15, 15, 0.15);
+
+  .left-section {
+    flex: 1 1 75% !important;
+  }
+
+  .vertical-separator {
+    width: 1px;
+    height: 20px;
+    background-image: linear-gradient(map_get($ktb-palette-biz-gray, 200), map_get($ktb-palette-biz-gray, 200));
+    background-size: 1px 100%;
+    background-repeat: no-repeat;
+    background-position: center center;
+    align-self: center;
+  }
+
+  .sub-btn-separator {
+    width: 1px;
+    height: $line-height;
+    background: map_get($ktb-palette-biz-gray, 200);
+    flex: none;
+    order: 0;
+    align-self: stretch;
+    flex-grow: 1;
+  }
+
+  .selected-content {
+    padding-left: 20px;
+    font-family: KrungthaiFastRegular;
+    font-style: normal;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    color: map_get($ktb-palette-biz-gray, 900);
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+  }
+
+  button:focus {
+    outline: none;
+  }
+
+  button .mat-icon {
+    margin-right: 0;
+    margin-left: 0;
+  }
+
+  button {
+    @include flex-row-align-center;
+    justify-content: center;
+
+    &.primary-button {
+      padding: 16px 16px;
+      gap: 8px;
+      height: $line-height;
+      width: auto;
+      box-shadow: 0px 4px 8px map-get($ktb-palette-biz-black, B016);
+      border-radius: 8px;
+      flex: none;
+      order: 1;
+      flex-grow: 0;
+      font-weight: 700;
+      @extend .font-body;
+
+      &.positive {
+        color: $white;
+        background: map-get($ktb-palette-blue, 500);
+        outline: 1px solid map-get($ktb-palette-blue, 500);
+        padding: 15px 24px;
+      }
+
+      &.negative {
+        color: $white;
+        background: map-get($ktb-palette-red, 600);
+        outline: 1px solid map-get($ktb-palette-red, 600);
+      }
+
+      &.normal {
+        color: map-get($ktb-palette-biz-black, 70);
+        background: $white;
+        outline: 1px solid map-get($ktb-palette-biz-black, 50);
+        box-shadow: none;
+      }
+    }
+
+    &.primary-button-outline {
+      padding: 16px 16px;
+      gap: 8px;
+      height: $line-height;
+      width: auto;
+      box-shadow: none;
+      outline: 1px solid;
+      border-radius: 8px;
+      flex: none;
+      order: 1;
+      flex-grow: 0;
+      font-weight: 700;
+      @extend .font-body;
+
+      &.negative {
+        color: map_get($ktb-palette-red, 600);
+        border-color: map_get($ktb-palette-red, 200);
+      }
+
+      &.negative:hover {
+        background-color: map-get($ktb-palette-red, 50);
+      }
+
+      &.positive {
+        color: map-get($ktb-palette-blue, 600);
+        border-color: map-get($ktb-palette-blue, 200);
+      }
+
+      &.positive:hover {
+        background-color: map-get($ktb-palette-blue, 50);
+      }
+
+      &.neutral {
+        color: map_get($ktb-palette-biz-black, 80);
+        outline-color: map_get($ktb-palette-biz-black, 30);
+      }
+
+      &.neutral:hover {
+        background: map-get($ktb-palette-biz-black, 10);
+        outline: 2px solid;
+        outline-color: map_get($ktb-palette-biz-black, 30);
+      }
+
+      &.neutral:active {
+        box-shadow: none !important;
+        background: map-get($ktb-palette-biz-black, 20);
+        outline: 2px solid;
+        outline-color: map_get($ktb-palette-biz-black, 30);
+      }
+    }
+
+    &.secondary-button {
+      padding: 16px 16px;
+      gap: 8px;
+      height: $line-height;
+      width: auto;
+      box-shadow: none;
+      flex: none;
+      order: 1;
+      flex-grow: 0;
+      background: $white;
+      color: map_get($ktb-palette-biz-gray, 900);
+      font-weight: 700;
+      @extend .font-body;
+    }
+
+    &.back-button {
+      padding: 16px;
+      height: $line-height;
+      box-shadow: none;
+      flex: none;
+      order: 1;
+      flex-grow: 0;
+      background: $white;
+      color: map-get($ktb-palette-blue, 500);
+      font-weight: 700;
+      width: auto;
+      @extend .font-body;
+
+      &:active {
+        box-shadow: none !important;
+      }
+    }
+
+    &.button-disable {
+      padding: 16px 16px;
+      height: $line-height;
+      box-shadow: none;
+      flex: none;
+      order: 1;
+      flex-grow: 0;
+      width: auto;
+      @extend .font-body;
+    }
+
+    &.more {
+      height: $line-height;
+      width: 77px;
+      box-shadow: none;
+      border-radius: 8px;
+      flex: none;
+      flex-grow: 0;
+      color: map_get($ktb-palette-biz-gray, A400);
+      position: relative;
+
+      &.active {
+        outline: 2px solid;
+        outline-color: map_get($ktb-palette-biz-black, 30);
+        background-color: map_get($ktb-palette-biz-black, 20);
+      }
+
+      &.hover {
+        outline: 2px solid;
+        outline-color: map_get($ktb-palette-biz-black, 30);
+        background-color: map_get($ktb-palette-biz-black, 10);
+      }
+
+      &.inactive {
+        outline: 1px solid;
+        outline-color: map_get($ktb-palette-biz-black, 30);
+        background-color: $white;
+      }
+    }
+  }
+
+  .element-inline {
+    display: inline-flex;
+  }
+
+  .status {
+    width: auto;
+    margin-left: 1em;
+    padding: 10px 12px;
+    border-radius: 8px;
+
+    &.info {
+      background-color: map-get($ktb-palette-blue, 100);
+      color: map-get($ktb-palette-blue, 500);
+    }
+
+    &.warn {
+      background-color: map-get($ktb-palette-golden-yellow, 100);
+      color: map-get($ktb-palette-golden-yellow, 700);
+    }
+
+    &.fail {
+      background-color: map_get($ktb-palette-red, 100);
+      color: map_get($ktb-palette-red, 600);
+    }
+  }
+
+  .btn-menu-wrapper {
+    display: inline-flex;
+    flex-direction: row;
+    position: relative;
+
+    .btn-menu {
+      justify-content: flex-end;
+
+      .slide {
+        @include font-style(sub-description);
+        clear: both;
+        min-width: 17em;
+        height: 0px;
+        position: absolute;
+        right: 0;
+        margin-top: 70px;
+        z-index: 99;
+        overflow: hidden;
+        text-align: center;
+        transition: height 0.4s ease;
+        color: map_get($ktb-palette-biz-gray, 900);
+        background: $white;
+        box-shadow: 0px 8px 16px map-get($ktb-palette-biz-black, B016);
+        border-radius: 8px;
+
+        &.show {
+          height: auto;
+        }
+
+        .slide-row {
+          width: 100%;
+          height: $line-height;
+          display: inline-flex;
+          align-items: center;
+          justify-content: flex-start;
+          padding: 0 18px 0 18px;
+          font-size: $font-description;
+
+          .icon {
+            padding-right: 18px;
+          }
+        }
+
+        .show-hover {
+          &:hover {
+            background-color: $bg-almost-white;
+            cursor: pointer;
+          }
+        }
+
+        .negative {
+          color: map_get($ktb-palette-red, 600);
+        }
+
+        .positive {
+          color: $white;
+          background: map-get($ktb-palette-blue, 500);
+          padding: 15px 24px;
+        }
+      }
+    }
+  }
+
+  .nav-breadcumb-wrapper {
+    display: flex;
+    align-items: center;
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+
+    .nav-breadcrumb-container {
+      display: flex;
+      color: map-get($ktb-palette-blue, 500);
+      font-family: KrungthaiFastRegular;
+      font-style: normal;
+      font-weight: 700;
+
+      mat-icon {
+        color: map_get($ktb-palette-biz-gray, 500);
+        cursor: text;
+      }
+    }
+
+    .elm-breadcrumb {
+      padding: 3px 20px;
+      cursor: pointer;
+    }
+
+    .elm-breadcrumb-active {
+      padding: 0px 20px;
+      color: map_get($ktb-palette-biz-gray, 700);
+
+      mat-icon {
+        color: map_get($ktb-palette-biz-gray, 700);
+      }
+    }
+  }
+}

@@ -1,0 +1,1371 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "KTB Backend for Frontend APIs.",
+    "description": "Microservice: withdraw-seizure",
+    "contact": {
+      "name": "Krungthai Bank Public Company Limited",
+      "url": "https://krungthai.com",
+      "email": ""
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://lexsdev.krungthai/ktb/rest/lexs",
+      "description": "Generated server url"
+    }
+  ],
+  "paths": {
+    "/v1/withdraw-seizure/{withdrawSeizureId}/withdraw-seizures-led/{withdrawSeizuresLedId}/documents/subrogation": {
+      "post": {
+        "tags": [
+          "withdraw-seizure-controller"
+        ],
+        "operationId": "postUploadDocumentSubrogation",
+        "parameters": [
+          {
+            "name": "withdrawSeizureId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "withdrawSeizuresLedId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "file"
+                ],
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentUploadResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/withdraw-seizure/{withdrawSeizureId}/result-recording/tasks/{taskId}/submit": {
+      "post": {
+        "tags": [
+          "withdraw-seizure-controller"
+        ],
+        "operationId": "resultRecordingTaskSubmit",
+        "parameters": [
+          {
+            "name": "withdrawSeizureId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "taskId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResultRecordingTaskSubmitRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/withdraw-seizure/{withdrawSeizureId}/document-validation/tasks/{taskId}/submit": {
+      "post": {
+        "tags": [
+          "withdraw-seizure-controller"
+        ],
+        "operationId": "postDocumentValidationSubmit",
+        "parameters": [
+          {
+            "name": "withdrawSeizureId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "taskId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostDocValidationSubmitRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/withdraw-seizure/{withdrawSeizureId}/command-acception/tasks/{taskId}/submit": {
+      "post": {
+        "tags": [
+          "withdraw-seizure-controller"
+        ],
+        "operationId": "postCommandAcceptionSubmit",
+        "parameters": [
+          {
+            "name": "withdrawSeizureId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "taskId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostCommandAcceptionSubmitRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/withdraw-seizure/{withdrawSeizureId}/cancel": {
+      "post": {
+        "tags": [
+          "withdraw-seizure-controller"
+        ],
+        "operationId": "postWithdrawSeizuresCancel",
+        "parameters": [
+          {
+            "name": "withdrawSeizureId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/withdraw-seizure/{withdrawSeizureId}/approval": {
+      "post": {
+        "tags": [
+          "withdraw-seizure-controller"
+        ],
+        "operationId": "postWithdrawSeizuresApproval",
+        "parameters": [
+          {
+            "name": "withdrawSeizureId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostApprovalRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/withdraw-seizure/validate": {
+      "post": {
+        "tags": [
+          "withdraw-seizure-controller"
+        ],
+        "operationId": "postWithdrawSeizuresValidate",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostValidateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/withdraw-seizure/submit": {
+      "post": {
+        "tags": [
+          "withdraw-seizure-controller"
+        ],
+        "operationId": "postWithdrawSeizuresSubmit",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostSubmitRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostSubmitResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/withdraw-seizure/{withdrawSeizureId}": {
+      "get": {
+        "tags": [
+          "withdraw-seizure-controller"
+        ],
+        "operationId": "getWithdrawSeizures",
+        "parameters": [
+          {
+            "name": "withdrawSeizureId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WithdrawSeizureResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/withdraw-seizure/{withdrawSeizureId}/withdraw-seizure-led/{withdrawSeizuresLedId}": {
+      "get": {
+        "tags": [
+          "withdraw-seizure-controller"
+        ],
+        "operationId": "getWithdrawSeizuresLed",
+        "parameters": [
+          {
+            "name": "withdrawSeizureId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "withdrawSeizuresLedId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WithdrawSeizureLedAllResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/withdraw-seizure/litigation/{litigationId}/legal-executions/execution": {
+      "get": {
+        "tags": [
+          "withdraw-seizure-controller"
+        ],
+        "operationId": "getLegalExecutionsExecution",
+        "parameters": [
+          {
+            "name": "litigationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LegalExecutionsExecutionResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/withdraw-seizure/litigation/{litigationId}/legal-executions/command": {
+      "get": {
+        "tags": [
+          "withdraw-seizure-controller"
+        ],
+        "operationId": "getLegalExecutionCommand",
+        "parameters": [
+          {
+            "name": "litigationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LegalExecutionCommandResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/withdraw-seizure/litigation-case/{caseId}/collaterals": {
+      "get": {
+        "tags": [
+          "litigation-case-controller"
+        ],
+        "operationId": "getWithdrawSeizureCollateral",
+        "parameters": [
+          {
+            "name": "caseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetWithdrawSeizureResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/withdraw-seizure/litigation-case/{caseId}/assets": {
+      "get": {
+        "tags": [
+          "litigation-case-controller"
+        ],
+        "operationId": "getWithdrawSeizureAssets",
+        "parameters": [
+          {
+            "name": "caseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WithdrawSeizureAssetsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "DocumentUploadResponse": {
+        "type": "object",
+        "properties": {
+          "uploadSessionId": {
+            "type": "string"
+          },
+          "imageId": {
+            "type": "string"
+          }
+        }
+      },
+      "Assets": {
+        "type": "object",
+        "properties": {
+          "assetId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "assetType": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "assetSubType": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "assetTypeDesc": {
+            "type": "string"
+          },
+          "assetSubTypeDesc": {
+            "type": "string"
+          },
+          "documentNo": {
+            "type": "string"
+          },
+          "collateralDetails": {
+            "type": "string"
+          },
+          "ownerFullName": {
+            "type": "string"
+          },
+          "totalAppraisalValue": {
+            "type": "number"
+          },
+          "collateralCaseLexStatus": {
+            "type": "string",
+            "enum": [
+              "PLEDGE",
+              "SEIZURED",
+              "ON_SALE",
+              "PENDING_SALE",
+              "SOLD",
+              "NOT_APPLICABLE"
+            ]
+          },
+          "assentRlsStatus": {
+            "type": "string"
+          },
+          "obligationStatus": {
+            "type": "string"
+          },
+          "ledId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "ledName": {
+            "type": "string"
+          },
+          "ledRefNo": {
+            "type": "string"
+          },
+          "withdrawSeizureResult": {
+            "type": "string"
+          },
+          "withdrawSeizureReason": {
+            "type": "string"
+          },
+          "remark": {
+            "type": "string"
+          }
+        }
+      },
+      "Collaterals": {
+        "type": "object",
+        "properties": {
+          "collateralId": {
+            "type": "string"
+          },
+          "collateralType": {
+            "type": "string"
+          },
+          "collateralSubType": {
+            "type": "string"
+          },
+          "documentNo": {
+            "type": "string"
+          },
+          "collateralDetails": {
+            "type": "string"
+          },
+          "totalAppraisalValue": {
+            "type": "number"
+          },
+          "ledId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "ledName": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "withdrawSeizureResult": {
+            "type": "string"
+          },
+          "withdrawSeizureReason": {
+            "type": "string"
+          },
+          "remark": {
+            "type": "string"
+          },
+          "obligationStatus": {
+            "type": "string"
+          },
+          "ledRefNo": {
+            "type": "string"
+          },
+          "ownerFullName": {
+            "type": "string"
+          }
+        }
+      },
+      "Contacts": {
+        "type": "object",
+        "properties": {
+          "withdrawSeizuresContactId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "personId": {
+            "type": "string"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "telephoneNo": {
+            "type": "string"
+          },
+          "isMainContact": {
+            "type": "boolean"
+          },
+          "identificationNo": {
+            "type": "string"
+          },
+          "relation": {
+            "type": "string"
+          },
+          "paidFeeAmount": {
+            "type": "number"
+          }
+        }
+      },
+      "LedDocument": {
+        "type": "object",
+        "properties": {
+          "uploadSessionId": {
+            "type": "string"
+          }
+        }
+      },
+      "ResultRecordingTaskSubmitRequest": {
+        "required": [
+          "headerFlag"
+        ],
+        "type": "object",
+        "properties": {
+          "headerFlag": {
+            "type": "string",
+            "description": "Header Flag // DRAFT,SUBMIT",
+            "example": "DRAFT",
+            "enum": [
+              "DRAFT",
+              "SUBMIT",
+              "APPROVE",
+              "REJECT",
+              "CANCEL",
+              "DELETE",
+              "UPDATE",
+              "SUBMIT1",
+              "SUBMIT2",
+              "SAVE"
+            ]
+          },
+          "withdrawSeizureLedId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "resultDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "withdrawSeizureLedGroups": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WithdrawSeizureLedGroups"
+            }
+          },
+          "withdrawSeizureLedDocuments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WithdrawSeizureLedDocumentDto"
+            }
+          }
+        }
+      },
+      "WithdrawSeizureLedDocumentDto": {
+        "type": "object",
+        "properties": {
+          "ledDocument": {
+            "$ref": "#/components/schemas/LedDocument"
+          }
+        }
+      },
+      "WithdrawSeizureLedGroupDocumentDto": {
+        "type": "object",
+        "properties": {
+          "ledGroupDocument": {
+            "$ref": "#/components/schemas/LedDocument"
+          }
+        }
+      },
+      "WithdrawSeizureLedGroups": {
+        "type": "object",
+        "properties": {
+          "withdrawSeizuresGroupId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "collaterals": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Collaterals"
+            }
+          },
+          "assets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Assets"
+            }
+          },
+          "withdrawSeizureLedGroupDocuments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WithdrawSeizureLedGroupDocumentDto"
+            }
+          },
+          "contacts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Contacts"
+            }
+          }
+        }
+      },
+      "PostDocValidationSubmitRequest": {
+        "required": [
+          "withdrawSeizureLedId"
+        ],
+        "type": "object",
+        "properties": {
+          "withdrawSeizureLedId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "publicAuctionLawyerId": {
+            "type": "string"
+          }
+        }
+      },
+      "PostCommandAcceptionSubmitRequest": {
+        "required": [
+          "publicAuctionLawyerId",
+          "withdrawSeizureLedId"
+        ],
+        "type": "object",
+        "properties": {
+          "withdrawSeizureLedId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "publicAuctionLawyerId": {
+            "type": "string"
+          }
+        }
+      },
+      "PostApprovalRequest": {
+        "required": [
+          "action"
+        ],
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "description": "Header Flag // DRAFT,SUBMIT",
+            "example": "DRAFT",
+            "enum": [
+              "APPROVE",
+              "REJECT",
+              "RETURN"
+            ]
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      },
+      "PostValidateRequest": {
+        "required": [
+          "actorId",
+          "litigationCaseId",
+          "withdrawSeizureType"
+        ],
+        "type": "object",
+        "properties": {
+          "actorId": {
+            "type": "string"
+          },
+          "litigationCaseId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "withdrawSeizureType": {
+            "type": "string"
+          }
+        }
+      },
+      "ConsentDocument": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "documentTemplate": {
+            "$ref": "#/components/schemas/WdSeizureDocumentTemplate"
+          },
+          "imageSource": {
+            "type": "string",
+            "enum": [
+              "LEXS",
+              "IMP",
+              "DIMS",
+              "LG",
+              "PN",
+              "FCS",
+              "TFS",
+              "LCS",
+              "RLS"
+            ]
+          },
+          "imageId": {
+            "type": "string"
+          },
+          "imageName": {
+            "type": "string"
+          },
+          "reuploadable": {
+            "type": "boolean"
+          }
+        }
+      },
+      "LedDocumentDto": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string"
+          },
+          "documentTemplate": {
+            "$ref": "#/components/schemas/WdSeizureDocumentTemplate"
+          },
+          "imageSource": {
+            "type": "string"
+          },
+          "imageId": {
+            "type": "string"
+          },
+          "imageName": {
+            "type": "string"
+          },
+          "uploadTimestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "allowedUploadFlag": {
+            "type": "string"
+          },
+          "isSubContract": {
+            "type": "boolean"
+          }
+        }
+      },
+      "PostSubmitRequest": {
+        "required": [
+          "headerFlag"
+        ],
+        "type": "object",
+        "properties": {
+          "headerFlag": {
+            "type": "string",
+            "description": "Header Flag // DRAFT,SUBMIT",
+            "example": "DRAFT",
+            "enum": [
+              "DRAFT",
+              "SUBMIT",
+              "APPROVE",
+              "REJECT",
+              "CANCEL",
+              "DELETE",
+              "UPDATE",
+              "SUBMIT1",
+              "SUBMIT2",
+              "SAVE"
+            ]
+          },
+          "withdrawSeizureId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "reasonWithdrawSeizures": {
+            "type": "string"
+          },
+          "litigationCaseId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "withdrawSeizureType": {
+            "type": "string"
+          },
+          "isContactResponseForExpense": {
+            "type": "boolean"
+          },
+          "debtPaidAmount": {
+            "type": "number"
+          },
+          "withdrawSeizureGroups": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WithdrawSeizureGroups"
+            }
+          }
+        }
+      },
+      "WdSeizureDocumentTemplate": {
+        "type": "object",
+        "properties": {
+          "documentTemplateId": {
+            "type": "string"
+          },
+          "documentName": {
+            "type": "string"
+          }
+        }
+      },
+      "WithdrawConsentDocuments": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "ownerId": {
+            "type": "string"
+          },
+          "ownerName": {
+            "type": "string"
+          },
+          "ledId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "ledName": {
+            "type": "string"
+          },
+          "collList": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "createTimestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updateTimestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "document": {
+            "$ref": "#/components/schemas/ConsentDocument"
+          },
+          "uploadSessionId": {
+            "type": "string"
+          },
+          "documentOf": {
+            "type": "string"
+          }
+        }
+      },
+      "WithdrawSeizureGroups": {
+        "type": "object",
+        "properties": {
+          "withdrawSeizuresGroupId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "collaterals": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Collaterals"
+            }
+          },
+          "contacts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Contacts"
+            }
+          },
+          "withdrawSeizureLedGroupDocuments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LedDocumentDto"
+            }
+          },
+          "assets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Assets"
+            }
+          },
+          "consentDocuments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WithdrawConsentDocuments"
+            }
+          }
+        }
+      },
+      "PostSubmitResponse": {
+        "type": "object",
+        "properties": {
+          "withdrawSeizureId": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "WithdrawSeizureResponse": {
+        "type": "object",
+        "properties": {
+          "withdrawSeizureId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "reasonWithdrawSeizures": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "statusName": {
+            "type": "string"
+          },
+          "actorId": {
+            "type": "string"
+          },
+          "actorName": {
+            "type": "string"
+          },
+          "litigationCaseId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "withdrawSeizureType": {
+            "type": "string"
+          },
+          "createdTimestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "isContactResponseForExpense": {
+            "type": "boolean"
+          },
+          "debtPaidAmount": {
+            "type": "number"
+          },
+          "isApproved": {
+            "type": "boolean"
+          },
+          "rejectReason": {
+            "type": "string"
+          },
+          "withdrawSeizureSeq": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "withdrawSeizureGroups": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WithdrawSeizureGroups"
+            }
+          }
+        }
+      },
+      "WithdrawSeizureLedAllResponse": {
+        "type": "object",
+        "properties": {
+          "withdrawSeizureId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "reasonWithdrawSeizures": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "actorId": {
+            "type": "string"
+          },
+          "actorName": {
+            "type": "string"
+          },
+          "litigationCaseId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "withdrawSeizureType": {
+            "type": "string"
+          },
+          "createdTimestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "isContactResponseForExpense": {
+            "type": "boolean"
+          },
+          "debtPaidAmount": {
+            "type": "number"
+          },
+          "withdrawSeizureSeq": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "withdrawSeizureLed": {
+            "$ref": "#/components/schemas/WithdrawSeizureLedDto"
+          },
+          "withdrawSeizureLeds": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WithdrawSeizureLedDto"
+            }
+          }
+        }
+      },
+      "WithdrawSeizureLedDto": {
+        "type": "object",
+        "properties": {
+          "withdrawSeizureLedId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "civilCourtNo": {
+            "type": "string"
+          },
+          "civilCourtName": {
+            "type": "string"
+          },
+          "ledId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "ledName": {
+            "type": "string"
+          },
+          "ledRefNo": {
+            "type": "string"
+          },
+          "ledRefNoDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "publicAuctionLawyerId": {
+            "type": "string"
+          },
+          "publicAuctionLawyerName": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "resultDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "withdrawSeizureLedDocuments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LedDocumentDto"
+            }
+          },
+          "withdrawSeizureLedGroups": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WithdrawSeizureGroups"
+            }
+          }
+        }
+      },
+      "LegalExecutionsExecutionResponse": {
+        "type": "object",
+        "properties": {
+          "litigationId": {
+            "type": "string"
+          },
+          "litigationCases": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WithdrawLitigationCaseExcecutionDto"
+            }
+          }
+        }
+      },
+      "WithdrawLitigationCaseExcecutionDto": {
+        "type": "object",
+        "properties": {
+          "litigationCaseId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "courtBlackCaseNo": {
+            "type": "string"
+          },
+          "courtRedCaseNo": {
+            "type": "string"
+          },
+          "withdrawSeizure": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WithdrawSeizureLedAllResponse"
+            }
+          }
+        }
+      },
+      "LegalExecutionCommandResponse": {
+        "type": "object",
+        "properties": {
+          "litigationId": {
+            "type": "string"
+          },
+          "litigationCases": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WithdrawLitigationCaseDto"
+            }
+          }
+        }
+      },
+      "WithdrawLitigationCaseDto": {
+        "type": "object",
+        "properties": {
+          "litigationCaseId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "courtBlackCaseNo": {
+            "type": "string"
+          },
+          "courtRedCaseNo": {
+            "type": "string"
+          },
+          "withdrawSeizure": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WithdrawSeizureResponse"
+            }
+          }
+        }
+      },
+      "GetWithdrawSeizureResponse": {
+        "type": "object",
+        "properties": {
+          "collaterals": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WithdrawSeizureCollateralInfo"
+            }
+          }
+        }
+      },
+      "WithdrawSeizureCollateralInfo": {
+        "type": "object",
+        "properties": {
+          "collateralId": {
+            "type": "string"
+          },
+          "collateralType": {
+            "type": "string"
+          },
+          "collateralSubType": {
+            "type": "string"
+          },
+          "documentNo": {
+            "type": "string"
+          },
+          "collateralDetails": {
+            "type": "string"
+          },
+          "ownerName": {
+            "type": "string"
+          },
+          "totalAppraisalValue": {
+            "type": "number"
+          },
+          "ledName": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "ledRefNo": {
+            "type": "string"
+          },
+          "obligationStatus": {
+            "type": "string"
+          }
+        }
+      },
+      "WithdrawSeizureAssetsResponse": {
+        "type": "object",
+        "properties": {
+          "assets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Assets"
+            }
+          }
+        }
+      }
+    }
+  }
+}

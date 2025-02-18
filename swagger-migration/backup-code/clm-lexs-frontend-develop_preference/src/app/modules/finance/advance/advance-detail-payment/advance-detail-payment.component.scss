@@ -1,0 +1,85 @@
+@import '/src/styles/colors';
+
+.container {
+  padding: 24px;
+
+  .header {
+    padding: 20px 0 20px 0;
+
+    .title {
+      h4 {
+        display: flex;
+        margin: 0;
+      }
+    }
+  }
+
+  .accordion-headers-title {
+    padding: 10px;
+    background-color: map-get($ktb-palette-blue, 50);
+  }
+
+  .according-headers-payment {
+    padding: 12px;
+    background-color: map-get($ktb-palette-biz-gray, 100);
+    border-top-right-radius: 8px;
+    border-top-left-radius: 8px;
+  }
+
+  .box-input {
+    display: flex;
+    align-items: center;
+    background-color: map-get($ktb-palette-biz-gray, 200);
+    border: 1px solid map-get($ktb-palette-biz-gray, 50);
+    border-radius: 8px;
+    height: 40px;
+    padding: 0 12px;
+  }
+}
+
+.p-15 {
+  padding: 15px;
+}
+
+.h-30 {
+  height: 30px;
+}
+
+.f-13em {
+  font-size: 1.3em;
+}
+
+::ng-deep app-advance-detail-payment {
+  .mat-mdc-card {
+    padding: 16px 24px 24px;
+  }
+
+  .mat-expansion-panel-body {
+    padding: 0 0 16px;
+  }
+
+  .status-m-inbox {
+    margin: 8px 0 0;
+  }
+
+  .mat-mdc-select {
+    margin-left: 0 !important;
+  }
+
+  /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
+  .mat-mdc-select-value {
+    padding-left: 0 !important;
+  }
+
+  /* Chrome, Safari, Edge, Opera */
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  input[type='number'] {
+    -moz-appearance: textfield;
+  }
+}

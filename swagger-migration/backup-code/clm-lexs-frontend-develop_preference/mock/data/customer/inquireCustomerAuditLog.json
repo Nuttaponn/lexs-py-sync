@@ -1,0 +1,111 @@
+{
+    
+        "content": [
+            {
+                "action": "ตรวจสอบข้อมูลลูกหนี้",
+                "details": "รายละเอียด",
+                "id": 1,
+                "objectType": "ข้อมูลลูกหนี้",
+                "timestamp": "1/12/2565 12:12:12",
+                "userId": "000001"
+            },
+            {
+                "action": "ตรวจสอบข้อมูลลูกหนี้",
+                "details": "รายละเอียด",
+                "id": 2,
+                "objectType": "ข้อมูลลูกหนี้",
+                "timestamp": "2/12/2565 12:12:12",
+                "userId": "000001"
+            },
+            {
+                "action": "ตรวจสอบข้อมูลลูกหนี้",
+                "details": "รายละเอียด",
+                "id": 3,
+                "objectType": "ข้อมูลลูกหนี้",
+                "timestamp": "3/12/2565 12:12:12",
+                "userId": "000001"
+            },
+            {
+                "action": "ตรวจสอบข้อมูลลูกหนี้",
+                "details": "รายละเอียด",
+                "id": 4,
+                "objectType": "ข้อมูลลูกหนี้",
+                "timestamp": "4/12/2565 12:12:12",
+                "userId": "000001"
+            },
+            {
+                "action": "ตรวจสอบข้อมูลลูกหนี้",
+                "details": "รายละเอียด",
+                "id": 5,
+                "objectType": "ข้อมูลลูกหนี้",
+                "timestamp": "5/12/2565 12:12:12",
+                "userId": "000001"
+            },
+            {
+                "action": "ตรวจสอบข้อมูลลูกหนี้",
+                "details": "รายละเอียด",
+                "id": 6,
+                "objectType": "ข้อมูลลูกหนี้",
+                "timestamp": "6/12/2565 12:12:12",
+                "userId": "000001"
+            },
+            {
+                "action": "ตรวจสอบข้อมูลลูกหนี้",
+                "details": "รายละเอียด",
+                "id": 7,
+                "objectType": "ข้อมูลลูกหนี้",
+                "timestamp": "7/12/2565 12:12:12",
+                "userId": "000001"
+            },
+            {
+                "action": "ตรวจสอบข้อมูลลูกหนี้",
+                "details": "รายละเอียด",
+                "id": 8,
+                "objectType": "ข้อมูลลูกหนี้",
+                "timestamp": "8/12/2565 12:12:12",
+                "userId": "000001"
+            },
+            {
+                "action": "ตรวจสอบข้อมูลลูกหนี้",
+                "details": "รายละเอียด",
+                "id": 9,
+                "objectType": "ข้อมูลลูกหนี้",
+                "timestamp": "9/12/2565 12:12:12",
+                "userId": "000001"
+            },
+            {
+                "action": "ตรวจสอบข้อมูลลูกหนี้",
+                "details": "รายละเอียด",
+                "id": 10,
+                "objectType": "ข้อมูลลูกหนี้",
+                "timestamp": "10/12/2565 12:12:12",
+                "userId": "000001"
+            }        
+        ],
+        "empty": false,
+        "first": true,
+        "last": false,
+        "number": 1,
+        "numberOfElements": 1,
+        "pageable": {
+            "offset": 0,
+            "pageNumber": 1,
+            "pageSize": 10,
+            "paged": true,
+            "sort": {
+                "empty": false,
+                "sorted": true,
+                "unsorted": false
+            },
+            "unpaged": false
+        },
+        "size": 10,
+        "sort": {
+            "empty": false,
+            "sorted": true,
+            "unsorted": false
+        },
+        "totalElements": 145,
+        "totalPages": 15
+    
+}

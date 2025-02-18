@@ -1,0 +1,68 @@
+@mixin centerSelf() {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@mixin centerInRow() {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%);
+}
+
+// Order of the includes matters, and it is: normal, bold, italic, bold+italic.
+@mixin font-face($font-family, $file-path, $file-name, $type: 'ttf', $weight: normal, $style: normal, $asset-pipeline: false) {
+  @font-face {
+    font-family: $font-family;
+    font-weight: $weight;
+    font-style: $style;
+
+    @if $type=='ttf' {
+      src: url('#{$file-path}/#{$file-name}.ttf') format('truetype')
+    }
+
+    @if $type=='eot' {
+      // src: url('#{$file-path}/#{$file-name}.eot');
+      src: url('#{$file-path}/#{$file-name}.eot?#iefix') format('embedded-opentype')
+    }
+
+    @if $type=='woff' {
+      src: url('#{$file-path}/#{$file-name}.woff') format('woff')
+    }
+
+    @if $type=='svg' {
+      src: url('#{$file-path}/#{$file-name}.svg##{$font-family}') format('svg');
+    }
+  }
+}
+
+/* Normal is 'Medium' as in KTB Design System */
+@mixin normalButton() {
+  width: 120px;
+  height: 44px;
+  line-height: 44px;
+  box-shadow: none;
+}
+
+@mixin longButton() {
+  width: 270px;
+  height: 54px;
+  line-height: 54px;
+  box-shadow: none;
+  font-size: 16px;
+}
+
+@mixin smallButton() {
+  width: 96px;
+  height: 36px;
+  line-height: 36px;
+  box-shadow: none;
+}
+
+@mixin mediumButton() {
+  width: 200px;
+  height: 44px;
+  line-height: 36px;
+  box-shadow: none;
+}

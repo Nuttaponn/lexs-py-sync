@@ -1,0 +1,17 @@
+<app-action-bar (backButtonHandler)="onBack()" (cancelButtonHandler)="onCancel()" [showNavBarInformation]="true">
+  <ng-container navBarInformationTemplate>
+    <mat-icon svgIcon="icon-List-Multiple" class="icon icon-xmedium"></mat-icon>
+    <span class="ml-05em">{{ title | translate }}</span>
+  </ng-container>
+</app-action-bar>
+<div class="content-below-action-bar-area">
+  <ng-container *ngIf="collaterals">
+    <app-auction-group-collateral
+      [aucRef]="aucRef"
+      [tableColumnsList]="tableColumns"
+      [tableConfig]="tableConfig"
+      [actionCode]="actionCode"
+      [title]="title"
+      [data]="collaterals"></app-auction-group-collateral>
+  </ng-container>
+</div>

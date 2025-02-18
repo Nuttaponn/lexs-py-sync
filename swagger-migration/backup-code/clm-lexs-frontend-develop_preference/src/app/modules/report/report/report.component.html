@@ -1,0 +1,71 @@
+<app-action-bar
+  [hasBackButton]="false"
+  [disabledPrimaryButton]="actionBar.disabledPrimaryButton"
+  [showNavBarInformation]="actionBar.showNavBarInformation">
+  <ng-container navBarInformationTemplate>
+    <mat-icon svgIcon="icon-Notepad" class="icon icon-xmedium"></mat-icon
+    ><span class="ml-05em bold">{{ 'MAIN.MENU_REPORTS' | translate }}</span>
+  </ng-container>
+</app-action-bar>
+
+<div class="content-below-action-bar-area">
+  <div class="content-container mb-16">
+    <ng-container [ngTemplateOutlet]="reportTemplate" [ngTemplateOutletContext]="{ reportType: reportType.SLA }">
+    </ng-container>
+  </div>
+  <div class="content-container mb-16" *ngIf="showLegalExcutionReport">
+    <ng-container
+      [ngTemplateOutlet]="reportTemplate"
+      [ngTemplateOutletContext]="{ reportType: reportType.LEGAL_EXCUTION }">
+    </ng-container>
+  </div>
+
+  <div class="content-container mt-16 mb-16" *ngIf="showWHTReport">
+    <ng-container
+      [ngTemplateOutlet]="reportTemplate"
+      [ngTemplateOutletContext]="{ reportType: reportType.WITH_HOLDING_TAX }">
+    </ng-container>
+  </div>
+</div>
+
+<ng-template let-reportType="reportType" #reportTemplate>
+  <div class="report-container" fxLayout="row" fxLayoutAlign="space-between center">
+    <div fxLayout="row" fxLayoutAlign="start center" fxFlex="85">
+      <mat-icon svgIcon="icon-Notepad" class="icon icon-medium mr-16"></mat-icon>
+      <span class="bold mt-3">
+        <ng-container [ngSwitch]="reportType">
+          <ng-container *ngSwitchCase="'LEGAL_EXCUTION'">{{ 'REPORT.REPORTS_SLA_EXCUTION' | translate }}</ng-container>
+          <ng-container *ngSwitchCase="'WITH_HOLDING_TAX'">{{
+            'REPORT.REPORTS_WITHHOLDING_TAX' | translate
+          }}</ng-container>
+          <ng-container *ngSwitchDefault>{{ 'REPORT.REPORTS_SLA' | translate }}</ng-container>
+        </ng-container>
+      </span>
+
+      <ng-container *ngIf="reportType === 'WITH_HOLDING_TAX'">
+        <div fxLayout fxFlex="70" fxLayoutAlign="space-between center">
+          <spig-datepicker
+            [prefixIcon]="'icon-Filter'"
+            class="search-datepicker-field input-xsm full-width ml-20"
+            [placeholder]="'REPORT.START_DATE' | translate"
+            [max]="maxStartDate"
+            (inputChange)="onDateChange('startDate', $event)">
+          </spig-datepicker>
+          <div class="ml-20 mr-20 mt-3">-</div>
+          <spig-datepicker
+            class="search-datepicker-field input-xsm full-width"
+            [prefixIcon]="'icon-Filter'"
+            [max]="maxEndDate"
+            [min]="minEndDate"
+            [placeholder]="'REPORT.END_DATE' | translate"
+            (inputChange)="onDateChange('endDate', $event)">
+          </spig-datepicker>
+        </div>
+      </ng-container>
+    </div>
+    <button mat-flat-button color="primary" class="btn long-button" (click)="download(reportType)">
+      <mat-icon svgIcon="icon-Download" class="icon icon-medium icon-fill-white"></mat-icon>
+      {{ 'COMMON.BUTTON_DOWNLOAD' | translate }}
+    </button>
+  </div>
+</ng-template>

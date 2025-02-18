@@ -1,0 +1,33 @@
+<ng-container *ngIf="!isUploadReadOnly && !hideBanner">
+  <app-message-banner
+    type="warn-normal"
+    [message]="'WITHDRAWN_SEIZURE_PROPERTY.COLLATERAL.DOCUMENT_EXPLAIN'"
+    actionButtonClass="bold icon-black icon-small-xl full-width max-w-fit"
+    [actionButtonBorder]="false"
+    (actionButtonHandler)="download()"
+    actionButtonIcon="icon-Arrow-Download"
+    icon="icon-Error"
+    [actionButton]="'WITHDRAWN_SEIZURE_PROPERTY.BUTTON.DONWLOAD' | translate">
+  </app-message-banner>
+</ng-container>
+<div class="mt-24 wd-upload-doc" fxLayout="row" fxLayoutGap="24px">
+  <div *ngIf="!hideTitle" fxFlex="15">
+    <h6>{{ title | translate }}</h6>
+  </div>
+  <div [fxFlex]="hideTitle ? 100 : 83">
+    <app-upload-multi-file-content
+      [uploadMultiInfo]="uploadMultiInfo"
+      [list]="documentUpload"
+      [column]="documentColumns"
+      [isAsset]="isAsset"
+      (uploadFileEvent)="uploadFileEvent($event)"
+      [readonly]="isUploadReadOnly"
+      [uploadFor]="uploadFor"
+      [labelAcceptFile]="
+        isUploadReadOnly || (errors && touched) ? '' : 'UPLOAD_FILE.LABEL_HINT_DOCUMENT_PDF_JPG_JPEG_2'
+      ">
+    </app-upload-multi-file-content>
+    <spig-error-msg [control]="formUploadControl" [customErrorMsg]="'UPLOAD_FILE.ERROR_FILE_UPLOAD_REQUIRED'">
+    </spig-error-msg>
+  </div>
+</div>

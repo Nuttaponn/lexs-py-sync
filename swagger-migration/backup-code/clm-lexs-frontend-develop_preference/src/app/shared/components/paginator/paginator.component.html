@@ -1,0 +1,38 @@
+<div class="paginator-container">
+  <ng-container>
+    <div>
+      {{ 'PAGINATION.LABEL_RESULT' | translate: { START: startLabel, FROM: fromLabel, TOTAL: length } }}
+    </div>
+  </ng-container>
+
+  <div class="page-action">
+    <div class="previous cur-pointer" [class.disabled]="!hasPreviousPage()">
+      <span (click)="previousPage()">
+        <mat-icon svgIcon="icon-Direction-Left"></mat-icon>
+        {{ 'PAGINATION.PREVIOUS' | translate }}
+      </span>
+    </div>
+
+    <div class="page">
+      <div *ngFor="let page of pages" fxLayout="row" fxLayoutAlign="space-around center">
+        <div
+          fxLayout="row"
+          fxLayoutAlign="space-around center"
+          class="page-number"
+          [class.cur-pointer]="page.pageNumber !== pageIndex"
+          [class.cur-text]="page.disabled"
+          [class.current-page]="page.pageNumber === pageIndex"
+          (click)="gotoPage(page.pageNumber)">
+          {{ page.label }}
+        </div>
+      </div>
+    </div>
+
+    <div class="next cur-pointer" [class.disabled]="!hasNextPage()">
+      <span (click)="nextPage()">
+        {{ 'PAGINATION.NEXT' | translate }}
+        <mat-icon svgIcon="icon-Direction-Right"></mat-icon>
+      </span>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,36 @@
+<ng-container [formGroup]="form">
+  <div fxLayout="row" fxFill fxLayoutAlign="space-around center">
+    <div fxFlex="20">
+      <p class="bold">{{ 'COMMON.LABEL_REASON' | translate }}</p>
+    </div>
+    <div fxFlex="80">
+      <spig-dropdown
+        formControlName="reason"
+        [placeholder]="'กรุณาเลือกเหตุผล'"
+        classInput="input-normal icon"
+        [config]="statusConfig"
+        [options]="statusOptions"
+        (selectedOption)="onSelectedOption($event)">
+      </spig-dropdown>
+      <spig-error-msg [control]="form.controls['reason']"></spig-error-msg>
+    </div>
+  </div>
+
+  <br />
+
+  <div fxLayout="row" fxFill fxLayoutAlign="space-around center">
+    <div fxFlex="20"></div>
+    <div fxFlex="80">
+      <mat-form-field class="full-width">
+        <mat-label>{{ 'COMMON.LABEL_REMARKS' | translate }}</mat-label>
+        <input
+          type="text"
+          formControlName="remark"
+          matInput
+          [placeholder]="'COMMON.LABEL_REMARKS' | translate"
+          autocomplete="off" />
+      </mat-form-field>
+      <spig-error-msg [control]="form.controls['remark']"></spig-error-msg>
+    </div>
+  </div>
+</ng-container>

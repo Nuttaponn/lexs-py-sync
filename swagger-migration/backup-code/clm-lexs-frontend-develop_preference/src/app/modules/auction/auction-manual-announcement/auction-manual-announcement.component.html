@@ -1,0 +1,43 @@
+<!--
+  กรอกข้อมูลประกาศและทรัพย์
+  กรอกราคาวางหลักประกันและราคาประเมิน
+  ตรวจสอบข้อมูลประกาศ
+-->
+
+<!-- [ngClass]="'last-edited-step-' + stepperAuc.selectedIndex" -->
+<app-genaral-detail-add
+  *ngIf="['PENDING_NEW_ANNOUNCE', 'PENDING_NEW_VALIDATE'].includes(matchStatus ?? '')"
+  [isOpened]="isOpenGenaralDetailAdd"
+  [mode]="generalDetailAddMode === 'VIEW'"
+  (onOpenExpansion)="handleExpansion()"
+></app-genaral-detail-add>
+  <!-- [isAnnouncement]="false" -->
+
+<app-auction-detail-summary
+  *ngIf="['PENDING_NEW_ANNOUNCE', 'PENDING_NEW_VALIDATE'].includes(matchStatus ?? '')"
+  [defaultExpand]="true"
+  [auctionCaseTypeCode]="auctionCaseTypeCode"
+  [data]="anouncementDetail"
+></app-auction-detail-summary>
+
+<app-auction-detail-panel
+  *ngIf="['PENDING_NEW_ANNOUNCE', 'PENDING_NEW_VALIDATE'].includes(matchStatus ?? '')"
+  [title]="'รายละเอียดทรัพย์จากระบบ LEXS'"
+  [isOpened]="isOpenedLexsSysTable"
+>
+  <app-auction-detail-lexs-sys-table
+    [mode]="lexsSysTableMode"
+  ></app-auction-detail-lexs-sys-table>
+</app-auction-detail-panel>
+
+
+<app-auction-detail-panel
+  *ngIf="['PENDING_NEW_DEEDGROUP'].includes(matchStatus ?? '')"
+  [title]="'รายละเอียดทรัพย์'"
+  [isOpened]="isOpenedInformationAssetSet"
+>
+  <app-information-asset-set
+    [mode]="informationAssetSetMode"
+  ></app-information-asset-set>
+</app-auction-detail-panel>
+

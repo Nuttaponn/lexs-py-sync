@@ -1,0 +1,241 @@
+<app-action-bar
+  [hasPrimaryButton]="actionBar.hasPrimaryButton"
+  [hasBackButton]="actionBar.hasBack"
+  [disabledPrimaryButton]="actionBar.disabledPrimaryButton"
+  [primaryButtonText]="actionBar.primaryButtonText"
+  [primaryButtonIcon]="actionBar.primaryButtonIcon"
+  [showNavBarInformation]="actionBar.showNavBarInformation"
+  (primaryButtonHandler)="onSave()">
+  <ng-container navBarInformationTemplate>
+    <mat-icon svgIcon="icon-setting" class="icon icon-xmedium"></mat-icon
+    ><span class="ml-05em">{{ 'CONFIGURATION.TITLE_ACTION_BAR' | translate }}</span>
+  </ng-container>
+</app-action-bar>
+<div class="content-below-action-bar-area">
+  <div>
+    <form [formGroup]="configForm">
+      <div class="content-container">
+        <mat-accordion class="accordion-headers-align">
+          <div fxLayout="row" fxLayoutAlign="space-between center" class="title-content">
+            <div>
+              <h6>{{ 'CONFIGURATION.TITLE_SECTION_DPD' | translate }}</h6>
+            </div>
+            <div fxLayout="row">
+              <div class="description" (click)="isOpened1 = !isOpened1">
+                <mat-icon
+                  [svgIcon]="isOpened1 ? 'icon-Slide-Hide' : 'icon-Expand'"
+                  class="icon icon-hide-show fill-blue">
+                </mat-icon
+                >{{
+                  isOpened1 ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate)
+                }}
+              </div>
+            </div>
+          </div>
+          <mat-expansion-panel [expanded]="isOpened1" hideToggle>
+            <mat-divider class="no-margin"></mat-divider>
+            <div class="pb-24 pt-24" fxLayoutGap="20" fxFlexFill>
+              <div fxFlex="30" fxLayoutAlign="top">
+                <h6>{{ 'CONFIGURATION.LABEL_DPD' | translate }}</h6>
+              </div>
+              <div fxFlex="35">
+                <mat-form-field class="input-full-field" [class.border-black-40]="getControl('LEXS_DPD')?.value">
+                  <mat-label>{{ 'CONFIGURATION.PLACEHOLDER_LEXS_DPD' | translate }}</mat-label>
+                  <input matInput appNumberOnly="integer" type="text" maxlength="4" formControlName="LEXS_DPD" />
+                </mat-form-field>
+                <spig-error-msg [control]="getControl('LEXS_DPD')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+                </spig-error-msg>
+              </div>
+              <div fxFlex="35">
+                <mat-form-field class="input-full-field" [class.border-black-40]="getControl('LITIGATION_DPD')?.value">
+                  <mat-label>{{ 'CONFIGURATION.PLACEHOLDER_START_LG' | translate }}</mat-label>
+                  <input matInput type="text" appNumberOnly="integer" maxlength="4" formControlName="LITIGATION_DPD" />
+                </mat-form-field>
+                <spig-error-msg [control]="getControl('LITIGATION_DPD')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+                </spig-error-msg>
+              </div>
+            </div>
+            <div class="pb-20" fxLayoutGap="20" fxFlexFill>
+              <div fxFlex="30" fxLayoutAlign="top">
+                <h6>{{ 'CONFIGURATION.LABEL_DUE_DATE_OF_APPEAL' | translate }}</h6>
+              </div>
+              <div fxFlex="35">
+                <mat-form-field class="input-full-field" [class.border-black-40]="getControl('APPEAL_DURATION')?.value">
+                  <mat-label>{{ 'CONFIGURATION.PLACEHOLDER_APPEAL_DAYS' | translate }}</mat-label>
+                  <input matInput type="text" appNumberOnly="integer" maxlength="4" formControlName="APPEAL_DURATION" />
+                </mat-form-field>
+                <spig-error-msg
+                  [control]="getControl('APPEAL_DURATION')"
+                  [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+                </spig-error-msg>
+              </div>
+              <div fxFlex="35">
+                <mat-form-field
+                  class="input-full-field"
+                  [class.border-black-40]="getControl('PETITION_DURATION')?.value">
+                  <mat-label>{{ 'CONFIGURATION.PLACEHOLDER_PETITION_DAYS' | translate }}</mat-label>
+                  <input
+                    matInput
+                    type="text"
+                    appNumberOnly="integer"
+                    maxlength="4"
+                    formControlName="PETITION_DURATION" />
+                </mat-form-field>
+                <spig-error-msg
+                  [control]="getControl('PETITION_DURATION')"
+                  [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+                </spig-error-msg>
+              </div>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>
+      <div class="content-container">
+        <mat-accordion class="accordion-headers-align">
+          <div fxLayout="row" fxLayoutAlign="space-between center" class="title-content">
+            <div>
+              <h6>{{ 'CONFIGURATION.TITLE_SECTION_NOTICE' | translate }}</h6>
+            </div>
+            <div fxLayout="row">
+              <div class="description" (click)="isOpened2 = !isOpened2">
+                <mat-icon
+                  [svgIcon]="isOpened2 ? 'icon-Slide-Hide' : 'icon-Expand'"
+                  class="icon icon-hide-show fill-blue">
+                </mat-icon
+                >{{
+                  isOpened2 ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate)
+                }}
+              </div>
+            </div>
+          </div>
+          <mat-expansion-panel [expanded]="isOpened2" hideToggle>
+            <mat-divider></mat-divider>
+            <div class="pb-24 pt-24" fxLayoutGap="20" fxFlexFill>
+              <div fxFlex="30" fxLayoutAlign="top">
+                <h6>{{ 'CONFIGURATION.LABEL_NOTICE_BEFORE_DUE_OF_APPEAL' | translate }}</h6>
+              </div>
+              <div fxFlex="35">
+                <mat-form-field class="input-full-field" [class.border-black-40]="getControl('NOTICE_DURATION')?.value">
+                  <mat-label>{{ 'CONFIGURATION.PLACEHOLDER_DAYS_BEFORE_DUE' | translate }}</mat-label>
+                  <input matInput type="text" appNumberOnly="integer" maxlength="4" formControlName="NOTICE_DURATION" />
+                </mat-form-field>
+                <spig-error-msg
+                  [control]="getControl('NOTICE_DURATION')"
+                  [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+                </spig-error-msg>
+              </div>
+              <div fxFlex="35"></div>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>
+      <div class="content-container">
+        <mat-accordion class="accordion-headers-align">
+          <div fxLayout="row" fxLayoutAlign="space-between center" class="title-content">
+            <div class="color-biz-black-70">{{ 'CONFIGURATION.TITLE_SECTION_MAIN_USER' | translate }}</div>
+            <div fxLayout="row">
+              <div class="description" (click)="isOpened3 = !isOpened3">
+                <mat-icon
+                  [svgIcon]="isOpened3 ? 'icon-Slide-Hide' : 'icon-Expand'"
+                  class="icon icon-hide-show fill-blue">
+                </mat-icon
+                >{{
+                  isOpened3 ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate)
+                }}
+              </div>
+            </div>
+          </div>
+          <mat-expansion-panel [expanded]="isOpened3" hideToggle>
+            <mat-divider></mat-divider>
+            <div class="pb-24 pt-24" fxLayoutGap="20" fxFlexFill>
+              <div fxFlex="30" fxLayoutAlign="top">
+                <h6>{{ 'CONFIGURATION.LABEL_KTBLAW_USER' | translate }}</h6>
+              </div>
+              <div fxFlex="60">
+                <div fxLayout="column" fxLayoutAlign="start" fxLayoutGap="15px">
+                  <div>
+                    {{ 'CONFIGURATION.DETAIL_LABEL_KTBLAW_USER' | translate }}
+                  </div>
+                  <ng-container
+                    *ngIf="extendedKlawConfigDtos.length > 0; else searchEmpty"
+                    [ngTemplateOutlet]="mainTable"
+                    [ngTemplateOutletContext]="{ list: extendedKlawConfigDtos || [] }">
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>
+      <div class="content-container">
+        <app-configuration-matching></app-configuration-matching>
+      </div>
+    </form>
+  </div>
+</div>
+
+<ng-template #mainTable let-dataSource="list">
+  <!-- <div class="table-scroll section"> -->
+  <table [formGroup]="klawForm" mat-table [dataSource]="dataSource">
+    <ng-container matColumnDef="no">
+      <th mat-header-cell *matHeaderCellDef class="text-center">{{ 'COMMON.LABEL_NO' | translate }}</th>
+      <td class="text-center" mat-cell *matCellDef="let element; let i = index">
+        {{ i + 1 }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="klawName">
+      <!-- หน่วยงาน -->
+      <th mat-header-cell *matHeaderCellDef>{{ 'CONFIGURATION.HEAD_COLUMN_RESPONSE_UNIT' | translate }}</th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.klawName }}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="dropdown">
+      <!-- ผู้รับงานหลัก KLAW -->
+      <th mat-header-cell *matHeaderCellDef>{{ 'CONFIGURATION.HEAD_COLUMN_MAIN_RESPONSE_UNIT_KLAW' | translate }}</th>
+      <td mat-cell *matCellDef="let element; let i = index">
+        <spig-dropdown
+          [config]="ddlKTBLaw"
+          [options]="element.usersList"
+          [required]="true"
+          [classInput]="!!element.userId ? 'input-normal border-black-40' : 'input-normal'"
+          (selectedOption)="onDdlKTBLawOptionsSelected($event, element.primaryKey, i)"
+          [formControlName]="element.primaryKey">
+        </spig-dropdown>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+  <!-- </div> -->
+  <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="12px">
+    <div class="text-left error-msg" fxFlex="50">
+      <ng-container *ngIf="isSubmited && isKLawFormInvalid">
+        {{ 'LAWSUIT.DIALOG_ALERT_TABLE_SELECTED' | translate }}
+      </ng-container>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #searchEmpty>
+  <table mat-table>
+    <ng-container matColumnDef="no">
+      <th class="text-center" mat-header-cell *matHeaderCellDef>
+        {{ 'COMMON.LABEL_NO' | translate }}
+      </th>
+    </ng-container>
+    <ng-container matColumnDef="klawName">
+      <th mat-header-cell *matHeaderCellDef>{{ 'CONFIGURATION.HEAD_COLUMN_RESPONSE_UNIT' | translate }}</th>
+    </ng-container>
+    <ng-container matColumnDef="dropdown">
+      <th mat-header-cell *matHeaderCellDef>{{ 'CONFIGURATION.HEAD_COLUMN_MAIN_RESPONSE_UNIT_KLAW' | translate }}</th>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  </table>
+  <div>
+    <app-message-empty [message]="'COMMON.SEARCH_EMPTY'"></app-message-empty>
+  </div>
+</ng-template>

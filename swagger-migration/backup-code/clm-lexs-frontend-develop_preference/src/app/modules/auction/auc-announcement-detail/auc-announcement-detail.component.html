@@ -1,0 +1,13 @@
+<app-genaral-detail
+  [isAnnouncement]="isAnnouncement"
+  [dataForm]="auctionService.genaralForm"
+  [mode]="isViewMode"
+  [isOpened]="false"></app-genaral-detail>
+
+<app-auction-detail-summary
+  [defaultExpand]="true"
+  [data]="anouncementDetail"
+  [auctionCaseTypeCode]="auctionCaseTypeCode"
+></app-auction-detail-summary>
+
+<app-auction-detail-led-collateral [data]="dataAuctionCollaterals"></app-auction-detail-led-collateral>

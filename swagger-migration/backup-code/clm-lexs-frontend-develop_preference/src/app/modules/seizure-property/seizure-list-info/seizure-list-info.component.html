@@ -1,0 +1,377 @@
+<div class="content-container">
+  <div class="inner-container-padding-24">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+      <div class="title-text">
+        <h5 class="mt-12 mb-12">
+          {{ isNonePledgeTask ? 'รายการทรัพย์ภายใต้สํานักงานบังคับคดี' : 'รายการทรัพย์ที่จะยึด' }}
+        </h5>
+      </div>
+      <div fxLayout="row">
+        <div class="description" (click)="isOpened = !isOpened">
+          <mat-icon
+            [svgIcon]="isOpened ? 'icon-Slide-Hide' : 'icon-Expand'"
+            class="icon icon-hide-show icon-xmedium fill-blue mr-5">
+          </mat-icon
+          >{{ (isOpened ? 'COMMON.ICON_EXPANSION_HIDE' : 'COMMON.ICON_EXPANSION_SHOW') | translate }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <mat-card-content>
+    <mat-accordion>
+      <mat-expansion-panel [expanded]="isOpened" hideToggle>
+        <div class="search-filter-content">
+          <div class="second-section mb-15" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="12px">
+            <div fxFlex="35">
+              <spig-dropdown
+                classInput="input-xsm icon"
+                [config]="statusConfigCollateralType"
+                [options]="collateralTypeList"
+                [formControl]="myCollateralTypeOptionsCtrl"
+                (selectedOption)="
+                  applyFilter($event, isNonePledgeTask ? TABLE_FILTER_KEY.ASSET_TYPE : TABLE_FILTER_KEY.COLLATERAL_TYPE)
+                "></spig-dropdown>
+            </div>
+            <div fxFlex="35">
+              <spig-dropdown
+                classInput="input-xsm icon"
+                [config]="collateralList"
+                [options]="collateralStatusList"
+                [formControl]="myCollateralStatusList"
+                (selectedOption)="applyFilter($event, TABLE_FILTER_KEY.COLLATERAL_CASE_LEX_STATUS)"></spig-dropdown>
+            </div>
+
+            <div fxFlex="35">
+              <ng-container *ngIf="isNonePledgeTask; else elseTemplate">
+                <spig-dropdown
+                  classInput="input-xsm icon"
+                  [config]="myCustSortingConfig"
+                  [options]="orderByDocumentNoOptions"
+                  [formControl]="myCustSortingCtrl"
+                  (selectedOption)="sortByDocumentNo($event)"></spig-dropdown>
+              </ng-container>
+              <ng-template #elseTemplate>
+                <spig-dropdown
+                  classInput="input-xsm icon"
+                  [config]="myCustSortingConfig"
+                  [options]="myCustSortingOptions"
+                  [formControl]="myCustSortingCtrl"
+                  (selectedOption)="sortSelected($event)"></spig-dropdown>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+        <div class="pt-20 pb-10" *ngIf="canEditCollaterals">
+          <div fxLayout="row" fxLayoutAlign="space-between center">
+            <div class="title-text">
+              <h5 class="mt-1">
+                <ng-container [ngTemplateOutlet]="pledgeTitle"></ng-container>
+              </h5>
+            </div>
+          </div>
+        </div>
+        <div class="pt-20 pb-20">
+          <div fxLayout="row" fxLayoutAlign="space-between center">
+            <div class="title-text">
+              <div *ngIf="canEditCollaterals">
+                <button
+                  id="btn-task-transfer-0"
+                  mat-stroked-button
+                  class="xsmall-aw-button overflow-ellipsis"
+                  (click)="isCheckAll(litigationCaseService.listCollaterals.length === 0)">
+                  <mat-icon
+                    [svgIcon]="
+                      litigationCaseService.listCollaterals.length === 0
+                        ? 'icon-Checkmark-Circle-Regular'
+                        : 'icon-Dash-Circle'
+                    "
+                    class="icon icon-xmedium"></mat-icon>
+                  <ng-container *ngIf="litigationCaseService.listCollaterals.length === 0; else unSelected">
+                    <span class="ml-8 mr-8 fs-16">เลือกทุกรายการ</span>
+                  </ng-container>
+                  <ng-template #unSelected>
+                    <span class="ml-1half fs-16">ไม่เลือกทุกรายการ</span>
+                  </ng-template>
+                </button>
+              </div>
+              <div *ngIf="mode === 'VIEW' || !canEditCollaterals">
+                <h5 class="mt-1">
+                  <ng-container [ngTemplateOutlet]="pledgeTitle"></ng-container>
+                </h5>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="center center">
+              <p class="m-8" *ngIf="canEditCollaterals">เลือก:</p>
+              <p class="m-8" *ngIf="mode === 'VIEW' || !canEditCollaterals">ทั้งหมด:</p>
+              <p *ngIf="canEditCollaterals" class="numberSize bold m-8">
+                {{ selection.selected.length || 0 }}
+              </p>
+              <p class="bold" *ngIf="canEditCollaterals">จาก</p>
+              <p class="numberSize bold m-8">{{ maxLength }}</p>
+              <span class="divider-vertical"></span>
+
+              <p>{{ isNonePledgeTask ? 'ราคาประเมินรวมของราชการ(บาท):' : 'ราคาประเมินรวมของธนาคาร (บาท):' }}</p>
+
+              <p class="numberSize bold m-8">{{ getTotalAppraisalValueSum() | numberDecimal }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="table-scroll section" table-scroll>
+          <table mat-table [dataSource]="dataSource.filteredData" #seizureListTable>
+            <ng-container matColumnDef="selection" sticky>
+              <th mat-header-cell *matHeaderCellDef>
+                <mat-checkbox
+                  (change)="masterToggle($event)"
+                  [checked]="!disabledAll ? selectionPerPage.get(pageIndex)?.hasValue() && isAllSelected() : false"
+                  [disabled]="disabledAll">
+                </mat-checkbox>
+              </th>
+              <td mat-cell *matCellDef="let row">
+                <mat-checkbox
+                  (click)="$event.stopPropagation()"
+                  (change)="$event ? toggleSelection(row) : null; checkList($event)"
+                  [disabled]="row.disabled || row.seizuredByLitigationId || row.collateralCaseLexStatus === 'SEIZURED'"
+                  [checked]="selection.isSelected(row)">
+                </mat-checkbox>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="order" sticky>
+              <th mat-header-cell *matHeaderCellDef class="text-center">
+                {{ 'COMMON.LABEL_NO' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element; let rowNo = index" class="text-center">
+                <ng-container>
+                  <div>
+                    <label [for]="rowNo"></label>
+                  </div>
+                </ng-container>
+                <ng-container>
+                  {{ (pageIndex - 1) * 10 + (rowNo + 1) }}
+                </ng-container>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="orderWithElevationLeft" sticky>
+              <th mat-header-cell *matHeaderCellDef columnElevationLeft class="text-center">
+                {{ 'COMMON.LABEL_NO' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element; let rowNo = index" columnElevationLeft class="text-center">
+                <ng-container>
+                  <div>
+                    <label [for]="rowNo"></label>
+                  </div>
+                </ng-container>
+                <ng-container>
+                  {{ (pageIndex - 1) * 10 + (rowNo + 1) }}
+                </ng-container>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="collateralId" sticky>
+              <th mat-header-cell *matHeaderCellDef columnElevationLeft class="min-width-192">
+                {{ 'SEIZURE_PROPERTY.SEIZURE_LIST_INFO.COLLATERAL_NO' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element; let rowNo = index" class="min-width-192" columnElevationLeft>
+                <div class="m-10" fxLayoutAlign="space-between center" fxLayoutGap="8">
+                  <span>
+                    {{ element.collateralId || '-' }}
+                  </span>
+                </div>
+                <span *ngIf="element.disabledDesc" class="status-label status-failed disable-desc">{{
+                  element.disabledDesc || ''
+                }}</span>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="collateralType">
+              <th mat-header-cell *matHeaderCellDef class="min-width-192">
+                {{ 'SEIZURE_PROPERTY.SEIZURE_LIST_INFO.COLLATERAL_TYPE' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element" class="min-width-192">
+                <span>
+                  {{ element.collateralTypeDesc || '-' }}
+                </span>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="collateralSubType">
+              <th mat-header-cell *matHeaderCellDef class="min-width-192">
+                {{ 'SEIZURE_PROPERTY.SEIZURE_LIST_INFO.COLLATERAL_SUB_TYPE' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element" class="min-width-192">
+                <span>
+                  {{ element.collateralSubTypeDesc || '-' }}
+                </span>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="documentNo">
+              <th mat-header-cell *matHeaderCellDef class="min-width-160">
+                {{ 'COMMON.LABEL_DOCUMENT_NUMBER' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element" class="min-width-160">
+                <span>
+                  {{ element.documentNo || '-' }}
+                </span>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="collateralDetails">
+              <th mat-header-cell *matHeaderCellDef class="min-width-352">
+                {{ 'SEIZURE_PROPERTY.SEIZURE_LIST_INFO.DETAIL_ASSET' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element" class="min-width-352">
+                <div class="m-10">
+                  {{ element.collateralDetails || '-' }}
+                </div>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="ownerName">
+              <th mat-header-cell *matHeaderCellDef class="min-width-160">
+                {{ 'SEIZURE_PROPERTY.SEIZURE_LIST_INFO.OWNER_NAME' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element" class="min-width-160">
+                <span>
+                  {{ element.ownerFullName || '-' }}
+                </span>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="totalAppraisalValue">
+              <th mat-header-cell *matHeaderCellDef class="text-right">
+                {{ 'SEIZURE_PROPERTY.SEIZURE_LIST_INFO.TOTAL_APPRAISAL_VALUE' | translate }}
+                <app-tooltip
+                  [iconClass]="['icon-small', 'fill-white']"
+                  [params]="[
+                    { title: '', content: 'ราคาประเมินของธนาคาร: ทรัพย์จำนอง<br>ราคาประเมินราชการ: ทรัพย์นอกจำนอง' },
+                  ]"></app-tooltip>
+              </th>
+              <td mat-cell *matCellDef="let element" class="text-right">
+                <span>
+                  {{ (element.totalAppraisalValue | numberDecimal) || '-' }}
+                </span>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="collateralCmsStatus">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'SEIZURE_PROPERTY.SEIZURE_LIST_INFO.COLLATERAL_CMS_STATUS' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element">
+                <span>
+                  {{ (element.collateralCmsStatus | uppercase) || '-' }}
+                </span>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="collateralCaseLexStatus" stickyEnd>
+              <th mat-header-cell *matHeaderCellDef columnElevationRight class="text-center">
+                {{ 'SEIZURE_PROPERTY.SEIZURE_LIST_INFO.COLLATERAL_STATUS' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element" columnElevationRight class="text-center">
+                <div
+                  [ngClass]="{
+                    'status-success': ['SEIZURED', 'SOLD'].includes(element.collateralCaseLexStatus),
+                    'status-normal':
+                      element.collateralCaseLexStatus === 'PLEDGE' || element.collateralCaseLexStatus === 'NON_PLEDGE',
+                    'status-pending': ['ON_SALE', 'PENDING_SALE'].includes(element.collateralCaseLexStatus),
+                  }"
+                  class="status-label m-auto full-width">
+                  <ng-container *ngIf="element.collateralCaseLexStatus === 'SEIZURED'">
+                    <mat-icon svgIcon="icon-Mark" class="icon icon-small"></mat-icon>
+                  </ng-container>
+                  <ng-container
+                    *ngIf="
+                      element.collateralCaseLexStatus && element.collateralCaseLexStatus !== '-';
+                      else elseTemplate
+                    ">
+                    {{ 'COLLATERAL_LEXS_STATUS.' + element.collateralCaseLexStatus | translate }}
+                  </ng-container>
+                  <ng-template #elseTemplate>
+                    <span>-</span>
+                  </ng-template>
+                </div>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="assetTypeDesc">
+              <th mat-header-cell *matHeaderCellDef class="min-width-192">
+                {{ 'PROPERTY.COLLATERAL_TYPE' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element" class="min-width-192">
+                <div fxLayout="column" fxLayoutAlign="start start">
+                  <span [class.mt-10]="element.seizuredByLitigationId">
+                    {{ element.assetTypeDesc || '-' }}
+                  </span>
+                  <ng-container *ngIf="element.seizuredByLitigationId">
+                    <div class="status-label status-failed m-auto mt-5">
+                      ถูกตั้งเรื่องยึดทรัพย์<br />โดย {{ element.seizuredByLitigationId }}
+                    </div>
+                  </ng-container>
+                </div>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="assetSubTypeDesc">
+              <th mat-header-cell *matHeaderCellDef class="min-width-192">{{ 'ประเภทย่อย' | translate }}</th>
+              <td mat-cell *matCellDef="let element" class="min-width-192">
+                <span>
+                  {{ element.assetSubTypeDesc || '-' }}
+                </span>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="obligationStatus">
+              <th mat-header-cell *matHeaderCellDef class="min-width-192 text-center">
+                {{ 'ภาระผูกพัน' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element" class="min-width-192 text-center">
+                <div class="status-label status-normal m-auto full-width">
+                  {{ element.obligationStatus || '-' }}
+                </div>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="seizureStatus">
+              <th mat-header-cell *matHeaderCellDef class="min-width-192 text-center">
+                {{ 'สถานะทรัพย์ที่สืบพบ' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element" class="min-width-192 text-center">
+                <div class="status-label status-normal m-auto full-width">
+                  {{ element.assentRlsStatus || '-' }}
+                </div>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="assetDocuments" stickyEnd>
+              <th mat-header-cell *matHeaderCellDef class="min-width-192 text-center">
+                {{ 'รายการเอกสาร' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element" class="min-width-192">
+                <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="32">
+                  <div fxFlex="100">
+                    <button
+                      type="button"
+                      mat-stroked-button
+                      class="medium-fw-button"
+                      (click)="onClickAssetDocuments(element)">
+                      {{ 'COMMON.BUTTON_VIEW_DOCUMENT' | translate }}
+                    </button>
+                  </div>
+                </div>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="columns"></tr>
+            <tr mat-row *matRowDef="let row; columns: columns" [class.hidden]="row.hide"></tr>
+          </table>
+        </div>
+        <ng-container [ngTemplateOutlet]="dataNotFound" *ngIf="dataSource.filteredData.length === 0"> </ng-container>
+        <app-paginator
+          *ngIf="allCurrentData.length > 0"
+          #paginator
+          [pageSize]="pageSize"
+          [length]="allCurrentData.length"
+          (page)="onPaging($event)"></app-paginator>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </mat-card-content>
+</div>
+<ng-template #dataNotFound>
+  <app-message-empty [message]="'ไม่พบทรัพย์ที่เกี่ยวข้อง'"></app-message-empty>
+</ng-template>
+
+<ng-template #pledgeTitle>
+  <ng-container [ngSwitch]="seizurePageType">
+    <ng-container *ngSwitchCase="'NON-PLEDGE'"> ทรัพย์นอกจำนอง </ng-container>
+    <ng-container *ngSwitchDefault> ทรัพย์จำนอง </ng-container>
+  </ng-container>
+</ng-template>

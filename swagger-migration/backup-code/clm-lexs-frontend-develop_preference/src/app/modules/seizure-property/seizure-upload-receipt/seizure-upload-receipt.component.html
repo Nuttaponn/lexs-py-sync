@@ -1,0 +1,179 @@
+<app-action-bar
+  (backButtonHandler)="onBack()"
+  (primaryButtonHandler)="onApprove()"
+  (rejectButtonHandler)="onReject()"
+  [showNavBarInformation]="true"
+  [hasRejectButton]="actionBar.hasReject"
+  [hasPrimaryButton]="actionBar.hasPrimary"
+  primaryButtonText="อนุมัติ"
+  rejectButtonText="ส่งกลับแก้ไข"
+  rejectButtonIcon="icon-Arrow-Revert"
+  primaryButtonIcon="icon-Selected">
+  <ng-container navBarInformationTemplate>
+    <mat-icon [svgIcon]="'icon-Box-Bag-Circle'" class="icon icon-xmedium default-cursor"></mat-icon>
+    <span *ngIf="title" class="ml-8">{{ title | translate }}</span>
+    <span *ngIf="statusName" class="ml-12 status-label status-normal">{{ statusName }}</span>
+  </ng-container>
+</app-action-bar>
+
+<div class="content-below-action-bar-area">
+  <div class="pt-16 pl-24 pr-24" *ngIf="messageBanner">
+    <app-message-banner [type]="'black-info'" [message]="messageBanner"> </app-message-banner>
+  </div>
+
+  <!-- รายละเอียดสั่งการยึดทรัพย์ -->
+  <app-case-details
+    [title]="'TITLE_MSG.SEIZURE_PROPERTY_DETAIL'"
+    [data]="caseDetail"
+    [hidelawyer]="caseDetailHidelawyer">
+  </app-case-details>
+
+  <!-- รายชื่อสำนักงานบังคับคดี -->
+  <div class="content-container">
+    <div class="inner-container-padding pb-10">
+      <div fxLayout="row" fxLayoutAlign="space-between center">
+        <div class="title-text">
+          <h5 class="mt-12 mb-12 ml-12 mr-12">รายชื่อสำนักงานบังคับคดี</h5>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="center center">
+          <!-- Show hide toggle -->
+          <div class="description" (click)="localStates.legalExecutionSection = !localStates.legalExecutionSection">
+            <mat-icon
+              [svgIcon]="localStates.legalExecutionSection ? 'icon-Slide-Hide' : 'icon-Expand'"
+              class="icon icon-hide-show fill-blue">
+            </mat-icon
+            >{{
+              localStates.legalExecutionSection
+                ? ('COMMON.ICON_EXPANSION_HIDE' | translate)
+                : ('COMMON.ICON_EXPANSION_SHOW' | translate)
+            }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <mat-accordion>
+      <mat-expansion-panel [expanded]="localStates.legalExecutionSection">
+        <mat-divider class="m-0"></mat-divider>
+        <div class="table-scroll pt-10" table-scroll>
+          <table mat-table [dataSource]="legalExecutionSource">
+            <ng-container matColumnDef="no">
+              <th mat-header-cell *matHeaderCellDef class="text-center">{{ 'COMMON.LABEL_NO' | translate }}</th>
+              <td mat-cell *matCellDef="let element; let i = index" class="text-center">
+                {{ i + 1 }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="legalExecutionName">
+              <th mat-header-cell *matHeaderCellDef>สำนักงานบังคับคดี</th>
+              <td mat-cell *matCellDef="let element">
+                <span>
+                  {{ element.legalExecutionName }}
+                </span>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="legalDepartment">
+              <th mat-header-cell *matHeaderCellDef>ประเภทสำนักงานบังคับคดี</th>
+              <td mat-cell *matCellDef="let element">
+                <span>
+                  {{ element.legalDepartment | translate }}
+                </span>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="totalAsset">
+              <th mat-header-cell *matHeaderCellDef>จำนวนทรัพย์</th>
+              <td mat-cell *matCellDef="let element">
+                <span>
+                  {{ element.totalAsset }}
+                </span>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="keepDate">
+              <th mat-header-cell *matHeaderCellDef>เลขที่เก็บ/<br />วันที่บันทึก</th>
+              <td mat-cell *matCellDef="let element">
+                <p>
+                  {{ element.collectionNumber }}
+                </p>
+                <p>
+                  {{ element.keepDate ? (element.keepDate | buddhistEra: 'DD/MM/yyyy') : '-' }}
+                </p>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="seizureDate">
+              <th mat-header-cell *matHeaderCellDef>วันที่ยึดทรัพย์</th>
+              <td mat-cell *matCellDef="let element">
+                <p>
+                  {{ element.seizureDate ? (element.seizureDate | buddhistEra: 'DD/MM/yyyy') : '-' }}
+                </p>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="SLA">
+              <th mat-header-cell *matHeaderCellDef>SLA</th>
+              <td mat-cell *matCellDef="let element" [class.fil-red]="element.SLAClasses">
+                <p>
+                  {{ element.SLA }}
+                </p>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="paymentMethod">
+              <th mat-header-cell *matHeaderCellDef class="text-center">e-Filing</th>
+              <td mat-cell *matCellDef="let element" class="text-center">
+                <span class="status-label size-fill-available" [appBadgeStatus]="element.paymentMethod">
+                  <mat-icon
+                    *ngIf="element.paymentMethod === 'E-FILING'"
+                    svgIcon="icon-Mark"
+                    class="icon icon-small fill-krungthai-green bold"></mat-icon>
+                  {{ 'SEIZURE_E_FILLING_STATUS.' + element.paymentMethod | translate }}
+                </span>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="reportStatus" stickyEnd>
+              <th mat-header-cell *matHeaderCellDef columnElevationRight class="text-center">รายงานการยึดทรัพย์</th>
+              <td mat-cell *matCellDef="let element" columnElevationRight class="text-center">
+                <span class="status-label size-fill-available" [appBadgeStatus]="element.reportStatus">
+                  <mat-icon svgIcon="icon-Mark" class="icon icon-small" *ngIf="element.markIcon"></mat-icon>
+                  {{ 'SEIZURE_STATUS.' + element.reportStatus | translate }}
+                </span>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="action" stickyEnd>
+              <th class="text-center" mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_COMMAND' | translate }}</th>
+              <td class="text-center" mat-cell *matCellDef="let element">
+                <!-- ปุ่มอัปโหลดใบเสร็จ-->
+                <button
+                  *ngIf="state === TaskState.Waiting_Upload_Receipt"
+                  class="medium-fw-button"
+                  (click)="onNavigateUploadReceipt(element)"
+                  mat-flat-button
+                  color="primary">
+                  <mat-icon [svgIcon]="'icon-Arrow-Upload'" class="icon icon-medium"></mat-icon>
+                  อัปโหลดใบเสร็จ
+                </button>
+
+                <!-- ดูรายละเอียด -->
+                <span *ngIf="state === TaskState.Waiting_Approval" (click)="onNavigateApproval(element)" class="link">
+                  {{ 'COMMON.BUTTON_VIEW_DETAIL' | translate }}
+                </span>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="legalColumn"></tr>
+            <tr mat-row *matRowDef="let row; columns: legalColumn"></tr>
+          </table>
+
+          <!-- Empty row handler -->
+          <app-message-empty *ngIf="legalExecutionSource.data.length === 0" message="ไม่มีรายการที่เกี่ยวข้อง">
+          </app-message-empty>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+</div>

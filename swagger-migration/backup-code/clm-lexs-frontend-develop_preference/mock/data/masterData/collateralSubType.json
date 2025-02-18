@@ -1,0 +1,374 @@
+{
+  "collateralSubType": [
+      {
+          "collateralTypeCode": "1",
+          "collateralSubTypeCode": "1",
+          "collateralSubTypeDesc": "โฉนด"
+      },
+      {
+          "collateralTypeCode": "1",
+          "collateralSubTypeCode": "2",
+          "collateralSubTypeDesc": "นส.3ก"
+      },
+      {
+          "collateralTypeCode": "1",
+          "collateralSubTypeCode": "3",
+          "collateralSubTypeDesc": "ตราจอง"
+      },
+      {
+          "collateralTypeCode": "1",
+          "collateralSubTypeCode": "4",
+          "collateralSubTypeDesc": "นส.3"
+      },
+      {
+          "collateralTypeCode": "1",
+          "collateralSubTypeCode": "5",
+          "collateralSubTypeDesc": "นส.3ข"
+      },
+      {
+          "collateralTypeCode": "1",
+          "collateralSubTypeCode": "6",
+          "collateralSubTypeDesc": "แบบหมายเลข 3"
+      },
+      {
+          "collateralTypeCode": "1",
+          "collateralSubTypeCode": "7",
+          "collateralSubTypeDesc": "ที่ดินต่างประเทศ"
+      },
+      {
+          "collateralTypeCode": "1",
+          "collateralSubTypeCode": "8",
+          "collateralSubTypeDesc": "โฉนดตราจอง"
+      },
+      {
+          "collateralTypeCode": "2",
+          "collateralSubTypeCode": "1",
+          "collateralSubTypeDesc": "โฉนด"
+      },
+      {
+          "collateralTypeCode": "2",
+          "collateralSubTypeCode": "2",
+          "collateralSubTypeDesc": "นส.3ก"
+      },
+      {
+          "collateralTypeCode": "2",
+          "collateralSubTypeCode": "3",
+          "collateralSubTypeDesc": "ตราจอง"
+      },
+      {
+          "collateralTypeCode": "2",
+          "collateralSubTypeCode": "4",
+          "collateralSubTypeDesc": "นส.3"
+      },
+      {
+          "collateralTypeCode": "2",
+          "collateralSubTypeCode": "5",
+          "collateralSubTypeDesc": "นส.3ข"
+      },
+      {
+          "collateralTypeCode": "2",
+          "collateralSubTypeCode": "6",
+          "collateralSubTypeDesc": "แบบหมายเลข 3"
+      },
+      {
+          "collateralTypeCode": "2",
+          "collateralSubTypeCode": "7",
+          "collateralSubTypeDesc": "ที่ดินพร้อมสิ่งปลูกสร้างต่างประเทศ"
+      },
+      {
+          "collateralTypeCode": "2",
+          "collateralSubTypeCode": "8",
+          "collateralSubTypeDesc": "โฉนดตราจอง"
+      },
+      {
+          "collateralTypeCode": "3",
+          "collateralSubTypeCode": "1",
+          "collateralSubTypeDesc": "อาคารสิ่งปลูกสร้าง"
+      },
+      {
+          "collateralTypeCode": "3",
+          "collateralSubTypeCode": "2",
+          "collateralSubTypeDesc": "อาคารสิ่งปลูกสร้างต่างประเทศ"
+      },
+      {
+          "collateralTypeCode": "4",
+          "collateralSubTypeCode": "1",
+          "collateralSubTypeDesc": "คอนโดมิเนียม/อาคารชุด/ห้องชุด"
+      },
+      {
+          "collateralTypeCode": "4",
+          "collateralSubTypeCode": "2",
+          "collateralSubTypeDesc": "คอนโดมิเนียม/อาคารชุด/ห้องชุดในต่างประเทศ"
+      },
+      {
+          "collateralTypeCode": "5",
+          "collateralSubTypeCode": "0",
+          "collateralSubTypeDesc": "ไม่มีประเภทย่อย"
+      },
+      {
+          "collateralTypeCode": "6",
+          "collateralSubTypeCode": "1",
+          "collateralSubTypeDesc": "สิทธิการเช่าสิ่งปลูกสร้าง"
+      },
+      {
+          "collateralTypeCode": "6",
+          "collateralSubTypeCode": "2",
+          "collateralSubTypeDesc": "สิทธิเหนือที่ดินและสิทธิเก็บกิน"
+      },
+      {
+          "collateralTypeCode": "7",
+          "collateralSubTypeCode": "0",
+          "collateralSubTypeDesc": "ไม่มีประเภทย่อย"
+      },
+      {
+          "collateralTypeCode": "7",
+          "collateralSubTypeCode": "1",
+          "collateralSubTypeDesc": "ข้าว"
+      },
+      {
+          "collateralTypeCode": "7",
+          "collateralSubTypeCode": "2",
+          "collateralSubTypeDesc": "พืชไร่"
+      },
+      {
+          "collateralTypeCode": "7",
+          "collateralSubTypeCode": "9",
+          "collateralSubTypeDesc": "อื่นๆ"
+      },
+      {
+          "collateralTypeCode": "8",
+          "collateralSubTypeCode": "1",
+          "collateralSubTypeDesc": "บัญชีเงินฝาก"
+      },
+      {
+          "collateralTypeCode": "8",
+          "collateralSubTypeCode": "2",
+          "collateralSubTypeDesc": "บัตรเงินฝาก"
+      },
+      {
+          "collateralTypeCode": "8",
+          "collateralSubTypeCode": "3",
+          "collateralSubTypeDesc": "เงินสด"
+      },
+      {
+          "collateralTypeCode": "8",
+          "collateralSubTypeCode": "4",
+          "collateralSubTypeDesc": "ธนบัตร"
+      },
+      {
+          "collateralTypeCode": "9",
+          "collateralSubTypeCode": "1",
+          "collateralSubTypeDesc": "หุ้นสามัญ"
+      },
+      {
+          "collateralTypeCode": "9",
+          "collateralSubTypeCode": "2",
+          "collateralSubTypeDesc": "หุ้นบุริมสิทธิ์"
+      },
+      {
+          "collateralTypeCode": "9",
+          "collateralSubTypeCode": "3",
+          "collateralSubTypeDesc": "ใบสำคัญแสดงสิทธิในการจองซื้อหุ้นสามัญ"
+      },
+      {
+          "collateralTypeCode": "9",
+          "collateralSubTypeCode": "4",
+          "collateralSubTypeDesc": "ใบสำคัญแสดงสิทธิในการจองซื้อหุ้นกู้"
+      },
+      {
+          "collateralTypeCode": "9",
+          "collateralSubTypeCode": "5",
+          "collateralSubTypeDesc": "ใบสำคัญแสดงสิทธิในเงินปันผล หรือดอกเบี้ยจากหลักทรัพย์"
+      },
+      {
+          "collateralTypeCode": "10",
+          "collateralSubTypeCode": "1",
+          "collateralSubTypeDesc": "พันธบัตร"
+      },
+      {
+          "collateralTypeCode": "10",
+          "collateralSubTypeCode": "2",
+          "collateralSubTypeDesc": "หุ้นกู้"
+      },
+      {
+          "collateralTypeCode": "10",
+          "collateralSubTypeCode": "3",
+          "collateralSubTypeDesc": "หุ้นกู้แปลงสภาพ"
+      },
+      {
+          "collateralTypeCode": "10",
+          "collateralSubTypeCode": "4",
+          "collateralSubTypeDesc": "อนุพันธ์แฝง"
+      },
+      {
+          "collateralTypeCode": "11",
+          "collateralSubTypeCode": "0",
+          "collateralSubTypeDesc": "ไม่มีประเภทย่อย"
+      },
+      {
+          "collateralTypeCode": "12",
+          "collateralSubTypeCode": "1",
+          "collateralSubTypeDesc": "อาวัล/รับรอง หรือหนังสือค้ำประกัน"
+      },
+      {
+          "collateralTypeCode": "12",
+          "collateralSubTypeCode": "2",
+          "collateralSubTypeDesc": "Standby L/C และบริการประกันการส่งออก"
+      },
+      {
+          "collateralTypeCode": "13",
+          "collateralSubTypeCode": "1",
+          "collateralSubTypeDesc": "ตั๋วสัญญาใช้เงิน"
+      },
+      {
+          "collateralTypeCode": "13",
+          "collateralSubTypeCode": "2",
+          "collateralSubTypeDesc": "ตั๋วแลกเงิน"
+      },
+      {
+          "collateralTypeCode": "14",
+          "collateralSubTypeCode": "1",
+          "collateralSubTypeDesc": "Total Return Swaps"
+      },
+      {
+          "collateralTypeCode": "14",
+          "collateralSubTypeCode": "2",
+          "collateralSubTypeDesc": "Credit Default Swap"
+      },
+      {
+          "collateralTypeCode": "14",
+          "collateralSubTypeCode": "3",
+          "collateralSubTypeDesc": "Credit Linked Note"
+      },
+      {
+          "collateralTypeCode": "15",
+          "collateralSubTypeCode": "1",
+          "collateralSubTypeDesc": "รัฐบาล"
+      },
+      {
+          "collateralTypeCode": "15",
+          "collateralSubTypeCode": "2",
+          "collateralSubTypeDesc": "ธนาคารพาณิชย์จดทะเบียนในประเทศ"
+      },
+      {
+          "collateralTypeCode": "15",
+          "collateralSubTypeCode": "3",
+          "collateralSubTypeDesc": "สาขาธนาคารต่างประเทศในประเทศไทย"
+      },
+      {
+          "collateralTypeCode": "15",
+          "collateralSubTypeCode": "4",
+          "collateralSubTypeDesc": "ธนาคารพาณิชย์ต่างประเทศ"
+      },
+      {
+          "collateralTypeCode": "15",
+          "collateralSubTypeCode": "5",
+          "collateralSubTypeDesc": "บริษัทเงินทุน บริษัทเครดิตฟองซิเอร์"
+      },
+      {
+          "collateralTypeCode": "15",
+          "collateralSubTypeCode": "6",
+          "collateralSubTypeDesc": "สถาบันการเงินที่จัดตั้งขึ้นโดยกฎหมายเฉพาะ"
+      },
+      {
+          "collateralTypeCode": "15",
+          "collateralSubTypeCode": "7",
+          "collateralSubTypeDesc": "สถาบันการเงินอื่น ๆ"
+      },
+      {
+          "collateralTypeCode": "15",
+          "collateralSubTypeCode": "8",
+          "collateralSubTypeDesc": "นิติบุคคล"
+      },
+      {
+          "collateralTypeCode": "15",
+          "collateralSubTypeCode": "9",
+          "collateralSubTypeDesc": "บุคคลธรรมดา"
+      },
+      {
+          "collateralTypeCode": "16",
+          "collateralSubTypeCode": "0",
+          "collateralSubTypeDesc": "ไม่มีประเภทย่อย"
+      },
+      {
+          "collateralTypeCode": "16",
+          "collateralSubTypeCode": "1",
+          "collateralSubTypeDesc": "โอนสิทธิเรียกร้องการรับเงิน"
+      },
+      {
+          "collateralTypeCode": "16",
+          "collateralSubTypeCode": "2",
+          "collateralSubTypeDesc": "สิทธิเงินบำเหน็จตกทอด"
+      },
+      {
+          "collateralTypeCode": "17",
+          "collateralSubTypeCode": "0",
+          "collateralSubTypeDesc": "ไม่มีประเภทย่อย"
+      },
+      {
+          "collateralTypeCode": "19",
+          "collateralSubTypeCode": "1",
+          "collateralSubTypeDesc": "รถยนต์ หรือทะเบียนรถ"
+      },
+      {
+          "collateralTypeCode": "19",
+          "collateralSubTypeCode": "2",
+          "collateralSubTypeDesc": "เรือสินค้า เรือขนทราย หรือเรือยนต์ทุกประเภท"
+      },
+      {
+          "collateralTypeCode": "19",
+          "collateralSubTypeCode": "3",
+          "collateralSubTypeDesc": "รถจักรยานยนต์ หรือทะเบียนรถ"
+      },
+      {
+          "collateralTypeCode": "19",
+          "collateralSubTypeCode": "4",
+          "collateralSubTypeDesc": "เครื่องบิน"
+      },
+      {
+          "collateralTypeCode": "19",
+          "collateralSubTypeCode": "5",
+          "collateralSubTypeDesc": "รถแทรกเตอร์"
+      },
+      {
+          "collateralTypeCode": "19",
+          "collateralSubTypeCode": "6",
+          "collateralSubTypeDesc": "รถบรรทุก"
+      },
+      {
+          "collateralTypeCode": "19",
+          "collateralSubTypeCode": "7",
+          "collateralSubTypeDesc": "รถบดดิน"
+      },
+      {
+          "collateralTypeCode": "19",
+          "collateralSubTypeCode": "8",
+          "collateralSubTypeDesc": "ยานพาหนะอื่นๆ"
+      },
+      {
+          "collateralTypeCode": "20",
+          "collateralSubTypeCode": "0",
+          "collateralSubTypeDesc": "ไม่มีประเภทย่อย"
+      },
+      {
+          "collateralTypeCode": "21",
+          "collateralSubTypeCode": "0",
+          "collateralSubTypeDesc": "ไม่มีประเภทย่อย"
+      },
+      {
+          "collateralTypeCode": "99",
+          "collateralSubTypeCode": "1",
+          "collateralSubTypeDesc": "Negative Pledge"
+      },
+      {
+          "collateralTypeCode": "99",
+          "collateralSubTypeCode": "2",
+          "collateralSubTypeDesc": "อื่นๆ"
+      },
+      {
+          "collateralTypeCode": "99",
+          "collateralSubTypeCode": "3",
+          "collateralSubTypeDesc": "BOT-RDT (Collateral and Guarantor)"
+      }
+  ]
+}

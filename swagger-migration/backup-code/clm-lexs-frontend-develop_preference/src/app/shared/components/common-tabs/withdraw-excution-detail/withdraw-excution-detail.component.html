@@ -1,0 +1,182 @@
+<div class="content-container">
+  <div class="inner-container-padding">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+      <div class="title-text">
+        <h5 class="mt-12 mb-12 ml-12 mr-12">
+          {{ 'LAWSUIT.WITHDRAW_EXECUTION.TITLE_TEXT.DETAIL_OF_EXECUTION' | translate }}
+        </h5>
+      </div>
+      <div fxLayout="row">
+        <div class="description" (click)="isOpened = !isOpened">
+          <mat-icon [svgIcon]="isOpened ? 'icon-Slide-Hide' : 'icon-Expand'" class="icon icon-hide-show fill-blue">
+          </mat-icon
+          >{{ isOpened ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate) }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <mat-accordion>
+    <mat-divider class="mr-24"></mat-divider>
+    <mat-expansion-panel [expanded]="isOpened" hideToggle>
+      <div class="mb-16 mt-24 mr-16 ml-16" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+        <div fxLayout="column" fxFlex="14">
+          <h6>{{ 'COMMON.LABEL_LEGAL_EXECUTION_DEPARTMENT' | translate }}</h6>
+        </div>
+        <div fxLayout="column" fxFlex="27">
+          <span class="thin-letter">{{ 'COMMON.LABEL_LEGAL_EXECUTION_DEPARTMENT_NAME' | translate }}</span>
+          <div class="dataLabel">
+            {{ data.ledName }}
+          </div>
+        </div>
+        <div fxLayout="column" fxFlex="27">
+          <span class="thin-letter">{{ 'COMMON.LABEL_COURT' | translate }}</span>
+          <div class="dataLabel">
+            {{ data.courtNo + '-' + data.courtName }}
+          </div>
+        </div>
+        <div fxLayout="column" fxFlex="27">
+          <span class="thin-letter"></span>
+        </div>
+      </div>
+
+      <ng-container *ngIf="mode === 'VIEW'; else editTemplate">
+        <div class="mb-16 mt-24 mr-16 ml-16" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+          <div fxLayout="column" fxFlex="14">
+            <h6>{{ 'COMMON.LABEL_REASON' | translate }}</h6>
+          </div>
+          <div fxLayout="column" fxFlex="27">
+            <ng-container>
+              <span class="thin-letter">{{ 'COMMON.LABEL_REASON_OF_EXECUTION' | translate }}</span>
+              <ng-container [ngSwitch]="data.withdrawWritOfExecReason">
+                <div class="dataLabel" *ngSwitchCase="'01'">
+                  {{ 'COMMON.NO_RESIDUAL_DEBT' | translate }}
+                </div>
+                <div class="dataLabel" *ngSwitchCase="'02'">
+                  {{ 'COMMON.LABEL_ETC' | translate }}
+                </div>
+                <div class="dataLabel" *ngSwitchDefault>-</div>
+              </ng-container>
+            </ng-container>
+          </div>
+        </div>
+        <div
+          *ngIf="data.withdrawWritOfExecReason === '02'"
+          class="mb-16 mt-24 mr-16 ml-16"
+          fxLayout="row"
+          fxLayoutAlign="start center"
+          fxLayoutGap="16px">
+          <div fxLayout="column" fxFlex="14"></div>
+          <div fxLayout="column" fxFlex="27">
+            <span class="thin-letter">{{ 'COMMON.LABEL_REMARKS' | translate }}</span>
+            <div class="dataLabel">{{ data.withdrawWritOfExecOtherReasonRemark }}</div>
+          </div>
+        </div>
+        <div
+          *ngIf="data.approval?.reviewResult"
+          class="mb-16 mt-24 mr-16 ml-16"
+          fxLayout="row"
+          fxLayoutAlign="start center"
+          fxLayoutGap="16px">
+          <div fxLayout="column" fxFlex="14">
+            <h6>{{ 'COMMON.LABEL_APPROVE_TITLE' | translate }}</h6>
+          </div>
+          <div fxLayout="column" fxFlex="27">
+            <span class="thin-letter">{{ 'COMMON.LABEL_APPROVAL_OF_WITHDRAW_EXECUTION' | translate }}</span>
+            <ng-container [ngSwitch]="data.approval?.reviewResult">
+              <div class="dataLabel" *ngSwitchCase="'A'">
+                {{ 'COMMON.LABEL_APPROVE' | translate }}
+              </div>
+              <div class="dataLabel" *ngSwitchCase="'E'">
+                <div *ngIf="data?.status === 'CANCELLED'">
+                  {{ 'COMMON.BUTTON_CANCEL' | translate }}
+                </div>
+                <div class="dataLabel" *ngIf="data?.status !== 'CANCELLED'">
+                  {{ 'COMMON.LABEL_SEND_BACK_APPROVAL' | translate }}
+                </div>
+              </div>
+              <div class="dataLabel" *ngSwitchCase="'R'">
+                {{ 'COMMON.LABEL_NOT_APPROVE' | translate }}
+              </div>
+              <div class="dataLabel" *ngSwitchDefault>-</div>
+            </ng-container>
+          </div>
+        </div>
+
+        <div
+          *ngIf="
+            data?.status !== 'CANCELLED' && (data.approval?.reviewResult === 'E' || data.approval?.reviewResult === 'R')
+          "
+          class="mb-16 mt-24 mr-16 ml-16"
+          fxLayout="row"
+          fxLayoutAlign="start center"
+          fxLayoutGap="16px">
+          <div fxLayout="column" fxFlex="14"></div>
+          <div fxLayout="column" fxFlex="27">
+            <span class="thin-letter">
+              {{
+                data.approval?.reviewResult === 'E'
+                  ? ('LAWSUIT.WITHDRAW_EXECUTION.TITLE_TEXT.SEND_BACK_FOR_EDITING_REASON' | translate)
+                  : ('LAWSUIT.WITHDRAW_EXECUTION.TITLE_TEXT.ABORTED_APPROVE_REASON' | translate)
+              }}
+            </span>
+            <div class="dataLabel">{{ data.approval?.rejectReason }}</div>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- Edit Mode -->
+      <ng-template #editTemplate>
+        <ng-container [formGroup]="dataForm">
+          <div class="mb-16 mt-24 mr-16 ml-16" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+            <div fxLayout="column" fxFlex="14">
+              <h6>{{ 'COMMON.LABEL_REASON' | translate }}</h6>
+            </div>
+            <div fxLayout="column" fxFlex="66">
+              <spig-dropdown
+                formControlName="withdrawWritOfExecReason"
+                classInput="input-normal"
+                [options]="withdrawWritOfExecReasonOptions"
+                [required]="true"
+                [config]="withdrawWritOfExecReasonConfig"
+                (selectedOption)="onSelectedwithdrawWritOfExecReason($event)">
+              </spig-dropdown>
+              <spig-error-msg
+                [control]="getControl('withdrawWritOfExecReason')"
+                [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'">
+              </spig-error-msg>
+            </div>
+          </div>
+          <div
+            *ngIf="getControl('withdrawWritOfExecReason').value === '02'"
+            class="mb-16 mt-24 mr-16 ml-16"
+            fxLayout="row"
+            fxLayoutAlign="start center"
+            fxLayoutGap="16px">
+            <div fxLayout="column" fxFlex="14"></div>
+            <div fxLayout="column" fxFlex="66">
+              <mat-form-field class="input-full-field">
+                <mat-label>{{ 'COMMON.LABEL_REMARKS' | translate }}</mat-label>
+                <textarea
+                  class="input-full-field"
+                  type="text"
+                  matInput
+                  cdkTextareaAutosize
+                  #autosize="cdkTextareaAutosize"
+                  cdkAutosizeMinRows="3"
+                  [placeholder]="'COMMON.LABEL_REMARKS' | translate"
+                  required
+                  autocomplete="off"
+                  formControlName="withdrawWritOfExecOtherReasonRemark"
+                  maxlength="1000"></textarea>
+              </mat-form-field>
+              <spig-error-msg
+                [control]="getControl('withdrawWritOfExecOtherReasonRemark')"
+                [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'">
+              </spig-error-msg>
+            </div>
+          </div>
+        </ng-container>
+      </ng-template>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

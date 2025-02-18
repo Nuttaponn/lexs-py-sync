@@ -1,0 +1,13 @@
+    <div class="container">
+        <div class="header">
+            <mat-icon svgIcon="icon-Cross" *ngIf="menuicon" (click)="onMenuClose()" class="icon icon-medium"></mat-icon>
+        </div>
+
+        <div class="content">
+            <ng-content></ng-content>
+        </div>
+
+        <div class="footer">
+            <ng-content select="[footerMenu]"></ng-content>
+        </div>
+    </div>

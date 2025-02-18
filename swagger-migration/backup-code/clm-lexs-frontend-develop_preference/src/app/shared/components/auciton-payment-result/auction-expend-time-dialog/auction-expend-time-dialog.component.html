@@ -1,0 +1,67 @@
+<div class="dialog-content min-xsm" fxlayout="column">
+  <input
+    type="file"
+    #fileUpload
+    name="fileUpload"
+    onclick="this.value=null;"
+    accept="application/pdf"
+    class="display-none" />
+  <mat-card appearance="outlined" class="no-padding mat-elevation-z0">
+    <div
+      fxLayout="row"
+      fxLayoutAlign="space-between center"
+      class="title-content pl-12 pr-12 pt-12 pb-12 bdr-8"
+      [class.bg-gray-900]="isUploaded"
+      [class.bg-blue-00]="!isUploaded">
+      <div fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="10px">
+        <span class="mb-0"
+          >{{ 'UPLOAD_FILE.TITLE_REQUEST_EXTENSION' | translate }}<span class="color-red">*</span></span
+        >
+        <span class="thin-letter mb-0" *ngIf="fileControl?.value">
+          <a class="label-link" target="_blank" (click)="onViewDocument()"> {{ fileControl.value?.name }}</a>
+        </span>
+        <span
+          [ngClass]="isErrorFiletypeOrFileSize ? 'error-msg sub-desc' : ''"
+          class="thin-letter mb-0"
+          *ngIf="!fileControl?.value && !fileControl.touched"
+          >{{ 'UPLOAD_FILE.LABEL_HINT_DOCUMENT_PDF_JPG_JPEG' | translate }}</span
+        >
+        <spig-error-msg
+          [control]="fileControl"
+          [customErrorMsg]="'UPLOAD_FILE.ERROR_FILE_UPLOAD_REQUIRED'"></spig-error-msg>
+      </div>
+      <ng-container *ngIf="fileControl?.value; else elseTemplate">
+        <button type="button" mat-stroked-button class="medium-aw-button" (click)="selectDocument()">
+          <mat-icon svgIcon="icon-Arrow-Upload" class="icon-xmedium"></mat-icon>
+          {{ 'COMMON.BUTTON_UPLOAD' | translate }}
+        </button>
+      </ng-container>
+      <ng-template #elseTemplate>
+        <button
+          mat-flat-button
+          color="primary"
+          type="button"
+          class="medium-aw-button overflow-ellipsis primary-button"
+          (click)="selectDocument()">
+          <mat-icon svgIcon="icon-Arrow-Upload" class="icon-xmedium"></mat-icon>
+          {{ 'COMMON.BUTTON_UPLOAD' | translate }}
+        </button>
+      </ng-template>
+    </div>
+  </mat-card>
+  <div fxLayout="row" fxLayoutAlign="start start"></div>
+  <div class="content pt-16" fxlayout="column" fxLayoutGap="30px">
+    <div fxLayout="row" fxLayoutAlign="end center">
+      <div>
+        <spig-datepicker
+          [formControl]="extendExpiredTimestampControl"
+          [required]="true"
+          [min]="currentDate"
+          [label]="'AUCTION_DETAIL.AUCTION_PAYMENT.FANAL_DATE'"></spig-datepicker>
+        <spig-error-msg
+          [control]="extendExpiredTimestampControl"
+          [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED_2'"></spig-error-msg>
+      </div>
+    </div>
+  </div>
+</div>

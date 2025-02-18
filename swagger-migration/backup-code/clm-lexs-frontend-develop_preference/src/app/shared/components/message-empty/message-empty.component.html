@@ -1,0 +1,8 @@
+<div [class]="'message-empty-container ' + bgColor">
+  <div class="message-block" *ngIf="icon">
+    <mat-icon class="icon icon-medium default-cursor" [svgIcon]="icon"></mat-icon>
+  </div>
+  <div class="message-block" *ngIf="message">
+    {{ message | translate }}
+  </div>
+</div>

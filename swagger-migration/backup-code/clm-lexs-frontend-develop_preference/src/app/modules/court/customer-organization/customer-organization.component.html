@@ -1,0 +1,33 @@
+<div class="m-20" [formGroup]="courtVerdictForm">
+  <mat-card appearance="outlined" class="info-container">
+    <mat-card-title>
+      <h5 class="title">
+        {{ 'COURT.CUSTOMER_ORG_TITLE' | translate }}
+      </h5>
+    </mat-card-title>
+    <mat-divider [inset]="true"></mat-divider>
+
+    <div class="sub-container p-10" fxLayout="row">
+      <h6 class="mr-24" fxFlex="15">{{ 'COMMON.LABEL_ACKNOWLEDGE' | translate }}</h6>
+      <div fxFlex="70">
+        <div fxLayout="row" fxLayoutGap="16px" class="mb-16">
+          <div fxFlex="49">
+            <mat-radio-group formControlName="acknowledgement">
+              <mat-radio-button
+                color="accent"
+                [value]="true"
+                [class.color-red]="getControl('acknowledgement')?.invalid && getControl('acknowledgement')?.touched">
+                {{ 'COURT.RADIO_ACKNOWLEDGEMENT' | translate }}
+              </mat-radio-button>
+            </mat-radio-group>
+            <br />
+            <br />
+            <spig-error-msg
+              [control]="getControl('acknowledgement')"
+              [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED_CHECKED'"></spig-error-msg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </mat-card>
+</div>

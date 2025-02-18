@@ -1,0 +1,306 @@
+<app-action-bar
+  (backButtonHandler)="onBack()"
+  [hasCancelButton]="false"
+  [hasSaveButton]="false"
+  [hasPrimaryButton]="false"
+  [showNavBarInformation]="true">
+  <ng-container navBarInformationTemplate>
+    <mat-icon [svgIcon]="iconNames[mode]" class="icon icon-xmedium default-cursor"></mat-icon>
+    <span class="ml-8 bold">
+      {{ mode === 'STATUS' ? ('DASHBOARD.TITLE_LITIGATION_STATUS' | translate) : '' }}
+      {{ mode === 'DEFER' ? ('DASHBOARD.TITLE_LITIGATION_DEFERMENT' | translate) : '' }}
+      {{ mode === 'DEFER_EXECUTION' ? ('DASHBOARD.TITLE_LITIGATION_DEFERMENT_EXECUTION' | translate) : '' }}
+      {{ mode === 'ACCOUNT_STATUS' ? ('DASHBOARD.TITLE_ACCOUNT_STATUS' | translate) : '' }}
+    </span>
+  </ng-container>
+</app-action-bar>
+<div class="content-below-action-bar-area">
+  <div class="dashboard-content">
+    <div class="mb-16">
+      <app-dashboard-sub-tab
+        [tabs]="tabInfo"
+        (subTabChange)="onTabChange($event)"
+        [currentSubTab]="currentTab"></app-dashboard-sub-tab>
+    </div>
+    <div class="content-container">
+      <div class="title-content" fxLayout="row" fxLayoutAlign="start center">
+        <mat-icon svgIcon="icon-License" class="icon icon-medium default-cursor"></mat-icon>
+        <h5 class="title-text">{{ 'LAWSUIT.ALL_LAWSUITS' | translate }}</h5>
+      </div>
+      <div class="search-filter-content">
+        <app-search-controller
+          [searchType]="mode === 'ACCOUNT_STATUS' ? 'BY_LAWSUIT_LED' : 'BY_LAWSUIT'"
+          [condition]="litigationSearch"
+          (searchEvent)="onSearchResult($event)"
+          [searchPlaceholderOverride]="'SEARCH_CONTROL.PLACEHOLDER_ADDITIONAL_LAWSUIT_LED'"
+          [advancedSearchButtonTextOverride]="'SEARCH_CONTROL.BTN_ADVANCED_SEARCH'"
+          [reload]="reloadSearch">
+        </app-search-controller>
+        <div class="pt-8" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="12px">
+          <div fxFlex="80" fxLayoutGap="10px">
+            <button
+              mat-stroked-button
+              id="button-save-file"
+              class="xsmall-aw-button overflow-ellipsis"
+              (click)="onSaveFile()">
+              <mat-icon svgIcon="icon-Download" class="icon icon-sm btn-icon"></mat-icon>
+              {{ 'COMMON.BUTTON_SAVE_EXCEL_FILE' | translate }}
+            </button>
+          </div>
+          <div fxFlex>
+            <spig-dropdown
+              classInput="input-xsm long icon"
+              [config]="sortingConfig"
+              [options]="sortingOptions"
+              [formControl]="sortingControl"
+              (selectedOption)="sortSelected($event)"></spig-dropdown>
+          </div>
+        </div>
+      </div>
+      <div class="data-table-content">
+        <ng-container *ngTemplateOutlet="lawsuitTable; context: { list: data.length > 0 ? data : [{}] }">
+        </ng-container>
+        <div *ngIf="data.length === 0">
+          <ng-container *ngTemplateOutlet="searchEmpty"></ng-container>
+        </div>
+        <spig-paginator
+          *ngIf="data.length > 0"
+          [result]="pageResultConfig"
+          [action]="pageActionConfig"
+          (pageEvent)="pageEvent($event)">
+        </spig-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #lawsuitTable let-dataSource="list">
+  <div class="table-scroll" table-scroll>
+    <table mat-table [dataSource]="dataSource" [class.empty]="data.length === 0">
+      <!-- Checkbox Column -->
+      <ng-container matColumnDef="order" sticky>
+        <th mat-header-cell *matHeaderCellDef class="text-center">{{ columnTexts['order'] | translate }}</th>
+        <td mat-cell *matCellDef="let element; let i = index" class="text-center">
+          {{ pageResultConfig.fromIndex + i }}
+        </td>
+      </ng-container>
+      <!-- LG ID Column -->
+      <ng-container matColumnDef="lgId" sticky>
+        <th mat-header-cell *matHeaderCellDef>{{ columnTexts['lgId'] | translate }}</th>
+        <td mat-cell *matCellDef="let element">
+          <div *ngIf="element.actionFlag" class="link" (click)="onClickLG(element)">
+            {{ element.litigationId || '-' }}
+          </div>
+          <div *ngIf="!element.actionFlag">{{ element.litigationId || '-' }}</div>
+        </td>
+      </ng-container>
+      <!-- CIF/Debtor Column -->
+      <ng-container matColumnDef="cifNo" sticky>
+        <th mat-header-cell *matHeaderCellDef columnElevationLeft class="new-line">
+          {{ columnTexts['cifNo'] | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" columnElevationLeft>
+          <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="3px">
+            <div *ngIf="element?.actionFlag" fxFlex class="link" (click)="onClickCIFNo(element?.customerId)">
+              {{ element?.customerId || '-' }}
+            </div>
+            <div *ngIf="!element?.actionFlag">{{ element?.customerId || '-' }}</div>
+            <div fxFlex class="color-biz-black-100">
+              {{ element.customerName || '-' }}
+            </div>
+          </div>
+        </td>
+      </ng-container>
+      <!-- จำนวนบัญชีสินเชื่อ -->
+      <ng-container matColumnDef="accountCount">
+        <th mat-header-cell *matHeaderCellDef class="new-line text-right">
+          {{ columnTexts['accountCount'] | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" class="text-right">
+          {{ element.accountNoCount | number }}
+          <app-tooltip [params]="element?.accountNoList | customerTooptip: 'ACCOUNT_NO'"></app-tooltip>
+        </td>
+      </ng-container>
+      <!-- HEAD_COLUMN_DUEDATE Column -->
+      <ng-container matColumnDef="duedate">
+        <th mat-header-cell *matHeaderCellDef class="new-line">{{ columnTexts['dueDate'] | translate }}</th>
+        <td mat-cell *matCellDef="let element">
+          {{ (element?.prescriptionDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+        </td>
+      </ng-container>
+      <!-- HEAD_COLUMN_DPD Column -->
+      <ng-container matColumnDef="dpd">
+        <th mat-header-cell *matHeaderCellDef class="text-right new-line">
+          {{ columnTexts['dpd'] | translate }}
+          <span *ngIf="mode === 'STATUS'">/<br />{{ 'LAWSUIT.HEAD_COLUMN_C_FINAL_STAGE' | translate }}</span>
+        </th>
+        <td mat-cell *matCellDef="let element" class="text-right new-line">
+          {{ (element.dpd | number) || '-' }} <br />
+          <span *ngIf="mode === 'STATUS'">{{ element.displayCFinalAndStage || '-' }}</span>
+        </td>
+      </ng-container>
+      <!-- HEAD_COLUMN_RESPONSE_BRANCH Column -->
+      <ng-container matColumnDef="branch">
+        <th mat-header-cell *matHeaderCellDef class="new-line">{{ columnTexts['branch'] | translate }}</th>
+        <td mat-cell *matCellDef="let element">
+          <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="3px">
+            <div fxFlex>{{ (element.ownerBranchCode || '') + '-' + (element.ownerBranchName || '') }}</div>
+            <div fxFlex>{{ (element.amdResponseUnitCode || '') + '-' + (element.amdResponseUnitName || '') }}</div>
+          </div>
+        </td>
+      </ng-container>
+      <!-- HEAD_COLUMN_AO Column -->
+      <ng-container matColumnDef="ao">
+        <th mat-header-cell *matHeaderCellDef class="new-line">{{ columnTexts['ao'] | translate }}</th>
+        <td mat-cell *matCellDef="let element; let i = index">
+          <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="3px">
+            <div fxFlex>
+              {{ element.kbdUserId || '-' }}
+              <app-tooltip
+                *ngIf="element.kbdUserId || element.aoUserId"
+                [params]="[
+                  {
+                    title: 'LAWSUIT.TOOLTIP.TITLE_KBD' | translate,
+                    content: (element.kbdUserId || '') + '-' + (element.kbdUserName || ''),
+                  },
+                  {
+                    title: 'LAWSUIT.TOOLTIP.TITLE_AO' | translate,
+                    content: (element.aoUserId || '') + '-' + (element.aoUserName || ''),
+                  },
+                ]"></app-tooltip>
+            </div>
+            <div fxFlex>{{ element.aoUserId || '-' }}</div>
+          </div>
+        </td>
+      </ng-container>
+      <!-- HEAD_COLUMN_RESPONSE_ID Column -->
+      <ng-container matColumnDef="responseId">
+        <th mat-header-cell *matHeaderCellDef class="new-line">{{ columnTexts['responseId'] | translate }}</th>
+        <td mat-cell *matCellDef="let element">
+          <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="3px">
+            <div fxFlex>{{ element.responseUnitName || '-' }}</div>
+            <div fxFlex>{{ element.responseUserName || '-' }}</div>
+          </div>
+        </td>
+      </ng-container>
+      <!-- HEAD_COLUMN_AMD Column -->
+      <ng-container matColumnDef="amd">
+        <th mat-header-cell *matHeaderCellDef class="new-line">{{ columnTexts['amd'] | translate }}</th>
+        <td mat-cell *matCellDef="let element; let i = index">
+          <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="3px">
+            <div fxFlex>
+              {{ element.amdResponseUnitName || '-' }}
+            </div>
+            <div fxFlex>{{ element.amdResponseUserName || '-' }}</div>
+          </div>
+        </td>
+      </ng-container>
+      <!-- HEAD_COLUMN_RED_BLACK_CASE_NO Column -->
+      <ng-container matColumnDef="caseNo">
+        <th mat-header-cell *matHeaderCellDef class="new-line">{{ columnTexts['caseNo'] | translate }}</th>
+        <td mat-cell *matCellDef="let element">
+          <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="3px">
+            <div fxFlex>{{ element.blackCaseNo || '-' }}</div>
+            <div class="fill-red" fxFlex>{{ element.redCaseNo || '-' }}</div>
+          </div>
+        </td>
+      </ng-container>
+      <!-- HEAD_COLUMN_LED_NAME Column -->
+      <ng-container matColumnDef="ledName">
+        <th mat-header-cell *matHeaderCellDef class="new-line">{{ columnTexts['ledName'] | translate }}</th>
+        <td mat-cell *matCellDef="let element" class="new-line">
+          {{ element.ledName || '-' }}
+        </td>
+      </ng-container>
+      <!-- HEAD_COLUMN_ACCOUNT_TRACKING_COUNT Column -->
+      <ng-container matColumnDef="accountTrackingCount">
+        <th mat-header-cell *matHeaderCellDef class="new-line text-right">
+          {{ columnTexts['accountTrackingCount'] | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" class="text-right">
+          {{ element.accountDocumentRoundNo || '-' }}
+        </td>
+      </ng-container>
+      <!-- HEAD_COLUMN_ACCOUNT_VERIFICATION_STATUS Column -->
+      <ng-container matColumnDef="accountVerificationStatus">
+        <th mat-header-cell *matHeaderCellDef class="new-line">
+          {{ columnTexts['accountVerificationStatus'] | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ getAccountDocumentVerifyResultName(element.accountDocumentVerifyResult) | translate }}
+        </td>
+      </ng-container>
+      <!-- HEAD_COLUMN_DEFERMENT_END_DATE Column -->
+      <ng-container matColumnDef="defermentEndDate">
+        <th mat-header-cell *matHeaderCellDef class="new-line">{{ columnTexts['defermentEndDate'] | translate }}</th>
+        <td mat-cell *matCellDef="let element">
+          <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="3px">
+            <div fxFlex>
+              {{ element.defermentEndDate ? (element.defermentEndDate | buddhistEra: 'DD/MM/yyyy') : '-' }}
+            </div>
+          </div>
+        </td>
+      </ng-container>
+      <!-- HEAD_COLUMN_DEFER_STATUS Column -->
+      <ng-container matColumnDef="deferStatus" stickyEnd>
+        <th class="new-line" mat-header-cell columnElevationRight *matHeaderCellDef>
+          {{ columnTexts['deferStatus'] | translate }}
+        </th>
+        <td mat-cell class="status-cell" columnElevationRight *matCellDef="let element">
+          <div fxLayout="column" fxLayoutAlign="start start">
+            <div class="status-label status-normal mb-0">
+              {{ element.litigationStatus || '-' }}{{ ' ' }}
+              {{
+                element.litigationStatusDesc && element.litigationStatusDesc !== '-'
+                  ? element.litigationStatusDesc
+                  : '-'
+              }}
+            </div>
+            <div
+              class="status-label"
+              [ngClass]="element.defermentStatus !== 'NORMAL' ? 'status-pending' : 'status-normal'">
+              {{
+                element.defermentStatus && element.defermentStatus !== '-'
+                  ? ('LAWSUIT.DEFERMANT_STATUS.' + element.defermentStatus | translate)
+                  : '-'
+              }}
+            </div>
+          </div>
+        </td>
+      </ng-container>
+      <!-- HEAD_COLUMN_LATEST_LG_STATUS Column -->
+      <ng-container matColumnDef="status" stickyEnd>
+        <th class="text-center new-line" columnElevationRight mat-header-cell *matHeaderCellDef>
+          {{ columnTexts['status'] | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" class="status-cell" columnElevationRight>
+          <div fxLayout="column" fxLayoutAlign="space-around center">
+            <div class="status-label status-normal mb-0">
+              {{ element.litigationStatus || '-' }}{{ ' ' }}
+              {{
+                element.litigationStatusDesc && element.litigationStatusDesc !== '-'
+                  ? element.litigationStatusDesc
+                  : '-'
+              }}
+            </div>
+          </div>
+        </td>
+      </ng-container>
+      <!-- HEAD_COLUMN_FLAG Column -->
+      <ng-container matColumnDef="flag" stickyEnd>
+        <th mat-header-cell *matHeaderCellDef>{{ columnTexts['flag'] | translate }}</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.flag || '-' }}
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </div>
+</ng-template>
+
+<ng-template #searchEmpty>
+  <div>
+    <app-message-empty [message]="'COMMON.SEARCH_EMPTY'"></app-message-empty>
+  </div>
+</ng-template>

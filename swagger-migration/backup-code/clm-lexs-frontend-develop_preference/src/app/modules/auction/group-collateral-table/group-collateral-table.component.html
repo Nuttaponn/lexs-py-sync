@@ -1,0 +1,666 @@
+<div fxLayout="row" fxlayoutalign="start start" *ngIf="displayFn2 || isDataList">
+  <span class="thin-letter ml-5">{{ 'AUCTION_DETAIL.NPA.FROM_NPA' | translate }} </span>
+</div>
+<div class="search-section pt-16 pb-16" fxLayout="row" fxLayoutAlign="center start" fxLayoutGap="12px">
+  <div fxFlex *ngIf="isDataList">
+    <spig-dropdown
+      classInput="input-xsm icon"
+      [formControl]="noConclusionFilterControl"
+      [config]="dropdownFilterNoConclusionConfig"
+      [options]="noConclusionFilterOption"
+      (selectedOption)="applyFilter($event, TABLE_FILTER_KEY.MEETINGNO)">
+    </spig-dropdown>
+  </div>
+  <div fxFlex *ngIf="displayAsset">
+    <spig-dropdown
+      classInput="input-xsm icon"
+      [formControl]="typeFilterControl"
+      [config]="dropdownFilterGroupConfig"
+      [options]="collateralGroupOption"
+      (selectedOption)="applyFilter($event, TABLE_FILTER_KEY.FSUBBIDNUM)">
+    </spig-dropdown>
+  </div>
+  <div fxFlex *ngIf="displayDocumentNo">
+    <spig-dropdown
+      classInput="input-xsm icon"
+      [formControl]="collateralDocNoFilterControl"
+      [config]="dropdownFilterDocumentConfig"
+      [options]="collateralDocNoFilterOption"
+      (selectedOption)="applyFilter($event, TABLE_FILTER_KEY.COLLATERAL_DOC_NO)"></spig-dropdown>
+  </div>
+  <div fxFlex *ngIf="displayConclusion">
+    <spig-dropdown
+      classInput="input-xsm icon"
+      [formControl]="resolutionFilterControl"
+      [config]="dropdownResultConfig"
+      [options]="resultOption"
+      (selectedOption)="applyFilter($event, TABLE_FILTER_KEY.RESOLUTION)"></spig-dropdown>
+  </div>
+  <div fxFlex *ngIf="displaySaleType">
+    <spig-dropdown
+      classInput="input-xsm icon"
+      [formControl]="saleTypeFilterControl"
+      [config]="dropdownFilterSaleTypeConfig"
+      [options]="saleTypeFilterOption"
+      (selectedOption)="applyFilter($event, TABLE_FILTER_KEY.SALE_TYPE)"></spig-dropdown>
+  </div>
+  <div *ngIf="displayBtnAll">
+    <button mat-stroked-button class="xsmall-aw-button overflow-ellipsis" (click)="manageAllTable()">
+      <mat-icon [svgIcon]="isExpandedAllRows ? 'icon-Up-Circle' : 'icon-Down-Circle'" class="icon icon-medium btn-icon">
+      </mat-icon
+      >{{
+        isExpandedAllRows
+          ? ('AUCTION_DETAIL.CONCLUSION.HIDE_ALL' | translate)
+          : ('AUCTION_DETAIL.CONCLUSION.SHOW_ALL' | translate)
+      }}
+    </button>
+  </div>
+</div>
+<ng-container *ngIf="mode === 'EDIT'">
+  <div class="pb-24" *ngIf="displayFn1" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="12px">
+    <div fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="8px">
+      <button mat-stroked-button class="xsmall-aw-button overflow-ellipsis" (click)="submitResulNoneBuyer()">
+        <mat-icon class="icon icon-sm btn-icon" svgIcon="icon-Selected"></mat-icon>
+        {{ 'MORE_THAN_1_SET_OF_ASSETS.NO_INTERESTED_BUYERS' | translate }}
+      </button>
+
+      <span *ngIf="isRequireSelectedItem" class="error-msg sub-desc mt-8">{{
+        'MORE_THAN_1_SET_OF_ASSETS.MSG_ERROR_REQUIRED_SELECT_ASSETS' | translate
+      }}</span>
+    </div>
+    <div fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="8px">
+      <button mat-stroked-button class="xsmall-aw-button overflow-ellipsis" (click)="submitResulSuspendSale()">
+        <mat-icon class="icon icon-sm btn-icon" svgIcon="icon-Selected"></mat-icon>
+        {{ 'MORE_THAN_1_SET_OF_ASSETS.SALES_REDUCTION_PER_SALES_CYCLE' | translate }}
+      </button>
+      <span *ngIf="isSupendRequireSelectedItem" class="error-msg sub-desc mt-8">{{
+        'MORE_THAN_1_SET_OF_ASSETS.MSG_ERROR_REQUIRED_SELECT_ASSETS' | translate
+      }}</span>
+    </div>
+  </div>
+</ng-container>
+<div class="mb-12" *ngIf="displayFn1" fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="12px">
+  <div>
+    <ng-container *ngIf="mode === 'EDIT'">
+      <div class="elm-form check-box-input">
+        <mat-checkbox (click)="$event.stopPropagation()" (change)="onFilterNoneSubmitOnlyChange($event)">{{
+          'MORE_THAN_1_SET_OF_ASSETS.CHECKBOX_NOT_COMPLETE_ONLY' | translate
+        }}</mat-checkbox>
+      </div>
+    </ng-container>
+  </div>
+  <div class="label-total-result" fxLayout="row" fxLayoutAlign="end center">
+    <span
+      >{{ 'MORE_THAN_1_SET_OF_ASSETS.LABEL_RESULT_SUCCESS' | translate }}:
+      <span class="bold">{{ totalSubmitResult | number }}</span></span
+    >
+    <div class="divider-vertical"></div>
+    <span
+      >{{ 'MORE_THAN_1_SET_OF_ASSETS.LABEL_RESULT_PENDING_PROCESS' | translate }}:
+      <span class="bold">{{ totalPendingSubmitResult | number }}</span></span
+    >
+  </div>
+</div>
+<div *ngIf="displayFn2" class="pb-24" fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="12px">
+  <div fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="8px">
+    <button (click)="onClickHistory()" mat-stroked-button class="xsmall-aw-button overflow-ellipsis">
+      <mat-icon class="icon icon-sm btn-icon" svgIcon="icon-Activity"></mat-icon>
+      {{ 'AUCTION_DETAIL.CONCLUSION.HISTORY_CONCLUSION' | translate }}
+    </button>
+  </div>
+  <div fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="8px">
+    <button mat-stroked-button class="xsmall-aw-button overflow-ellipsis" (click)="manageAllRow(isOpened)">
+      <mat-icon [svgIcon]="isOpened ? 'icon-Up-Circle' : 'icon-Down-Circle'" class="icon icon-sm btn-icon"></mat-icon
+      >{{
+        isOpened
+          ? ('AUCTION_DETAIL.CONCLUSION.HIDE_ALL_DETAIL' | translate)
+          : ('AUCTION_DETAIL.CONCLUSION.SHOW_ALL_DETAIL' | translate)
+      }}
+    </button>
+  </div>
+</div>
+
+<ng-container [ngTemplateOutlet]="displayTableNPA ? npa : npaList"></ng-container>
+
+<ng-template #npa>
+  <div class="table-scroll section" table-scroll>
+    <table mat-table id="withdrawn-table" [dataSource]="collateralsSource.filteredData" multiTemplateDataRows>
+      <ng-container *ngFor="let item of tableColumns">
+        <ng-container *ngIf="item.colName === 'selection' && displayFn1">
+          <ng-container *ngIf="config?.hasSelect" matColumnDef="selection" sticky>
+            <th mat-header-cell *matHeaderCellDef columnElevationLeft>
+              <ng-container *ngIf="mode === 'EDIT'">
+                <mat-checkbox
+                  (change)="$event ? toggleAllRows() : null"
+                  [checked]="selection.hasValue() && isAllSelected()"
+                  [indeterminate]="selection.hasValue() && !isAllSelected()">
+                </mat-checkbox>
+              </ng-container>
+            </th>
+            <td mat-cell *matCellDef="let element" columnElevationLeft>
+              <ng-container *ngIf="mode === 'EDIT'">
+                <ng-container *ngIf="element.action !== 'UPDATE'; else elseCheckBoxTemplate">
+                  <mat-checkbox [indeterminate]="true" [disabled]="true"></mat-checkbox>
+                </ng-container>
+                <ng-template #elseCheckBoxTemplate>
+                  <mat-checkbox
+                    (click)="$event.stopPropagation()"
+                    (change)="$event ? onCheckboxChange(element) : null"
+                    [checked]="selection.isSelected(element.deedGroupId)">
+                  </mat-checkbox>
+                </ng-template>
+              </ng-container>
+            </td>
+          </ng-container>
+        </ng-container>
+
+        <ng-container *ngIf="item.colName === 'status' && displayFn1">
+          <ng-container *ngIf="config?.hasSelect" matColumnDef="status" stickyEnd>
+            <th mat-header-cell *matHeaderCellDef>
+              <span>{{ columnNameMapper.get(item.colName) }}</span>
+            </th>
+            <td mat-cell *matCellDef="let element">
+              <span class="status-label status-pending">{{ element[item.colName] || '-' }}</span>
+            </td>
+          </ng-container>
+        </ng-container>
+
+        <ng-container *ngIf="item.colName === 'action'">
+          <ng-container *ngIf="config?.hasAction" matColumnDef="action" stickyEnd>
+            <th class="text-center" mat-header-cell *matHeaderCellDef columnElevationRight>
+              <div *ngIf="displayFn1">
+                {{ 'COMMON.LABEL_COMMAND' | translate }}
+              </div>
+              <div *ngIf="displayFn2">
+                {{ 'PROPERTY.DEATAIL' | translate }}
+              </div>
+            </th>
+            <td mat-cell class="text-center" *matCellDef="let element" columnElevationRight>
+              <ng-container *ngIf="tableConfig?.hasAction && displayFn1">
+                <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10px">
+                  <ng-container *ngIf="mode === 'VIEW'; else elseTemplate">
+                    <button type="button" class="medium-fw-button" mat-stroked-button (click)="actionClick(element)">
+                      {{ 'COMMON.BUTTON_VIEW_DETAIL' | translate }}
+                    </button>
+                  </ng-container>
+                  <ng-template #elseTemplate>
+                    <ng-container *ngIf="element.action === 'UPDATE'">
+                      <button
+                        type="button"
+                        mat-flat-button
+                        color="primary"
+                        class="medium-fw-button"
+                        (click)="actionClick(element)">
+                        <mat-icon [svgIcon]="'icon-save-primary'" class="icon icon-sm btn-icon"></mat-icon>
+                        {{ 'MORE_THAN_1_SET_OF_ASSETS.BUTTON_SAVE_RESULT' | translate }}
+                      </button>
+                    </ng-container>
+                    <ng-container *ngIf="element.action === 'UPLOAD'">
+                      <button
+                        type="button"
+                        mat-flat-button
+                        color="primary"
+                        class="medium-fw-button"
+                        (click)="actionClick(element)">
+                        <mat-icon svgIcon="icon-Arrow-Upload" class="icon-xmedium"></mat-icon>
+                        {{ 'COMMON.BUTTON_UPLOAD' | translate }}
+                      </button>
+                    </ng-container>
+                    <ng-container *ngIf="element.action === 'REUPLOAD'">
+                      <button type="button" class="medium-fw-button" mat-stroked-button (click)="actionClick(element)">
+                        <mat-icon svgIcon="icon-Arrow-Upload" class="icon-xmedium"></mat-icon>
+                        {{ 'COMMON.BUTTON_UPLOAD' | translate }}
+                      </button>
+                    </ng-container>
+                    <ng-container *ngIf="element.action === 'VIEW'">
+                      <button type="button" class="medium-fw-button" mat-stroked-button (click)="actionClick(element)">
+                        {{ 'COMMON.BUTTON_VIEW_DETAIL' | translate }}
+                      </button>
+                    </ng-container>
+                  </ng-template>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="tableConfig?.hasExpand">
+                <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10px">
+                  <button type="button" mat-stroked-button class="medium-aw-button" (click)="toggleRow(element)">
+                    <ng-container *ngIf="element.expanded; else elseTemplate">
+                      <mat-icon [svgIcon]="'icon-Up-Circle'" class="icon icon-medium remark-style"></mat-icon>
+                      {{ 'COMMON.ICON_EXPANSION_HIDE' | translate }}
+                    </ng-container>
+                    <ng-template #elseTemplate>
+                      <mat-icon [svgIcon]="'icon-Down-Circle'" class="icon icon-medium remark-style"></mat-icon>
+                      {{ 'COMMON.ICON_EXPANSION_SHOW' | translate }}
+                    </ng-template>
+                  </button>
+                </div>
+              </ng-container>
+            </td>
+          </ng-container>
+        </ng-container>
+
+        <ng-container *ngIf="item.colName !== 'action' && item.colName !== 'selection' && item.colName !== 'status'">
+          <ng-container
+            matColumnDef="{{ item.colName }}"
+            sticky="{{ item.colName === 'orderNumber' || item.colName === 'fsubbidnum' }}">
+            <th
+              class="new-line preserve-breaks"
+              mat-header-cell
+              *matHeaderCellDef
+              columnElevationLeft="{{ item.colName === 'fsubbidnum' }}"
+              [ngClass]="{
+                'ordernumber-first': item.colName === 'orderNumber',
+                'fsubidnum-first': item.colName === 'fsubbidnum',
+              }"
+              [class.text-rigth]="item.isNumber"
+              [class.text-center]="item.isDate"
+              [class.col-total-appraisal-value]="item.colName === 'totalAppraisalValue'">
+              <div>{{ columnNameMapper.get(item.colName) }}</div>
+              <app-tooltip
+                *ngIf="item.colName === 'totalAppraisalValue'"
+                [iconClass]="['icon-small', 'fill-white']"
+                [params]="[
+                  { content: 'ราคาประเมินของธนาคาร: ทรัพย์จำนอง' },
+                  { content: 'ราคาประเมินราชการ: ทรัพย์นอกจำนอง' },
+                ]"></app-tooltip>
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element; let i = dataIndex"
+              [class.text-rigth]="item.isNumber"
+              [class.text-center]="item.isDate">
+              <ng-container *ngIf="item.colName === 'resolution' && this.taskCode !== taskcodeEnum; else elseCol">
+                {{ resolution.get(element[item.colName]) }}
+              </ng-container>
+              <ng-template #elseCol>
+                <ng-container *ngIf="item.colName === 'orderNumber'; else noIndex">
+                  {{ indexTable(i) }}
+                </ng-container>
+                <ng-template #noIndex>
+                  <ng-container *ngIf="item?.isHyperlink">
+                    <ng-container *ngIf="item.colName === 'fsubbidnum'">
+                      <span class="link" (click)="clickHyperLink(item?.hyperlinkKey, element, item.colName)">
+                        {{ ('PROPERTY.PROPERTY_SET_NUMBER' | translate) + ' ' + element[item.colName] }}
+                      </span>
+                    </ng-container>
+                    <ng-container *ngIf="item.colName === 'npaResolutionDocument' || item.colName === 'chronicleId'">
+                      <ng-container *ngIf="item.hasSubValue">
+                        <ng-container
+                          *ngIf="
+                            element[item?.mainValue || ''][item?.subValue || ''];
+                            else elsenpaResolutionDocumentTemplate
+                          ">
+                          <span class="link" (click)="clickHyperLink(item?.hyperlinkKey, element, item.colName)">
+                            {{ 'AUCTION_DETAIL.NPA_DETAIL.NPA_MEETING' | translate }}
+                          </span>
+                        </ng-container>
+                        <ng-template #elsenpaResolutionDocumentTemplate>
+                          <span>-</span>
+                        </ng-template>
+                      </ng-container>
+                      <ng-container *ngIf="!item.hasSubValue">
+                        <ng-container *ngIf="element[item.colName]; else elsenpaResolutionDocumentTemplate">
+                          <span class="link" (click)="clickHyperLink(item?.hyperlinkKey, element, item.colName)">
+                            {{ 'AUCTION_DETAIL.NPA_DETAIL.NPA_MEETING' | translate }}
+                          </span>
+                        </ng-container>
+                        <ng-template #elsenpaResolutionDocumentTemplate>
+                          <span>-</span>
+                        </ng-template>
+                      </ng-container>
+                    </ng-container>
+                    <ng-container
+                      *ngIf="
+                        item.colName !== 'npaResolutionDocument' &&
+                        item.colName !== 'fsubbidnum' &&
+                        item.colName !== 'chronicleId'
+                      ">
+                      <span class="link" (click)="clickHyperLink(item?.hyperlinkKey, element, item.colName)">
+                        <ng-container *ngIf="item.hasSubValue; else elseSubLinkTemplate">
+                          {{ element[item.mainValue || ''][item?.subValue || ''] || '-' }}
+                        </ng-container>
+                        <ng-template #elseSubLinkTemplate>
+                          {{ element[item.colName] }}
+                        </ng-template>
+                      </span>
+                    </ng-container>
+                  </ng-container>
+                  <ng-container *ngIf="item?.isNumber">
+                    <ng-container *ngIf="item.hasSubValue; else elseSubNumberTemplate">
+                      {{ (element[item.mainValue || ''][item?.subValue || ''] | numberDecimal) || '-' }}
+                    </ng-container>
+                    <ng-template #elseSubNumberTemplate>
+                      {{ (element[item.colName] | numberDecimal) || '-' }}
+                    </ng-template>
+                  </ng-container>
+                  <ng-container *ngIf="item?.isDate">
+                    <ng-container *ngIf="item.hasSubValue; else elseSubDateTemplate">
+                      {{ (element[item.mainValue || ''][item?.subValue || ''] | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                    </ng-container>
+                    <ng-template #elseSubDateTemplate>
+                      {{ element[item.colName] | buddhistEra: 'DD/MM/yyyy' || '-' }}
+                    </ng-template>
+                  </ng-container>
+                  <ng-container *ngIf="!item?.isNumber && !item?.isDate && !item?.isHyperlink">
+                    <ng-container *ngIf="item.hasSubValue; else elseSubTemplate">
+                      <ng-container *ngIf="item.colName === 'resolution'; else elseOtherTemplate">
+                        {{ resolution.get(element[item.mainValue || ''][item?.subValue || '']) || '-' }}
+                      </ng-container>
+                      <ng-template #elseOtherTemplate>
+                        {{ element[item.mainValue || ''][item?.subValue || ''] || '-' }}
+                      </ng-template>
+                    </ng-container>
+                    <ng-template #elseSubTemplate>
+                      {{ element[item.colName] || '-' }}
+                    </ng-template>
+                  </ng-container>
+                </ng-template>
+              </ng-template>
+            </td>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+
+      <ng-container matColumnDef="expandedDetail">
+        <td
+          mat-cell
+          *matCellDef="let element"
+          [attr.colspan]="collateralColumns.length"
+          class="example-detail-td detail-table"
+          [class.active]="element.expanded">
+          <div fxLayout="column" [fxLayoutGap]="element.expanded ? '2px' : '0px'" *ngIf="element.expanded">
+            <div class="example-element-detail" [@detailExpand]="element.expanded ? 'expanded' : 'collapsed'">
+              <div class="fixpadding-first"></div>
+              <div class="content-form">
+                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+                  <div fxLayout="column" fxFlex="100" fxLayoutGap="16px">
+                    <div style="line-height: 28px">{{ element.colRemark || '-' }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="collateralColumns"></tr>
+      <tr
+        class="example-element-row"
+        mat-row
+        *matRowDef="let row; columns: collateralColumns"
+        [class.example-expanded-row]="row.expanded"></tr>
+      <ng-container *ngIf="tableConfig?.hasExpand">
+        <tr
+          mat-row
+          *matRowDef="let row; columns: ['expandedDetail']"
+          [class.hide-row]="!row.expanded"
+          class="expanded-row"></tr>
+      </ng-container>
+    </table>
+
+    <app-message-empty
+      *ngIf="collateralsSource.filteredData.length === 0"
+      [message]="'AUCTION.MSG_ERROR_SEARCH_NOT_FOUND'">
+    </app-message-empty>
+  </div>
+
+  <!-- Paginator -->
+  <app-paginator
+    *ngIf="allCurrentData.length > 0"
+    #paginator
+    [pageSize]="pageSize"
+    [length]="allCurrentData.length"
+    (page)="onPaging($event)"></app-paginator>
+
+  <div
+    *ngIf="displayFn2"
+    class="mb-16 mt-24 mr-16 ml-16"
+    fxLayout="row"
+    fxLayoutAlign="start center"
+    fxLayoutGap="16px">
+    <h6 fxLayout="column" fxFlex="10">
+      {{ 'AUCTION_DETAIL.NPA.REMARK' | translate }}
+    </h6>
+    <div fxLayout="column" fxFlex="90" fxLayoutGap="16px">
+      <span class="thin-letter">{{ 'COMMON.LABEL_REMARKS' | translate }}</span>
+      <div>{{ data.footNote || '-' }}</div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #npaList>
+  <ng-container *ngFor="let detail of this.collateralsSource.filteredData; let i = index; let last = last">
+    <div *ngIf="detail.deedGroups.filteredData.length > 0">
+      <div
+        class="title-content pt-20 pb-20 pl-12 pr-12 bd-8 bg-green-50"
+        style="border-radius: 8px"
+        [class.mb-16]="!last">
+        <div fxLayout="row" fxLayoutAlign="start center">
+          <mat-icon [svgIcon]="'icon-hammer'" class="icon icon-small-xl"></mat-icon>
+          <div fxFlex="row" fxLayoutAlign="start center">
+            <div class="title-text">
+              <h6 class="text-gray d-inline-block mr-16">
+                {{ 'AUCTION_DETAIL.NPA.NO' | translate }} {{ detail.meetingNo }} {{ 'COMMON.LABEL_DATE' | translate }}
+                {{ detail.meetingDate }}
+              </h6>
+              <span class="fs-14"
+                >{{ 'AUCTION_DETAIL.NPA.NUMBER_OF_PROPERTY_SET' | translate }}:
+                <h6 class="d-inline-block">{{ detail.totalUpdatedCollateral | number }}</h6></span
+              >
+            </div>
+          </div>
+          <div fxFlex="row" fxLayoutAlign="end center">
+            <div
+              class="description pr-24 d-inline-block fill-krungthai-green"
+              (click)="isOpenedList[i] = !isOpenedList[i]">
+              <mat-icon
+                [svgIcon]="isOpenedList[i] ? 'icon-Slide-Hide' : 'icon-Expand'"
+                class="icon icon-hide-show fill-krungthai-green mr-5"></mat-icon>
+              <div class="fill-krungthai-green d-inline-block">
+                {{
+                  isOpenedList[i]
+                    ? ('COMMON.ICON_EXPANSION_HIDE' | translate)
+                    : ('COMMON.ICON_EXPANSION_SHOW' | translate)
+                }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <mat-accordion>
+        <mat-expansion-panel class="expansion-inside" [expanded]="isOpenedList[i]" hideToggle>
+          <div fxLayout="row" class="pb-20 display-row-custom">
+            <div fxFlex="15"></div>
+            <div fxFlex="100">
+              <div class="data-table-content">
+                <div class="table-scroll section" table-scroll>
+                  <table
+                    mat-table
+                    id="withdrawn-table"
+                    [dataSource]="detail.deedGroups.filteredData"
+                    multiTemplateDataRows>
+                    <ng-container *ngFor="let item of tableColumns">
+                      <ng-container *ngIf="item.colName === 'action'">
+                        <ng-container *ngIf="config?.hasAction" matColumnDef="action" stickyEnd>
+                          <th class="text-center" mat-header-cell *matHeaderCellDef columnElevationRight>
+                            <div *ngIf="displayFn1">
+                              {{ 'COMMON.LABEL_COMMAND' | translate }}
+                            </div>
+                            <div *ngIf="displayFn2 || isDataList">
+                              {{ 'PROPERTY.DEATAIL' | translate }}
+                            </div>
+                          </th>
+                          <td class="text-center" mat-cell *matCellDef="let element" columnElevationRight>
+                            <ng-container *ngIf="tableConfig?.hasExpand">
+                              <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10px">
+                                <button
+                                  type="button"
+                                  mat-stroked-button
+                                  class="medium-aw-button"
+                                  (click)="toggleRow(element)">
+                                  <ng-container *ngIf="element.expanded; else elseTemplate">
+                                    <mat-icon
+                                      [svgIcon]="'icon-Up-Circle'"
+                                      class="icon icon-medium remark-style"></mat-icon>
+                                    {{ 'COMMON.ICON_EXPANSION_HIDE' | translate }}
+                                  </ng-container>
+                                  <ng-template #elseTemplate>
+                                    <mat-icon
+                                      [svgIcon]="'icon-Down-Circle'"
+                                      class="icon icon-medium remark-style"></mat-icon>
+                                    {{ 'COMMON.ICON_EXPANSION_SHOW' | translate }}
+                                  </ng-template>
+                                </button>
+                              </div>
+                            </ng-container>
+                          </td>
+                        </ng-container>
+                      </ng-container>
+
+                      <ng-container
+                        *ngIf="item.colName !== 'action' && item.colName !== 'selection' && item.colName !== 'status'">
+                        <ng-container
+                          matColumnDef="{{ item.colName }}"
+                          sticky="{{ item.colName === 'orderNumber' || item.colName === 'fsubbidnum' }}">
+                          <th
+                            class="new-line preserve-breaks"
+                            columnElevationLeft="{{ item.colName === 'fsubbidnum' }}"
+                            [ngClass]="{
+                              'ordernumber-first': item.colName === 'orderNumber',
+                              'fsubidnum-first': item.colName === 'fsubbidnum',
+                            }"
+                            mat-header-cell
+                            *matHeaderCellDef
+                            [class.text-rigth]="item.isNumber"
+                            [class.text-center]="item.isDate"
+                            [class.col-total-appraisal-value]="item.colName === 'totalAppraisalValue'">
+                            <div>{{ columnNameMapper.get(item.colName) }}</div>
+                            <app-tooltip
+                              *ngIf="item.colName === 'totalAppraisalValue'"
+                              [iconClass]="['icon-small', 'fill-white']"
+                              [params]="[
+                                { content: 'ราคาประเมินของธนาคาร: ทรัพย์จำนอง' },
+                                { content: 'ราคาประเมินราชการ: ทรัพย์นอกจำนอง' },
+                              ]"></app-tooltip>
+                          </th>
+                          <td
+                            mat-cell
+                            *matCellDef="let element; let indexNo = dataIndex"
+                            [class.text-rigth]="item.isNumber"
+                            [class.text-center]="item.isDate || item.colName === 'orderNumber'">
+                            <ng-container *ngIf="item.colName === 'resolution'; else elseCol">
+                              {{ resolution.get(element[item.colName]) || '-' }}
+                            </ng-container>
+                            <ng-template #elseCol>
+                              <ng-container *ngIf="item.colName === 'orderNumber'; else noIndex">
+                                {{ indexTableList(indexNo, i) }}
+                              </ng-container>
+                              <ng-template #noIndex>
+                                <ng-container *ngIf="item?.isHyperlink">
+                                  <div *ngIf="item.colName === 'chronicleId'; else elseColOther">
+                                    <span
+                                      class="link"
+                                      (click)="clickHyperLinkList(item?.hyperlinkKey, element, item.colName)"
+                                      >{{ 'AUCTION_DETAIL.NPA_DETAIL.NPA_MEETING_DOC' | translate }}</span
+                                    >
+                                  </div>
+                                  <ng-template #elseColOther>
+                                    <span
+                                      class="link"
+                                      (click)="clickHyperLinkList(item?.hyperlinkKey, element, item.colName)">
+                                      {{
+                                        ('PROPERTY.PROPERTY_SET_NUMBER' | translate) + ' ' + element[item.colName]
+                                      }}</span
+                                    >
+                                  </ng-template>
+                                </ng-container>
+                                <ng-container *ngIf="item?.isNumber">
+                                  {{ (element[item.colName] | numberDecimal) || '-' }}
+                                </ng-container>
+                                <ng-container *ngIf="item?.isDate">
+                                  {{ element[item.colName] | buddhistEra: 'DD/MM/yyyy' || '-' }}
+                                </ng-container>
+                                <ng-container *ngIf="!item?.isNumber && !item?.isDate && !item?.isHyperlink">
+                                  {{ element[item.colName] || '-' }}
+                                </ng-container>
+                              </ng-template>
+                            </ng-template>
+                          </td>
+                        </ng-container>
+                      </ng-container>
+                    </ng-container>
+
+                    <ng-container matColumnDef="expandedDetail">
+                      <td
+                        mat-cell
+                        *matCellDef="let element"
+                        [attr.colspan]="collateralColumns.length"
+                        class="example-detail-td detail-table"
+                        [class.active]="element.expanded">
+                        <div
+                          fxLayout="column"
+                          [fxLayoutGap]="element.expanded ? '2px' : '0px'"
+                          *ngIf="element.expanded">
+                          <div
+                            class="example-element-detail"
+                            [@detailExpand]="element.expanded ? 'expanded' : 'collapsed'">
+                            <div class="fixpadding-first"></div>
+                            <div class="content-form">
+                              <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+                                <div fxLayout="column" fxFlex="100" fxLayoutGap="16px">
+                                  <div style="line-height: 28px">{{ element.colRemark || '-' }}</div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="collateralColumns"></tr>
+                    <tr
+                      class="example-element-row"
+                      mat-row
+                      *matRowDef="let row; columns: collateralColumns"
+                      [class.example-expanded-row]="row.expanded"></tr>
+                    <ng-container *ngIf="tableConfig?.hasExpand">
+                      <tr
+                        mat-row
+                        *matRowDef="let row; columns: ['expandedDetail']"
+                        [class.hide-row]="!row.expanded"
+                        class="expanded-row"></tr>
+                    </ng-container>
+                  </table>
+
+                  <app-message-empty
+                    *ngIf="allCurrentDataList[i].length === 0"
+                    [message]="'AUCTION.MSG_ERROR_SEARCH_NOT_FOUND'">
+                  </app-message-empty>
+                </div>
+
+                <app-paginator
+                  *ngIf="allCurrentDataList[i].length > 0"
+                  #paginator
+                  [pageSize]="pageSize"
+                  [length]="allCurrentDataList[i].length"
+                  (page)="onPagingList($event, i, detail)"></app-paginator>
+
+                <div class="mb-16 mt-24 mr-16 ml-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+                  <h6 fxLayout="column" fxFlex="10">
+                    {{ 'AUCTION_DETAIL.NPA.REMARK' | translate }}
+                  </h6>
+                  <div fxLayout="column" fxFlex="90" fxLayoutGap="16px">
+                    <span class="thin-letter">{{ 'COMMON.LABEL_REMARKS' | translate }}</span>
+                    <div>{{ detail.footNote || '-' }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </ng-container>
+
+  <app-message-empty *ngIf="this.collateralsSource.filteredData.length === 0" [message]="'COMMON.SEARCH_NOT_FOUND'">
+  </app-message-empty>
+</ng-template>

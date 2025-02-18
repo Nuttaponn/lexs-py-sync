@@ -1,0 +1,29 @@
+<div class="tab-container">
+  <div fxLayout="row" class="tabs-wrapper">
+    <div
+      *ngFor="let tab of tabs; let i = index"
+      (click)="onTabChange(i)"
+      class="tab"
+      [class.active]="currentTab === i"
+      [fxFlex]="100 / tabs.length"
+      fxLayout="row"
+      fxLayoutAlign="space-between center"
+      fxLayoutGap="16">
+      <div class="tab-header-content" fxLayout="row">
+        <div class="color-strip" [style]="'background-color: ' + tab.color"></div>
+        <div>
+          <span class="bold" [innerHTML]="tab.label"></span>
+        </div>
+      </div>
+      <div>
+        <h4>{{ tab.count.toString() }}</h4>
+      </div>
+    </div>
+  </div>
+  <div class="tab-content">
+    <app-dashboard-sub-tab
+      [currentSubTab]="currentSubTab"
+      [tabs]="tabs[currentTab].subTabs || []"
+      (subTabChange)="onSubTabChange($event)"></app-dashboard-sub-tab>
+  </div>
+</div>

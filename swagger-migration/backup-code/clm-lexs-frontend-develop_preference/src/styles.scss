@@ -1,0 +1,29 @@
+@import './styles/mixins';
+@import './styles/variables';
+@import './styles/colors';
+@import './styles/typography';
+@import './styles/iconography';
+@import './styles/datepicker';
+@import './styles/layout';
+@import './styles/input';
+@import './styles/checkboxs';
+@import './styles/buttons';
+@import './styles/table';
+@import './styles/a';
+@import './styles/expansion-panel';
+@import './styles/flash-banner';
+@import './styles/tab';
+@import './styles/actionbar';
+@import './styles/message_banner';
+@import './styles/message_empty';
+@import './styles/tooltip';
+@import './styles/upload_file';
+@import './styles/progress_bar';
+@import 'projects/spig-core/styles/theme/core-default/core-default-styles';
+@import './styles/badge-styles';
+@import './styles/utilties';
+@import './styles/step';
+
+/* fix CSP header */
+@import './assets/icons/symbol-defs.scss';
+@import './assets/images/lexs-titlebar-logo-white.scss';

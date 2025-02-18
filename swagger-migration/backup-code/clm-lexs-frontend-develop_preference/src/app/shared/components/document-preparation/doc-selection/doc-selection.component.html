@@ -1,0 +1,174 @@
+<div class="wrap-title" mat-dialog-title fxLayout-="row" fxLayoutAlign="space-between center">
+  <div fxLayout-="row" fxLayoutAlign="start center" fxLayoutGap="14px">
+    <mat-icon svgIcon="icon-Search" class="icon icon-md"></mat-icon>
+    <strong id="dialog-title-text" class="dialog-title-margin dialog-title">
+      เลือกเอกสาร: {{ data?.documentTemplate?.documentName || data?.documentSetName }}
+      {{ data?.attributes?.['set'] ? 'ชุดที่ ' + data?.attributes?.['set'] : '' }}
+    </strong>
+  </div>
+</div>
+
+<mat-dialog-content id="contentCssClasses" class="dialog-content" [formGroup]="form">
+  <div class="pb-20 content" fxLayoutGap="20">
+    <div fxFlex="90" fxLayout="column" fxLayoutAlign="top">
+      <mat-form-field appearance="fill" class="no-label input-lg-icon input-lg">
+        <input
+          type="text"
+          matInput
+          placeholder="ค้นหาเอกสาร"
+          autocomplete="off"
+          formControlName="searchText"
+          class="form-control" />
+        <mat-icon matSuffix class="icon icon-xmedium" svgIcon="icon-Search" (click)="onSearchText()"> </mat-icon>
+      </mat-form-field>
+      <spig-error-msg
+        *ngIf="form.get('searchText')?.value"
+        [control]="form.get('searchText')"
+        [customErrorMsg]="'SEARCH_CONTROL.ERROR_SEARCH_CONDITION'"></spig-error-msg>
+    </div>
+  </div>
+
+  <app-message-banner
+    *ngIf="isShowBanner"
+    class="pt-20"
+    [message]="bannerOption.message"
+    [subMessage]="bannerOption.subMessage"
+    [type]="bannerOption.type"
+    [icon]="bannerOption.icon">
+  </app-message-banner>
+
+  <div class="table-content pb-20 pt-20">
+    <div class="table-scroll">
+      <table mat-table [dataSource]="dataSource">
+        <ng-container matColumnDef="checkbox">
+          <th mat-header-cell *matHeaderCellDef>
+            <mat-checkbox
+              *ngIf="this.data.allowMultiple"
+              [checked]="selection.hasValue() && isAllSelected()"
+              (change)="selectAllMultiple($event)">
+            </mat-checkbox>
+          </th>
+          <td mat-cell *matCellDef="let element; let i = index">
+            <mat-radio-button
+              *ngIf="!this.data.allowMultiple"
+              type="radio"
+              color="accent"
+              [value]="element.imageId"
+              (change)="selectFile(element)"
+              [checked]="docSelected.imageId === element.imageId">
+            </mat-radio-button>
+            <mat-checkbox
+              *ngIf="this.data.allowMultiple"
+              color="accent"
+              (change)="selectMultipleFiles(element)"
+              [disabled]="element.disabled"
+              [checked]="selection.isSelected(element)">
+            </mat-checkbox>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="imageName">
+          <th mat-header-cell *matHeaderCellDef>ชื่อสำเนา</th>
+          <td mat-cell *matCellDef="let element">
+            <div class="link" (click)="onClickPdf(element)">{{ element.imageName }}</div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="createdDate">
+          <th mat-header-cell *matHeaderCellDef>วันที่สร้างเอกสาร</th>
+          <td mat-cell *matCellDef="let element">
+            <span>{{ element.createdDate | buddhistEra: 'DD/MM/yyyy' || '-' }}</span>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="docColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: docColumns"></tr>
+      </table>
+    </div>
+    <ng-container
+      *ngIf="dataSource.data.length === 0 || dataSource.filteredData.length === 0"
+      [ngTemplateOutlet]="dataNotFound">
+    </ng-container>
+  </div>
+
+  <span class="fill-red" *ngIf="error.hasSelect"> กรุณาเลือกข้อมูลในตารางนี้ </span>
+
+  <app-message-banner
+    *ngIf="
+      (!this.data.allowUpload && data?.documentTemplate.documentGroup !== 'PERSON_LCS') ||
+      (isNotFoundDoc && data.type !== 'Deferment')
+    "
+    message="กรณีไม่พบเอกสาร กรุณาติดต่อหน่วยงานที่เกี่ยวข้องให้อัปโหลด"
+    type="info">
+  </app-message-banner>
+  <div class="pb-20">
+    <app-message-banner
+      *ngIf="!this.data.allowUpload && this.data?.documentTemplate.documentGroup === 'PERSON_LCS'"
+      message="กรณีไม่พบเอกสาร กรุณาติดต่องานเร่งรัดหนี้ ฝ่ายกำกับและบริหารงานกฎหมาย ให้อัปโหลดเอกสาร โทร.02-208-8744, 02-208-7913"
+      type="info">
+    </app-message-banner>
+  </div>
+  <div class="pb-20 content pt-20" fxLayout fxLayoutGap="20" *ngIf="this.data.allowUpload">
+    <div fxFlex="30" fxLayoutAlign="top">
+      <input
+        type="file"
+        #fileUpload
+        name="fileUpload"
+        onclick="this.value=null;"
+        accept="application/pdf,image/jpg,image/jpeg"
+        class="display-none" />
+      <button
+        id="btn-doc-selection-select-document"
+        mat-stroked-button
+        (click)="selectDocument()"
+        class="mat-primary medium-aw-button">
+        <mat-icon svgIcon="icon-Arrow-Upload" class="icon-xmedium"> </mat-icon>
+        อัปโหลดเอกสาร
+      </button>
+    </div>
+    <div fxFlex="40" fxLayoutAlign="top">
+      <p>รองรับ PDF, JPG, JPEG เท่านั้น</p>
+    </div>
+  </div>
+  <div
+    class="pb-20 content mr-24 justify-content-end"
+    *ngIf="data?.documentTemplate?.requiredDocumentDate"
+    fxLayout
+    fxLayoutGap="20">
+    <div fxFlex="30" fxLayout="column" fxLayoutAlign="top">
+      <spig-datepicker
+        label="ข้อมูลวันที่"
+        formControlName="date"
+        [required]="true"
+        (inputChange)="selectData($event)"
+        [max]="today">
+      </spig-datepicker>
+      <spig-error-msg [control]="getControl('date')"> </spig-error-msg>
+    </div>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions class="footer justify-content-end">
+  <button
+    type="button"
+    class="medium-button mat-ghost"
+    (click)="cancel()"
+    mat-button
+    id="btn-dialog-close"
+    mat-dialog-close>
+    {{ 'COMMON.BUTTON_CANCEL' | translate }}
+  </button>
+  <button
+    type="button"
+    mat-flat-button
+    color="primary"
+    class="medium-button w-132"
+    (click)="save()"
+    id="btn-dialog-active"
+    cdkFocusInitial>
+    <mat-icon svgIcon="icon-Selected" class="icon icon-md"></mat-icon>
+    {{ 'COMMON.BUTTON_APPLY' | translate }}
+  </button>
+</mat-dialog-actions>
+
+<ng-template #dataNotFound>
+  <app-message-empty [message]="'DOC_PREP.NOT_FOUND_DOC'"></app-message-empty>
+</ng-template>

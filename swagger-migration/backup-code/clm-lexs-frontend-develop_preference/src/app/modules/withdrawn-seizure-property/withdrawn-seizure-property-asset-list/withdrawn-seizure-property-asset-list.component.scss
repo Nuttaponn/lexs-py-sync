@@ -1,0 +1,78 @@
+@import '/src/styles/colors';
+@import '/src/styles/typography';
+
+.wsp-title {
+  .total-label {
+    font-size: $font-sub-description;
+    .total-number {
+      font-size: $font-description;
+      font-weight: bold;
+    }
+  }
+}
+
+td {
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+}
+
+.mat-column-collateralDetails {
+  white-space: pre-wrap;
+  min-width: 400px !important;
+}
+
+.bg-l-gray {
+  width: 100%;
+  height: 72px;
+  background: map_get($ktb-palette-biz-gray, 50);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.title-bar-color {
+  color: #121212cc;
+}
+
+.fs-16 {
+  font-size: 16px;
+}
+
+::ng-deep app-withdrawn-seizure-property-asset-list {
+  .padding-zero .mat-expansion-panel-body {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .mat-badge.mat-badge {
+    padding-right: 18px;
+  }
+
+  .bg-color-red {
+    .mat-badge-content {
+      color: $white;
+      background: $krungthai-red;
+      width: 15px;
+      border-radius: 45%;
+    }
+  }
+
+  .mat-badge-medium.mat-badge-after .mat-badge-content {
+    right: 0px;
+  }
+
+  .mat-badge-medium.mat-badge-above .mat-badge-content {
+    top: 0px;
+  }
+
+  .mat-ink-bar-width-82 .mat-ink-bar {
+    width: 82px !important;
+  }
+
+  .mat-ink-bar-width-110 .mat-ink-bar {
+    width: 110px !important;
+  }
+
+  .wd-upload-doc {
+    margin-top: 16px !important;
+  }
+}

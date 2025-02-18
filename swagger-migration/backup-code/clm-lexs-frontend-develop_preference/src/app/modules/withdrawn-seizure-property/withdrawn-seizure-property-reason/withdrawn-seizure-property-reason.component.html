@@ -1,0 +1,15 @@
+<div class="content-container mt-0 mb-0">
+  <ng-container *ngIf="returnReason; else step2Banner">
+    <app-message-banner [type]="'black-info'" [message]="messageReturnBaner + returnReason"></app-message-banner>
+  </ng-container>
+  <ng-template #step2Banner>
+    <app-message-banner [type]="'black-info'" [message]="messageBanner"></app-message-banner>
+  </ng-template>
+</div>
+<app-case-details
+  [title]="caseDetailTitle"
+  [data]="litigationCaseShortDetail"
+  [hidelawyer]="taskCode !== 'R2E06-05-E'"></app-case-details>
+<app-withdrawn-reason
+  [isViewMode]="mode === 'VIEW' && !hasSubmitPermission && !isEditor"
+  [form]="withdrawnSeizurePropertyService.withdrawnSeizureDetailForm"></app-withdrawn-reason>

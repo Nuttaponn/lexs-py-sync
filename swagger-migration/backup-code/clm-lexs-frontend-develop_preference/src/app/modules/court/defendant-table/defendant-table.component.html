@@ -1,0 +1,66 @@
+<ng-container>
+  <table mat-table [dataSource]="defendants">
+    <ng-container matColumnDef="selection">
+      <th mat-header-cell *matHeaderCellDef class="text-center">
+        <mat-checkbox
+          (change)="onSelectAll()"
+          [checked]="selection.hasValue() && isAllSelected()"
+          [indeterminate]="selection.hasValue() && !isAllSelected()"></mat-checkbox>
+      </th>
+      <td mat-cell *matCellDef="let element" class="text-center">
+        <div fxLayoutAlign="center center">
+          <div class="elm-form">
+            <input
+              type="checkbox"
+              class="elm-radio-check elm-check"
+              (change)="onDefendantToggle(element)"
+              [checked]="selection.isSelected(element)" />
+            <label></label>
+          </div>
+        </div>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="order">
+      <th mat-header-cell *matHeaderCellDef class="text-center">
+        {{ 'COMMON.LABEL_NO' | translate }}
+      </th>
+      <td mat-cell *matCellDef="let element; let i = index" class="text-center">
+        {{ i + 1 }}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>
+        {{ 'COMMON.LABEL_FULL_NAME' | translate }}
+      </th>
+      <td mat-cell *matCellDef="let element">
+        {{
+          element.firstName
+            ? (element.title | emptyFormat) + (element.firstName | emptyFormat) + ' ' + (element.lastName | emptyFormat)
+            : (element.name | emptyFormat)
+        }}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="relation">
+      <th mat-header-cell *matHeaderCellDef>
+        {{ 'COURT.TABLE_HEADER_RELATION' | translate }}
+      </th>
+      <td mat-cell *matCellDef="let element">
+        {{ 'LAWSUIT.MAPPING.RELATION.' + element.relation | translate }}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef>
+        {{ 'COURT.TABLE_HEADER_ID' | translate }}/<br />{{ 'COURT.TABLE_HEADER_TAX_ID' | translate }}
+      </th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.identificationNo || '-' }}
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="tableColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: tableColumns"></tr>
+  </table>
+  <ng-container *ngIf="defendants && defendants.length === 0" [ngTemplateOutlet]="dataNotFound"> </ng-container>
+  <ng-template #dataNotFound>
+    <app-message-empty [message]="'COMMON.LABEL_PREFIX_NOT_FOUND'"> </app-message-empty>
+  </ng-template>
+</ng-container>

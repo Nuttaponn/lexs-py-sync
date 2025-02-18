@@ -1,0 +1,143 @@
+<mat-tab-group
+  class="tab-group-container"
+  [ngClass]="tabIndex === 0 ? 'mat-ink-bar-width-100' : ''"
+  mat-align-tabs="start"
+  (selectedTabChange)="onTabChanged($event)">
+  <mat-tab>
+    <ng-template matTabLabel class="mb-16">
+      <span
+        *ngIf="totalProcessAnnounces || 0 > 0"
+        class="bg-color-red"
+        matBadge="{{ totalProcessAnnounces }}"
+        matBadgeOverlap="false">
+        {{ 'AUCTION_LED_CARD.DEBT_PAYMENT_ACCOUNT.PROCESS' | translate }}</span
+      >
+      <span *ngIf="totalProcessAnnounces === 0">
+        {{ 'AUCTION_LED_CARD.DEBT_PAYMENT_ACCOUNT.PROCESS' | translate }}</span
+      >
+    </ng-template>
+
+    <ng-template matTabContent>
+      <ng-container *ngTemplateOutlet="auctionLEDCardAnnouncementTable"></ng-container>
+      <ng-container
+        *ngIf="!announcementInfo.data || announcementInfo.data.length === 0"
+        [ngTemplateOutlet]="dataNotFound">
+      </ng-container>
+      <app-paginator
+        *ngIf="announcementInfo.data.length > 0"
+        #paginator
+        [pageSize]="pageSize"
+        [length]="announcementInfo.data.length"
+        (page)="onPaging($event)"></app-paginator>
+    </ng-template>
+  </mat-tab>
+
+  <mat-tab label="{{ 'AUCTION_LED_CARD.DEBT_PAYMENT_ACCOUNT.DONE' | translate }}">
+    <ng-template matTabContent>
+      <ng-container *ngTemplateOutlet="auctionLEDCardAnnouncementTable"></ng-container>
+      <ng-container
+        *ngIf="!announcementInfo.data || announcementInfo.data.length === 0"
+        [ngTemplateOutlet]="dataNotFound">
+      </ng-container>
+      <app-paginator
+        *ngIf="announcementInfo.data.length > 0"
+        #paginator
+        [pageSize]="pageSize"
+        [length]="announcementInfo.data.length"
+        (page)="onPaging($event)"></app-paginator>
+    </ng-template>
+  </mat-tab>
+</mat-tab-group>
+
+<div class="data-table-content mt-16"></div>
+
+<ng-template #auctionLEDCardAnnouncementTable>
+  <div class="table mt-16">
+    <table mat-table [dataSource]="announcementInfo.filteredData" [class.empty]="announcementInfo.data.length === 0">
+      <ng-container matColumnDef="no">
+        <th class="text-center" mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_NO' | translate }}</th>
+        <td class="text-center" mat-cell *matCellDef="let element; let i = index">
+          {{ element.orderNumber }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="sellDate">
+        <th class="text-left width-pct-10" mat-header-cell *matHeaderCellDef>วันที่เริ่มดำเนินการ</th>
+        <td class="text-left width-pct-10" mat-cell *matCellDef="let element">
+          <span class="link" (click)="navigateToAuctionDetails(element)">
+            {{ (element.createTimestamp | buddhistEra: 'DD/MM/yyyy') || '-' }}
+          </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="assets">
+        <th class="text-right" mat-header-cell *matHeaderCellDef>จำนวนชุดทรัพย์</th>
+        <td class="text-right" mat-cell *matCellDef="let element">
+          {{ element.totalDeedGroup }}
+          <app-tooltip [iconClass]="['icon-xs', 'fill-blue']" [params]="element.tooltipParams"></app-tooltip>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="debtType">
+        <th class="text-left width-pct-15" mat-header-cell *matHeaderCellDef>ประเภทหนังสือ</th>
+        <td class="text-left width-pct-15" mat-cell *matCellDef="let element">
+          {{ element.documentType || '-' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="debtDate">
+        <th class="text-left width-pct-12" mat-header-cell *matHeaderCellDef>วันที่ตัดชำระหนี้</th>
+        <td class="text-left width-pct-12" mat-cell *matCellDef="let element">
+          {{ (element.approvedTimestamp | buddhistEra: 'DD/MM/yyyy') || '-' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="debtAmount">
+        <th class="text-right" mat-header-cell *matHeaderCellDef>ยอดรวมตามบัญชีรับจ่าย (บาท)</th>
+        <td class="text-right" mat-cell *matCellDef="let element">
+          {{ (element.totalAmount | numberDecimal) || '-' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="debtPayment">
+        <th class="text-right" mat-header-cell *matHeaderCellDef>
+          {{ 'DEBT_SETTLEMENT_ACCOUNTS.DETAIL.DEBT_PAYMENT_DEDUCTED_AMOUNT' | translate }}
+        </th>
+        <td class="text-right" mat-cell *matCellDef="let element">
+          <ng-container *ngIf="element.status === 'R2E09-10-01_CREATE'"> - </ng-container>
+          <ng-container *ngIf="element.status !== 'R2E09-10-01_CREATE'">
+            {{ (element.totalDebtSettlementAmount | numberDecimal) || '-' }}
+          </ng-container>
+        </td>
+      </ng-container>
+
+      <!-- สถานะ Column -->
+      <ng-container matColumnDef="aucStatus">
+        <th mat-header-cell *matHeaderCellDef class="text-center">สถานะ</th>
+        <td mat-cell *matCellDef="let element" class="text-center">
+          <div
+            class="status-label size-normal text-center max-width"
+            [class.status-success]="element.status === 'R2E09-10-02_COMPLETE'"
+            [class.status-pending]="element.status === 'R2E09-10-01_CREATE' || element.status === 'R2E09-10-03_CREATE'"
+            [class.status-normal]="element.status === 'R2E09-10-02_CREATE'">
+            <mat-icon
+              *ngIf="element.status === 'R2E09-10-02_COMPLETE'"
+              svgIcon="icon-Mark"
+              class="icon icon-sm mr-8"></mat-icon>
+            <span *ngIf="element.status && element.statusName">
+              {{ element.statusName }}
+            </span>
+            <span *ngIf="!element.status || !element.statusName"> - </span>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </div>
+</ng-template>
+
+<ng-template #dataNotFound>
+  <app-message-empty [message]="'ไม่พบรายการตัดชำระหนี้'"></app-message-empty>
+</ng-template>

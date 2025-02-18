@@ -1,0 +1,12 @@
+::ng-deep app-auction-follow-account-doc {
+
+  /* FIXED(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version. */
+  .color-biz-black-100,
+  .mdc-label {
+    font: 400 16px/20px KrungthaiFastRegular;
+  }
+
+  .remove-padding .mat-expansion-panel-body {
+    padding: 0px;
+  }
+}

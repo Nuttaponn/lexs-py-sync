@@ -1,0 +1,15 @@
+@import '/src/styles/typography';
+
+.modal-on-request {
+  width: 600px;
+  .title {
+    font-size: $font-sub-description;
+  }
+  .content {
+    margin-top: 24px;
+    display: flex;
+    .info-label {
+      width: 50%;
+    }
+  }
+}

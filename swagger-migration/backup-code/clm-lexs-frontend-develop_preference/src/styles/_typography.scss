@@ -1,0 +1,33 @@
+// _typography
+$font-sizes: (
+  super-headline: 56px,
+  headline: 32px,
+  sub-headline: 28px,
+  title: 24px,
+  sub-title: 22px,
+  content: 20px,
+  sub-content: 18px,
+  description: 16px,
+  sub-description: 14px,
+  tag: 12px,
+  sub-tag: 10px,
+);
+
+$font-super-headline: map_get($font-sizes, super-headline);
+$font-headline: map_get($font-sizes, headline);
+$font-sub-headline: map_get($font-sizes, sub-headline);
+$font-title: map_get($font-sizes, title);
+$font-sub-title: map_get($font-sizes, sub-title);
+$font-content: map_get($font-sizes, content);
+$font-sub-content: map_get($font-sizes, sub-content);
+$font-description: map_get($font-sizes, description);
+$font-sub-description: map_get($font-sizes, sub-description);
+$font-tag: map_get($font-sizes, tag);
+$font-sub-tag: map_get($font-sizes, sub-tag);
+
+@mixin font-style($sizecode: description, $family: KrungthaiFastRegular, $weight: normal, $style: unset) {
+  font-size: map_get($font-sizes, $sizecode);
+  font-family: $family;
+  font-weight: $weight;
+  font-style: $style;
+}

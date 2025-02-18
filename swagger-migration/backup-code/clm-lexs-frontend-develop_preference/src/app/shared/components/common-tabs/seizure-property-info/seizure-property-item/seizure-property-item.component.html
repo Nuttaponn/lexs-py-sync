@@ -1,0 +1,40 @@
+<div
+  fxLayout="row"
+  *ngFor="let item of items; let i = index"
+  fxLayoutAlign="space-between center"
+  class="title-content no-horizontal-padding bg-gray-900 mb-10"
+  fxLayoutGap="10px"
+  [ngClass]="{ 'mt-10': i > 0 }">
+  <div fxFlex fxLayout="row" fxLayoutAlign="space-between center">
+    <div fxLayout="column">
+      <div fxLayout="row" fxLayoutAlign="left center">
+        <span> <mat-icon svgIcon="icon-Window" class="icon icon-medium"></mat-icon>&nbsp;&nbsp;&nbsp; </span>
+
+        <ng-container *ngIf="item.seizureType === 'NCOL'; else elseColTemplate">
+          <h5>การยึดทรัพย์นอกจำนอง ครั้งที่ {{ item.order }}</h5>
+        </ng-container>
+        <ng-template #elseColTemplate>
+          <h5>การยึดทรัพย์จำนอง ครั้งที่ {{ item.order }}</h5>
+        </ng-template>
+      </div>
+      <div fxLayout="row" fxLayoutAlign="space-between center">
+        ทรัพย์ทั้งหมด:
+        <span class="bold ml-8">{{ total || 0 }}</span>
+        <span>
+          <div class="divider-vertical"></div>
+        </span>
+        ทรัพย์ที่สั่งการยึด:
+        <span class="bold ml-8">{{ item?.seizureCollaterals?.length || 0 }}</span>
+        <span>
+          <div class="divider-vertical"></div>
+        </span>
+        วันที่สั่งการยึดทรัพย์:
+        <span class="bold ml-8">{{ (item.createdTimestamp | buddhistEra: 'DD/MM/yyyy') || '-' }}</span>
+      </div>
+    </div>
+    <div fxFlex></div>
+    <button type="button" mat-flat-button color="primary" class="medium-button" (click)="onViewDetail(item)">
+      {{ 'COMMON.BUTTON_VIEW_DETAIL' | translate }}
+    </button>
+  </div>
+</div>

@@ -1,0 +1,166 @@
+<div class="mt-12">
+  <div class="search-section pb-16" fxLayout="row" fxLayoutAlign="center start" fxLayoutGap="12px">
+    <div fxFlex>
+      <spig-dropdown
+        classInput="input-xsm icon"
+        [formControl]="typeFilterControl"
+        [config]="dropdownFilterGroupConfig"
+        [options]="collateralGroupOption"
+        (selectedOption)="applyFilter($event, TABLE_FILTER_KEY.GROUP)">
+      </spig-dropdown>
+    </div>
+    <div fxFlex>
+      <spig-dropdown
+        classInput="input-xsm icon"
+        [formControl]="statusFilterControl"
+        [config]="dropdownFilterDocumentConfig"
+        [options]="deedNoFilterOption"
+        (selectedOption)="applyFilter($event, TABLE_FILTER_KEY.DEEDNO)"></spig-dropdown>
+    </div>
+    <div fxFlex>
+      <spig-dropdown
+        classInput="input-xsm icon"
+        [formControl]="assetFilterControl"
+        [config]="dropdownResultConfig"
+        [options]="assetNoFilterOption"
+        (selectedOption)="applyFilter($event, TABLE_FILTER_KEY.RESULT)"></spig-dropdown>
+    </div>
+  </div>
+
+  <div class="table-scroll section" table-scroll>
+    <table mat-table [dataSource]="collateralsSource.filteredData">
+      <ng-container matColumnDef="INDEX" sticky>
+        <th class="text-center" mat-header-cell *matHeaderCellDef>
+          {{ 'COMMON.LABEL_NO' | translate }}
+        </th>
+        <td class="text-center" mat-cell *matCellDef="let row; let i = index">
+          {{ i + startIndex }}
+        </td>
+        <td mat-footer-cell *matFooterCellDef></td>
+      </ng-container>
+      <ng-container matColumnDef="PROPERTY_SET_NUMBER" sticky>
+        <th class="text-left" mat-header-cell *matHeaderCellDef columnElevationLeft>
+          {{ 'PROPERTY.PROPERTY_SET' | translate }}
+        </th>
+        <td class="text-left" mat-cell *matCellDef="let row" columnElevationLeft>
+          <div class="link" (click)="onClickItem(row)">
+            {{ 'PROPERTY.PROPERTY_NO' | translate }} {{ row.fsubbidnum }}
+          </div>
+        </td>
+        <td mat-footer-cell *matFooterCellDef></td>
+      </ng-container>
+      <ng-container matColumnDef="PROPERTY_TOTAL">
+        <th class="text-right new-line preserve-breaks" mat-header-cell *matHeaderCellDef>
+          {{ 'PROPERTY.PROPERTY_TOTAL' | translate }}
+        </th>
+        <td class="text-right" mat-cell *matCellDef="let row">
+          {{ row.totalDeeds }}
+        </td>
+        <td mat-footer-cell *matFooterCellDef></td>
+      </ng-container>
+      <ng-container matColumnDef="SALES_TYPE">
+        <th class="text-left" mat-header-cell *matHeaderCellDef>
+          {{ 'PROPERTY.SALES_TYPE' | translate }}
+        </th>
+        <td class="text-left" mat-cell *matCellDef="let row">
+          {{ row.saletypedesc }}
+        </td>
+        <td mat-footer-cell *matFooterCellDef></td>
+      </ng-container>
+      <ng-container matColumnDef="OUTSIDER_COLLATERAL_PRICE">
+        <th class="text-right new-line preserve-breaks" mat-header-cell *matHeaderCellDef>
+          {{ 'PROPERTY.OUTSIDER_COLLATERAL_PRICE' | translate }}
+        </th>
+        <td class="text-right" mat-cell *matCellDef="let row">
+          {{ (row.reservefund | numberDecimal) || '-' }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="SUBSTITUTE_COLLATERAL_PRICE">
+        <th class="text-right new-line preserve-breaks" mat-header-cell *matHeaderCellDef>
+          {{ 'PROPERTY.SUBSTITUTE_COLLATERAL_PRICE' | translate }}
+        </th>
+        <td class="text-right" mat-cell *matCellDef="let row">
+          {{ (row.reservefund1 | numberDecimal) || '-' }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="EXPERT_VALUATION_PRICE">
+        <th class="text-right new-line preserve-breaks" mat-header-cell *matHeaderCellDef>
+          {{ 'PROPERTY.EXPERT_VALUATION_PRICE' | translate }}
+        </th>
+        <td class="text-right" mat-cell *matCellDef="let row">
+          {{ (row.assetprice2 | numberDecimal) || '-' }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="EXECUTION_OFFICER_VALUATION_PRICE">
+        <th class="text-right new-line preserve-breaks" mat-header-cell *matHeaderCellDef>
+          {{ 'PROPERTY.EXECUTION_OFFICER_VALUATION_PRICE' | translate }}
+        </th>
+        <td class="text-right new-line preserve-breaks" mat-cell *matCellDef="let row">
+          {{ (row.assetprice3 | numberDecimal) || '-' }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="COMMITTEE_PROPERTY_VALUATION_PRICE">
+        <th class="text-right new-line preserve-breaks" mat-header-cell *matHeaderCellDef>
+          {{ 'PROPERTY.COMMITTEE_PROPERTY_VALUATION_PRICE' | translate }}
+        </th>
+        <td class="text-right" mat-cell *matCellDef="let row">
+          {{ (row.assetprice4 | numberDecimal) || '-' }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="ASSESSMENT_OFFICER_VALUATION_PRICE">
+        <th class="text-right new-line preserve-breaks" mat-header-cell *matHeaderCellDef>
+          {{ 'PROPERTY.ASSESSMENT_OFFICER_VALUATION_PRICE' | translate }}
+        </th>
+        <td class="text-right" mat-cell *matCellDef="let row">
+          {{ (row.assetprice5 | numberDecimal) || '-' }}
+        </td>
+      </ng-container>
+      <!-- Status Column -->
+      <ng-container matColumnDef="STATUS" stickyEnd>
+        <th class="text-center" mat-header-cell *matHeaderCellDef columnElevationRight>
+          {{ 'PROPERTY.STATUS' | translate }}
+        </th>
+        <td class="text-center" mat-cell *matCellDef="let element" columnElevationRight>
+          <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10px">
+            <span
+              class="status-label"
+              [ngClass]="{
+                'status-pending': element.npaStatus === 'PENDING' || element.npaStatus === 'ADJUST',
+                'status-success': element.npaStatus === 'PURCHASE',
+                'status-info':
+                  element.npaStatus === 'NOT_PURCHASE' || element.npaStatus === 'NOT_PURCHASE_NON_PLEDGE_ASSETS',
+              }">
+              <mat-icon
+                *ngIf="element.npaStatus === 'PURCHASE'"
+                svgIcon="icon-Mark"
+                class="icon icon-small-xl fill-krungthai-green mr-4"></mat-icon>
+              <label *ngIf="element.npaStatus === 'PURCHASE'">{{ 'PROPERTY.NPA_PURCHASE' | translate }}</label>
+              <label *ngIf="element.npaStatus === 'PENDING'">{{ 'PROPERTY.NPA_PENDING' | translate }}</label>
+              <label *ngIf="element.npaStatus === 'ADJUST'">{{ 'PROPERTY.NPA_ADJUST' | translate }}</label>
+              <label *ngIf="element.npaStatus === 'NOT_PURCHASE'">{{ 'PROPERTY.NPA_NOT_PURCHASE' | translate }}</label>
+              <label *ngIf="element.npaStatus === 'NOT_PURCHASE_NON_PLEDGE_ASSETS'">{{
+                'PROPERTY.NPA_NOT_PURCHASE_NON_PLEDGE_ASSETS' | translate
+              }}</label>
+            </span>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+    <!-- Empty row handler -->
+    <app-message-empty
+      *ngIf="collateralsSource.data.length === 0 || collateralsSource.filteredData.length === 0"
+      [message]="'COMMON.SEARCH_NOT_FOUND'">
+    </app-message-empty>
+  </div>
+
+  <!-- Paginator -->
+  <app-paginator
+    *ngIf="allCurrentData.length > 0"
+    #paginator
+    [pageSize]="pageSize"
+    [length]="allCurrentData.length"
+    (page)="onPaging($event)"></app-paginator>
+</div>

@@ -1,0 +1,220 @@
+<div class="content-container">
+  <div class="inner-container-padding-24">
+    <app-auction-header
+      [title]="'DEBT_SETTLEMENT_ACCOUNTS.TITLE' | translate"
+      [isMain]="true"
+      [expanded]="isOpened"
+      (expand)="isOpened = !isOpened">
+    </app-auction-header>
+  </div>
+  <mat-accordion>
+    <mat-expansion-panel [expanded]="isOpened" hideToggle>
+      <mat-divider class="no-margin"></mat-divider>
+      <ng-container [formGroup]="dataForm">
+        <div class="pt-24">
+          <mat-accordion>
+            <div fxLayout="row" class="p-32 pb-24" *ngIf="displayReasonConsideration" fxLayoutGap="16px">
+              <div fxFlex="15" class="text-align-right pt-8">
+                <h6>{{ 'AUCTION_DETAIL.REASON_CONSIDERATION' | translate }}</h6>
+              </div>
+              <div fxFlex="60" class="pt-8">
+                <div class="content-form">
+                  <span class="fill-black-70">{{ 'AUCTION_DETAIL.SEND_BACK_EDIT_REASON' | translate }}</span>
+                  <div class="color-biz-black-100 pt-6">{{ dataForm.get('rejectReason')?.value || '-' }}</div>
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf="downloadAccount" fxLayout="row" class="p-32 pb-24" fxLayoutGap="16px">
+              <div fxFlex="15" class="text-align-right pt-8">
+                <h6>{{ 'DEBT_SETTLEMENT_ACCOUNTS.REPAYMENT_ACCOUNT_DEDUCTION_ORDER' | translate }}</h6>
+              </div>
+              <div fxFlex="60">
+                <button type="button" mat-stroked-button class="medium-aw-button" (click)="downloadDirective()">
+                  <mat-icon svgIcon="icon-Download" class="icon-xmedium"></mat-icon>
+                  {{ 'COMMON.BUTTON_DOWNLOAD' | translate }}
+                </button>
+              </div>
+            </div>
+
+            <div *ngIf="downloadCreditNote" fxLayout="row" class="p-32 pb-24" fxLayoutGap="16px">
+              <div fxFlex="15" class="text-align-right pt-8">
+                <h6>{{ 'DEBT_SETTLEMENT_ACCOUNTS.PAYMENT_DEDUCTION_CREDIT_NOTE' | translate }}</h6>
+              </div>
+              <div fxFlex="60">
+                <button type="button" mat-stroked-button class="medium-aw-button" (click)="downloadCredit()">
+                  <mat-icon svgIcon="icon-Download" class="icon-xmedium"></mat-icon>
+                  {{ 'COMMON.BUTTON_DOWNLOAD' | translate }}
+                </button>
+              </div>
+            </div>
+
+            <div fxLayout="row" class="p-32 pb-24" *ngIf="false">
+              <div fxFlex="15" class="text-align-right pt-8">
+                <h6>{{ 'COMMON.LABEL_REASON_CONSIDERATION' | translate }}</h6>
+              </div>
+              <div fxFlex="60" class="pt-8">
+                <div fxFlex="90" fxLayout="column" fxLayoutGap="24">
+                  <span class="thin-letter">{{ 'COMMON.LABEL_REASON_REVISION' | translate }}</span>
+                  <div>-</div>
+                </div>
+              </div>
+            </div>
+            <div fxLayout="row" class="p-32 pb-24" fxLayoutGap="16px">
+              <div fxFlex="15" class="text-align-right pt-8 new-line lh-1half">
+                <h6>{{ 'DEBT_SETTLEMENT_ACCOUNTS.TOTAL_ASSETS_SOLD' | translate }}</h6>
+              </div>
+              <div fxFlex="60" class="pt-8">
+                <ng-container [ngTemplateOutlet]="summary" [ngTemplateOutletContext]="{ dataSource: summarySet }">
+                </ng-container>
+              </div>
+            </div>
+
+            <div fxLayout="row" class="p-32" fxLayoutGap="16px">
+              <div fxFlex="15" class="text-align-right pt-8">
+                <h6>{{ 'COMMON.LABEL_DOCUMENT_LIST' | translate }}</h6>
+              </div>
+              <div fxFlex="60" class="pt-8">
+                <app-upload-multi-file-content
+                  [uploadMultiInfo]="uploadMultiInfo"
+                  [list]="documentProperty"
+                  labelAcceptFile=""
+                  [column]="documentColumns"
+                  [readonly]="true">
+                </app-upload-multi-file-content>
+              </div>
+            </div>
+            <div
+              fxLayout="row"
+              class="elm-form mb-35 mt-30"
+              *ngIf="displayChequeAmount && hasAmount"
+              fxLayoutGap="16px">
+              <div fxFlex="15">
+                <h6>{{ 'DEBT_SETTLEMENT_ACCOUNTS.CHECK_AMOUNT' | translate }}</h6>
+              </div>
+              <div fxFlex="30">
+                <ng-container *ngIf="!isViewMode">
+                  <mat-form-field class="input-full-field" color="primary">
+                    <mat-label class="required">{{ 'DEBT_SETTLEMENT_ACCOUNTS.AMOUNT_OF_MONEY' | translate }}</mat-label>
+                    <input
+                      formControlName="chequeAmount"
+                      (blur)="onChequeAmountChange($event)"
+                      appNumberOnly="qualitative"
+                      type="text"
+                      matInput
+                      required
+                      placeholder="{{ 'DEBT_SETTLEMENT_ACCOUNTS.AMOUNT_OF_MONEY' | translate }}"
+                      autocomplete="off" />
+                  </mat-form-field>
+                  <spig-error-msg
+                    [control]="dataForm.get('chequeAmount')"
+                    [customErrorMsg]="'FORM_ERROR_MSG.INVALID'"></spig-error-msg>
+                </ng-container>
+                <div *ngIf="isViewMode">
+                  <div class="thin-letter mb-4">{{ 'DEBT_SETTLEMENT_ACCOUNTS.AMOUNT_OF_MONEY' | translate }}</div>
+                  <div>{{ dataForm.get('chequeAmount')?.value | numberDecimal }}</div>
+                </div>
+              </div>
+            </div>
+            <div
+              fxLayout="row"
+              class="elm-form mb-35 mt-30"
+              *ngIf="displayCreditNoteRefNo && hasCredit"
+              fxLayoutGap="16px">
+              <div fxFlex="15">
+                <h6>{{ 'AUCTION_DETAIL.ACCOUNT_DOCUMENT.CREDIT_NOTE_DETAILS' | translate }}</h6>
+              </div>
+              <div fxFlex="30">
+                <div *ngIf="!isViewMode">
+                  <mat-form-field class="input-full-field" color="primary">
+                    <mat-label class="required"> Reference No.</mat-label>
+                    <input
+                      type="text"
+                      formControlName="creditNoteRefNo"
+                      matInput
+                      required
+                      placeholder="Reference No."
+                      autocomplete="off"
+                      (blur)="onCreditNoteRefNoChange($event)"
+                      appRefNoInput />
+                  </mat-form-field>
+                  <spig-error-msg [control]="dataForm.get('creditNoteRefNo')"></spig-error-msg>
+                </div>
+                <div *ngIf="isViewMode">
+                  <span class="thin-letter"> Reference No.</span>
+                  <div class="mt-4">{{ dataForm.get('creditNoteRefNo')?.value | refNo }}</div>
+                </div>
+              </div>
+              <div fxFlex="50" class="mr-16 mx-width-pct-25">
+                <div>
+                  <span class="thin-letter">หน่วยงานที่รับ Credit Note</span>
+                  <div class="mt-4">
+                    {{ dataForm.get('creditNoteOrganizationId')?.value }}-{{
+                      dataForm.get('creditNoteOrganizationName')?.value
+                    }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              fxLayout="row"
+              class="elm-form mb-35 mt-30"
+              *ngIf="displayCreditNoteRefNo && hasCredit"
+              fxLayoutGap="16px">
+              <div fxFlex="15"></div>
+              <div fxFlex="60">
+                <app-upload-multi-file-content
+                  *ngIf="displayDocumentCreditNote"
+                  [uploadMultiInfo]="uploadMultiInfo"
+                  [list]="documentCreditNote"
+                  [column]="documentColumns"
+                  labelAcceptFile=""
+                  [readonly]="true">
+                </app-upload-multi-file-content>
+              </div>
+            </div>
+          </mat-accordion>
+        </div>
+      </ng-container>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>
+
+<ng-template let-dataSource="dataSource" #summary>
+  <div class="table">
+    <table mat-table [dataSource]="dataSource">
+      <!-- ลำดับ Column -->
+      <ng-container matColumnDef="no">
+        <th class="text-center width-pct-5" mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_NO' | translate }}</th>
+        <td class="text-center width-pct-5" mat-cell *matCellDef="let element; let i = index">
+          {{ i + 1 }}
+        </td>
+        <td mat-footer-cell *matFooterCellDef></td>
+      </ng-container>
+      <!-- ใบประกาศ Column -->
+      <ng-container matColumnDef="set">
+        <th mat-header-cell *matHeaderCellDef class="new-line">ชุดทรัพย์</th>
+        <td mat-cell *matCellDef="let element">
+          <div class="link" (click)="onClickProperty(element)">ชุดทรัพย์ที่ {{ element.fsubbidnum }}</div>
+        </td>
+        <td mat-footer-cell *matFooterCellDef>รวม (บาท)</td>
+      </ng-container>
+      <!-- Lot Column -->
+      <ng-container matColumnDef="summary">
+        <th mat-header-cell *matHeaderCellDef class="new-line text-right">
+          {{ 'DEBT_SETTLEMENT_ACCOUNTS.SALES_PROCEEDS' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" class="text-right">
+          {{ element.soldPrice | numberDecimal }}
+        </td>
+        <td mat-footer-cell *matFooterCellDef class="text-right">
+          <span class="bold">{{ totalSoldPrice | numberDecimal }}</span>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+    </table>
+  </div>
+</ng-template>

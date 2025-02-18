@@ -1,0 +1,32 @@
+<ng-container *ngIf="!activetabNavBar">
+  <mat-tab-group
+    class="tab-group-container"
+    [(selectedIndex)]="_tabIndex"
+    mat-align-tabs="start"
+    (selectedTabChange)="onTabChanged($event)">
+    <mat-tab>
+      <ng-template mat-tab-label>{{ 'LAWSUIT.INFO_LABEL_TAB_DOCUMENT_CHECKLIST' | translate }}</ng-template>
+      <app-document-preparation></app-document-preparation>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>{{ 'LAWSUIT.INFO_LABEL_TAB_PREPARE_NOTICE' | translate }}</ng-template>
+      <app-notice></app-notice>
+    </mat-tab>
+  </mat-tab-group>
+</ng-container>
+<ng-container *ngIf="activetabNavBar">
+  <div class="mt-24 mb-24">
+    <nav mat-tab-nav-bar [tabPanel]="tabPanel">
+      <a
+        mat-tab-link
+        *ngFor="let tab of tabsInfo; let i = index"
+        (click)="onRouterLink(tab)"
+        [active]="tab.index === _tabIndex"
+        >{{ tab.label | translate }}
+      </a>
+    </nav>
+    <mat-tab-nav-panel #tabPanel>
+      <router-outlet></router-outlet>
+    </mat-tab-nav-panel>
+  </div>
+</ng-container>

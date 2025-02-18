@@ -1,0 +1,262 @@
+.elm-form {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  position: relative;
+}
+
+.elm-form-radio {
+  display: block;
+  position: relative;
+  margin: 10px;
+}
+
+.elm-radio-check {
+  @include input-radio-check-settings;
+}
+
+// Checkbox
+.elm-check {
+  @include input-radio-check-settings;
+
+  &:checked + label::after {
+    background: url('/assets/icons/Checkbox-Selected.svg');
+    @include radio-check-icon-settings;
+  }
+
+  &.selected-disabled {
+    & + label:before {
+      background: url('/assets/icons/Checkbox-Selected-Unchangable.svg');
+      @include radio-check-icon-settings;
+      cursor: not-allowed;
+    }
+
+    &:checked + label::after {
+      content: none;
+    }
+  }
+
+  &.mixed {
+    @include input-radio-check-settings;
+
+    &:checked + label::after {
+      background: url('/assets/icons/Checkbox-Mixed.svg');
+      @include radio-check-icon-settings;
+    }
+  }
+
+  &.mixed-disabled {
+    & + label:before {
+      background: url('/assets/icons/Checkbox-Mixed-Unchangable.svg');
+      @include radio-check-icon-settings;
+      cursor: not-allowed;
+    }
+
+    &:checked + label::after {
+      content: none;
+    }
+  }
+}
+
+.elm-check {
+  width: 22px;
+  height: 22px;
+
+  &.height-auto {
+    height: auto;
+  }
+
+  & + label:before {
+    background: url('/assets/icons/Checkbox-Blank.svg');
+    @include radio-check-icon-settings;
+  }
+
+  &.md-line {
+    & + label:before {
+      top: -2px !important;
+    }
+
+    &:checked + label::after {
+      top: -2px;
+    }
+  }
+
+  &.disabled {
+    & + label:before {
+      background: url('/assets/icons/Checkbox-Disable.svg');
+      @include radio-check-icon-settings;
+      cursor: not-allowed;
+    }
+
+    &:checked + label::after {
+      content: none;
+    }
+  }
+
+  &.inactive {
+    & + label:before {
+      background: url('/assets/icons/Checkbox-Inactive.svg');
+      @include radio-check-icon-settings;
+    }
+
+    &:checked + label::after {
+      content: none;
+    }
+  }
+
+  &.error {
+    & + label:before {
+      background: url(/assets/icons/Checkbox-error.svg);
+      @include radio-check-icon-settings;
+    }
+
+    &:checked + label::after {
+      content: none;
+    }
+  }
+}
+
+// Checkbox small size
+.elm-check-small {
+  @include input-radio-check-settings;
+
+  &:checked + label::after {
+    background: url('/assets/icons/Checkbox-Selected.svg');
+    @include radio-check-icon-settings-custom(24px, 24px, -2px);
+  }
+
+  &.selected-disabled {
+    & + label:before {
+      background: url('/assets/icons/Checkbox-Selected-Unchangable.svg');
+      @include radio-check-icon-settings-custom(24px, 24px, -2px);
+      cursor: not-allowed;
+    }
+
+    &:checked + label::after {
+      content: none;
+    }
+  }
+
+  &.mixed {
+    &:checked + label::after {
+      background: url('/assets/icons/Checkbox-Mixed.svg');
+      @include radio-check-icon-settings-custom(24px, 24px, -2px);
+    }
+  }
+
+  &.mixed-disabled {
+    & + label:before {
+      background: url('/assets/icons/Checkbox-Mixed-Unchangable.svg');
+      @include radio-check-icon-settings-custom(24px, 24px, -2px);
+      cursor: not-allowed;
+    }
+
+    &:checked + label::after {
+      content: none;
+    }
+  }
+}
+
+.elm-check-small {
+  & + label:before {
+    background: url('/assets/icons/Checkbox-Blank.svg');
+    @include radio-check-icon-settings-custom(24px, 24px, -2px);
+  }
+
+  &.disabled {
+    & + label:before {
+      background: url('/assets/icons/Checkbox-Disable.svg');
+      @include radio-check-icon-settings-custom(24px, 24px, -2px);
+      cursor: not-allowed;
+    }
+
+    &:checked + label::after {
+      content: none;
+    }
+  }
+
+  &.inactive {
+    & + label:before {
+      background: url('/assets/icons/Checkbox-Inactive.svg');
+      @include radio-check-icon-settings-custom(24px, 24px, -2px);
+    }
+
+    &:checked + label::after {
+      content: none;
+    }
+  }
+
+  &.error {
+    & + label:before {
+      background: url(/assets/icons/Checkbox-error.svg);
+      @include radio-check-icon-settings-custom(24px, 24px, -2px);
+    }
+
+    &:checked + label::after {
+      content: none;
+    }
+  }
+}
+
+// // Radio
+.elm-radio {
+  & + label:before {
+    background: url('/assets/icons/Radio-Blank.svg');
+    @include radio-check-icon-settings;
+  }
+
+  &.selected-disabled {
+    & + label:before {
+      background: url('/assets/icons/Radio-Selected-Unchangable.svg');
+      @include radio-check-icon-settings;
+      cursor: not-allowed;
+    }
+
+    &:checked + label::after {
+      content: none;
+    }
+  }
+}
+
+.elm-radio {
+  @include input-radio-check-settings;
+
+  &:checked + label::after {
+    background: url('/assets/icons/Radio-Selected.svg');
+    @include radio-check-icon-settings;
+  }
+
+  &.inactive {
+    & + label:before {
+      background: url('/assets/icons/Radio-Inactive.svg');
+      @include radio-check-icon-settings;
+    }
+
+    &:checked + label::after {
+      content: none;
+    }
+  }
+
+  &.disabled {
+    & + label:before {
+      background: url('/assets/icons/Radio-Disable.svg');
+      @include radio-check-icon-settings;
+      cursor: not-allowed;
+    }
+
+    &:checked + label::after {
+      content: none;
+    }
+  }
+
+  &.error {
+    & + label:before {
+      background: url('/assets/icons/Radio-error.svg');
+      @include radio-check-icon-settings;
+    }
+
+    &:checked + label::after {
+      content: none;
+    }
+  }
+}

@@ -1,0 +1,266 @@
+{
+  "assetInvestigationId": 110,
+  "assetInvestigationRound": 1,
+  "reasonCode": "2",
+  "reasonDesc": "ขายทรัพย์แล้วไม่พอชำระหนี้",
+  "remark": "text",
+  "status": "COMPLETE",
+  "statusName": "สืบทรัพย์แล้ว",
+  "LitigationCaseId": "10184",
+  "litigationDocuments": [
+    {
+      "originalDocument": true,
+      "documentSeqNo": 1,
+      "documentTemplate": {
+        "documentGroup": "LITIGATION",
+        "documentTemplateId": "LEXSF052",
+        "documentName": "หนังสือรับรองคดีถึงที่สุด",
+        "optional": false
+      },
+      "documentId": 1110,
+      "imageSource": "",
+      "imageId": "",
+      "imageName": "",
+      "uploadTimestamp": ""
+    },
+    {
+      "originalDocument": true,
+      "documentSeqNo": 2,
+      "documentTemplate": {
+        "documentGroup": "LITIGATION",
+        "documentTemplateId": "LEXSF010",
+        "documentName": "คำพิพากษา",
+        "optional": true
+      },
+      "documentId": 1112,
+      "imageSource": "",
+      "imageId": "",
+      "imageName": "",
+      "uploadTimestamp": ""
+    },
+    {
+      "originalDocument": false,
+      "documentSeqNo": "",
+      "documentTemplate": {
+        "documentGroup": "ASSET_INVESTIGATION",
+        "documentTemplateId": "LEXSF193",
+        "documentName": "หนังสือยินยอมของลูกหนี้/ผู้ค้ำประกัน ให้สืบทรัพย์",
+        "optional": true
+      },
+      "documentId": 0,
+      "imageSource": "",
+      "imageId": "",
+      "imageName": "",
+      "uploadTimestamp": ""
+    }
+  ],
+  "persons": [
+    {
+      "personSeqNo": 1,
+      "personId": "12345",
+      "activeFlag": true,
+      "personStatus": "ALIVE",
+      "orderedRecentlyFlag": true,
+      "relatedlitigations": [
+        {
+          "litigationId": "LG000000001"
+        },
+        {
+          "litigationId": "LG000000002"
+        }
+      ],
+      "cifNo": "",
+      "taxId": "",
+      "name": "",
+      "relation": "MAIN_BORROWER",
+      "personDocuments": [
+        {
+          "originalDocument": true,
+          "documentSeqNo": "",
+          "documentTemplate": {
+            "documentGroup": "PERSON",
+            "documentTemplateId": "LEXSD001",
+            "documentName": "เอกสารนิติบุคคล",
+            "optional": false
+          },
+          "documentId": 0,
+          "imageSource": "",
+          "imageId": "",
+          "imageName": "",
+          "uploadTimestamp": ""
+        },
+        {
+          "originalDocument": false,
+          "documentSeqNo": "",
+          "documentTemplate": {
+            "documentGroup": "PERSON",
+            "documentTemplateId": "LEXSD007",
+            "documentName": "ใบเปลี่ยนชื่อ",
+            "optional": true
+          },
+          "documentId": 0,
+          "imageSource": "",
+          "imageId": "",
+          "imageName": "",
+          "uploadTimestamp": ""
+        }
+      ]
+    },
+    {
+      "personSeqNo": 2,
+      "personId": "12346",
+      "activeFlag": true,
+      "personStatus": "ALIVE",
+      "orderedRecentlyFlag": true,
+      "relatedlitigations": [
+        {
+          "litigationId": "LG000000001"
+        },
+        {
+          "litigationId": "LG000000002"
+        }
+      ],
+      "cifNo": "",
+      "taxId": "",
+      "name": "",
+      "relation": "GUARANTOR",
+      "personDocuments": [
+        {
+          "originalDocument": true,
+          "documentSeqNo": "",
+          "documentTemplate": {
+            "documentGroup": "PERSON",
+            "documentTemplateId": "LEXSD001",
+            "documentName": "เอกสารนิติบุคคล",
+            "optional": false
+          },
+          "documentId": 0,
+          "imageSource": "",
+          "imageId": "",
+          "imageName": "",
+          "uploadTimestamp": ""
+        },
+        {
+          "originalDocument": false,
+          "documentSeqNo": "",
+          "documentTemplate": {
+            "documentGroup": "PERSON",
+            "documentTemplateId": "LEXSD007",
+            "documentName": "ใบเปลี่ยนชื่อ",
+            "optional": true
+          },
+          "documentId": 0,
+          "imageSource": "",
+          "imageId": "",
+          "imageName": "",
+          "uploadTimestamp": ""
+        }
+      ]
+    }
+  ],
+  "inspectionDetails": {
+    "inspectionAssets": [
+      {
+        "assetId": 111,
+        "assetStatus": "ไม่มี",
+        "collTypeCode": "05",
+        "collTypeDesc": "คอนโดมิเนียม/อาคารชุด/ห้องชุด",
+        "collSubTypeCode": "",
+        "collSubTypeDesc": "คอนโดมิเนียม/อาคารชุด/ห้องชุด",
+        "registrationNumber": "",
+        "totalLoAppraisalValue": "100000",
+        "obligationStatus": "ไม่มี",
+        "documentNo": "15724",
+        "assetDesc": "ชื่ออาคาร - ห้อง 15724 ชั้น - สถานที่ตั้ง 158 ตำบล - อำเภอ - จังหวัด -",
+        "assetOwners": [
+          {
+            "cifNo": "string",
+            "identificationNo": "string",
+            "title": "string",
+            "firstname": "string",
+            "lastname": "string",
+            "custTypeConst": "string"
+          }
+        ],
+        "assetDocuments": [
+          {
+            "docRefId": "502c7eb3-2d17-43e0-9115-651b421679e4",
+            "docType": "015",
+            "docTypeName": "ktb_lg_dec",
+            "scanVersion": "1.0",
+            "docName": "XXXX.pdf",
+            "docDate": "20230512",
+            "documentTemplate": {
+              "documentGroup": "ASSET",
+              "documentTemplateId": "LEXSD214",
+              "documentName": "สำเนา โฉนดที่ดิน",
+              "optional": true
+            }
+          }
+        ]
+      },
+      {
+        "assetId": 111,
+        "assetStatus": "ไม่มี",
+        "collTypeCode": "19",
+        "collTypeDesc": "",
+        "collSubTypeCode": "",
+        "collSubTypeDesc": "รถ",
+        "registrationNumber": "<ทะเบียนรถ>",
+        "totalLoAppraisalValue": "100000.00",
+        "obligationStatus": "ไม่มี",
+        "documentNo": "",
+        "assetDesc": "ที่อยู่ทะเบียนรถ",
+        "assetOwners": [
+          {
+            "cifNo": "string",
+            "identificationNo": "หมายเลขบัตรประชาชน",
+            "title": "string",
+            "firstname": "ชื่อ",
+            "lastname": "นามสกุล",
+            "custTypeConst": "string"
+          }
+        ],
+        "assetDocuments": [
+          {
+            "docRefId": "502c7eb3-2d17-43e0-9115-651b421679e4",
+            "docType": "015",
+            "docTypeName": "ktb_lg_dec",
+            "scanVersion": "1.0",
+            "docName": "XXXX.pdf",
+            "docDate": "20230512",
+            "documentTemplate": {
+              "documentGroup": "ASSET",
+              "documentTemplateId": "LEXSD214",
+              "documentName": "สำเนา โฉนดที่ดิน",
+              "optional": true
+            }
+          }
+        ]
+      }
+    ],
+    "inspectionPersonDocuments": [
+      {
+        "personId": "12345",
+        "cifNo": "000000001299",
+        "identificationNo": "7911282789999",
+        "documents": [
+          {
+            "docRefId": "502c7eb3-2d17-43e0-9115-651b421679e4",
+            "docType": "015",
+            "docTypeName": "ktb_lg_dec",
+            "scanVersion": "1.0",
+            "docName": "XXXX.pdf",
+            "docDate": "20230512",
+            "documentTemplate": {
+              "documentGroup": "PERSON",
+              "documentTemplateId": "LEXSD222",
+              "documentName": "แบบรับรองรายการทะเบียนราษฎร จากฐานข้อมูลการทะเบียนกระทรวงมหาดไทย",
+              "optional": true
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

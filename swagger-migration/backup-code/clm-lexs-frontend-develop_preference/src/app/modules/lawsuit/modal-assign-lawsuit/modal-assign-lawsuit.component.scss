@@ -1,0 +1,45 @@
+@import '/src/styles/colors';
+@import '/src/styles/typography';
+
+.modal-assign-lawsuilt {
+  width: 720px;
+  display: block !important;
+
+  .flex-gap-30 {
+    display: flex;
+    gap: 30px;
+  }
+
+  .search-section {
+    margin-top: 20px;
+    height: 65px;
+    gap: 20px 14px;
+  }
+
+  .data-table {
+    &.table-fixed {
+      height: 385px;
+      max-width: 100%;
+      overflow: auto;
+    }
+  }
+
+  .footer {
+    .text-left {
+      color: $krungthai-red;
+      text-align: left;
+      font-size: $font-sub-description;
+      font-weight: 400;
+      line-height: 22px;
+      letter-spacing: 0px;
+    }
+
+    .text-right {
+      text-align: right;
+      font-size: $font-description;
+      font-weight: 400;
+      line-height: 26px;
+      letter-spacing: 0px;
+    }
+  }
+}

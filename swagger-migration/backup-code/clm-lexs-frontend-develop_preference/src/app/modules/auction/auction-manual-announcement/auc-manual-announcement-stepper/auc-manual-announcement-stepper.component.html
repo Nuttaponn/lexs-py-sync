@@ -1,0 +1,15 @@
+<mat-horizontal-stepper
+  class="auc-manual-announcement-stepper stepper"
+  [selectedIndex]="stepIndex"
+  labelPosition="bottom"
+  >
+  <ng-container *ngFor="let label of labels; let i = index">
+    <mat-step [aria-label]="'' + i" [state]="'' + i" [completed]="false" [aria-labelledby]="'disableclick'">
+      <ng-template matStepLabel>
+        <div class="mat-step-custom-click" (click)="onStepperClick($event, i); $event.stopPropagation()">
+          <span class="bold">{{ label }}</span>
+        </div>
+      </ng-template>
+    </mat-step>
+  </ng-container>
+</mat-horizontal-stepper>

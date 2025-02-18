@@ -1,0 +1,50 @@
+<div class="content-container">
+  <div class="inner-container-padding-24">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+      <div class="title-text">
+        <h5 class="mt-12 mb-12 mr-12">
+          <span>{{ 'WITHDRAWN_SEIZURE_PROPERTY.APPROVE_DETAIL_HEADER' | translate }}</span>
+        </h5>
+      </div>
+      <div fxLayout="row">
+        <div class="description" (click)="isOpened = !isOpened">
+          <mat-icon
+            [svgIcon]="isOpened ? 'icon-Slide-Hide' : 'icon-Expand'"
+            class="icon icon-xmedium icon-hide-show fill-blue">
+          </mat-icon
+          >{{ isOpened ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate) }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <mat-accordion>
+    <mat-expansion-panel [expanded]="isOpened" hideToggle>
+      <mat-divider class="no-margin"></mat-divider>
+      <div class="mb-16 mt-24" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+        <div fxLayout="column" fxFlex="14" fxLayoutAlign="start start">
+          <h6>
+            <span>{{ 'WITHDRAWN_SEIZURE_PROPERTY.APPROVE_DETAIL_TITLE' | translate }}</span>
+          </h6>
+        </div>
+        <div fxLayout="column" fxFlex="50" fxLayoutGap="20px" fxLayoutAlign="start start">
+          <div fxLayout="column" fxFlex="50" fxLayoutGap="5px">
+            <span class="thin-letter">{{ 'WITHDRAWN_SEIZURE_PROPERTY.APPROVE_RESULT' | translate }}</span>
+            <div>
+              {{ (data.isApproved ? 'COMMON.BUTTON_APPROVE' : 'COMMON.BUTTON_NOT_APPROVE') | translate }}
+            </div>
+          </div>
+          <ng-container *ngIf="data.rejectReason">
+            <div fxLayout="column" fxFlex="50" fxLayoutGap="5px">
+              <span class="thin-letter">{{ 'COMMON.LABEL_REMARKS' | translate }}</span>
+              <div>
+                <ng-container *ngIf="data.rejectReason">
+                  {{ data.rejectReason }}
+                </ng-container>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

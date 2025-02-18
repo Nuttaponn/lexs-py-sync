@@ -1,0 +1,85 @@
+<app-action-bar
+  (backButtonHandler)="onBack()"
+  [hasCancelButton]="actionBar.hasCancel"
+  (cancelButtonHandler)="onCancel()"
+  [hasSaveButton]="actionBar.hasSave"
+  [hasRejectButton]="actionBar.hasReject"
+  [hasPrimaryButton]="actionBar.hasPrimary"
+  [primaryButtonText]="'COURT.ACTION_DECREE_RECORD' | translate"
+  [primaryButtonIcon]="actionBar.primaryIcon!"
+  (primaryButtonHandler)="onSubmit()"
+  [showNavBarInformation]="true">
+  <ng-container navBarInformationTemplate *ngIf="!isViewMode">
+    <mat-icon svgIcon="icon-save-primary" class="icon icon-xmedium default-cursor"></mat-icon>
+    <span class="ml-8 bold">{{ 'COURT.ACTION_DECREE_RECORD' | translate }}</span>
+  </ng-container>
+  <ng-container navBarInformationTemplate *ngIf="isViewMode">
+    <mat-icon svgIcon="icon-Window" class="icon icon-xmedium default-cursor"></mat-icon>
+    <span class="ml-8 bold"> {{ 'COURT.COMPULSION_NUMBER' | translate }} {{ index + 1 }} </span>
+  </ng-container>
+</app-action-bar>
+<div class="content-below-action-bar-area decree-detail-container">
+  <div class="content-container mat-elevation-z0">
+    <div class="title-content">
+      <h5>{{ 'COURT.COMPULSION_TITLE' | translate }}</h5>
+    </div>
+    <mat-divider></mat-divider>
+    <!-- ข้อมูลคำบังคับ -->
+    <div fxLayout="row" class="p-32" fxLayoutGap="16">
+      <div fxFlex="15">
+        <span class="bold">{{ 'COURT.COMPULSION_INFORMATION' | translate }}</span>
+      </div>
+      <div fxFlex="70">
+        <div fxLayout="column" fxLayoutGap="24">
+          <div fxLayout="row" *ngIf="!isViewMode">
+            <div fxFlex="50">
+              <spig-datepicker
+                class="date-picker-block"
+                [classInput]="'input-s icon border-black-40'"
+                [label]="'COURT.COMPULSION_DATE'"
+                [disabled]="true"
+                [defaultDate]="currentDecree.requestDecreeDate || ''"
+                [formControl]="dateControl">
+              </spig-datepicker>
+            </div>
+          </div>
+          <div *ngIf="isViewMode">
+            <span class="thin-letter">{{ 'COURT.COMPULSION_DATE' | translate }}</span
+            ><br />
+            <span>{{ currentDecree.requestDecreeDate | buddhistEra: 'DD/MM/yyyy' }}</span>
+          </div>
+
+          <app-defendant-table
+            [showId]="true"
+            [showOrder]="false"
+            [isSelectable]="false"
+            [defendants]="currentDecree.defendants || []"></app-defendant-table>
+
+          <mat-form-field class="full-width mb-24" *ngIf="!isViewMode">
+            <mat-label>{{ 'COMMON.LABEL_REMARKS' | translate }}</mat-label>
+            <textarea matInput [formControl]="remarksControl" class="small tall-textarea" maxlength="500"></textarea>
+          </mat-form-field>
+          <div *ngIf="isViewMode">
+            <span class="thin-letter">{{ 'COMMON.LABEL_REMARKS' | translate }}</span
+            ><br />
+            <span>{{ currentDecree.remark }}</span>
+          </div>
+
+          <app-upload-multi-file-content
+            [readonly]="isViewMode"
+            (uploadFileEvent)="uploadFileEvent($event)"
+            [list]="documents"
+            [uploadMultiInfo]="uploadMultiInfo"
+            [column]="documentColumns"
+            [labelAcceptFile]="''">
+          </app-upload-multi-file-content>
+
+          <span *ngIf="documentError" class="error-msg sub-desc">{{
+            'COURT.COMPULSION_DOC_ERROR_TITLE' | translate
+          }}</span>
+        </div>
+      </div>
+      <div fxFlex="15"></div>
+    </div>
+  </div>
+</div>

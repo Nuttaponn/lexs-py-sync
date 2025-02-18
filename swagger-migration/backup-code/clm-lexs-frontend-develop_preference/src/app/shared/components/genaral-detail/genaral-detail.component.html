@@ -1,0 +1,184 @@
+<div class="content-container">
+  <div class="inner-container-padding-24">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+      <div class="title-text">
+        <h5 class="mt-12 mb-12 mr-12">{{ 'AUCTION_DETAIL.TITLE' | translate }}</h5>
+      </div>
+      <div fxLayout="row">
+        <div class="description" (click)="isOpened = !isOpened">
+          <mat-icon
+            [svgIcon]="isOpened ? 'icon-Slide-Hide' : 'icon-Expand'"
+            class="icon icon-xmedium icon-hide-show fill-blue mr-5">
+          </mat-icon
+          >{{ isOpened ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate) }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <mat-accordion>
+    <mat-expansion-panel [expanded]="isOpened" hideToggle (opened)="openExpansionPanel()">
+      <mat-divider class="no-margin"></mat-divider>
+      <ng-container *ngIf="this.isReason">
+        <div
+          class="mb-16 mt-24 mr-16"
+          *ngFor="let reasonDeatail of this.reason; let i = index"
+          fxLayout="row"
+          fxLayoutAlign="start start"
+          fxLayoutGap="16px">
+          <h6 *ngIf="i === 0" fxLayout="column" fxFlex="15">
+            {{ 'AUCTION_DETAIL.REASON_CONSIDERATION' | translate }}
+          </h6>
+          <div *ngIf="i !== 0" fxLayout="column" fxFlex="15"></div>
+          <div fxLayout="column" fxFlex="100">
+            <span class="thin-letter">
+              {{ 'COMMON.LABEL_REASON' | translate }}{{ reasonLabel.get(reasonDeatail.matchingEventCode) }}
+              {{ 'SUMMARY_RIEMBURSEMENT.SPECIFIED_BY' | translate }}
+              {{
+                reasonDeatail.userRole +
+                  ' (' +
+                  reasonDeatail.userName +
+                  ' : ' +
+                  reasonDeatail.userId +
+                  ') : ' +
+                  (reasonDeatail.eventTimestamp | buddhistEra: 'DD/MM/yyyy HH:mm')
+              }}</span
+            >
+            <div>{{ reasonDeatail.reason }}</div>
+          </div>
+        </div>
+      </ng-container>
+
+      <div class="mb-16 mt-24 mr-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+        <h6 fxLayout="column" fxFlex="15">
+          {{ 'AUCTION_DETAIL.NUMBER_AUCTION' | translate }}
+        </h6>
+
+        <div fxLayout="column" fxFlex="30" fxLayoutGap="12px">
+          <span class="thin-letter">{{ 'AUCTION_DETAIL.LOT' | translate }}</span>
+          <div>{{ dataForm.get('aucLot')?.value }}</div>
+        </div>
+        <div fxFlex="30" fxLayout="column" fxLayoutGap="12px">
+          <span class="thin-letter">{{ 'AUCTION_DETAIL.NO_AUCTION' | translate }}</span>
+          <div>{{ dataForm.get('aucSet')?.value }}</div>
+        </div>
+        <div fxFlex="30" fxLayout="column" fxLayoutGap="12px">
+          <span class="thin-letter">{{ 'AUCTION_DETAIL.INDEX_AUCTION' | translate }}</span>
+          <div>{{ dataForm.get('fbidnum')?.value }}</div>
+        </div>
+      </div>
+      <div class="mb-16 mt-24 mr-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+        <h6 fxLayout="column" fxFlex="15">
+          {{ 'AUCTION_DETAIL.FESTIVAL' | translate }}
+        </h6>
+        <div fxLayout="column" fxFlex="30">
+          <div *ngIf="dataForm.get('isExhibit')?.value === true">
+            {{ 'AUCTION_DETAIL.YES' | translate }}
+          </div>
+          <div *ngIf="dataForm.get('isExhibit')?.value === false">
+            {{ 'AUCTION_DETAIL.NO' | translate }}
+          </div>
+        </div>
+      </div>
+      <div class="mb-16 mt-24 mr-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+        <h6 fxLayout="column" fxFlex="15">
+          {{ 'AUCTION_DETAIL.CHANNEL_DISTRIBUTION' | translate }}
+        </h6>
+        <div fxLayout="column" fxFlex="30">
+          <div>{{ dataForm.get('saleChannel')?.value }}</div>
+        </div>
+      </div>
+      <div class="mb-16 mt-24 mr-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+        <h6 fxLayout="column" fxFlex="15">
+          {{ 'AUCTION_DETAIL.PLACE_DISTRIBUTION1' | translate }}
+        </h6>
+        <div fxLayout="column" fxFlex="60" fxLayoutGap="12px">
+          <span class="thin-letter">{{ 'AUCTION_DETAIL.PLACE' | translate }}</span>
+          <div>{{ dataForm.get('saleLocation1')?.value }}</div>
+        </div>
+        <div fxLayout="column" fxFlex="27" fxLayoutGap="12px">
+          <span class="thin-letter">{{ 'AUCTION_DETAIL.TIME' | translate }}</span>
+          <div>{{ dataForm.get('saleTime1')?.value }}</div>
+        </div>
+      </div>
+      <div class="mb-16 mt-24 mr-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+        <h6 fxLayout="column" fxFlex="15">
+          {{ 'AUCTION_DETAIL.PLACE_DISTRIBUTION2' | translate }}
+        </h6>
+        <div fxLayout="column" fxFlex="60" fxLayoutGap="12px">
+          <span class="thin-letter">{{ 'AUCTION_DETAIL.PLACE' | translate }}</span>
+          <div>{{ dataForm.get('saleLocation2')?.value || '-' }}</div>
+        </div>
+        <div fxLayout="column" fxFlex="27" fxLayoutGap="12px">
+          <span class="thin-letter">{{ 'AUCTION_DETAIL.TIME' | translate }}</span>
+          <div>{{ dataForm.get('saleTime2')?.value || '-' }}</div>
+        </div>
+      </div>
+      <div class="mb-16 mt-24 mr-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+        <h6 fxLayout="column" fxFlex="15">
+          {{ 'AUCTION_DETAIL.DATE_AUCTION' | translate }}
+        </h6>
+
+        <div class="table-content" fxFlex="85">
+          <div class="table-scroll" table-scroll>
+            <table mat-table [dataSource]="dataList || []">
+              <ng-container matColumnDef="INDEX">
+                <th class="text-center" mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_NO' | translate }}</th>
+                <td class="text-center" mat-cell *matCellDef="let element; let i = index">{{ i + 1 }}</td>
+              </ng-container>
+              <ng-container matColumnDef="DATE_SELLING">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ 'AUCTION_DETAIL.DATE_SELLING' | translate }}
+                </th>
+                <td mat-cell *matCellDef="let element">
+                  <div
+                    class="link"
+                    *ngIf="element.aucBiddingStatus && element.aucBiddingStatus !== 'PENDING'; else elseBindate"
+                    (click)="clickBinDate(element.aucBiddingId)">
+                    {{ element.bidDate | buddhistEra: 'DD/MM/yyyy' }}
+                  </div>
+                  <ng-template #elseBindate>
+                    <div>{{ (element.bidDate | buddhistEra: 'DD/MM/yyyy') || '-' }}</div>
+                  </ng-template>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="RESULT_AUCTION">
+                <th mat-header-cell *matHeaderCellDef>{{ 'AUCTION_DETAIL.RESULT_AUCTION' | translate }}</th>
+                <td mat-cell *matCellDef="let element">{{ element.status || '-' }}</td>
+              </ng-container>
+              <ng-container matColumnDef="REMARK">
+                <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_REMARKS' | translate }}</th>
+                <td mat-cell *matCellDef="let element">{{ element.remark || '-' }}</td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="dataColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: dataColumns"></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div
+        *ngIf="!isAnnouncement"
+        class="mb-16 mt-24 mr-16"
+        fxLayout="row"
+        fxLayoutAlign="start start"
+        fxLayoutGap="16px">
+        <div fxLayout="column" fxFlex="15">
+          <h6 >{{ 'AUCTION_DETAIL.UPLOAD_AUCTION' | translate }}</h6>
+        </div>
+        <div class="table-content" fxFlex>
+          <app-upload-multi-file-content
+            [mode]="isViewMode ? 'VIEW' : 'EDIT'"
+            [uploadMultiInfo]="uploadMultiInfo"
+            [list]="documentUpload"
+            [labelAcceptFile]="isViewMode ? '' : (uploadAucBiddingDocuments.touched && uploadAucBiddingDocuments.invalid ? '' : 'UPLOAD_FILE.LABEL_HINT_DOCUMENT_PDF_JPG_JPEG')"
+            [column]="documentColumns"
+            [readonly]="isViewMode"
+            (uploadFileEvent)="onUploadFileContent($event)">
+          </app-upload-multi-file-content>
+          <spig-error-msg [control]="uploadAucBiddingDocuments" [customErrorMsg]="'UPLOAD_FILE.ERROR_FILE_UPLOAD_REQUIRED'">
+          </spig-error-msg>
+        </div>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

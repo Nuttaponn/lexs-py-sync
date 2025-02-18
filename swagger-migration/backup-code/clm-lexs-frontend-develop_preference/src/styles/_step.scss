@@ -1,0 +1,20 @@
+@mixin styleStepLine($index) {
+  .mat-horizontal-stepper-header {
+    & + .mat-stepper-horizontal-line:nth-child(#{$index}) {
+      border-top-width: 2px;
+      border-top-color: map-get($ktb-palette-precious-blue, 50);
+    }
+  }
+}
+
+.last-edited-step-1 {
+  @include styleStepLine(2);
+  .mat-horizontal-stepper-header::before,
+  .mat-horizontal-stepper-header::after {
+    border-top-color: #00a6e6;
+    border-top-width: 2px !important;
+  }
+  .mat-step-header .mat-step-icon {
+    background-color: map-get($ktb-palette-precious-blue, 50);
+  }
+}

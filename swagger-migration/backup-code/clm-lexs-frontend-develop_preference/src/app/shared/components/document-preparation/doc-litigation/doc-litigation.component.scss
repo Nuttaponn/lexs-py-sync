@@ -1,0 +1,14 @@
+@import '/src/styles/colors';
+
+::ng-deep app-doc-litigation {
+  .bg-l-gray {
+    width: 100%;
+    height: 72px;
+    background: map_get($ktb-palette-biz-gray, 50);
+    border-radius: 8px;
+    padding: 10px;
+  }
+  .mat-expansion-panel-body {
+    padding: 0px !important;
+  }
+}

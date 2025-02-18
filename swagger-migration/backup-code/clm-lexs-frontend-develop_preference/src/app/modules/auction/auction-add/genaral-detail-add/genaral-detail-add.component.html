@@ -1,0 +1,242 @@
+<div class="content-container">
+  <div class="inner-container-padding-24">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+      <div class="title-text">
+        <h5 class="mt-12 mb-12 mr-12">{{ 'AUCTION_DETAIL.TITLE' | translate }}</h5>
+      </div>
+      <div fxLayout="row">
+        <div class="description" (click)="isOpened = !isOpened">
+          <mat-icon
+            [svgIcon]="isOpened ? 'icon-Slide-Hide' : 'icon-Expand'"
+            class="icon icon-xmedium icon-hide-show fill-blue mr-5">
+          </mat-icon
+          >{{ isOpened ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate) }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <mat-accordion>
+    <mat-expansion-panel [expanded]="isOpened" hideToggle (opened)="openExpansionPanel()">
+      <mat-divider class="no-margin"></mat-divider>
+      <ng-container [formGroup]="dataForm">
+        <div class="mb-16 mt-24 mr-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+          <h6 fxLayout="column" fxFlex="15">
+            {{ 'AUCTION_DETAIL.NUMBER_AUCTION' | translate }}
+          </h6>
+          <div fxLayout="column" fxFlex="30" fxLayoutGap="12px">
+            <span class="thin-letter">{{ 'AUCTION_DETAIL.LOT' | translate }}</span>
+            <div>{{ dataForm.get('aucLot')?.value || '-' }}</div>
+          </div>
+          <div fxFlex="30" fxLayout="column" fxLayoutGap="12px">
+            <span class="thin-letter">{{ 'AUCTION_DETAIL.NO_AUCTION' | translate }}</span>
+            <div>{{ dataForm.get('aucSet')?.value || '-' }}</div>
+          </div>
+          <div fxFlex="30" fxLayout="column" fxLayoutGap="12px">
+            <span class="thin-letter">{{ 'AUCTION_DETAIL.INDEX_AUCTION' | translate }}</span>
+            <div>{{ dataForm.get('fbidnum')?.value || '-' }}</div>
+          </div>
+        </div>
+        <div class="mb-16 mt-24 mr-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+          <h6 fxLayout="row" fxFlex="15">
+            {{ 'AUCTION_DETAIL.FESTIVAL' | translate }}
+            <span *ngIf="!isViewMode" class="fill-red">*</span>
+          </h6>
+          <div fxLayout="column" fxFlex="80">
+            <ng-container>
+              <mat-radio-group
+                *ngIf="!isViewMode"
+                formControlName="isExhibition"
+                fxLayout="row"
+                fxLayoutGap="16px">
+                <mat-radio-button [value]="true">
+                  {{ 'AUCTION_DETAIL.YES' | translate }}
+                </mat-radio-button>
+                <mat-radio-button [value]="false">
+                  {{ 'AUCTION_DETAIL.NO' | translate }}
+                </mat-radio-button>
+              </mat-radio-group>
+              <spig-error-msg
+                *ngIf="getControl('isExhibition')?.hasError('required')"
+                [control]="getControl('isExhibition')"
+                [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'">
+              </spig-error-msg>
+            </ng-container>
+            <!-- View Mode -->
+            <ng-container *ngIf="isViewMode">
+              <div *ngIf="dataForm.get('isExhibition')?.value === true">
+                {{ 'AUCTION_DETAIL.YES' | translate }}
+              </div>
+              <div *ngIf="dataForm.get('isExhibition')?.value === false">
+                {{ 'AUCTION_DETAIL.NO' | translate }}
+              </div>
+            </ng-container>
+          </div>
+        </div>
+        <div class="mb-16 mt-24 mr-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+          <h6 fxLayout="row" fxFlex="15">
+            {{ 'AUCTION_DETAIL.CHANNEL_DISTRIBUTION' | translate }}
+            <span *ngIf="!isViewMode" class="fill-red">*</span>
+          </h6>
+          <div fxLayout="column" fxFlex="80">
+            <ng-container *ngIf="!isViewMode">
+              <mat-radio-group
+                formControlName="saleChannel"
+                fxLayout="row"
+                fxLayoutGap="16px">
+                <mat-radio-button [value]="'ขายแบบธรรมดา'">
+                  {{ 'ขายแบบธรรมดา' }}
+                </mat-radio-button>
+                <mat-radio-button [value]="'E-Auction'" (mousedown)="unableSelectEAuctionDialog($event)">
+                  {{ 'E-Auction' }}
+                </mat-radio-button>
+              </mat-radio-group>
+              <spig-error-msg
+                *ngIf="getControl('saleChannel')?.hasError('required')"
+                [control]="getControl('saleChannel')"
+                [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'">
+              </spig-error-msg>
+            </ng-container>
+            <!-- View Mode -->
+            <ng-container *ngIf="isViewMode">
+              <div>{{ dataForm.get('saleChannel')?.value }}</div>
+            </ng-container>
+          </div>
+        </div>
+        <div class="mb-16 mt-24 mr-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+          <h6 fxLayout="column" fxFlex="15">
+            {{ 'AUCTION_DETAIL.PLACE_DISTRIBUTION1' | translate }}
+          </h6>
+          <div fxLayout="column" fxFlex="60" fxLayoutGap="12px">
+            <ng-container *ngIf="!isViewMode">
+              <mat-form-field>
+                <mat-label>{{ 'AUCTION_DETAIL.PLACE' | translate }}</mat-label>
+                <input matInput formControlName="saleLocation1" />
+              </mat-form-field>
+            </ng-container>
+
+            <ng-container *ngIf="isViewMode">
+              <span class="thin-letter">{{ 'AUCTION_DETAIL.PLACE' | translate }}</span>
+              <div>{{ dataForm.get('saleLocation1')?.value || '-' }}</div>
+            </ng-container>
+          </div>
+          <div fxLayout="column" fxFlex="27" fxLayoutGap="12px">
+            <ng-container *ngIf="!isViewMode">
+              <mat-form-field>
+                <mat-label>{{ 'AUCTION_DETAIL.TIME' | translate }}</mat-label>
+                <input matInput formControlName="saleTime1" />
+              </mat-form-field>
+            </ng-container>
+
+            <ng-container *ngIf="isViewMode">
+              <span class="thin-letter">{{ 'AUCTION_DETAIL.TIME' | translate }}</span>
+              <div>{{ dataForm.get('saleTime1')?.value || '-' }}</div>
+            </ng-container>
+          </div>
+        </div>
+        <div class="mb-16 mt-24 mr-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+          <h6 fxLayout="column" fxFlex="15">
+            {{ 'AUCTION_DETAIL.PLACE_DISTRIBUTION2' | translate }}
+          </h6>
+          <div fxLayout="column" fxFlex="60" fxLayoutGap="12px">
+            <ng-container *ngIf="!isViewMode">
+              <mat-form-field>
+                <mat-label>{{ 'AUCTION_DETAIL.PLACE' | translate }}</mat-label>
+                <input matInput formControlName="saleLocation2" />
+              </mat-form-field>
+            </ng-container>
+
+            <ng-container *ngIf="isViewMode">
+              <span class="thin-letter">{{ 'AUCTION_DETAIL.PLACE' | translate }}</span>
+              <div>{{ dataForm.get('saleLocation2')?.value || '-' }}</div>
+            </ng-container>
+          </div>
+          <div fxLayout="column" fxFlex="27" fxLayoutGap="12px">
+            <ng-container *ngIf="!isViewMode">
+              <mat-form-field>
+                <mat-label>{{ 'AUCTION_DETAIL.TIME' | translate }}</mat-label>
+                <input matInput formControlName="saleTime2" />
+              </mat-form-field>
+            </ng-container>
+
+            <ng-container *ngIf="isViewMode">
+              <span class="thin-letter">{{ 'AUCTION_DETAIL.TIME' | translate }}</span>
+              <div>{{ dataForm.get('saleTime2')?.value || '-' }}</div>
+            </ng-container>
+          </div>
+        </div>
+        <div *ngIf="(dataDateListArray?.controls?.length ?? 0) > 0" class="mb-16 mt-24 mr-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+          <h6 fxLayout="column" fxFlex="15">
+            {{ 'AUCTION_DETAIL.DATE_AUCTION' | translate }}
+          </h6>
+
+          <div class="table-content" fxFlex="55">
+            <div class="table-scroll" table-scroll>
+              <ng-container>
+                <table mat-table [dataSource]="dataDateListArray.controls">
+                  <ng-container matColumnDef="INDEX">
+                    <th class="text-center" mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_NO' | translate }}</th>
+                    <td class="text-center" mat-cell *matCellDef="let element; let i = index">{{ i + 1 }}</td>
+                  </ng-container>
+                  <ng-container matColumnDef="DATE_SELLING">
+                    <th mat-header-cell *matHeaderCellDef>
+                      {{ 'AUCTION_DETAIL.DATE_SELLING' | translate }}
+                    </th>
+                    <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
+                      <ng-container *ngIf="!isViewMode">
+                        <spig-datepicker
+                          class="date-picker-block"
+                          [classInput]="'input-s icon no-border'"
+                          [label]="'ระบุวันขาย'"
+                          [required]="true"
+                          formControlName="bidDate"></spig-datepicker>
+                        <spig-error-msg
+                          *ngIf="element.get('bidDate')?.hasError('required')"
+                          [control]="element.get('bidDate')"
+                          [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+                        </spig-error-msg>
+                      </ng-container>
+
+                      <ng-container *ngIf="isViewMode">
+                        <div>{{ (element.get('bidDate')?.value | buddhistEra: 'DD/MM/yyyy') || '-' }}</div>
+                      </ng-container>
+                    </td>
+                  </ng-container>
+                  <tr mat-header-row *matHeaderRowDef="dataColumns"></tr>
+                  <tr mat-row *matRowDef="let row; columns: dataColumns"></tr>
+                </table>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mb-16 mt-24 mr-16"
+          fxLayout="row"
+          fxLayoutAlign="start start"
+          fxLayoutGap="16px">
+          <h6 fxLayout="column" fxFlex="15">{{ 'AUCTION_DETAIL.UPLOAD_AUCTION' | translate }}</h6>
+          <div class="table-content" fxFlex="85">
+            <app-upload-multi-file-content
+              [mode]="isViewMode ? 'VIEW' : 'EDIT'"
+              [uploadMultiInfo]="uploadMultiInfo"
+              [list]="documentUpload"
+              [column]="documentColumns"
+              [readonly]="isViewMode"
+              (uploadFileEvent)="onUploadFileContent($event)"
+              [acceptFile]="acceptFile"
+              [labelAcceptFile]="
+                isViewMode || dataForm.get('aucBiddingDocuments')?.value[0].isSubmited ? '': 'UPLOAD_FILE.LABEL_HINT_DOCUMENT_PDF_JPG_JPEG'"
+              >
+            </app-upload-multi-file-content>
+            <div
+              class="error-msg"
+              *ngIf="
+                dataForm.get('aucBiddingDocuments')?.value[0].isSubmited
+              ">
+              {{ 'UPLOAD_FILE.ERROR_FILE_UPLOAD_REQUIRED' | translate }}
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

@@ -1,0 +1,132 @@
+<ng-container *ngFor="let seizure of items; let i = index">
+  <div
+    fxLayout="row"
+    fxLayoutAlign="space-between center"
+    class="title-content no-horizontal-padding bg-gray-900 mt-10 mb-10"
+    fxLayoutGap="5px">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+      <div fxLayout="column">
+        <div fxLayout="row" fxLayoutAlign="left center">
+          <span> <mat-icon svgIcon="icon-Window" class="icon icon-medium"></mat-icon>&nbsp;&nbsp;&nbsp; </span>
+          <ng-container *ngIf="seizure.seizureType === 'NCOL'; else elseColTemplate">
+            <h5>{{ 'LAWSUIT.SEIZURE_OF_OUTSIDE_MORTGAGED_PROPERTY_NO' | translate }} {{ seizure.order }}</h5>
+          </ng-container>
+          <ng-template #elseColTemplate>
+            <h5>{{ 'LAWSUIT.SEIZURE_OF_MORTGAGED_PROPERTY_NO' | translate }} {{ seizure.order }}</h5>
+          </ng-template>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="space-between center">
+          {{ 'LAWSUIT.AMOUNT_OF_ASSETS_ACCORDING_TO_ORDER_LETTER' | translate }}:
+          {{ seizure.seizureCollaterals?.length }}
+          <span>
+            <div class="divider-vertical"></div>
+          </span>
+          {{ 'LAWSUIT.AMOUNT_OF_PROERTY_CONNOT_IDENTIFIED_LEGAL_EXECUTION_OFFICE' | translate }}:
+          {{ seizure.unMappedCollaterals?.length }}
+          <span>
+            <div class="divider-vertical"></div>
+          </span>
+          {{ 'LAWSUIT.DATE_OF_SEIZURE_ORDER' | translate }}:
+          {{ (seizure.createdTimestamp | buddhistEra: 'DD/MM/yyyy') || '-' }}
+        </div>
+      </div>
+    </div>
+    <div fxFlex></div>
+    <button type="button" mat-flat-button color="primary" class="medium-button" (click)="onViewDetail(seizure)">
+      {{ 'COMMON.BUTTON_VIEW_DETAIL' | translate }}
+    </button>
+  </div>
+
+  <table mat-table [dataSource]="seizure.seizureLeds || []">
+    <ng-container matColumnDef="order">
+      <th mat-header-cell *matHeaderCellDef class="text-center">
+        {{ 'COMMON.LABEL_NO' | translate }}
+      </th>
+      <td mat-cell *matCellDef="let element; let i = index" class="text-center">
+        <ng-container>
+          <div class="elm-form left-40"><label [for]="i"></label></div>
+        </ng-container>
+        <ng-container> {{ i + 1 }} </ng-container>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="text01">
+      <th mat-header-cell *matHeaderCellDef>
+        {{ 'LAWSUIT.LEGAL_EXECUTION_OFFICE' | translate }}
+      </th>
+      <td mat-cell *matCellDef="let element">
+        <span> {{ element.ledName }} </span>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="text11">
+      <th mat-header-cell *matHeaderCellDef>ประเภทสำนัก<br />งานบังคับคดี</th>
+      <td mat-cell *matCellDef="let element">
+        <span> {{ 'SEIZURE_OFFICE_TYPE.' + element.seizureLedType | translate }} </span>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="text02">
+      <th mat-header-cell *matHeaderCellDef>
+        {{ 'LAWSUIT.AMOUNT_OF_PROPERTY' | translate }}
+      </th>
+      <td mat-cell *matCellDef="let element">
+        <span> {{ element.collaterals?.length || 0 }} </span>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="text03">
+      <th mat-header-cell *matHeaderCellDef>
+        {{ 'LAWSUIT.COLLECTION_NUMBER_RECORD_DATE' | translate }}
+      </th>
+      <td mat-cell *matCellDef="let element">
+        <p>{{ element.ledRefNo || '-' }}</p>
+        <p>{{ element.ledRefNoDate || '-' }}</p>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="text04">
+      <th mat-header-cell *matHeaderCellDef>{{ 'LAWSUIT.SUIT.HEAD_SLA' | translate }}</th>
+      <td
+        mat-cell
+        *matCellDef="let element; let rowNo = index"
+        [class.hidden]="element.hide"
+        [class.fil-red]="
+          !!element.daysSpent && (!!element.daysSla || element.daysSla === 0) && element.daysSpent > element.daysSla
+        ">
+        <span
+          >{{ element.daysSpent ? element.daysSpent || 0 : element.daysSla ? 0 : '-' }} /
+          {{ element.daysSla ? element.daysSla || 0 : '-' }}</span
+        >
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="text05">
+      <th mat-header-cell *matHeaderCellDef class="text-center">e-Filing</th>
+      <td mat-cell *matCellDef="let element" class="text-center">
+        <div class="status-label" [appBadgeStatus]="element.paymentMethod || 'UNKNOWN'">
+          {{ 'SEIZURE_E_FILLING_STATUS.' + (element.paymentMethod || 'UNKNOWN') | translate }}
+        </div>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="text06">
+      <th mat-header-cell *matHeaderCellDef class="text-center">
+        {{ 'LAWSUIT.SEIZURE_REPORT' | translate }}
+      </th>
+      <td mat-cell *matCellDef="let element" class="text-center">
+        <span class="status-label" [appBadgeStatus]="element.status">
+          {{ 'SEIZURE_STATUS.' + element.status | translate }}
+        </span>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columns"></tr>
+    <tr mat-row *matRowDef="let row; columns: columns" [class.hidden]="row.hide"></tr>
+  </table>
+
+  <!-- ไม่มีรายการที่เกี่ยวข้อง -->
+  <ng-container *ngIf="!seizure.seizureLeds?.length">
+    <app-message-empty message="ไม่มีรายการที่เกี่ยวข้อง"> </app-message-empty>
+  </ng-container>
+</ng-container>

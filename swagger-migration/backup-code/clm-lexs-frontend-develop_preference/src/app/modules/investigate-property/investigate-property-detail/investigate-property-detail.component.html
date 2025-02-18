@@ -1,0 +1,181 @@
+<mat-tab-group
+  class="tab-group-content m-20"
+  mat-align-tabs="start"
+  (selectedTabChange)="onTabChanged($event)"
+  [selectedIndex]="tabIndex">
+  <mat-tab label="0">
+    <ng-template mat-tab-label>{{
+      'LAWSUIT.INVESTIGATES_PROPERTY.INVESTIGATES_PROPERTY_DETAIL' | translate
+    }}</ng-template>
+    <app-case-details [title]="caseDetailTitle" [data]="litigationCaseShortDetail" [hidelawyer]="true">
+      <div class="mb-16 mt-24 mr-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+        <div fxLayout="column" fxFlex="15">
+          <h6>{{ 'INVESTIGATE_PROPERTY.OBJECTIVE' | translate }}</h6>
+        </div>
+        <div fxLayout="column" fxFlex="" fxLayoutGap="16px">
+          <ng-container>
+            <span class="thin-letter">{{ 'INVESTIGATE_PROPERTY.REASON_FOR_INVESTIGATION' | translate }}</span>
+            <div>
+              {{ assetInvestigationInfo.reasonDesc || '-' }}
+            </div>
+          </ng-container>
+          <ng-container>
+            <span class="thin-letter">{{ 'COMMON.LABEL_REMARKS' | translate }}</span>
+            <div>
+              {{ assetInvestigationInfo.remark || '-' }}
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </app-case-details>
+    <div class="content-container">
+      <mat-card appearance="outlined" class="pt-24 pb-24 pr-24 pl-24 mat-elevation-z">
+        <div class="title-row mb-1em" fxLayout="row" fxLayoutAlign="space-between center">
+          <div fxLayoutAlign="flex-start stretch" fxLayoutGap="24">
+            <div class="mt-5 mb-5">
+              <h5>{{ 'DOC_PREP.TITLE' | translate }}</h5>
+            </div>
+          </div>
+        </div>
+        <mat-divider [inset]="true"></mat-divider>
+
+        <mat-card-content>
+          <mat-accordion>
+            <div *ngFor="let data of litigationDocuments; let i = index">
+              <div class="inner-container-padding pl-0 pr-0" [class.pb-0]="!data.isOpened">
+                <div fxLayout="row" fxLayoutAlign="space-between center" class="expand-header bg-l-gray">
+                  <div fxLayoutAlign="flex-start stretch" fxLayoutGap="15">
+                    <div class="flex-align-self-center">
+                      <mat-icon svgIcon="icon-Hat" class="icon icon-xmedium icon-hide-show fill-blue"> </mat-icon>
+                    </div>
+                    <div fxLayoutAlign="start center" fxLayoutGap="15">
+                      <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="8">
+                        <h6>{{ 'INVESTIGATE_PROPERTY.ORDER' | translate }} {{ i + 1 }}</h6>
+                      </div>
+                      <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="8">
+                        <h6>{{ 'INVESTIGATE_PROPERTY.LITIGATION_DOCUMENT' | translate }}</h6>
+                      </div>
+                    </div>
+                  </div>
+                  <div fxLayout="row">
+                    <div class="description width-btn-sh" (click)="data.isOpened = !data.isOpened">
+                      <mat-icon
+                        [svgIcon]="data.isOpened ? 'icon-Slide-Hide' : 'icon-Expand'"
+                        class="icon icon-xmedium icon-hide-show fill-blue mr-5">
+                      </mat-icon
+                      >{{ (data.isOpened ? 'COMMON.ICON_EXPANSION_HIDE' : 'COMMON.ICON_EXPANSION_SHOW') | translate }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <mat-accordion>
+                <mat-expansion-panel class="no-padding" [expanded]="data.isOpened" hideToggle>
+                  <div class="table-content">
+                    <app-upload-multi-file-content
+                      [mode]="mode"
+                      [uploadMultiInfo]="uploadMultiInfo"
+                      [list]="data.documentUpload"
+                      [column]="documentColumns"
+                      [readonly]="true">
+                    </app-upload-multi-file-content>
+                  </div>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </div>
+            <div *ngFor="let data of dataList; let i = index">
+              <div class="inner-container-padding pl-0 pr-0" [class.pb-0]="!data.isOpened">
+                <div fxLayout="row" fxLayoutAlign="space-between center" class="expand-header bg-l-gray">
+                  <div fxLayoutAlign="flex-start stretch" fxLayoutGap="24">
+                    <div *ngIf="!isSeleted" fxLayoutAlign="start center" fxLayoutGap="24">
+                      <div fxLayoutAlign="start center" fxLayoutGap="4">
+                        <h6 class="my-0">
+                          <mat-icon [svgIcon]="'icon-List-Multiple'" class="icon default-cursor icon-hide-show">
+                          </mat-icon>
+                        </h6>
+                      </div>
+                      <h6 class="my-0">
+                        {{ 'INVESTIGATE_PROPERTY.ORDER' | translate }} {{ i + 2 }}
+                        {{ 'INVESTIGATE_PROPERTY.LITIGATION_DOCUMENT' | translate }}
+                      </h6>
+                    </div>
+                    <div *ngIf="isSeleted" fxLayoutAlign="start center" fxLayoutGap="15">
+                      <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="8">
+                        <mat-icon
+                          [class.fill-blue]="data.personStatus !== 'DEATH'"
+                          [class.fill-gray]="data.personStatus === 'DEATH'"
+                          svgIcon="icon-Hat"
+                          class="icon icon-xmedium icon-hide-show fill-blue">
+                        </mat-icon>
+                      </div>
+                      <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="8">
+                        <h6>{{ 'INVESTIGATE_PROPERTY.ORDER' | translate }} {{ i + 2 }}</h6>
+                      </div>
+                      <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="8">
+                        <ng-container *ngIf="data.useCIF; else elseTaxTemplate">
+                          <label>{{ 'INVESTIGATE_PROPERTY.CIF' | translate }}: </label>
+                          <h6>{{ data.cifNo }}</h6>
+                        </ng-container>
+                        <ng-template #elseTaxTemplate>
+                          <label class="wrap-line-break">{{ 'INVESTIGATE_PROPERTY.TAX_NO' | translate }}: </label>
+                          <h6>{{ data.taxNo }}</h6>
+                        </ng-template>
+                      </div>
+                      <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="8">
+                        <label>{{ 'INVESTIGATE_PROPERTY.FULL_NAME' | translate }}: </label>
+                        <ng-container *ngIf="data.personStatus === 'DEATH'; else elseNameTemplate">
+                          <h6>{{ data.name }}(เสียชีวิต)</h6>
+                        </ng-container>
+                        <ng-template #elseNameTemplate>
+                          <h6>{{ data.name }}</h6>
+                        </ng-template>
+                      </div>
+                      <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="8">
+                        <label>{{ 'INVESTIGATE_PROPERTY.STATUS' | translate }}: </label>
+                        <h6>{{ 'INVESTIGATE_PROPERTY.RELATION.' + data.relation | translate }}</h6>
+                      </div>
+                    </div>
+                  </div>
+                  <ng-container *ngIf="data.personStatus !== 'DEATH'">
+                    <div fxLayout="row">
+                      <div class="description width-btn-sh" (click)="data.isOpened = !data.isOpened">
+                        <mat-icon
+                          [svgIcon]="data.isOpened ? 'icon-Slide-Hide' : 'icon-Expand'"
+                          class="icon icon-xmedium icon-hide-show fill-blue mr-5">
+                        </mat-icon
+                        >{{ (data.isOpened ? 'COMMON.ICON_EXPANSION_HIDE' : 'COMMON.ICON_EXPANSION_SHOW') | translate }}
+                      </div>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+              <mat-accordion>
+                <mat-expansion-panel class="no-padding" [expanded]="data.isOpened" hideToggle>
+                  <div class="table-content">
+                    <app-upload-multi-file-content
+                      [mode]="mode"
+                      [uploadMultiInfo]="uploadMultiInfo"
+                      [list]="data.documentUpload"
+                      [column]="documentColumns"
+                      [readonly]="true">
+                    </app-upload-multi-file-content>
+                  </div>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </div>
+          </mat-accordion>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <ng-template #dataNotFound>
+      <app-message-empty [message]="'DOC_PREP.NOT_FOUND_DOC'"></app-message-empty>
+    </ng-template>
+  </mat-tab>
+  <mat-tab label="1">
+    <ng-template mat-tab-label>{{
+      'LAWSUIT.INVESTIGATES_PROPERTY.INVESTIGATE_PROPERTY_RESULTS' | translate
+    }}</ng-template>
+    <app-investigate-property-results
+      [data]="assetInvestigationInfo.inspectionDetails"></app-investigate-property-results>
+  </mat-tab>
+</mat-tab-group>

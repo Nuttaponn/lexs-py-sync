@@ -1,0 +1,458 @@
+@import '/src/styles/colors';
+@import '../../../styles/theme/core-default/mixin-dropdown';
+
+.search-overlay {
+  position: absolute;
+  top: -61px;
+
+  &.input-xsm {
+    top: -40px;
+  }
+
+  &.input-sm {
+    top: -42px;
+  }
+
+  &.input-s {
+    top: -58px;
+  }
+
+  &.input-normal {
+    top: -61px;
+  }
+
+  mat-form-field {
+    display: block;
+
+    mat-label {
+      font-family: KrungthaiFastRegular;
+    }
+
+    /* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+    ::ng-deep .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-form-field-infix {
+      padding-top: 0;
+      padding-bottom: 0;
+      min-height: inherit;
+      align-content: center;
+    }
+
+    // Classes for using
+    &.input-xsm {
+
+      /* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+      ::ng-deep .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex {
+        @include input-size(40px, 40px, 14px);
+      }
+    }
+
+    &.input-sm {
+
+      /* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+      ::ng-deep .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex {
+        @include input-size(42px, 42px, 14px);
+      }
+    }
+
+    &.input-s {
+
+      /* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+      ::ng-deep .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex {
+        @include input-size(58px, 58px, 16px);
+      }
+    }
+
+    &.input-normal {
+
+      /* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+      ::ng-deep .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex {
+        font-size: 16px;
+      }
+    }
+
+    &.bg-white {
+
+      /* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+      ::ng-deep .mat-mdc-text-field-wrapper {
+        background: $white;
+      }
+    }
+
+    &.elevation-e1 {
+
+      /* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+      ::ng-deep .mat-mdc-text-field-wrapper {
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08);
+      }
+    }
+
+    // Invalid Class
+    &.invalid {
+
+      /* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+      ::ng-deep .mat-mdc-text-field-wrapper {
+        background-color: map-get($ktb-palette-red, 50) !important;
+        border: 1px solid $krungthai-red !important;
+      }
+    }
+
+    &.border-black-40 {
+
+      /* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+      ::ng-deep .mat-mdc-text-field-wrapper {
+        border: 1px solid map-get($ktb-palette-biz-black, 40);
+      }
+    }
+
+    &.text-center {
+
+      /* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+      ::ng-deep .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex {
+        text-align: center;
+      }
+    }
+  }
+
+  ::ng-deep .mat-mdc-form-field.mat-focused {
+
+    /* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+    .mat-mdc-text-field-wrapper {
+      background: map-get($ktb-palette-precious-blue, 00);
+    }
+  }
+}
+
+.combo-box-container {
+  .combo-box-form {
+    mat-form-field {
+      display: block;
+
+      /* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+      ::ng-deep .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-form-field-infix {
+
+        mat-select {
+          max-width: 95%;
+          align-content: center;
+        }
+      }
+
+      mat-label {
+        font-family: KrungthaiFastRegular;
+
+        span {
+          font-family: Thonburi;
+          line-height: 18px;
+          color: $krungthai-red;
+        }
+      }
+
+      &.display-transparent {
+
+        /* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+        ::ng-deep .mat-mdc-text-field-wrapper {
+          background-color: transparent !important;
+          border: none !important;
+        }
+
+        /* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+        ::ng-deep .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex {
+
+          .mat-mdc-form-field-infix {
+
+            /* FIXED(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
+            mat-select .mat-mdc-select-trigger .mat-mdc-select-value {
+              color: transparent !important;
+
+              /* FIXED(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
+              .mat-mdc-select-placeholder {
+                color: transparent !important;
+              }
+            }
+          }
+
+          .mat-mdc-form-field-icon-prefix,
+          .mat-mdc-form-field-icon-suffix {
+            .mat-icon svg {
+              fill: transparent !important;
+              color: transparent !important;
+            }
+          }
+        }
+      }
+
+      // Classes for using
+      &.input-xsm {
+
+        ::ng-deep .mat-mdc-text-field-wrapper {
+          max-height: 40px;
+        }
+
+        /* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+        ::ng-deep .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex {
+          @include input-size(40px, 40px, 14px);
+        }
+
+        ::ng-deep .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-form-field-infix .mat-mdc-select {
+          @include input-size(40px, 40px, 14px);
+        }
+      }
+
+      &.input-sm {
+
+        ::ng-deep .mat-mdc-text-field-wrapper {
+          max-height: 42px;
+        }
+
+        /* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+        ::ng-deep .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex {
+          @include input-size(42px, 42px, 14px);
+          width: 280px;
+        }
+
+        ::ng-deep .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-form-field-infix .mat-mdc-select {
+          @include input-size(42px, 42px, 14px);
+        }
+      }
+
+      &.input-s {
+
+        ::ng-deep .mat-mdc-text-field-wrapper {
+          max-height: 58px;
+        }
+
+        /* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+        ::ng-deep .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex {
+          @include input-size(58px, 58px, 16px);
+        }
+
+        ::ng-deep .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-form-field-infix .mat-mdc-select {
+          @include input-size(58px, 58px, 16px);
+        }
+      }
+
+      &.input-normal {
+
+        ::ng-deep .mat-mdc-text-field-wrapper {
+          max-height: 61px;
+        }
+
+        /* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+        ::ng-deep .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex {
+          font-size: 16px;
+        }
+
+        ::ng-deep .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-form-field-infix .mat-mdc-select {
+          font-size: 16px;
+        }
+      }
+
+      &.bg-white {
+
+        /* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+        ::ng-deep .mat-mdc-text-field-wrapper {
+          background: $white;
+        }
+      }
+
+      &.elevation-e1,
+      &.long {
+
+        /* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+        ::ng-deep .mat-mdc-text-field-wrapper {
+          box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08);
+        }
+      }
+
+      // Invalid Class
+      &.invalid {
+
+        /* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+        ::ng-deep .mat-mdc-text-field-wrapper {
+          background-color: map-get($ktb-palette-red, 50) !important;
+          border: 1px solid $krungthai-red !important;
+        }
+      }
+
+      &.border-black-40 {
+
+        /* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+        ::ng-deep .mat-mdc-text-field-wrapper {
+          border: 1px solid map-get($ktb-palette-biz-black, 40);
+        }
+      }
+
+      &.text-center {
+
+        /* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+        ::ng-deep .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex {
+          text-align: center;
+        }
+      }
+    }
+
+    ::ng-deep .mat-mdc-select.select-pd-left {
+
+      /* FIXED(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
+      .mat-mdc-select-value {
+        padding-left: 10px;
+      }
+    }
+
+    ::ng-deep .mat-mdc-select.space-top {
+
+      /* FIXED(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
+      .mat-mdc-select-trigger {
+        top: 5px;
+      }
+    }
+
+    /* FIXED(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
+    ::ng-deep .mat-mdc-select-value {
+      font-family: KrungthaiFastRegular;
+      line-height: normal;
+    }
+
+    /* FIXED(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
+    ::ng-deep .mat-mdc-select-arrow-wrapper {
+      display: flex;
+      flex-direction: column-reverse;
+    }
+
+    /* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+    ::ng-deep.mat-focused .mat-mdc-form-field-required-marker {
+      color: $krungthai-red;
+    }
+  }
+}
+
+.display-none {
+  display: none !important;
+}
+
+.empty-list {
+  padding: 12px 0px;
+  box-shadow: 0px 2px 4px rgb(0 0 0 / 8%);
+  border-radius: 8px;
+  background: $white;
+
+  span {
+    padding: 0px 12px;
+  }
+}
+
+// overwrite style with ng-deep
+
+/* FIXED(mdc-migration): The following rule targets internal classes of option that may no longer apply for the MDC version.*/
+::ng-deep .mdc-list-item__primary-text {
+  white-space: normal !important;
+  line-height: 25px !important;
+}
+
+::ng-deep mat-option {
+  height: unset !important;
+  padding-top: 16px !important;
+  padding-bottom: 16px !important;
+}
+
+::ng-deep mat-option {
+  &.indeterminate {
+    .mat-pseudo-checkbox {
+      background-color: $krungthai-blue !important;
+      border-color: transparent !important;
+    }
+
+    .mat-pseudo-checkbox::after {
+      left: 2px !important;
+      border-left: none;
+      transform: inherit !important;
+      top: 2.4px;
+      width: 8px;
+      height: 3px;
+      opacity: 1;
+      box-sizing: content-box;
+    }
+  }
+}
+
+::ng-deep .mat-mdc-select-panel {
+  min-width: 25% !important;
+  max-width: 100% !important;
+  border-radius: 4px !important;
+
+  .mat-mdc-option {
+    width: auto !important;
+    line-height: 1.5 !important;
+    min-height: 1em !important;
+    white-space: initial !important;
+    font-size: 14px;
+  }
+
+  .mat-mdc-option.mat-mdc-selected:not(.mat-mdc-option-multiple),
+  .mat-mdc-option-active {
+    background-color: $bg-almost-white !important;
+
+    .mdc-list-item__primary-text {
+      color: map-get($ktb-palette-biz-gray, 900) !important;
+    }
+  }
+
+  @for $i from 1 through 500 {
+    &.transformX-minus-#{$i} {
+      $transform: $i * -1px;
+      transform: translateX($transform) !important;
+    }
+
+    &.transformX-#{$i} {
+      $transform: $i * 1px;
+      transform: translateX($transform) !important;
+    }
+  }
+}
+
+/* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+::ng-deep .mat-form-field-appearance-fill .mat-mdc-text-field-wrapper {
+  border-radius: 8px !important;
+}
+
+::ng-deep .mat-form-field-appearance-fill {
+  &.mat-focused {
+
+    /* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+    .mat-mdc-text-field-wrapper {
+      border: 1px solid $krungthai-blue !important;
+    }
+
+    .mdc-text-field--invalid {
+      border: 1px solid #d0082c !important;
+    }
+  }
+}
+
+::ng-deep {
+  mat-form-field {
+    span[matprefix] {
+      color: #828182;
+    }
+
+    /* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+    div.mat-mdc-form-field-flex {
+      align-items: center !important;
+    }
+  }
+}
+
+.icon-container {
+  mat-icon {
+    position: inherit;
+    right: 0px;
+    top: -2px;
+  }
+}
+
+/* FIXED(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
+::ng-deep .mat-mdc-select-arrow {
+  display: none;
+}
+
+::ng-deep .mat-mdc-option.mdc-list-item--selected .mat-pseudo-checkbox {
+  display: none !important;
+}

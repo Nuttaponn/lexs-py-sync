@@ -1,0 +1,1017 @@
+<ng-container [ngSwitch]="template">
+  <ng-container *ngSwitchCase="'FINANCE_EXPENSE'">
+    <ng-container *ngTemplateOutlet="financeExpenseSearchTemplate"></ng-container>
+  </ng-container>
+  <ng-container *ngSwitchCase="'FINANCE_RECEIPT'">
+    <ng-container *ngTemplateOutlet="financeReceiptSearchTemplate"></ng-container>
+  </ng-container>
+  <ng-container *ngSwitchCase="'FINANCE_DASHBOARD'">
+    <ng-container *ngTemplateOutlet="financeDashboardSearchTemplate"></ng-container>
+  </ng-container>
+  <ng-container *ngSwitchCase="'FINANCE_RECEIPT_KCORP'">
+    <ng-container *ngTemplateOutlet="financeReceiptKcorpSearchTemplate"></ng-container>
+  </ng-container>
+  <ng-container *ngSwitchCase="'FINANCE_ADVANCE'">
+    <ng-container *ngTemplateOutlet="financeAdvanceSearchTemplate"></ng-container>
+  </ng-container>
+  <ng-container *ngSwitchCase="'SUMMARY_REIMBURSE_TYPE_1'">
+    <ng-container *ngTemplateOutlet="summaryReimbursementV1SearchTemplate"></ng-container>
+  </ng-container>
+  <ng-container *ngSwitchCase="'SUMMARY_REIMBURSE_TYPE_2'">
+    <ng-container *ngTemplateOutlet="summaryReimbursementV2SearchTemplate"></ng-container>
+  </ng-container>
+  <ng-container *ngSwitchCase="'PROFILE_DIRECT_TYPE_1'">
+    <ng-container *ngTemplateOutlet="profileDirectType1SearchTemplate"></ng-container>
+  </ng-container>
+  <ng-container *ngSwitchDefault>
+    <ng-container *ngTemplateOutlet="normalSearchTemplate"></ng-container>
+  </ng-container>
+</ng-container>
+
+<ng-template #financeExpenseSearchTemplate>
+  <div [formGroup]="searchCtrl">
+    <div
+      class="search-section fit-to-screen pb-8"
+      fxLayout="row"
+      fxLayoutAlign="space-between start"
+      fxLayoutGap="12px">
+      <div fxFlex class="mx-width-pct-25">
+        <spig-dropdown
+          classInput="input-xsm icon"
+          [config]="expenseNoConfig"
+          [options]="expenseNoOptions"
+          (selectedOption)="onSelectedOption()"
+          formControlName="expenseNo">
+        </spig-dropdown>
+      </div>
+      <div fxFlex class="mx-width-pct-25">
+        <spig-dropdown
+          classInput="input-xsm icon"
+          [config]="expenseStatusConfig"
+          [options]="expenseStatusOptions"
+          (selectedOption)="onSelectedOption()"
+          formControlName="expenseStatus"></spig-dropdown>
+      </div>
+      <div fxFlex class="mx-width-pct-25" *ngIf="_condition.tab === 'CLOSED'">
+        <spig-datepicker
+          class="search-datepicker-field normal-text-size"
+          [prefixIcon]="'icon-Filter'"
+          [placeholder]="'SEARCH_CONTROL.LABEL_ALL_RECEIPT_END_COMPLETE_DATE' | translate"
+          (inputChange)="onSelectedOption()"
+          formControlName="successPaymentDate">
+        </spig-datepicker>
+      </div>
+      <div fxFlex class="mx-width-pct-25">
+        <spig-dropdown
+          classInput="input-xsm icon"
+          [isMultiple]="userMultiConfig.isMultiple"
+          [config]="userMultiConfig"
+          [options]="userMultiOptions"
+          (selectedOption)="onSelectedOption()"
+          formControlName="assigneeId"></spig-dropdown>
+      </div>
+      <div fxLayout="column" fxFlex class="mx-width-pct-25">
+        <mat-form-field class="no-label input-sm-icon search-input-field placeholder-black-100 normal-text-size">
+          <input
+            type="text"
+            matInput
+            [placeholder]="placeholder | translate"
+            autocomplete="off"
+            (keyup)="onKeyup($event)"
+            (focus)="placeholder = ''"
+            formControlName="searchString"
+            (blur)="placeholder = placeholderText" />
+        </mat-form-field>
+        <spig-error-msg
+          *ngIf="searchCtrl.get('searchString')?.value"
+          [control]="searchCtrl.get('searchString')"
+          [customErrorMsg]="'SEARCH_CONTROL.ERROR_SEARCH_CONDITION'"></spig-error-msg>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #financeDashboardSearchTemplate>
+  <div [formGroup]="searchCtrl">
+    <div class="search-section pb-8" fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="12px">
+      <div fxFlex class="mx-width-pct-25">
+        <spig-dropdown
+          classInput="input-xsm icon text-center"
+          [config]="legalStatusConfig"
+          [options]="legalStatusOptions"
+          (selectedOption)="onSelectedOption()"
+          formControlName="litigationStatus">
+        </spig-dropdown>
+      </div>
+      <div fxFlex class="mx-width-pct-25">
+        <spig-dropdown
+          classInput="input-xsm icon"
+          [config]="expenseStatusConfig"
+          [options]="expenseStatusOptions"
+          (selectedOption)="onSelectedOption()"
+          formControlName="expenseStatus"></spig-dropdown>
+      </div>
+      <div fxFlex class="mx-width-pct-25">
+        <spig-dropdown
+          classInput="input-xsm icon"
+          [config]="makerConfig"
+          [options]="makerOptions"
+          (selectedOption)="onSelectedOption()"
+          formControlName="assigneeId"></spig-dropdown>
+      </div>
+      <div fxLayout="column" fxFlex class="mx-width-pct-25">
+        <mat-form-field class="no-label input-sm-icon search-input-field placeholder-black-100">
+          <input
+            type="text"
+            matInput
+            [placeholder]="placeholder | translate"
+            autocomplete="off"
+            (keyup)="onKeyup($event)"
+            (focus)="placeholder = ''"
+            formControlName="searchString"
+            (blur)="placeholder = placeholderText" />
+          <mat-icon matSuffix class="icon icon-small-xm" svgIcon="icon-Search" (click)="onSearch()"> </mat-icon>
+        </mat-form-field>
+        <spig-error-msg
+          *ngIf="searchCtrl.get('searchString')?.value"
+          [control]="searchCtrl.get('searchString')"
+          [customErrorMsg]="'SEARCH_CONTROL.ERROR_SEARCH_CONDITION'"></spig-error-msg>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #financeReceiptSearchTemplate>
+  <div [formGroup]="searchCtrl">
+    <div class="search-section pb-8" fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="12px">
+      <div fxFlex class="mx-width-pct-30">
+        <spig-dropdown
+          classInput="input-xsm icon no-border"
+          [config]="receiptNoConfig"
+          [options]="receiptNoOptions"
+          (selectedOption)="onSelectedOption()"
+          formControlName="receiveNo">
+        </spig-dropdown>
+      </div>
+      <div fxFlex class="mx-width-pct-30">
+        <spig-dropdown
+          classInput="input-xsm icon no-border"
+          [config]="receiptTypeConfig"
+          [options]="receiptTypeOptions"
+          (selectedOption)="onSelectedOption()"
+          formControlName="receiveType">
+        </spig-dropdown>
+      </div>
+      <div fxFlex class="mx-width-pct-40">
+        <spig-dropdown
+          classInput="input-xsm icon no-border"
+          [config]="receiptStatusConfig"
+          [options]="receiptStatusOptions"
+          (selectedOption)="onSelectedOption()"
+          formControlName="receiveStatus">
+        </spig-dropdown>
+      </div>
+    </div>
+    <div class="search-section pb-8" fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="12px">
+      <div fxFlex class="mx-width-pct-30">
+        <spig-datepicker
+          class="search-datepicker-field"
+          [prefixIcon]="'icon-Filter'"
+          [placeholder]="'SEARCH_CONTROL.LABEL_ALL_RECEIPT_BEGIN_CREATE_DATE' | translate"
+          formControlName="beginCreateDate">
+        </spig-datepicker>
+      </div>
+      <div fxFlex class="mx-width-pct-30">
+        <spig-datepicker
+          class="search-datepicker-field"
+          [prefixIcon]="'icon-Filter'"
+          [placeholder]="'SEARCH_CONTROL.LABEL_ALL_RECEIPT_END_CREATE_DATE' | translate"
+          formControlName="endCreateDate">
+        </spig-datepicker>
+      </div>
+      <div fxLayout="column" fxFlex class="mx-width-pct-40">
+        <mat-form-field class="no-label input-sm-icon search-input-field">
+          <input
+            type="text"
+            matInput
+            [placeholder]="placeholder | translate"
+            autocomplete="off"
+            (keyup)="onKeyup($event)"
+            (focus)="placeholder = ''"
+            (blur)="placeholder = placeholderText"
+            formControlName="searchString" />
+        </mat-form-field>
+        <spig-error-msg
+          *ngIf="searchCtrl.get('searchString')?.value"
+          [control]="searchCtrl.get('searchString')"
+          [customErrorMsg]="'SEARCH_CONTROL.ERROR_SEARCH_CONDITION'"></spig-error-msg>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #financeReceiptKcorpSearchTemplate>
+  <div [formGroup]="searchCtrl">
+    <div class="search-section pb-8" fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="12px">
+      <div fxFlex class="mx-width-pct-19">
+        <spig-datepicker
+          class="search-datepicker-field"
+          [prefixIcon]="'icon-Filter'"
+          [placeholder]="'วันที่โอนเริ่มต้น'"
+          formControlName="beginTransferMonth">
+        </spig-datepicker>
+      </div>
+      <div fxFlex class="mx-width-pct-19">
+        <spig-datepicker
+          class="search-datepicker-field"
+          [prefixIcon]="'icon-Filter'"
+          [placeholder]="'วันที่โอนสิ้นสุด'"
+          formControlName="endTransferMonth">
+        </spig-datepicker>
+      </div>
+      <div fxFlex class="mx-width-pct-19">
+        <spig-dropdown
+          classInput="input-xsm icon no-border"
+          [config]="kcorpWashAccountConfig"
+          [options]="kcorpWashAccountOptions"
+          (selectedOption)="onSelectedOption()"
+          formControlName="washAccountNo"></spig-dropdown>
+      </div>
+      <div fxFlex class="mx-width-pct-19">
+        <spig-dropdown
+          classInput="input-xsm icon no-border"
+          [config]="kcorpTransferStatusConfig"
+          [options]="kcorpTransferStatusOptions"
+          (selectedOption)="onSelectedOption()"
+          formControlName="transferStatus"></spig-dropdown>
+      </div>
+      <div fxLayout="column" fxFlex class="mx-width-pct-19">
+        <mat-form-field class="no-label input-sm-icon search-input-field">
+          <input
+            type="text"
+            matInput
+            [placeholder]="'Reference No.'"
+            autocomplete="off"
+            (keyup)="onKeyup($event)"
+            (focus)="placeholder = ''"
+            (blur)="placeholder = 'Reference No.'"
+            formControlName="referenceNo" />
+        </mat-form-field>
+        <spig-error-msg
+          *ngIf="searchCtrl.get('referenceNo')?.value"
+          [control]="searchCtrl.get('referenceNo')"
+          [customErrorMsg]="'SEARCH_CONTROL.ERROR_SEARCH_CONDITION'"></spig-error-msg>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #financeAdvanceSearchTemplate>
+  <div [formGroup]="searchCtrl">
+    <div class="search-section pb-8" fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="12px">
+      <div fxFlex class="mx-width-pct-30">
+        <spig-dropdown
+          classInput="input-xsm icon"
+          [config]="advancePaymentNoConfig"
+          [options]="advancePaymentNoOptions"
+          (selectedOption)="onSelectedOption()"
+          formControlName="advnancePaymentNo">
+        </spig-dropdown>
+      </div>
+      <div fxFlex class="mx-width-pct-30">
+        <spig-dropdown
+          classInput="input-xsm icon"
+          [config]="advancePaymentStatusConfig"
+          [options]="advancePaymentStatusOptions"
+          (selectedOption)="onSelectedOption()"
+          formControlName="advancePaymentStatus"></spig-dropdown>
+      </div>
+      <div fxFlex class="mx-width-pct-30">
+        <spig-dropdown
+          classInput="input-xsm icon"
+          [config]="userConfig"
+          [options]="userOptions"
+          (selectedOption)="onSelectedOption()"
+          formControlName="user"></spig-dropdown>
+      </div>
+      <div fxLayout="column" fxFlex class="mx-width-pct-25">
+        <mat-form-field class="no-label input-sm-icon search-input-field">
+          <input
+            type="text"
+            matInput
+            [placeholder]="placeholder | translate"
+            autocomplete="off"
+            (keyup)="onKeyup($event)"
+            (focus)="placeholder = ''"
+            formControlName="searchString"
+            (blur)="placeholder = placeholderText" />
+        </mat-form-field>
+        <spig-error-msg
+          *ngIf="searchCtrl.get('searchString')?.value"
+          [control]="searchCtrl.get('searchString')"
+          [customErrorMsg]="'SEARCH_CONTROL.ERROR_SEARCH_CONDITION'"></spig-error-msg>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #summaryReimbursementV1SearchTemplate>
+  <div [formGroup]="searchCtrl">
+    <div class="search-section pb-8" fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="12px">
+      <div fxFlex class="mx-width-pct-25">
+        <spig-dropdown
+          classInput="input-xsm icon"
+          [config]="expenseStepTypeConfig"
+          [options]="expenseStepTypeOptions"
+          (selectedOption)="onSelectedOption()"
+          formControlName="caseType"></spig-dropdown>
+      </div>
+      <div fxFlex class="mx-width-pct-25">
+        <spig-dropdown
+          classInput="input-xsm icon"
+          [config]="financialObjectTypeConfig"
+          [options]="financialObjectTypeOptions"
+          (selectedOption)="onSelectedOption('FINANCIAL_OBJECT_TYPE')"
+          formControlName="financialObjectType"></spig-dropdown>
+      </div>
+      <div fxFlex class="mx-width-pct-25">
+        <spig-dropdown
+          #financialAccountTypeDropdown
+          classInput="input-xsm icon"
+          [config]="financialAccountTypeConfig"
+          [options]="financialAccountTypeOptions"
+          (selectedOption)="onSelectedOption()"
+          formControlName="financialAccountType"></spig-dropdown>
+      </div>
+      <div fxFlex class="mx-width-pct-25">
+        <spig-dropdown
+          classInput="input-xsm icon"
+          [config]="financialAccountCodeConfig"
+          [options]="financialAccountCodeOptions"
+          (selectedOption)="onSelectedOption()"
+          formControlName="financialAccountCode"></spig-dropdown>
+      </div>
+    </div>
+    <div class="search-section pb-8" fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="12px">
+      <div fxFlex class="mx-width-pct-25">
+        <spig-datepicker
+          class="search-datepicker-field"
+          [prefixIcon]="'icon-Filter'"
+          [placeholder]="'วันที่ทำรายการเริ่มต้น'"
+          formControlName="startDate"
+          (inputChange)="onStartDateChange(); onSelectedOption()"
+          [max]="currentDate">
+        </spig-datepicker>
+        <spig-error-msg
+          *ngIf="searchCtrl.get('startDate')?.value && searchCtrl.get('startDate')?.hasError('startDateAfterEndDate')"
+          [control]="searchCtrl.get('startDate')"
+          [customErrorMsg]="'วันที่ทำรายการเริ่มต้นมากกว่าวันที่ทำรายการสิ้นสุด'"></spig-error-msg>
+      </div>
+      <div fxFlex class="mx-width-pct-25">
+        <spig-datepicker
+          class="search-datepicker-field"
+          [prefixIcon]="'icon-Filter'"
+          [placeholder]="'วันที่ทำรายการสิ้นสุด'"
+          formControlName="endDate"
+          (inputChange)="onEndDateChange(); onSelectedOption()"
+          [max]="currentDate">
+        </spig-datepicker>
+        <spig-error-msg
+          *ngIf="searchCtrl.get('endDate')?.value && searchCtrl.get('endDate')?.hasError('endDateBeforeStartDate')"
+          [control]="searchCtrl.get('endDate')"
+          [customErrorMsg]="'วันที่ทำรายการสิ้นสุดน้อยกว่าวันที่ทำรายการเริ่มต้น'"></spig-error-msg>
+      </div>
+      <div fxFlex class="mx-width-pct-25">
+        <mat-form-field class="no-label input-sm-icon search-input-field full-width">
+          <mat-icon matPrefix svgIcon="icon-Filter"></mat-icon>
+          <input
+            class="ml-12"
+            matInput
+            appNumberOnly="qualitative"
+            formControlName="minAmount"
+            [placeholder]="'จำนวนเงินขั้นต่ำ' | translate"
+            (change)="onSelectedOption()" />
+        </mat-form-field>
+        <spig-error-msg
+          *ngIf="searchCtrl.get('minAmount')?.value"
+          [control]="searchCtrl.get('minAmount')"
+          [customErrorMsg]="
+            searchCtrl.get('minAmount') && searchCtrl.get('minAmount')?.hasError('invalidMinAmount')
+              ? 'SEARCH_CONTROL.ERROR_MESSAGE_MINIMUM_AMOUNT'
+              : ''
+          "></spig-error-msg>
+      </div>
+      <div fxFlex class="mx-width-pct-25">
+        <mat-form-field class="no-label input-sm-icon search-input-field full-width">
+          <mat-icon matPrefix svgIcon="icon-Filter"></mat-icon>
+          <input
+            class="ml-12"
+            matInput
+            appNumberOnly="qualitative"
+            formControlName="maxAmount"
+            [placeholder]="'จำนวนเงินสูงสุด' | translate"
+            (change)="onSelectedOption()" />
+        </mat-form-field>
+        <spig-error-msg
+          *ngIf="searchCtrl.get('maxAmount')?.value"
+          [control]="searchCtrl.get('maxAmount')"
+          [customErrorMsg]="
+            searchCtrl.get('minAmount') && searchCtrl.get('minAmount')?.hasError('invalidMaxAmount')
+              ? 'SEARCH_CONTROL.ERROR_MESSAGE_MINIMUM_AMOUNT'
+              : ''
+          "></spig-error-msg>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #summaryReimbursementV2SearchTemplate>
+  <div [formGroup]="searchCtrl">
+    <div class="search-section pb-8" fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="8px">
+      <div fxFlex class="mx-width-pct-37">
+        <spig-dropdown
+          classInput="input-xsm icon"
+          [config]="lgIdConfig"
+          [options]="lgIdOptions"
+          (selectedOption)="onSelectedOption()"
+          formControlName="lgId"></spig-dropdown>
+      </div>
+
+      <div fxFlex class="mx-width-pct-37">
+        <spig-dropdown
+          classInput="input-xsm icon"
+          [config]="financialAccountTypeExpenseConfig"
+          [options]="financialAccountTypeExpenseOptions"
+          (selectedOption)="onSelectedOption()"
+          formControlName="financialAccountTypeExpense"></spig-dropdown>
+      </div>
+
+      <div fxFlex class="mx-width-pct-25">
+        <spig-dropdown
+          classInput="input-xsm icon"
+          [config]="financialAccountCodeConfig"
+          [options]="financialAccountCodeOptions"
+          (selectedOption)="onSelectedOption()"
+          formControlName="financialAccountCode"></spig-dropdown>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #profileDirectType1SearchTemplate>
+  <div [formGroup]="searchCtrl">
+    <div class="search-section" fxLayout="row wrap" fxLayoutAlign=" start" fxLayoutGap="12px">
+      <div fxLayout="column" fxFlex class="mx-width-pct-25" fxLayoutGap="4px">
+        <spig-dropdown
+          classInput="input-normal icon"
+          [config]="accountDataTypeConfig"
+          [options]="accountDataTypeOptions"
+          formControlName="accountDataType"
+          [required]="true"
+          (selectedOption)="onSelectedOption('PROFILE_DIRECT_1')"></spig-dropdown>
+        <spig-error-msg
+          [control]="searchCtrl.get('accountDataType')"
+          [customErrorMsg]="'COMMON.ERROR_MSG_CHOOSE_REQUIRED'"></spig-error-msg>
+      </div>
+      <div
+        *ngIf="
+          (searchCtrl.get('accountDataType')?.value && searchCtrl.get('accountDataType')?.value !== 'ACCOUNT_LIST') ||
+          searchType === 'BY_PROFILE_DIRECT_TYPE_2'
+        "
+        fxLayout="column"
+        fxFlex
+        class="mx-width-pct-25"
+        fxLayoutGap="4px">
+        <spig-dropdown
+          classInput="input-normal icon"
+          [config]="accountNoConfig"
+          [options]="
+            searchCtrl.get('accountDataType')?.value !== 'OUTSTANDING_REPORT'
+              ? accountNoOptions
+              : accountNoOutstandingOptions
+          "
+          formControlName="accountNo"
+          [required]="true"
+          (selectedOption)="onSelectedOption('PROFILE_DIRECT_2')"></spig-dropdown>
+        <spig-error-msg
+          [control]="searchCtrl.get('accountNo')"
+          [customErrorMsg]="'COMMON.ERROR_MSG_CHOOSE_REQUIRED'"></spig-error-msg>
+      </div>
+      <ng-container *ngIf="searchType === 'BY_PROFILE_DIRECT_TYPE_2'">
+        <div fxLayout="column" fxFlex class="mx-width-pct-20" fxLayoutGap="4px">
+          <spig-datepicker
+            class="search-datepicker-field normal-min-height"
+            formControlName="startDate"
+            (inputChange)="onSetMaxProfileDirectEndDate($event); onStartDateChange()"
+            [min]="minStratDateProfileDirect"
+            [max]="maxStratDateProfileDirect"
+            [label]="'COMMON.LABEL_START_DATE'">
+          </spig-datepicker>
+          <spig-error-msg
+            *ngIf="!searchCtrl.get('startDate')?.value && searchCtrl.get('startDate')?.hasError('required')"
+            [control]="searchCtrl.get('startDate')"
+            [customErrorMsg]="'COMMON.ERROR_MSG_CHOOSE_REQUIRED'"></spig-error-msg>
+          <spig-error-msg
+            *ngIf="searchCtrl.get('startDate')?.value && searchCtrl.get('startDate')?.hasError('startDateAfterEndDate')"
+            [control]="searchCtrl.get('startDate')"
+            [customErrorMsg]="'COMMON.ERROR_INVALID_START_DATE'"></spig-error-msg>
+        </div>
+        <div fxLayout="column" fxFlex class="mx-width-pct-20" fxLayoutGap="4px">
+          <spig-datepicker
+            class="search-datepicker-field normal-min-height"
+            formControlName="endDate"
+            (inputChange)="onSetMinProfileDirectStartDate($event); onEndDateChange()"
+            [min]="minEndDateProfileDirect"
+            [max]="maxEndDateProfileDirect"
+            [label]="'COMMON.LABEL_END_DATE'">
+          </spig-datepicker>
+          <spig-error-msg
+            *ngIf="!searchCtrl.get('endDate')?.value && searchCtrl.get('endDate')?.hasError('required')"
+            [control]="searchCtrl.get('endDate')"
+            [customErrorMsg]="'COMMON.ERROR_MSG_CHOOSE_REQUIRED'"></spig-error-msg>
+          <spig-error-msg
+            *ngIf="searchCtrl.get('endDate')?.value && searchCtrl.get('endDate')?.hasError('endDateBeforeStartDate')"
+            [control]="searchCtrl.get('endDate')"
+            [customErrorMsg]="'COMMON.ERROR_INVALID_END_DATE'"></spig-error-msg>
+        </div>
+      </ng-container>
+      <div fxFlex="8">
+        <button
+          id="btn-srch-ctrl-advn-search"
+          mat-flat-button
+          color="primary"
+          class="bg-gradient xlong-aw-button overflow-ellipsis"
+          (click)="onSearch()"
+          [disabled]="!enableLookUpBtn">
+          <mat-icon svgIcon="icon-Search" class="icon icon-sm icon-fill-white"></mat-icon>
+          {{ 'COMMON.BUTTON_LOOK_UP' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #normalSearchTemplate>
+  <div [formGroup]="searchCtrl">
+    <div
+      *ngIf="searchType === 'BY_COLLATERAL'"
+      class="search-section pb-12"
+      fxLayoutGap="12px"
+      fxLayout="row"
+      fxLayoutAlign="space-between start">
+      <div fxFlex="33" class="force-width-33">
+        <spig-dropdown
+          classInput="input-xsm icon text-center"
+          [config]="legalStatusConfig"
+          [options]="legalStatusOptions"
+          (selectedOption)="onSelectedOption()"
+          formControlName="legalStatus">
+        </spig-dropdown>
+      </div>
+      <!-- ประเภททรัพย์ -->
+      <div fxFlex="33" class="force-width-33">
+        <spig-dropdown
+          *ngIf="searchType === 'BY_COLLATERAL'"
+          classInput="input-xsm icon text-center"
+          [config]="collateralTypeConfig"
+          [options]="collateralTypeOptions"
+          (selectedOption)="onSelectedOption()"
+          formControlName="collateralTypeCode">
+        </spig-dropdown>
+      </div>
+      <!-- ประเภทย่อย -->
+      <div fxFlex="33" class="force-width-33">
+        <spig-dropdown
+          *ngIf="searchType === 'BY_COLLATERAL'"
+          classInput="input-xsm icon text-center"
+          [config]="collateralSubTypeConfig"
+          [options]="collateralSubTypeOptions"
+          (selectedOption)="onSelectedOption()"
+          formControlName="collateralSubTypeCode">
+        </spig-dropdown>
+      </div>
+    </div>
+    <div class="search-section pb-8" fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="12px">
+      <div *ngIf="searchType !== 'BY_COLLATERAL'" fxFlex class="mx-width-pct-17">
+        <ng-container *ngIf="searchType === 'BY_TASK'">
+          <spig-dropdown
+            classInput="input-xsm icon text-center"
+            [config]="statusConfig"
+            [options]="statusOptions"
+            (selectedOption)="onSelectedOption('TASK_STATUS')"
+            formControlName="taskStatus"></spig-dropdown>
+        </ng-container>
+        <ng-container *ngIf="searchType === 'BY_CUSTOMER'">
+          <spig-dropdown
+            classInput="input-xsm icon text-center"
+            [config]="statusConfig"
+            [options]="statusOptions"
+            (selectedOption)="onSelectedOption()"
+            formControlName="customerStatus">
+          </spig-dropdown>
+        </ng-container>
+        <ng-container *ngIf="searchType === 'BY_LAWSUIT' || searchType === 'BY_LAWSUIT_LED'">
+          <spig-dropdown
+            classInput="input-xsm icon text-center"
+            [config]="legalStatusConfig"
+            [options]="legalStatusOptions"
+            (selectedOption)="onSelectedOption()"
+            formControlName="legalStatus">
+          </spig-dropdown>
+        </ng-container>
+      </div>
+      <div fxFlex="16" *ngIf="searchType !== 'BY_CUSTOMER' && searchType !== 'BY_COLLATERAL'">
+        <spig-dropdown
+          *ngIf="searchType === 'BY_LAWSUIT'"
+          classInput="input-xsm icon text-center"
+          [config]="lawyerConfig"
+          [options]="lawyerOptions"
+          (selectedOption)="onSelectedOption()"
+          formControlName="lawyer">
+        </spig-dropdown>
+        <spig-dropdown
+          *ngIf="searchType === 'BY_LAWSUIT_LED'"
+          classInput="input-xsm icon text-center"
+          [config]="ledConfig"
+          [options]="ledOptions"
+          (selectedOption)="onSelectedOption()"
+          formControlName="ledId">
+        </spig-dropdown>
+        <spig-dropdown
+          *ngIf="searchType !== 'BY_LAWSUIT' && searchType !== 'BY_LAWSUIT_LED'"
+          classInput="input-xsm icon text-center"
+          [config]="typesConfig"
+          [options]="typesOptions"
+          (selectedOption)="onSelectedOption('TASK_TYPE')"
+          formControlName="taskType">
+        </spig-dropdown>
+      </div>
+      <div
+        fxFlex
+        [class.force-width-33]="searchType === 'BY_COLLATERAL'"
+        [class.mx-width-pct-20]="searchType !== 'BY_COLLATERAL'"
+        #responseUnitRef>
+        <spig-dropdown
+          classInput="input-xsm icon text-center"
+          [config]="responseUnitConfig"
+          [options]="responseUnitOptions"
+          (selectedOption)="onSelectedOption()"
+          formControlName="responseUnit">
+        </spig-dropdown>
+      </div>
+      <div
+        fxFlex
+        [class.force-width-33]="searchType === 'BY_COLLATERAL'"
+        [class.mx-width-pct-16]="searchType !== 'BY_COLLATERAL'">
+        <spig-dropdown
+          classInput="input-xsm icon text-center"
+          [config]="amdUnitConfig"
+          [options]="amdUnitOptions"
+          (selectedOption)="onSelectedOption()"
+          formControlName="amdUnit"></spig-dropdown>
+      </div>
+      <div
+        *ngIf="searchType !== 'BY_COLLATERAL'"
+        fxFlex
+        fxLayout="column"
+        [class.mx-width-pct-34]="searchType === 'BY_CUSTOMER'"
+        [class.mx-width-pct-18]="searchType !== 'BY_CUSTOMER'">
+        <mat-form-field class="no-label input-sm-icon search-input-field">
+          <input
+            type="text"
+            matInput
+            [placeholder]="placeholder | translate"
+            autocomplete="off"
+            (keyup)="onKeyup($event)"
+            (focus)="placeholder = ''"
+            (blur)="placeholder = placeholderText"
+            formControlName="searchString" />
+          <mat-icon matSuffix class="icon icon-small-xm" svgIcon="icon-Search" (click)="onSearch()"> </mat-icon>
+        </mat-form-field>
+        <spig-error-msg
+          *ngIf="searchCtrl.get('searchString')?.value"
+          [control]="searchCtrl.get('searchString')"
+          [customErrorMsg]="'SEARCH_CONTROL.ERROR_SEARCH_CONDITION'"></spig-error-msg>
+      </div>
+      <div *ngIf="searchType !== 'BY_COLLATERAL'" fxFlex fxLayout="column" class="mx-width-pct-9">
+        <button
+          id="btn-srch-ctrl-advn"
+          mat-stroked-button
+          class="xsmall-aw-button overflow-ellipsis mat-advance-search neutral"
+          [class.advance-active]="searchCtrl.get('searchMode')?.value === 'ADVANCE'"
+          (click)="onAdvancedSearch()">
+          {{
+            advancedSearchButtonTextOverride
+              ? (advancedSearchButtonTextOverride | translate)
+              : ('SEARCH_CONTROL.BTN_ADVANCED_SEARCH' | translate)
+          }}
+        </button>
+      </div>
+      <div *ngIf="searchType === 'BY_COLLATERAL'" class="force-width-33" fxFlex fxFlexLayout="row" fxLayoutGap="12px">
+        <div fxFlex="75">
+          <mat-form-field class="no-label input-sm-icon search-input-field full-width">
+            <input
+              type="text"
+              matInput
+              [placeholder]="placeholder | translate"
+              autocomplete="off"
+              (keyup)="onKeyup($event)"
+              (focus)="placeholder = ''"
+              (blur)="placeholder = placeholderText"
+              formControlName="searchString" />
+            <mat-icon matSuffix class="icon icon-small-xm" svgIcon="icon-Search" (click)="onSearch()"> </mat-icon>
+          </mat-form-field>
+          <spig-error-msg
+            *ngIf="searchCtrl.get('searchString')?.value"
+            [control]="searchCtrl.get('searchString')"
+            [customErrorMsg]="'SEARCH_CONTROL.ERROR_SEARCH_CONDITION'"></spig-error-msg>
+        </div>
+        <div fxFlex="25">
+          <button
+            id="btn-srch-ctrl-advn"
+            mat-stroked-button
+            class="xsmall-aw-button overflow-ellipsis mat-advance-search neutral full-width"
+            [class.advance-active]="searchCtrl.get('searchMode')?.value === 'ADVANCE'"
+            (click)="onAdvancedSearch()">
+            {{
+              advancedSearchButtonTextOverride
+                ? (advancedSearchButtonTextOverride | translate)
+                : ('SEARCH_CONTROL.BTN_ADVANCED_SEARCH' | translate)
+            }}
+          </button>
+        </div>
+      </div>
+    </div>
+    <ng-container
+      *ngTemplateOutlet="
+        searchCtrl.get('searchMode')?.value === 'ADVANCE' ? advanceTemplate : normalTemplate
+      "></ng-container>
+
+    <ng-template #advanceTemplate>
+      <div>
+        <div class="advance-search-content pt-8 pb-8">
+          <div fxFlex="24">
+            <spig-dropdown
+              classInput="input-normal"
+              [config]="lgStatusConfig"
+              [options]="lgStatusOptions"
+              formControlName="litigationCloseStatus">
+            </spig-dropdown>
+          </div>
+          <div fxLayout="column" fxFlex="24">
+            <mat-form-field fxFlex>
+              <mat-label>{{ 'COMMON.LABEL_LITIGATION_ID' | translate }}</mat-label>
+              <input type="text" matInput autocomplete="off" formControlName="litigationId" />
+            </mat-form-field>
+            <spig-error-msg
+              *ngIf="searchCtrl.get('litigationId')?.value"
+              [control]="searchCtrl.get('litigationId')"
+              [customErrorMsg]="'SEARCH_CONTROL.ERROR_SEARCH_CONDITION'"></spig-error-msg>
+          </div>
+          <div fxLayout="column" fxFlex="24">
+            <mat-form-field fxFlex>
+              <mat-label>{{ 'COMMON.LABEL_CIF_NO' | translate }}</mat-label>
+              <input type="text" matInput autocomplete="off" formControlName="customerId" />
+            </mat-form-field>
+            <spig-error-msg
+              *ngIf="searchCtrl.get('customerId')?.value"
+              [control]="searchCtrl.get('customerId')"
+              [customErrorMsg]="'SEARCH_CONTROL.ERROR_SEARCH_CONDITION'"></spig-error-msg>
+          </div>
+          <div fxLayout="column" fxFlex="24">
+            <mat-form-field fxFlex>
+              <mat-label>{{ 'SEARCH_CONTROL.PLACEHOLDER_CUSTOMER_FIRST_NAME' | translate }}</mat-label>
+              <input type="text" matInput autocomplete="off" formControlName="customerName" />
+            </mat-form-field>
+            <spig-error-msg
+              *ngIf="searchCtrl.get('customerName')?.value"
+              [control]="searchCtrl.get('customerName')"
+              [customErrorMsg]="'SEARCH_CONTROL.ERROR_SEARCH_CONDITION'"></spig-error-msg>
+          </div>
+          <div fxLayout="column" fxFlex="24">
+            <mat-form-field fxFlex>
+              <mat-label>{{ 'SEARCH_CONTROL.PLACEHOLDER_CUSTOMER_LAST_NAME' | translate }}</mat-label>
+              <input type="text" matInput autocomplete="off" formControlName="customerSurname" />
+            </mat-form-field>
+            <spig-error-msg
+              *ngIf="searchCtrl.get('customerSurname')?.value"
+              [control]="searchCtrl.get('customerSurname')"
+              [customErrorMsg]="'SEARCH_CONTROL.ERROR_SEARCH_CONDITION'"></spig-error-msg>
+          </div>
+          <div fxLayout="column" fxFlex="24">
+            <mat-form-field fxFlex>
+              <mat-label>{{ 'SEARCH_CONTROL.PLACEHOLDER_NATIONAL_ID' | translate }}</mat-label>
+              <input type="text" matInput autocomplete="off" formControlName="citizenId" />
+            </mat-form-field>
+            <spig-error-msg
+              *ngIf="searchCtrl.get('citizenId')?.value"
+              [control]="searchCtrl.get('citizenId')"
+              [customErrorMsg]="'SEARCH_CONTROL.ERROR_SEARCH_CONDITION'"></spig-error-msg>
+          </div>
+          <div fxFlex="24">
+            <spig-dropdown
+              classInput="input-normal"
+              [config]="caseStatusConfig"
+              [options]="caseStatusOptions"
+              formControlName="caseStatus">
+            </spig-dropdown>
+          </div>
+          <div fxLayout="column" fxFlex="24">
+            <mat-form-field fxFlex>
+              <mat-label>{{ 'SEARCH_CONTROL.PLACEHOLDER_BLACK_CASE_NO' | translate }}</mat-label>
+              <input type="text" matInput autocomplete="off" formControlName="blackCaseId" />
+            </mat-form-field>
+            <spig-error-msg
+              *ngIf="searchCtrl.get('blackCaseId')?.value"
+              [control]="searchCtrl.get('blackCaseId')"
+              [customErrorMsg]="'SEARCH_CONTROL.ERROR_SEARCH_CONDITION'"></spig-error-msg>
+          </div>
+          <div fxLayout="column" fxFlex="24">
+            <mat-form-field fxFlex>
+              <mat-label>{{ 'SEARCH_CONTROL.PLACEHOLDER_RED_CASE_NO' | translate }}</mat-label>
+              <input type="text" matInput autocomplete="off" formControlName="redCaseId" />
+            </mat-form-field>
+            <spig-error-msg
+              *ngIf="searchCtrl.get('redCaseId')?.value"
+              [control]="searchCtrl.get('redCaseId')"
+              [customErrorMsg]="'SEARCH_CONTROL.ERROR_SEARCH_CONDITION'"></spig-error-msg>
+          </div>
+          <div fxFlex="24">
+            <spig-dropdown
+              classInput="input-normal"
+              [config]="searchScopeConfig"
+              [options]="searchScopeOptions"
+              formControlName="searchScope">
+            </spig-dropdown>
+          </div>
+          <div fxFlex="24" *ngIf="!responseUnitRef">
+            <spig-dropdown
+              classInput="input-normal"
+              [config]="responseUnitConfig"
+              [options]="responseUnitOptionsAdvanced"
+              formControlName="responseUnit">
+            </spig-dropdown>
+          </div>
+          <div fxFlex="24">
+            <spig-dropdown
+              classInput="input-normal"
+              [config]="orgCodeConfig"
+              [options]="orgCodeOptions"
+              formControlName="orgCode">
+            </spig-dropdown>
+          </div>
+          <div fxFlex="24">
+            <spig-dropdown
+              classInput="input-normal"
+              [config]="loanTypeConfig"
+              [options]="loanTypeOptions"
+              formControlName="loanType">
+            </spig-dropdown>
+          </div>
+          <div fxLayout="column" fxFlex="24">
+            <mat-form-field fxFlex>
+              <mat-label>{{ 'SEARCH_CONTROL.PLACEHOLDER_ACCOUNT_NO' | translate }}</mat-label>
+              <input type="text" matInput autocomplete="off" formControlName="accountNo" />
+            </mat-form-field>
+            <spig-error-msg
+              *ngIf="searchCtrl.get('accountNo')?.value"
+              [control]="searchCtrl.get('accountNo')"
+              [customErrorMsg]="'SEARCH_CONTROL.ERROR_SEARCH_CONDITION'"></spig-error-msg>
+          </div>
+          <div fxLayout="column" fxFlex="24">
+            <mat-form-field fxFlex>
+              <mat-label>{{ 'SEARCH_CONTROL.PLACEHOLDER_BILL_NO' | translate }}</mat-label>
+              <input type="text" matInput autocomplete="off" formControlName="billNo" />
+            </mat-form-field>
+            <spig-error-msg
+              *ngIf="searchCtrl.get('billNo')?.value"
+              [control]="searchCtrl.get('billNo')"
+              [customErrorMsg]="'SEARCH_CONTROL.ERROR_SEARCH_CONDITION'"></spig-error-msg>
+          </div>
+          <div fxLayout="column" fxFlex="24">
+            <mat-form-field fxFlex>
+              <mat-label>{{ 'SEARCH_CONTROL.PLACEHOLDER_ACCOUNT_NO_DEPARTMENT' | translate }}</mat-label>
+              <input type="text" matInput autocomplete="off" formControlName="kbdId" />
+            </mat-form-field>
+            <spig-error-msg
+              *ngIf="searchCtrl.get('kbdId')?.value"
+              [control]="searchCtrl.get('kbdId')"
+              [customErrorMsg]="'SEARCH_CONTROL.ERROR_SEARCH_CONDITION'"></spig-error-msg>
+          </div>
+          <div fxFlex="24">
+            <spig-dropdown
+              classInput="input-normal"
+              [config]="debtorConfig"
+              [options]="debtorOptions"
+              formControlName="debtor">
+            </spig-dropdown>
+          </div>
+          <div fxFlex="24">
+            <spig-dropdown
+              classInput="input-normal"
+              [config]="samFlagConfig"
+              [options]="samFlagOptions"
+              formControlName="samFlag">
+            </spig-dropdown>
+          </div>
+          <div fxFlex="24">
+            <spig-dropdown
+              classInput="input-normal"
+              [config]="tamcFlagConfig"
+              [options]="tamcFlagOptions"
+              formControlName="tamcFlag">
+            </spig-dropdown>
+          </div>
+          <div fxFlex="24">
+            <spig-dropdown
+              classInput="input-normal"
+              [config]="writeOffStatusConfig"
+              [options]="writeOffStatusOptions"
+              formControlName="writeOffStatus">
+            </spig-dropdown>
+          </div>
+
+          <div fxFlex="24">
+            <spig-dropdown
+              classInput="input-normal"
+              [config]="debtTransferToConfig"
+              [options]="debtTransferToOptions"
+              formControlName="debtTransferTo">
+            </spig-dropdown>
+          </div>
+          <div fxFlex="24">
+            <spig-dropdown
+              classInput="input-normal"
+              [config]="caseCreatorConfig"
+              [options]="caseCreatorOptions"
+              formControlName="caseCreator">
+            </spig-dropdown>
+          </div>
+          <div fxFlex="24">
+            <spig-dropdown
+              classInput="input-normal"
+              [config]="courtConfig"
+              [options]="courtOptions"
+              formControlName="court">
+            </spig-dropdown>
+          </div>
+          <div fxLayout="column" fxFlex="24">
+            <mat-form-field fxFlex>
+              <mat-label>{{ 'SEARCH_CONTROL.PLACEHOLDER_LICENSE_NO' | translate }}</mat-label>
+              <input type="text" matInput autocomplete="off" formControlName="ownerId" />
+            </mat-form-field>
+            <spig-error-msg
+              *ngIf="searchCtrl.get('ownerId')?.value"
+              [control]="searchCtrl.get('ownerId')"
+              [customErrorMsg]="'SEARCH_CONTROL.ERROR_SEARCH_CONDITION'"></spig-error-msg>
+          </div>
+          <div fxLayout="column" fxFlex="24">
+            <mat-form-field fxFlex>
+              <mat-label>{{ 'SEARCH_CONTROL.PLACEHOLDER_SUITE_NO' | translate }}</mat-label>
+              <input type="text" matInput autocomplete="off" formControlName="roomNo" />
+            </mat-form-field>
+            <spig-error-msg
+              *ngIf="searchCtrl.get('roomNo')?.value"
+              [control]="searchCtrl.get('roomNo')"
+              [customErrorMsg]="'SEARCH_CONTROL.ERROR_SEARCH_CONDITION'"></spig-error-msg>
+          </div>
+
+          <div fxFlex fxLayoutGap="12px">
+            <button
+              id="btn-srch-ctrl-advn-search"
+              fxFlex="15"
+              mat-flat-button
+              color="primary"
+              class="small-button overflow-ellipsis"
+              (click)="onSearch()">
+              <mat-icon svgIcon="icon-Search" class="icon btn-icon mr-8"></mat-icon
+              >{{ 'SEARCH_CONTROL.BTN_START_ADVANCED_SEARCH' | translate }}
+            </button>
+            <button
+              id="btn-srch-ctrl-advn-cancel"
+              fxFlex="10"
+              mat-fab
+              color="black-80"
+              class="small-button overflow-ellipsis"
+              (click)="onCancel()">
+              {{ 'COMMON.BUTTON_CANCEL' | translate }}
+            </button>
+            <div class="pr-12" fxLayoutAlign="end start" fxFlex>
+              <button
+                id="btn-srch-ctrl-advn-reset"
+                fxFlex="10"
+                mat-fab
+                color="red-60"
+                class="small-button overflow-ellipsis"
+                (click)="onResetSearch()">
+                <mat-icon svgIcon="icon-Broom" class="icon btn-icon mr-8"></mat-icon
+                >{{ 'SEARCH_CONTROL.BTN_RESET_ADVANCED_SEARCH' | translate }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+    <ng-template #normalTemplate></ng-template>
+  </div>
+</ng-template>

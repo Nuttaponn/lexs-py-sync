@@ -1,0 +1,335 @@
+<div class="content-container mat-elevation-z0">
+  <div class="title-content status-section">
+    <div class="status-label">
+      <h3 class="mt-0 mb-0">{{ 'FINANCE.EXPENSE_ASSETS.ASSETS_TITLE' | translate }}</h3>
+    </div>
+  </div>
+  <div class="title-content">
+    <div fxLayout="row">
+      <div fxFlex="17" class="pl-12">
+        <h6>{{ 'FINANCE.EXPENSE_ASSETS.DETAIL_TITLE' | translate }}</h6>
+      </div>
+      <div fxFlex="66" fxLayoutGap="16" fxLayout="column" [formGroup]="dataForm">
+        <ng-container *ngIf="mode === 'ADD' || mode === 'EDIT'; else viewOptionsTemplate">
+          <div fxLayout="row" fxLayoutGap="16">
+            <div fxLayout="column" fxFlex="50" fxLayoutGap="4">
+              <spig-datepicker
+                formControlName="assetsCheckDate"
+                class="date-picker-block"
+                [classInput]="'input-s icon'"
+                [required]="true"
+                [label]="'FINANCE.EXPENSE_ASSETS.ASSETS_CHECK_DATE'"
+                (inputChange)="onCollateralOptionsChange(false)"
+                [max]="today"></spig-datepicker>
+              <spig-error-msg
+                [control]="getSearchFormControls('assetsCheckDate')"
+                [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED_2'"></spig-error-msg>
+            </div>
+            <div fxFlex="50"></div>
+          </div>
+          <div fxLayout="row" fxLayoutGap="16">
+            <div fxLayout="column" fxFlex="50" fxLayoutGap="4">
+              <spig-dropdown
+                formControlName="actualLed"
+                classInput="input-normal icon"
+                [required]="true"
+                [config]="legalExecutionDepartmentOptionsConfig"
+                [options]="legalExecutionDepartmentOptions"
+                (selectedOption)="onCollateralOptionsChange(false)"></spig-dropdown>
+              <spig-error-msg
+                [control]="getSearchFormControls('actualLed')"
+                [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED_2'"></spig-error-msg>
+            </div>
+            <div fxLayout="column" fxFlex="50" fxLayoutGap="4">
+              <spig-dropdown
+                formControlName="seizureDateLedId"
+                classInput="input-normal icon"
+                [required]="true"
+                [config]="seizureDateDropdownConfig"
+                [options]="seizureDateOptions"
+                [disabled]="dataForm.controls['actualLed'].value === ''"
+                (selectedOption)="onCollateralOptionsChange(false)"></spig-dropdown>
+              <spig-error-msg
+                [control]="getSearchFormControls('seizureDateLedId')"
+                [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED_2'"></spig-error-msg>
+            </div>
+          </div>
+        </ng-container>
+        <ng-template #viewOptionsTemplate>
+          <div>
+            <span class="thin-letter">{{ 'FINANCE.EXPENSE_ASSETS.ASSETS_CHECK_DATE' | translate }}</span>
+            <div>{{ (getSearchFormControls('assetsCheckDate')?.value | buddhistEra: 'DD/MM/yyyy') || '-' }}</div>
+          </div>
+          <div fxLayout="row" fxLayoutGap="16">
+            <div fxFlex="50">
+              <span class="thin-letter">{{ 'COMMON.LABEL_LEGAL_EXECUTION_DEPARTMENT' | translate }}</span>
+              <div>{{ transaction?.actualLed || '-' }}</div>
+            </div>
+            <div fxFlex="50">
+              <span class="thin-letter">{{ 'FINANCE.EXPENSE_ASSETS.SEIZURE_TIMESTAMP' | translate }}</span>
+              <div>{{ (transaction?.seizureTimestamp | buddhistEra: 'DD/MM/yyyy') || '-' }}</div>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+      <div fxFlex="17"></div>
+    </div>
+  </div>
+  <div class="title-content" fxLayout="column">
+    <div fxFlex="17" class="pl-12 mb-16 wrap-line-break">
+      <h6>{{ 'FINANCE.EXPENSE_ASSETS.MORTGAGE_ASSETS_TITLE' | translate }}</h6>
+    </div>
+    <div fxLayout="row" fxLayoutGap="10">
+      <div fxFlex="50">
+        <spig-dropdown
+          classInput="input-xsm icon"
+          [config]="collateralStatusOptionsConfig"
+          [options]="collateralStatusOptions"
+          [formControl]="collateralStatusFormControl"
+          (selectedOption)="onSelectedCollateralStatus($event)"></spig-dropdown>
+      </div>
+      <div fxFlex="50">
+        <spig-dropdown
+          classInput="input-xsm icon"
+          [config]="collateralSortingOptionsConfig"
+          [options]="collateralSortingOrderOptions"
+          [formControl]="collateralSortingFormControl"
+          (selectedOption)="onSortSelected($event)"></spig-dropdown>
+      </div>
+    </div>
+  </div>
+  <div class="title-content pt-0" *ngIf="mode !== 'VIEW' && mode !== 'APPROVE'">
+    <app-message-banner
+      type="warn-normal"
+      [message]="'FINANCE.EXPENSE_ASSETS.CANNOT_CHANGE_WARNING'"></app-message-banner>
+    <div class="pt-8"></div>
+    <app-message-banner
+      type="warn-normal"
+      *ngIf="disabledCollateralIds.length > 0"
+      [message]="
+        'FINANCE.EXPENSE_ASSETS.DUPLICATED_COLLATERALS_WARNING'
+          | translate: { COLLATERALS: disabledCollateralIds.join(', ') }
+      "></app-message-banner>
+  </div>
+  <div class="title-content pt-8" *ngIf="mode !== 'VIEW' && mode !== 'APPROVE'">
+    <div fxLayout="row" fxLayoutAlign="space-between">
+      <div class="elm-form" fxLayout="row">
+        <input class="elm-radio-check elm-check" type="checkbox" (change)="onCheckShowOnlySelected($event)" />
+        <label class="elm-check-label">
+          {{ 'FINANCE.EXPENSE_ASSETS.SELECTED_ONLY_ASSETS' | translate }}
+        </label>
+      </div>
+      <div>
+        {{ 'FINANCE.EXPENSE_ASSETS.SELECTED' | translate }}:
+        <span class="selected-label bold">{{ selection.selected.length }}</span>
+      </div>
+    </div>
+  </div>
+  <div class="title-content pt-0">
+    <ng-container
+      *ngTemplateOutlet="
+        expenseAssetsList && expenseAssetsTableTemplate;
+        context: {
+          list:
+            (isSearchFormValid || mode === 'VIEW' || mode === 'APPROVE') && expenseAssetsList.filteredData.length > 0
+              ? expenseAssetsList.filteredData
+              : [{}],
+        }
+      "></ng-container>
+    <app-paginator
+      *ngIf="!isShowEmptyTable"
+      [length]="expenseAssetsList.data.length"
+      [pageSize]="pageSize"
+      (page)="onPaginatorEvent($event)"
+      #paginator></app-paginator>
+    <div>
+      <span class="error-msg" *ngIf="submitted && dataForm.controls['collaterals']?.value.length === 0">
+        {{ 'COMMON.ERROR_MSG_TABLE_REQUIRED' | translate }}
+      </span>
+    </div>
+  </div>
+</div>
+<div class="content-container">
+  <div class="title-content status-section">
+    <div class="status-label">
+      <h3 class="mt-0 mb-0">{{ 'FINANCE.EXPENSE_DETAIL.LIST_DOCUMENTS' | translate }}</h3>
+    </div>
+  </div>
+  <div class="mb-16 mr-16 ml-16">
+    <app-expense-asset-documents
+      [isReadDocument]="mode === 'VIEW' || mode === 'APPROVE'"
+      [dataSource]="documentsList"
+      [cif]="cifId"
+      [showErrors]="submitted"
+      (documentChange)="onDocumentChange($event)"></app-expense-asset-documents>
+  </div>
+</div>
+<ng-template let-dataSource="list" #expenseAssetsTableTemplate>
+  <div class="table-scroll section" table-scroll>
+    <table
+      mat-table
+      [dataSource]="dataSource"
+      [class.empty]="
+        expenseAssetsList.filteredData.length === 0 || (!isSearchFormValid && mode !== 'VIEW' && mode !== 'APPROVE')
+      ">
+      <ng-container matColumnDef="checkbox" sticky>
+        <th mat-header-cell *matHeaderCellDef>
+          <mat-checkbox
+            (change)="toggleAllRows()"
+            [checked]="!disabledAll ? selection.hasValue() && isAllSelected : false"
+            [indeterminate]="!disabledAll ? selection.hasValue() && !isAllSelected : false"
+            [disabled]="disabledAll"></mat-checkbox>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <mat-checkbox
+            (click)="$event.stopPropagation()"
+            (change)="$event ? onCheckboxChange(element) : null"
+            [checked]="selectionId.isSelected(element.collateralId)"
+            [value]="selectionId.isSelected(element.collateralId) ? 'checked' : ''"
+            [disabled]="element.disabled"
+            [indeterminate]="element.disabled"></mat-checkbox>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="no" sticky>
+        <th mat-header-cell *matHeaderCellDef class="text-center width-pct-5">{{ 'COMMON.LABEL_NO' | translate }}</th>
+        <td mat-cell *matCellDef="let element; let rowIndex = index" class="text-center width-pct-5">
+          <ng-container>
+            <div>
+              <label [for]="rowIndex"></label>
+            </div>
+          </ng-container>
+          <ng-container>
+            {{ (pageIndex - 1) * 10 + (rowIndex + 1) }}
+          </ng-container>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="collateralId" sticky>
+        <th mat-header-cell *matHeaderCellDef columnElevationLeft>
+          {{ 'AUCTION_LED_CARD.DEFERMENT_DEBT.COLLATERAL_NUMBER' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" columnElevationLeft>
+          <span>{{ element?.collateralId || '-' }}</span>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="collateralTypeDesc">
+        <th mat-header-cell *matHeaderCellDef>{{ 'FINANCE.HEAD_COLUMN_PROPERTY_TYPE' | translate }}</th>
+        <td mat-cell *matCellDef="let element">
+          <span>{{ element?.collateralTypeDesc || '-' }}</span>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="collateralSubTypeDesc">
+        <th mat-header-cell *matHeaderCellDef>{{ 'AUCTION_LED_CARD.DEFERMENT_DEBT.SUBTYPE' | translate }}</th>
+        <td mat-cell *matCellDef="let element">
+          <span>{{ element?.collateralSubTypeDesc || '-' }}</span>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="documentNo">
+        <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_DOCUMENT_NUMBER' | translate }}</th>
+        <td mat-cell *matCellDef="let element">
+          <span>{{ element?.documentNo || '-' }}</span>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="collateralDetails">
+        <th mat-header-cell *matHeaderCellDef [class.min-width-352]="!isShowEmptyTable">
+          {{ 'AUCTION_LED_CARD.DEFERMENT_DEBT.PROPERTY_DETAILS' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" [class.min-width-352]="!isShowEmptyTable">
+          <div class="my-10">{{ element?.collateralDetails || '-' }}</div>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="ownerFullName">
+        <th mat-header-cell *matHeaderCellDef>{{ 'AUCTION_LED_CARD.DEFERMENT_DEBT.PROPRIETORSHIP' | translate }}</th>
+        <td mat-cell *matCellDef="let element">
+          <div class="my-10">{{ element?.ownerFullName || '-' }}</div>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="totalAppraisalValue">
+        <th mat-header-cell *matHeaderCellDef class="text-right">
+          {{ 'AUCTION_LED_CARD.DEFERMENT_DEBT.APPRAISED_PRICE' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" class="text-right">
+          <span>{{ (element?.totalAppraisalValue | numberDecimal) || '-' }}</span>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="collateralCmsStatus">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'AUCTION_LED_CARD.DEFERMENT_DEBT.COLLATERAL_STATUS_CMS' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div class="status-label">
+            {{
+              element.collateralCmsStatus
+                ? ('COLLATERAL_CMS_STATUS.' + (element.collateralCmsStatus | uppercase) | translate)
+                : '-'
+            }}
+          </div>
+        </td>
+      </ng-container>
+      <!-- <ng-container matColumnDef="remark">
+        <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_REMARKS' | translate }}</th>
+        <td mat-cell *matCellDef="let element;">
+          <span>{{ element?.remark || '-' }}</span>
+        </td>
+      </ng-container> -->
+      <ng-container matColumnDef="collateralCaseLexStatus" stickyEnd>
+        <th mat-header-cell *matHeaderCellDef class="text-center" columnElevationRight>
+          {{ 'AUCTION_LED_CARD.DEFERMENT_DEBT.COLLATERAL_STATUS_S' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" class="text-center" columnElevationRight>
+          <ng-container *ngIf="!element.collateralCaseLexStatus || element.collateralCaseLexStatus === '-'">
+            <span>-</span>
+          </ng-container>
+          <ng-container *ngIf="element.collateralCaseLexStatus === LEXS_STATUS.PLEDGE">
+            <div class="status-label status-normal m-auto">ไม่ถูกยึด / อายัด / ขาย</div>
+          </ng-container>
+          <ng-container *ngIf="element.collateralCaseLexStatus === LEXS_STATUS.SEIZURED">
+            <div class="status-label status-success m-auto">ยึดทรัพย์</div>
+          </ng-container>
+
+          <ng-container *ngIf="element.collateralCaseLexStatus === LEXS_STATUS.ON_SALE">
+            <div class="status-label status-pending m-auto">อยู่ระหว่างขายทอดตลาด</div>
+          </ng-container>
+
+          <ng-container *ngIf="element.collateralCaseLexStatus === LEXS_STATUS.PENDING_SALE">
+            <div class="status-label status-pending m-auto">รอประกาศขายทอดตลาดใหม่</div>
+          </ng-container>
+          <ng-container *ngIf="element.collateralCaseLexStatus === LEXS_STATUS.SOLD">
+            <div class="status-label status-success m-auto">
+              <mat-icon svgIcon="icon-Mark" class="icon icon-small-xl fill-krungthai-green mr-4"></mat-icon
+              >ขายทอดตลาดแล้ว
+            </div>
+          </ng-container>
+        </td></ng-container
+      >
+      <ng-container matColumnDef="seizureStatus" stickyEnd>
+        <th mat-header-cell *matHeaderCellDef class="text-center">
+          {{ 'AUCTION_LED_CARD.DEFERMENT_DEBT.SEIZURE_RESULT' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" class="text-center">
+          <div class="status-label m-auto" [appBadgeStatus]="element.seizureStatus">
+            <mat-icon
+              *ngIf="element.seizureStatus === 'COMPLETED' || element.seizureStatus === 'SUCCESS'"
+              svgIcon="icon-Mark"
+              class="icon icon-small-xl fill-krungthai-green"></mat-icon>
+            {{ 'COLLATERAL_SEIZURE_STATUS.' + element.seizureStatus | translate }}
+            <mat-icon
+              *ngIf="element.seizureStatus === 'FAILED'"
+              svgIcon="icon-Error"
+              class="icon icon-xsmall"></mat-icon>
+          </div>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="expenseAssetsColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: expenseAssetsColumns"></tr>
+    </table>
+  </div>
+  <ng-container *ngIf="isShowEmptyTable" [ngTemplateOutlet]="emptyExpenseAssetsTableTemplate"></ng-container>
+</ng-template>
+<ng-template #emptyExpenseAssetsTableTemplate>
+  <div>
+    <app-message-empty
+      [message]="
+        isSearchFormValid ? 'COMMON.SEARCH_NOT_FOUND' : 'FINANCE.EXPENSE_ASSETS.EMPTY_MESSAGE'
+      "></app-message-empty>
+  </div>
+</ng-template>

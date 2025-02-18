@@ -1,0 +1,264 @@
+<!-- LEX2-42460 -->
+<div class="mt-12">
+  <div class="mb-16 mt-24 mr-16" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+    <mat-icon svgIcon="icon-Window" class="icon icon-xmedium"></mat-icon>
+    <h6>{{ 'AUCTION_DETAIL.ACCOUNT_DOCUMENT.ACCOUNT_DOC_DEED_GROUPS_LABEL' | translate }}</h6>
+  </div>
+
+  <div class="mt-24" fxLayout="row" fxLayoutAlign="space-between center">
+    <div *ngIf="mode === 'EDIT'" class="elm-form check-box-input">
+      <mat-checkbox
+        [formControl]="isFilterAwaitingToFillData"
+        (change)="onFilter($event)"
+      >
+        {{
+          'แสดงเฉพาะทรัพย์ที่ยังไม่ได้บันทึกข้อมูล' | translate
+        }}
+      </mat-checkbox>
+    </div>
+    <div
+      *ngIf="mode === 'EDIT'"
+      fxLayout="row"
+      fxLayoutAlign="end stretch"
+      class="mb-20 fs-14"
+      fxLayoutGap="8">
+      <span class="sub-title">บันทึกข้อมูลแล้ว: </span>
+      <h6>{{ successFillNumber() }}</h6>
+      <div class="vertical-divider"></div>
+      <span class="sub-title">รอบันทึกข้อมูล: </span>
+      <h6>{{ awaitingFillNumber() }}</h6>
+    </div>
+  </div>
+
+  <div
+    *ngIf="filteredDataDateListArray"
+    class="table-scroll section"
+    table-scroll
+  >
+
+    <!-- [class.can-scroll]="!['RE_SELECT', 'EDIT', 'MATCH'].includes(buttonType)" -->
+    <table mat-table id="withdrawn-table" [dataSource]="filteredDataDateListArray.controls">
+      <!-- "orderNumber", -->
+      <ng-container matColumnDef="orderNumber">
+        <th mat-header-cell *matHeaderCellDef class="text-center">{{ 'COMMON.LABEL_NO' | translate }}</th>
+        <td mat-cell *matCellDef="let element; let i = index" class="text-center">
+          {{ indexTable(i, config?.hasPining ? element.fsubbidnum : 0) }}
+        </td>
+      </ng-container>
+
+      <!-- "fsubbidnum", -->
+      <ng-container matColumnDef="fsubbidnum">
+        <th class="text-left new-line" mat-header-cell *matHeaderCellDef>
+          {{ 'PROPERTY.PROPERTY_SET' | translate }}
+        </th>
+        <td class="text-left new-line" mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
+          <ng-container *ngIf="getFormValue(element, 'fsubbidnum'); else elseGroupTemplate">
+            <span class="link" (click)="viewFsubbidnum(element)"> ชุดทรัพย์ที่ {{ getFormValue(element, 'fsubbidnum') }} </span>
+          </ng-container>
+          <ng-template #elseGroupTemplate>
+            <span>-</span>
+          </ng-template>
+        </td>
+      </ng-container>
+
+      <!-- "totalDeeds", -->
+      <ng-container matColumnDef="totalDeeds">
+        <th class="text-right new-line preserve-breaks" mat-header-cell *matHeaderCellDef>
+          {{ 'PROPERTY.PROPERTY_TOTAL' | translate }}
+        </th>
+        <td class="text-right" mat-cell *matCellDef="let element">
+          {{ getFormValue(element, 'totalDeeds') || '-' }}
+        </td>
+        <td mat-footer-cell *matFooterCellDef></td>
+      </ng-container>
+      <!-- "saleTypeDesc", -->
+      <ng-container matColumnDef="saleTypeDesc">
+        <th class="text-left" mat-header-cell *matHeaderCellDef>
+          {{ 'PROPERTY.SALES_TYPE' | translate }}
+        </th>
+        <td class="text-left" mat-cell *matCellDef="let element" [formGroup]="element">
+          <!-- {{ getFormValue(element, 'saleTypeDesc') || '-' }} -->
+          <ng-container *ngIf="mode === 'EDIT'; else viewSaleTypeDesc">
+            <spig-dropdown
+              [config]="saleTypeDescConfig"
+              [options]="saleTypeDescOptions"
+              formControlName="saleTypeDesc"
+              [classInput]="'input-normal elevation-e1 border-black-40'">
+            </spig-dropdown>
+            <spig-error-msg
+              *ngIf="element.get('saleTypeDesc')?.hasError('required')"
+              [control]="element.get('saleTypeDesc')"
+              [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+            </spig-error-msg>
+          </ng-container>
+          <ng-template #viewSaleTypeDesc>
+            <span>{{ getFormValue(element, 'saleTypeDesc') || '-' }}</span>
+          </ng-template>
+        </td>
+        <td mat-footer-cell *matFooterCellDef></td>
+      </ng-container>
+
+      <!--
+      "OUTSIDER_COLLATERAL_PRICE": "ราคาวางหลักประกัน\nบุคคลภายนอก(บาท)",
+      "SUBSTITUTE_COLLATERAL_PRICE": "ราคาวางหลักประกัน\nส่วนได้ใช้แทน(บาท)",
+      "EXPERT_VALUATION_PRICE": "ราคาประเมินของ\nผู้เชี่ยวชาญ(บาท)",
+      "EXECUTION_OFFICER_VALUATION_PRICE": "ราคาประเมินของ\nเจ้าพนักงานบังคับคดี(บาท)",
+      "COMMITTEE_PROPERTY_VALUATION_PRICE": "ราคาที่กำหนดโดย\nคณะกรรมการกำหนด\nราคาทรัพย์(บาท)",
+      "ASSESSMENT_OFFICER_VALUATION_PRICE": "ราคาประเมินของ\nเจ้าพนักงานประเมิน\nราคาทรัพย์(บาท)",
+      -->
+      <!-- "reservefund", -->
+      <ng-container matColumnDef="reservefund">
+        <th class="text-right new-line preserve-breaks" mat-header-cell *matHeaderCellDef>
+          {{ 'PROPERTY.OUTSIDER_COLLATERAL_PRICE' | translate }}
+        </th>
+        <td class="text-right" mat-cell *matCellDef="let element" [formGroup]="element">
+          <ng-container *ngIf="mode === 'EDIT'; else viewReservefund">
+            <mat-form-field class="input-full-field border-black-40 min-width-pct-50">
+              <mat-label>{{ 'UPLOAD_FILE_DIALOG.PLACE_HOLDER_AMOUNT_INPUT' | translate }}</mat-label>
+              <input matInput appNumberOnly="qualitative" formControlName="reservefund" />
+            </mat-form-field>
+            <spig-error-msg
+              *ngIf="element.get('reservefund')?.hasError('required')"
+              [control]="element.get('reservefund')"
+              [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+            </spig-error-msg>
+          </ng-container>
+          <ng-template #viewReservefund>
+            <span> {{ (getFormValue(element, 'reservefund') | numberDecimal) || '-' }} </span>
+          </ng-template>
+        </td>
+      </ng-container>
+      <!-- "reservefund1", -->
+      <ng-container matColumnDef="reservefund1">
+        <th class="text-right new-line preserve-breaks" mat-header-cell *matHeaderCellDef>
+          {{ 'PROPERTY.SUBSTITUTE_COLLATERAL_PRICE' | translate }}
+        </th>
+        <td class="text-right" mat-cell *matCellDef="let element" [formGroup]="element">
+          <ng-container *ngIf="mode === 'EDIT'; else viewReservefund1">
+            <mat-form-field class="input-full-field border-black-40 min-width-pct-50">
+              <mat-label>{{ 'UPLOAD_FILE_DIALOG.PLACE_HOLDER_AMOUNT_INPUT' | translate }}</mat-label>
+              <input matInput appNumberOnly="qualitative" formControlName="reservefund1" />
+            </mat-form-field>
+            <spig-error-msg
+              *ngIf="element.get('reservefund1')?.hasError('required')"
+              [control]="element.get('reservefund1')"
+              [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+            </spig-error-msg>
+          </ng-container>
+          <ng-template #viewReservefund1>
+            <span> {{ (getFormValue(element, 'reservefund1') | numberDecimal) || '-' }} </span>
+          </ng-template>
+        </td>
+      </ng-container>
+      <!-- "assetPrice2", -->
+      <ng-container matColumnDef="assetPrice2">
+        <th class="text-right new-line preserve-breaks" mat-header-cell *matHeaderCellDef>
+          {{ 'PROPERTY.EXPERT_VALUATION_PRICE' | translate }}
+        </th>
+        <td class="text-right" mat-cell *matCellDef="let element" [formGroup]="element">
+          <ng-container *ngIf="mode === 'EDIT'; else viewAssetPrice2">
+            <mat-form-field class="input-full-field border-black-40 min-width-pct-50">
+              <mat-label>{{ 'UPLOAD_FILE_DIALOG.PLACE_HOLDER_AMOUNT_INPUT' | translate }}</mat-label>
+              <input matInput appNumberOnly="qualitative" formControlName="assetPrice2" />
+            </mat-form-field>
+            <spig-error-msg
+              *ngIf="element.get('assetPrice2')?.hasError('required')"
+              [control]="element.get('assetPrice2')"
+              [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+            </spig-error-msg>
+          </ng-container>
+          <ng-template #viewAssetPrice2>
+            <span> {{ (getFormValue(element, 'assetPrice2') | numberDecimal) || '-' }} </span>
+          </ng-template>
+        </td>
+      </ng-container>
+      <!-- "assetPrice3", -->
+      <ng-container matColumnDef="assetPrice3">
+        <th class="text-right new-line preserve-breaks" mat-header-cell *matHeaderCellDef>
+          {{ 'PROPERTY.EXECUTION_OFFICER_VALUATION_PRICE' | translate }}
+        </th>
+        <td class="text-right new-line preserve-breaks" mat-cell *matCellDef="let element" [formGroup]="element">
+          <ng-container *ngIf="mode === 'EDIT'; else viewAssetPrice3">
+            <mat-form-field class="input-full-field border-black-40 min-width-pct-50">
+              <mat-label>{{ 'UPLOAD_FILE_DIALOG.PLACE_HOLDER_AMOUNT_INPUT' | translate }}</mat-label>
+              <input matInput appNumberOnly="qualitative" formControlName="assetPrice3" />
+            </mat-form-field>
+            <spig-error-msg
+              *ngIf="element.get('assetPrice3')?.hasError('required')"
+              [control]="element.get('assetPrice3')"
+              [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+            </spig-error-msg>
+          </ng-container>
+          <ng-template #viewAssetPrice3>
+            <span> {{ (getFormValue(element, 'assetPrice3') | numberDecimal) || '-' }} </span>
+          </ng-template>
+        </td>
+      </ng-container>
+      <!-- "assetPrice4", -->
+      <ng-container matColumnDef="assetPrice4">
+        <th class="text-right new-line preserve-breaks" mat-header-cell *matHeaderCellDef>
+          {{ 'PROPERTY.COMMITTEE_PROPERTY_VALUATION_PRICE' | translate }}
+        </th>
+        <td class="text-right" mat-cell *matCellDef="let element" [formGroup]="element">
+          <ng-container *ngIf="mode === 'EDIT'; else viewAssetPrice4">
+            <mat-form-field class="input-full-field border-black-40 min-width-pct-50">
+              <mat-label>{{ 'UPLOAD_FILE_DIALOG.PLACE_HOLDER_AMOUNT_INPUT' | translate }}</mat-label>
+              <input matInput appNumberOnly="qualitative" formControlName="assetPrice4" />
+            </mat-form-field>
+            <spig-error-msg
+              *ngIf="element.get('assetPrice4')?.hasError('required')"
+              [control]="element.get('assetPrice4')"
+              [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+            </spig-error-msg>
+          </ng-container>
+          <ng-template #viewAssetPrice4>
+            <span> {{ (getFormValue(element, 'assetPrice4') | numberDecimal) || '-' }} </span>
+          </ng-template>
+        </td>
+      </ng-container>
+      <!-- "assetPrice5", -->
+      <ng-container matColumnDef="assetPrice5" stickyEnd>
+        <th class="text-right new-line preserve-breaks" mat-header-cell *matHeaderCellDef columnElevationRight>
+          {{ 'PROPERTY.ASSESSMENT_OFFICER_VALUATION_PRICE' | translate }}
+        </th>
+        <td class="text-right" mat-cell *matCellDef="let element" columnElevationRight [formGroup]="element">
+          <ng-container *ngIf="mode === 'EDIT'; else viewAssetPrice5">
+            <mat-form-field class="input-full-field border-black-40 min-width-pct-50">
+              <mat-label>{{ 'UPLOAD_FILE_DIALOG.PLACE_HOLDER_AMOUNT_INPUT' | translate }}</mat-label>
+              <input matInput appNumberOnly="qualitative" formControlName="assetPrice5" />
+            </mat-form-field>
+            <spig-error-msg
+              *ngIf="element.get('assetPrice5')?.hasError('required')"
+              [control]="element.get('assetPrice5')"
+              [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+            </spig-error-msg>
+          </ng-container>
+          <ng-template #viewAssetPrice5>
+            <span> {{ (getFormValue(element, 'assetPrice5') | numberDecimal) || '-' }} </span>
+          </ng-template>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="collateralColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: collateralColumns"></tr>
+    </table>
+
+    <!-- Empty row handler -->
+    <app-message-empty
+    *ngIf="dataDateListArray?.controls?.length === 0"
+    [message]="'COMMON.SEARCH_NOT_FOUND'">
+4      <!-- *ngIf="collateralsSource.data.length === 0 || collateralsSource.filteredData.length === 0" -->
+    </app-message-empty>
+  </div>
+  <!-- Paginator -->
+  <!-- *ngIf="!config?.hidePaging"  -->
+  <ng-container>
+    <app-paginator
+      *ngIf="totalFilteredNumber > 0"
+      #paginator
+      [pageSize]="pageSize"
+      [length]="totalFilteredNumber"
+      (page)="onPaging($event)"></app-paginator>
+  </ng-container>
+
+</div>

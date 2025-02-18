@@ -1,0 +1,272 @@
+<app-action-bar
+  (backButtonHandler)="onBack()"
+  [backButtonText]="actionBar.backText || ''"
+  [showNavBarInformation]="true"
+  [hasCancelButton]="actionBar.hasCancel"
+  [cancelButtonText]="actionBar.cancelText || ''"
+  (editButtonHandler)="onEdit()"
+  [hasSaveButton]="actionBar.hasSave"
+  [saveButtonText]="actionBar.saveText || 'COMMON.BUTTON_SAVE'"
+  (saveButtonHandler)="onSave()"
+  [hasPrimaryButton]="actionBar.hasPrimary"
+  [primaryButtonText]="actionBar.primaryText || ''"
+  [primaryButtonIcon]="actionBar.primaryIcon || 'icon-Selected'"
+  (primaryButtonHandler)="onSubmit()"
+  [hasRejectButton]="actionBar.hasReject"
+  [rejectButtonText]="actionBar.rejectText || ''"
+  [rejectButtonIcon]="actionBar.rejectIcon || ''"
+  (rejectButtonHandler)="onReject()"
+  [hasEditButton]="actionBar.hasEdit || false"
+  [editButtonText]="actionBar.editText || ''"
+  [editButtonIcon]="actionBar.editIcon || ''">
+  <ng-container navBarInformationTemplate>
+    <ng-container>
+      <mat-icon [svgIcon]="taskIcon" class="icon icon-xmedium default-cursor"></mat-icon>
+    </ng-container>
+    <span class="ml-8">{{ title | translate }}</span>
+    <ng-container *ngIf="isDisplayTitleStatus">
+      <span *ngIf="!!statusName" [ngClass]="statusCode | taskStatus" class="ml-12 status-label">{{ statusName }}</span>
+    </ng-container>
+  </ng-container>
+</app-action-bar>
+
+<div class="content-below-action-bar-area">
+  <ng-container>
+    <div class="m-25">
+      <app-message-banner *ngIf="messageBanner" type="black-info" [message]="messageBanner"></app-message-banner>
+      <app-message-banner *ngIf="errorBannerMsg" type="fail" icon="icon-Error" [message]="errorBannerMsg">
+      </app-message-banner>
+    </div>
+    <div class="margin-title ml-24 mr-24">
+      <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10" class="mt-24">
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+          <div>
+            <h3 class="m-0">{{ auctionDetailTitle }}</h3>
+          </div>
+          <ng-container *ngIf="hasAdditionalTitle">
+            <span class="divider-vertical mr-20"></span>
+            <h3 class="m-0">{{ additionalTitle }}</h3>
+          </ng-container>
+          <ng-container *ngIf="auctionStatus">
+            <div
+              [ngClass]="{
+                'status-pending': isAuctionPendingStatusGroup,
+                'status-normal': isAuctionNormalStatusGroup,
+                'status-success': isAuctionSuccessStatusGroup,
+              }"
+              class="ml-12 status-label">
+              {{ prefixAuctionStatus }}
+              {{ auctionStatus | translate }}
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+
+    <!-- รายละเอียดคดี -->
+    <app-case-details
+      [title]="caseDetailTitle"
+      [data]="litigationCaseShortDetail"
+      [hidelawyer]="true"></app-case-details>
+    <!-- รายละเอียดการนัดหมาย  รายการเอกสารประกอบการนัดโอนกรรมสิทธิ์ -->
+    <ng-container>
+      <app-auction-appointment-details [isViewMode]="isViewMode"></app-auction-appointment-details>
+    </ng-container>
+    <!-- รายละเอียดแคชเชียร์เช็คโอนกรรมสิทธิ์ -->
+    <ng-container
+      *ngIf="
+        taskCode === TaskCode.R2E09_06_04_6 ||
+        auctionMenu === AuctionMenu.OWNERSHIP_TRNASFER ||
+        auctionMenu === AuctionMenu.VIEW_OWNERSHIP_TRNASFER ||
+        auctionMenu === AuctionMenu.VIEW_OWNERSHIP_TRNASFER_MAS
+      ">
+      <app-transfer-ownership-details [isViewMode]="isViewModeOwnership"></app-transfer-ownership-details>
+    </ng-container>
+
+    <!-- รายละเอียดผลการโอนกรรมสิทธิ์ -->
+    <ng-container
+      *ngIf="
+        auctionMenu === AuctionMenu.VIEW_OWNERSHIP_TRNASFER_MAS ||
+        (auctionMenu === AuctionMenu.VIEW_OWNERSHIP_TRNASFER && transferProperties && transferProperties?.length > 0)
+      ">
+      <ng-template *ngTemplateOutlet="ownerTransferDetail"></ng-template>
+    </ng-container>
+  </ng-container>
+</div>
+
+<ng-template #ownerTransferDetail>
+  <div class="content-container">
+    <div class="inner-container-padding-24">
+      <app-auction-header
+        [title]="'OWNERSHIP.DETAIL_TRANSFER' | translate"
+        [expanded]="isOpened"
+        [isMain]="true"
+        (expand)="isOpened = !isOpened">
+      </app-auction-header>
+    </div>
+    <mat-accordion>
+      <mat-expansion-panel [expanded]="isOpened" hideToggle>
+        <mat-divider class="no-margin"></mat-divider>
+        <div class="mt-24 sub-expansion">
+          <ng-container *ngFor="let item of transferProperties; let i = index">
+            <app-auction-header
+              [title]="'ครั้งที่ ' + (i + 1)"
+              [titleClass]="'bold text-gray-700'"
+              [isMain]="false"
+              [isMainSub]="true"
+              [showIcon]="true"
+              [ready]="item?.ready"
+              [iconName]="'icon-Warning-Circle'"
+              [iconClass]="
+                item?.conveyancingStatus === 'SUCCESS' || item?.conveyancingStatus === 'APPOINTED'
+                  ? 'fill-krungthai-green'
+                  : 'fill-gray'
+              "
+              [details]="item.details"
+              [expanded]="item.expand"
+              (expand)="item.expand = !item.expand">
+            </app-auction-header>
+            <mat-accordion>
+              <mat-expansion-panel [expanded]="item.expand" hideToggle>
+                <div>
+                  <div fxLayout="row" class="mb-24 mt-24 align-items-initial" fxLayoutGap="16px">
+                    <div fxFlex="15">
+                      <h6 [innerHTML]="'OWNERSHIP.DETAIL' | translate"></h6>
+                    </div>
+                    <div fxFlex="28">
+                      <span class="thin-letter">{{ 'OWNERSHIP.DATE' | translate }}</span>
+                      <div class="label-normal">
+                        {{ item?.transferDate || '-' }}
+                      </div>
+                    </div>
+                    <div fxFlex="28">
+                      <span class="thin-letter">{{ 'OWNERSHIP.RESULT' | translate }}</span>
+                      <div class="label-normal">
+                        {{ item.result || '-' }}
+                      </div>
+                    </div>
+                    <ng-container
+                      *ngIf="item?.conveyancingStatus === 'SUCCESS' || item?.conveyancingStatus === 'APPOINTED'">
+                      <div fxFlex="28">
+                        <span class="thin-letter">{{ 'OWNERSHIP.NPA_TRANSFER_DATE' | translate }}</span>
+                        <div class="label-normal">
+                          {{ item?.npaTransferDate || '-' }}
+                        </div>
+                      </div>
+                    </ng-container>
+                  </div>
+
+                  <div fxLayout="row" class="mt-24 align-items-initial" fxLayoutGap="16px">
+                    <div fxFlex="15">
+                      <h6>{{ 'OWNERSHIP.LIST' | translate }}</h6>
+                    </div>
+                    <div fxFlex="70">
+                      <ng-container
+                        *ngIf="
+                          item?.conveyancingStatus === 'SUCCESS' || item?.conveyancingStatus === 'APPOINTED';
+                          else isXFERFailTemplate
+                        ">
+                        <div class="table-scroll" table-scroll>
+                          <table mat-table [dataSource]="item?.expenseList">
+                            <ng-container matColumnDef="id">
+                              <th class="text-center order-cell" mat-header-cell *matHeaderCellDef>
+                                {{ 'COMMON.LABEL_NO' | translate }}
+                              </th>
+                              <td mat-cell *matCellDef="let row; let i = index" class="text-center order-cell">
+                                {{ i + 1 }}
+                              </td>
+                              <td mat-footer-cell *matFooterCellDef></td>
+                            </ng-container>
+                            <ng-container matColumnDef="listName">
+                              <th class="text-left" mat-header-cell *matHeaderCellDef>
+                                {{ 'OWNERSHIP.LIST' | translate }}
+                              </th>
+                              <td class="text-left" mat-cell *matCellDef="let row">
+                                {{ row?.name }}
+                              </td>
+                              <td mat-footer-cell *matFooterCellDef class="text-center">
+                                {{ 'OWNERSHIP.TOTAL' | translate }}
+                              </td>
+                            </ng-container>
+                            <ng-container matColumnDef="total">
+                              <th class="text-right" mat-header-cell *matHeaderCellDef>
+                                {{ 'OWNERSHIP.EXPENSE' | translate }}
+                              </th>
+                              <td class="text-right" mat-cell *matCellDef="let row">
+                                {{ row?.expense | numberDecimal }}
+                              </td>
+                              <td mat-footer-cell *matFooterCellDef="let row" class="text-right">
+                                <div class="bold">{{ item?.total | numberDecimal }}</div>
+                              </td>
+                            </ng-container>
+                            <tr mat-header-row *matHeaderRowDef="displayExpense"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayExpense"></tr>
+                            <tr mat-footer-row *matFooterRowDef="displayExpense"></tr>
+                          </table>
+                          <ng-container *ngIf="item?.expenseList.length === 0" [ngTemplateOutlet]="dataNotFound">
+                          </ng-container>
+                        </div>
+                      </ng-container>
+                      <ng-template #isXFERFailTemplate>
+                        <span class="thin-letter">{{ 'OWNERSHIP.LIST' | translate }}</span>
+                        <div class="label-normal">{{ 'OWNERSHIP.NO_EXPENSE' | translate }}</div>
+                      </ng-template>
+                    </div>
+                  </div>
+
+                  <ng-container
+                    *ngIf="
+                      item?.conveyancingStatus !== 'SUCCESS' && item?.conveyancingStatus !== 'APPOINTED';
+                      else documentlistTemplate
+                    ">
+                    <div fxLayout="row" class="mt-24 align-items-initial" fxLayoutGap="16px">
+                      <div fxFlex="15">
+                        <h6>{{ 'COMMON.LABEL_REASON_OF_OWNERSHIP_TRANSFER' | translate }}</h6>
+                      </div>
+                      <div fxFlex="55">
+                        <span class="thin-letter">
+                          {{ 'COMMON.LABEL_REASON' | translate }}
+                        </span>
+                        <div class="label-normal">
+                          {{ item?.masPostponeReason || '-' }}
+                        </div>
+                      </div>
+                    </div>
+                  </ng-container>
+                  <ng-template #documentlistTemplate>
+                    <div fxLayout="row" class="mt-8 align-items-initial" fxLayoutGap="16px">
+                      <div fxFlex="15" class="mt-16">
+                        <h6>{{ 'OWNERSHIP.DOCUMENT_LIST' | translate }}</h6>
+                      </div>
+                      <div fxFlex="85">
+                        <div>
+                          <app-common-document-table
+                            [config]="paymentConfig"
+                            [_documents]="item.transferDocuments"
+                            [showMainAccount]="isOpened"
+                            [displayedColumns]="displayPayment"></app-common-document-table>
+                        </div>
+                        <div>
+                          <app-common-document-table
+                            [config]="deedConfig"
+                            [_documents]="item.collateralDocuments"
+                            [showMainAccount]="isOpened"
+                            [displayedColumns]="displayDeed"></app-common-document-table>
+                        </div>
+                      </div>
+                    </div>
+                  </ng-template>
+                </div>
+              </mat-expansion-panel>
+            </mat-accordion>
+            <div class="pb-16"></div>
+          </ng-container>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+</ng-template>
+
+<ng-template #dataNotFound>
+  <app-message-empty [message]="'DOC_PREP.NOT_FOUND_DOC'"></app-message-empty>
+</ng-template>

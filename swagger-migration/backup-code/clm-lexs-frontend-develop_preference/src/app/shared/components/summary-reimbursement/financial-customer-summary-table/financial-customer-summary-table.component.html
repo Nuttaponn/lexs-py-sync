@@ -1,0 +1,221 @@
+<div *ngIf="financialCustomerSummaryDetailList">
+  <div
+    *ngIf="(sumLitigationTransactionDashboard?.financialSummaryTransactionList || []).length > 0"
+    fxLayout="row"
+    fxLayoutAlign="end center">
+    <div fxFlex class="mx-width-pct-25">
+      <spig-dropdown
+        classInput="input-xsm icon text-center"
+        [config]="showConfig"
+        [options]="showOptions"
+        [(ngModel)]="selectedShow"></spig-dropdown>
+    </div>
+  </div>
+
+  <ng-container [ngTemplateOutlet]="dataLayoutByCustomerId"> </ng-container>
+</div>
+
+<ng-template #dataLayoutByCustomerId>
+  <ng-container *ngIf="selectedShow === 'each'">
+    <ng-container *ngFor="let financialCustomerSummary of financialCustomerSummaryDetailList">
+      <div fxLayout="row">
+        <mat-icon svgIcon="icon-Window" class="icon icon-medium"></mat-icon>&nbsp;&nbsp;&nbsp;
+        <h6>{{ 'LG ID ' }} {{ financialCustomerSummary.litigationId }}</h6>
+      </div>
+      <ng-container
+        [ngTemplateOutlet]="summaryTable"
+        [ngTemplateOutletContext]="{
+          list: financialCustomerSummary?.litigationTransactionDashboard?.financialSummaryTransactionList || [],
+          litigationCaseTransactionDashboard: financialCustomerSummary?.litigationTransactionDashboard || {},
+        }">
+      </ng-container>
+      <br />
+    </ng-container>
+  </ng-container>
+
+  <ng-container>
+    <div fxLayout="row">
+      <mat-icon svgIcon="icon-Window" class="icon icon-medium"></mat-icon>&nbsp;&nbsp;&nbsp;
+      <h6>
+        {{ 'SUMMARY_RIEMBURSEMENT.ALL_CUSTOMER_LG' | translate }}
+      </h6>
+    </div>
+    <ng-container
+      [ngTemplateOutlet]="summaryTable"
+      [ngTemplateOutletContext]="{
+        list: sumLitigationTransactionDashboard.financialSummaryTransactionList || [],
+        litigationCaseTransactionDashboard: sumLitigationTransactionDashboard,
+      }">
+    </ng-container>
+  </ng-container>
+</ng-template>
+
+<ng-template #summaryTable let-dataSource="list" let-lgCaseTransactionDashboard="litigationCaseTransactionDashboard">
+  <div class="table-scroll" table-scroll>
+    <table mat-table multiTemplateDataRows [dataSource]="dataSource">
+      <ng-container matColumnDef="sequence">
+        <th class="text-center" mat-header-cell *matHeaderCellDef>
+          {{ 'COMMON.LABEL_NO' | translate }}
+        </th>
+        <td class="text-center seq-cell" mat-cell *matCellDef="let row">
+          {{ row.seq }}
+        </td>
+        <td class="total-cell" mat-footer-cell *matFooterCellDef></td>
+      </ng-container>
+
+      <ng-container matColumnDef="expenseType">
+        <th class="text-left" mat-header-cell *matHeaderCellDef>
+          {{ 'SUMMARY_RIEMBURSEMENT.FINANCIAL_CUSTOMER_SUMMARY_TABLE.EXPENSE_TYPE' | translate }}
+        </th>
+        <td class="text-left expense-type-cell" mat-cell *matCellDef="let row">
+          {{ row.typeCode || '' }} - {{ row.typeName || '' }}
+        </td>
+        <td class="total-cell" mat-footer-cell *matFooterCellDef></td>
+      </ng-container>
+
+      <ng-container matColumnDef="accountCode">
+        <th class="text-left" mat-header-cell *matHeaderCellDef>
+          {{ 'SUMMARY_RIEMBURSEMENT.FINANCIAL_CUSTOMER_SUMMARY_TABLE.ACCOUNT_CODE' | translate }}
+        </th>
+        <td class="text-left account-code-cell" mat-cell *matCellDef="let row">
+          {{ row.accountCode }}
+        </td>
+        <td class="total-cell" mat-footer-cell *matFooterCellDef></td>
+      </ng-container>
+
+      <ng-container matColumnDef="outstanding">
+        <th class="text-right" mat-header-cell *matHeaderCellDef>
+          {{ 'SUMMARY_RIEMBURSEMENT.FINANCIAL_CUSTOMER_SUMMARY_TABLE.OUTSTANDING' | translate }}
+        </th>
+        <td class="text-right outstanding-cell" mat-cell *matCellDef="let row">
+          {{ (row.outstandingBalanceAmount | numberDecimal) || '-' }}
+        </td>
+        <td class="total-cell text-right" mat-footer-cell *matFooterCellDef>
+          {{ 'COURT.TOTAL' | translate }}
+          <!-- {{ (lgCaseTransactionDashboard.sumOutstandingBalanceAmount | numberDecimal) || '-' }} -->
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="expenditure">
+        <th class="text-right" mat-header-cell *matHeaderCellDef>
+          {{ 'SUMMARY_RIEMBURSEMENT.FINANCIAL_CUSTOMER_SUMMARY_TABLE.EXPENDITURE' | translate }}
+        </th>
+        <td class="text-right expenditure-cell" mat-cell *matCellDef="let row">
+          {{ (row.expenseAmount | numberDecimal) || '-' }}
+        </td>
+        <td class="text-right bold" mat-footer-cell *matFooterCellDef>
+          {{ (lgCaseTransactionDashboard.sumExpenseAmount | numberDecimal) || '-' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="revenue">
+        <th class="text-right" mat-header-cell *matHeaderCellDef>
+          {{ 'SUMMARY_RIEMBURSEMENT.FINANCIAL_CUSTOMER_SUMMARY_TABLE.REVENUE' | translate }}
+        </th>
+        <td class="text-right revenue-cell" mat-cell *matCellDef="let row">
+          {{ (row.receiveAmount | numberDecimal) || '-' }}
+        </td>
+        <td class="text-right bold" mat-footer-cell *matFooterCellDef>
+          {{ (lgCaseTransactionDashboard.sumReceiveAmount | numberDecimal) || '-' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="cancelPayment">
+        <th class="text-right" mat-header-cell *matHeaderCellDef>
+          {{ 'SUMMARY_RIEMBURSEMENT.FINANCIAL_CUSTOMER_SUMMARY_TABLE.CANCEL_PAYMENT' | translate }}
+        </th>
+        <td class="text-right" mat-cell *matCellDef="let row">
+          {{ (row.cancelAmount | numberDecimal) || '-' }}
+        </td>
+        <td class="text-right bold" mat-footer-cell *matFooterCellDef>
+          {{ (lgCaseTransactionDashboard.sumCancelAmount | numberDecimal) || '-' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="adjustAmount">
+        <th class="text-center" mat-header-cell *matHeaderCellDef>
+          {{ 'SUMMARY_RIEMBURSEMENT.FINANCIAL_CUSTOMER_SUMMARY_TABLE.ADJUST_AMOUNT' | translate }}
+        </th>
+        <td class="text-right" mat-cell *matCellDef="let row">
+          {{ (row.adjustAmount | numberDecimal) || '-' }}
+        </td>
+        <td class="text-right bold" mat-footer-cell *matFooterCellDef>
+          {{ (lgCaseTransactionDashboard.sumAdjustAmount | numberDecimal) || '-' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="cutOriginal">
+        <th class="text-right" mat-header-cell *matHeaderCellDef>
+          {{ 'SUMMARY_RIEMBURSEMENT.FINANCIAL_CUSTOMER_SUMMARY_TABLE.CUT_ORIGINAL' | translate }}
+        </th>
+        <td class="text-right" mat-cell *matCellDef="let row">
+          {{ (row.g10AdvanceAmount | numberDecimal) || '-' }}
+        </td>
+        <td class="text-right bold" mat-footer-cell *matFooterCellDef>
+          {{ (lgCaseTransactionDashboard.sumG10AdvanceAmount | numberDecimal) || '-' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="becomeFold">
+        <th class="text-right" mat-header-cell *matHeaderCellDef>
+          {{ 'SUMMARY_RIEMBURSEMENT.FINANCIAL_CUSTOMER_SUMMARY_TABLE.BECOME_FOLD' | translate }}
+        </th>
+        <td class="text-right" mat-cell *matCellDef="let row">
+          {{ (row.g12AdvanceAmount | numberDecimal) || '-' }}
+        </td>
+        <td class="text-right bold" mat-footer-cell *matFooterCellDef>
+          {{ (lgCaseTransactionDashboard.sumG12AdvanceAmount | numberDecimal) || '-' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="discountExemption">
+        <th class="text-right" mat-header-cell *matHeaderCellDef>
+          {{ 'SUMMARY_RIEMBURSEMENT.FINANCIAL_CUSTOMER_SUMMARY_TABLE.DISCOUNT_EXEMPTION' | translate }}
+        </th>
+        <td class="text-right" mat-cell *matCellDef="let row">
+          {{ (row.g13AdvanceAmount | numberDecimal) || '-' }}
+        </td>
+        <td class="text-right bold" mat-footer-cell *matFooterCellDef>
+          {{ (lgCaseTransactionDashboard.sumG13AdvanceAmount | numberDecimal) || '-' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="terminateAsPer">
+        <th class="text-right" mat-header-cell *matHeaderCellDef>
+          {{ 'SUMMARY_RIEMBURSEMENT.FINANCIAL_CUSTOMER_SUMMARY_TABLE.TERMINATE_AS_PER' | translate }}
+        </th>
+        <td class="text-right" mat-cell *matCellDef="let row">
+          {{ (row.g14AdvanceAmount | numberDecimal) || '-' }}
+        </td>
+        <td class="text-right bold" mat-footer-cell *matFooterCellDef>
+          {{ (lgCaseTransactionDashboard.sumG14AdvanceAmount | numberDecimal) || '-' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="followUp">
+        <th class="text-right" mat-header-cell *matHeaderCellDef>
+          {{ 'SUMMARY_RIEMBURSEMENT.FINANCIAL_CUSTOMER_SUMMARY_TABLE.FOLLOW_UP' | translate }}
+        </th>
+        <td class="text-right" mat-cell *matCellDef="let row">
+          {{ (row.g15AdvanceAmount | numberDecimal) || '-' }}
+        </td>
+        <td class="text-right bold" mat-footer-cell *matFooterCellDef>
+          {{ (lgCaseTransactionDashboard.sumG15AdvanceAmount | numberDecimal) || '-' }}
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <ng-container *ngIf="(dataSource?.length || 0) > 0">
+        <tr class="example-element-row" mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+      </ng-container>
+    </table>
+    <ng-container *ngIf="(dataSource.length || 0) === 0" [ngTemplateOutlet]="searchEmpty"></ng-container>
+  </div>
+</ng-template>
+
+<ng-template #searchEmpty>
+  <div>
+    <app-message-empty [message]="'COMMON.SEARCH_EMPTY'"></app-message-empty>
+  </div>
+</ng-template>

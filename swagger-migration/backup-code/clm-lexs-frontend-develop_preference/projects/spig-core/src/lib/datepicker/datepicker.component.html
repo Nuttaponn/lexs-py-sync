@@ -1,0 +1,20 @@
+<mat-form-field [ngClass]="_classInput"
+  [class.border-black-40]="!_classInput.includes('no-border') && !dateControl.disabled && dateControl.value && !picker.opened"
+  [class.border-blue-50]="!(!dateControl.disabled && dateControl.value) && picker.opened"
+  [class.invalid]="touched && invalid">
+  <mat-icon *ngIf="!!prefixIcon" matPrefix [ngClass]="'icon icon-small'" [svgIcon]="prefixIcon"></mat-icon>
+  <mat-label *ngIf="title">{{title | translate}}<span>{{!_required && hasRequired ? ' *' : ''}}</span></mat-label>
+  <input matInput #datePickerInput (copy)="onCopy($event)" (click)="picker.open()" [matDatepicker]="picker"
+    [required]="_required" [formControl]="dateControl" (dateInput)="dateInput($event)" (paste)="datePaste($event)"
+    [max]="_max" [min]="_min" [readonly]="true" [placeholder]="placeholder">
+  <mat-hint>{{captionText}}</mat-hint>
+  <mat-datepicker-toggle *ngIf="!_readOnly" matSuffix [for]="picker">
+    <mat-icon matDatepickerToggleIcon [svgIcon]="suffixIcon"></mat-icon>
+  </mat-datepicker-toggle>
+  <mat-datepicker-toggle *ngIf="_readOnly" matSuffix>
+    <mat-icon matDatepickerToggleIcon [svgIcon]="suffixIcon"></mat-icon>
+  </mat-datepicker-toggle>
+  <mat-datepicker [startView]="!this.startView.includes('date') ? 'year' : 'month'"
+    (monthSelected)="monthSelected($event)" #picker (closed)="onPickerClose()">
+  </mat-datepicker>
+</mat-form-field>

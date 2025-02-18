@@ -1,0 +1,929 @@
+<ng-container *ngIf="accountDataType === 'ACCOUNT_LIST' && !!accountListReportDto">
+  <div class="mt-16">
+    <div class="pb-20" fxLayoutGap="20" fxFlexFill>
+      <div fxFlex="95">
+        <div fxLayout="row" fxLayoutGap="16px">
+          <div fxFlex="33" class="content-form">
+            <span class="fill-black-70">
+              {{ 'RECEIPT_PAYER.DEBTOR' | translate }}
+            </span>
+            <div class="color-biz-black-100">
+              {{ accountListReportDto.customerDetail || '-' }}
+            </div>
+          </div>
+          <div fxFlex="33" class="content-form">
+            <span class="fill-black-70">
+              {{ 'CUSTOMER.COLUMN_INFO_AT_DATE' | translate }}
+            </span>
+            <div class="color-biz-black-100">
+              {{ accountListReportDto.dataDateTime || '-' }}
+            </div>
+          </div>
+          <div fxFlex="33" class="content-form">
+            <span class="fill-black-70">
+              {{ 'PROFILE_DIRECT.VIEW_BY' | translate }}
+            </span>
+            <div class="color-biz-black-100">
+              {{ accountListReportDto.viewerDetail || '-' }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pb-20" fxLayoutGap="20" fxFlexFill>
+      <div fxFlex="100">
+        <div class="table-scroll">
+          <table mat-table [dataSource]="accountListReportDto.accountList || []" class="mat-elevation-z8">
+            <ng-container matColumnDef="type">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'PROFILE_DIRECT.TABLE_ACCOUNT_LIST_HEADERS.TYPE' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let row">
+                {{ row.accountDetailType }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="account">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'PROFILE_DIRECT.TABLE_ACCOUNT_LIST_HEADERS.ACCOUNT' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let row">{{ row.accountDetail?.toString() }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="creditLimit">
+              <th class="text-right" mat-header-cell *matHeaderCellDef>
+                {{ 'PROFILE_DIRECT.TABLE_ACCOUNT_LIST_HEADERS.CREDIT_LIMIT' | translate }}
+              </th>
+              <td class="text-right" mat-cell *matCellDef="let row">
+                {{ (row.creditLimit | numberDecimal)?.toString() || '-' }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="ledgerBalance">
+              <th class="text-right" mat-header-cell *matHeaderCellDef>
+                {{ 'PROFILE_DIRECT.TABLE_ACCOUNT_LIST_HEADERS.LEDGER_BALANCE' | translate }}
+              </th>
+              <td class="text-right" mat-cell *matCellDef="let row">
+                {{ (row.ledgerBalance | numberDecimal)?.toString() || '-' }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="marketCode">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'PROFILE_DIRECT.TABLE_ACCOUNT_LIST_HEADERS.MARKET_CODE' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let row">{{ row.marketCode?.toString() || '-' }}</td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns0"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns0"></tr>
+          </table>
+          <ng-container *ngIf="(accountListReportDto.accountList || []).length === 0" [ngTemplateOutlet]="emptyList">
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+<ng-container *ngIf="accountDataType === 'ACCOUNT_OVERVIEW' && !!accountDetailDto">
+  <div class="pl-18 pr-18">
+    <div class="pb-20" fxLayoutGap="20" fxFlexFill>
+      <div fxFlex="95">
+        <div fxLayout="row" fxLayoutGap="16px">
+          <div fxFlex="33" class="content-form">
+            <span class="fill-black-70">
+              {{ 'RECEIPT_PAYER.DEBTOR' | translate }}
+            </span>
+            <div class="color-biz-black-100">
+              {{ accountDetailDto.customerDetails?.toString() || '-' }}
+            </div>
+          </div>
+          <div fxFlex="33" class="content-form">
+            <span class="fill-black-70">
+              {{ 'CUSTOMER.COLUMN_INFO_AT_DATE' | translate }}
+            </span>
+            <div class="color-biz-black-100">
+              {{ accountDetailDto.dataDate?.toString() || '-' }}
+            </div>
+          </div>
+          <div fxFlex="33" class="content-form">
+            <span class="fill-black-70">
+              {{ 'PROFILE_DIRECT.VIEW_BY' | translate }}
+            </span>
+            <div class="color-biz-black-100">
+              {{ accountDetailDto.viewer?.toString() || '-' }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="mt-20 mb-20" />
+
+    <div class="pl-18 pr-18">
+      <div class="pb-20" fxLayoutGap="20" fxFlexFill>
+        <div fxFlex="15" fxLayoutAlign="top">
+          <h5>{{ 'PROFILE_DIRECT.ACCOUNT_SUMMARY_TITLE' | translate }}</h5>
+        </div>
+        <div fxFlex="70" fxLayout="column" fxLayoutGap="16px">
+          <div fxLayout="row" fxLayoutGap="16px">
+            <div fxFlex="49" class="content-form">
+              <span class="fill-black-70">
+                {{ 'PROFILE_DIRECT.ACCOUNT_SUMMARY.ACCOUNT_NUMBER' | translate }}
+              </span>
+              <div class="color-biz-black-100">
+                {{ accountDetailDto.accountSummary?.accountNumber?.toString() || '-' }}
+              </div>
+            </div>
+            <div fxFlex="49" class="content-form">
+              <span class="fill-black-70">
+                {{ 'PROFILE_DIRECT.ACCOUNT_SUMMARY.ACCOUNT_STATUS' | translate }}
+              </span>
+              <div class="color-biz-black-100">
+                {{ accountDetailDto.accountSummary?.accountStatus?.toString() || '-' }}
+              </div>
+            </div>
+          </div>
+          <div fxLayout="row" fxLayoutGap="16px">
+            <div fxFlex="49" class="content-form">
+              <span class="fill-black-70">
+                {{ 'PROFILE_DIRECT.ACCOUNT_SUMMARY.CREDIT_LIMIT' | translate }}
+              </span>
+              <div class="color-biz-black-100">
+                {{ (accountDetailDto.accountSummary?.creditLimit | numberDecimal)?.toString() || '-' }}
+              </div>
+            </div>
+            <div fxFlex="49" class="content-form">
+              <span class="fill-black-70">
+                {{ 'PROFILE_DIRECT.ACCOUNT_SUMMARY.PRODUCT_TYPE' | translate }}
+              </span>
+              <div class="color-biz-black-100">
+                {{ accountDetailDto.accountSummary?.productType?.toString() || '-' }}
+              </div>
+            </div>
+          </div>
+          <div fxLayout="row" fxLayoutGap="16px">
+            <div fxFlex="49" class="content-form">
+              <span class="fill-black-70">
+                {{ 'PROFILE_DIRECT.ACCOUNT_SUMMARY.LEDGER_BALANCE' | translate }}
+              </span>
+              <div class="color-biz-black-100">
+                {{ (accountDetailDto.accountSummary?.ledgerBalance | numberDecimal)?.toString() || '-' }}
+              </div>
+            </div>
+            <div fxFlex="49" class="content-form">
+              <span class="fill-black-70">
+                {{ 'PROFILE_DIRECT.ACCOUNT_SUMMARY.MARKET_CODE' | translate }}
+              </span>
+              <div class="color-biz-black-100">
+                {{ accountDetailDto.accountSummary?.marketCode?.toString() || '-' }}
+              </div>
+            </div>
+          </div>
+          <div fxLayout="row" fxLayoutGap="16px">
+            <div fxFlex="49" class="content-form">
+              <span class="fill-black-70">
+                {{ 'PROFILE_DIRECT.ACCOUNT_SUMMARY.PAYOFF_AMOUNT' | translate }}
+              </span>
+              <div class="color-biz-black-100">
+                {{ (accountDetailDto.accountSummary?.payoffAmount | numberDecimal)?.toString() || '-' }}
+              </div>
+            </div>
+            <div fxFlex="49" class="content-form">
+              <span class="fill-black-70">
+                {{ 'PROFILE_DIRECT.ACCOUNT_SUMMARY.OPEN_ACCOUNT_DATE' | translate }}
+              </span>
+              <div class="color-biz-black-100">
+                {{ (accountDetailDto.accountSummary?.openAccountDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+              </div>
+            </div>
+          </div>
+          <div fxLayout="row" fxLayoutGap="16px">
+            <div fxFlex="49" class="content-form">
+              <span class="fill-black-70">
+                {{ 'PROFILE_DIRECT.ACCOUNT_SUMMARY.SUB_ACCOUNT_OPTIONS' | translate }}
+              </span>
+              <div class="color-biz-black-100">
+                {{ accountDetailDto.accountSummary?.subAccountOptions?.toString() || '-' }}
+              </div>
+            </div>
+            <div fxFlex="49" class="content-form">
+              <span class="fill-black-70">
+                {{ 'PROFILE_DIRECT.ACCOUNT_SUMMARY.FIRST_DISBURSEMENT_DATE' | translate }}
+              </span>
+              <div class="color-biz-black-100">
+                {{ (accountDetailDto.accountSummary?.firstDisbursementDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+              </div>
+            </div>
+          </div>
+          <div fxLayout="row" fxLayoutGap="16px">
+            <div fxFlex="49" class="content-form">
+              <span class="fill-black-70">
+                {{ 'PROFILE_DIRECT.ACCOUNT_SUMMARY.LEGAL_STATUS' | translate }}
+              </span>
+              <div class="color-biz-black-100">
+                {{ accountDetailDto.accountSummary?.legalStatus?.toString() || '-' }}
+              </div>
+            </div>
+            <div fxFlex="49" class="content-form">
+              <span class="fill-black-70">
+                {{ 'PROFILE_DIRECT.ACCOUNT_SUMMARY.MATURITY_DATE' | translate }}
+              </span>
+              <div class="color-biz-black-100">
+                {{ (accountDetailDto.accountSummary?.maturityDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+              </div>
+            </div>
+          </div>
+          <div fxLayout="row" fxLayoutGap="16px">
+            <div fxFlex="49" class="content-form">
+              <span class="fill-black-70">
+                {{ 'PROFILE_DIRECT.ACCOUNT_SUMMARY.C_CLASS_AGING' | translate }}
+              </span>
+              <div class="color-biz-black-100">
+                {{ accountDetailDto.accountSummary?.cclassAging?.toString() || '-' }}
+              </div>
+            </div>
+            <div fxFlex="49" class="content-form">
+              <span class="fill-black-70">
+                {{ 'PROFILE_DIRECT.ACCOUNT_SUMMARY.LAST_PAYMENT_DATE' | translate }}
+              </span>
+              <div class="color-biz-black-100">
+                {{ (accountDetailDto.accountSummary?.lastPaymentDate | buddhistEra: 'DD/MM/yyyy')?.toString() || '-' }}
+              </div>
+            </div>
+          </div>
+          <div fxLayout="row" fxLayoutGap="16px">
+            <div fxFlex="49" class="content-form">
+              <span class="fill-black-70">
+                {{ 'PROFILE_DIRECT.ACCOUNT_SUMMARY.C_CLASS_CONDITION' | translate }}
+              </span>
+              <div class="color-biz-black-100">
+                {{ accountDetailDto.accountSummary?.cclassCondition?.toString() || '-' }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="mt-20 mb-20" />
+
+    <div class="pl-18 pr-18">
+      <div class="pb-20" fxLayoutGap="20" fxFlexFill>
+        <div fxFlex="15" fxLayoutAlign="top">
+          <h5>{{ 'PROFILE_DIRECT.INTEREST_SUMMARY_TITLE' | translate }}</h5>
+        </div>
+        <div fxFlex="70" fxLayout="column" fxLayoutGap="16px">
+          <div fxLayout="row" fxLayoutGap="16px">
+            <div fxFlex="49" class="content-form">
+              <span class="fill-black-70">{{ 'PROFILE_DIRECT.INTEREST_SUMMARY.CURRENT_RATE' | translate }}</span>
+              <div class="color-biz-black-100">
+                {{ accountDetailDto.interestSummary?.currentRate?.toString() || '-' }}
+              </div>
+            </div>
+            <div fxFlex="49" class="content-form">
+              <span class="fill-black-70">
+                {{ 'PROFILE_DIRECT.INTEREST_SUMMARY.ACCRUAL_INTEREST' | translate }}
+              </span>
+              <div class="color-biz-black-100">
+                {{ (accountDetailDto.interestSummary?.accrualInterest | numberDecimal)?.toString() || '-' }}
+              </div>
+            </div>
+          </div>
+          <div fxLayout="row" fxLayoutGap="16px">
+            <div fxFlex="49" class="content-form">
+              <span class="fill-black-70">{{ 'PROFILE_DIRECT.INTEREST_SUMMARY.INTEREST_INDEX' | translate }}</span>
+              <div class="color-biz-black-100">
+                {{ accountDetailDto.interestSummary?.interestIndex?.toString() || '-' }}
+              </div>
+            </div>
+            <div fxFlex="49" class="content-form">
+              <span class="fill-black-70">{{ 'PROFILE_DIRECT.INTEREST_SUMMARY.LAST_AMOUNT_ACCRUED' | translate }}</span>
+              <div class="color-biz-black-100">
+                {{ (accountDetailDto.interestSummary?.lastAmountAccrued | numberDecimal)?.toString() || '-' }}
+              </div>
+            </div>
+          </div>
+          <div fxLayout="row" fxLayoutGap="16px">
+            <div fxFlex="49" class="content-form">
+              <span class="fill-black-70">{{ 'PROFILE_DIRECT.INTEREST_SUMMARY.INTEREST_SPREAD' | translate }}</span>
+              <div class="color-biz-black-100">
+                {{ accountDetailDto.interestSummary?.interestSpread?.toString() || '-' }}
+              </div>
+            </div>
+            <div fxFlex="49" class="content-form">
+              <span class="fill-black-70">{{ 'PROFILE_DIRECT.INTEREST_SUMMARY.LATE_CHARGE' | translate }}</span>
+              <div class="color-biz-black-100">
+                {{ (accountDetailDto.interestSummary?.lateCharge | numberDecimal)?.toString() || '-' }}
+              </div>
+            </div>
+          </div>
+          <div fxLayout="row" fxLayoutGap="16px">
+            <div fxFlex="49" class="content-form">
+              <span class="fill-black-70">
+                {{ 'PROFILE_DIRECT.INTEREST_SUMMARY.RELATED_DEPOSIT' | translate }}
+              </span>
+              <div class="color-biz-black-100">
+                {{ accountDetailDto.interestSummary?.relatedDeposit?.toString() || '-' }}
+              </div>
+            </div>
+            <div fxFlex="49" class="content-form">
+              <span class="fill-black-70">{{ 'PROFILE_DIRECT.INTEREST_SUMMARY.MISC_CHARGE' | translate }}</span>
+              <div class="color-biz-black-100">
+                {{ (accountDetailDto.interestSummary?.miscCharge | numberDecimal)?.toString() || '-' }}
+              </div>
+            </div>
+          </div>
+          <div fxLayout="row" fxLayoutGap="16px">
+            <div fxFlex="49" class="content-form">
+              <span class="fill-black-70">
+                {{ 'PROFILE_DIRECT.INTEREST_SUMMARY.FIXED_RATE_DIFFERENTIAL' | translate }}
+              </span>
+              <div class="color-biz-black-100">
+                {{ (accountDetailDto.interestSummary?.fixedRateDifferential | numberDecimal)?.toString() || '-' }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="mt-20 mb-20" />
+
+    <div class="pl-18 pr-18">
+      <div class="pb-20" fxLayoutGap="20" fxFlexFill>
+        <div fxFlex="15" fxLayoutAlign="top">
+          <h5>{{ 'PROFILE_DIRECT.PAYMENT_SUMMARY_TITLE' | translate }}</h5>
+        </div>
+        <div fxFlex="70" fxLayout="column" fxLayoutGap="16px">
+          <div fxLayout="row" fxLayoutGap="16px">
+            <div fxFlex="49" class="content-form">
+              <span class="fill-black-70">{{ 'PROFILE_DIRECT.PAYMENT_SUMMARY.PAYMENT_FREQUENCY' | translate }}</span>
+              <div class="color-biz-black-100">{{ accountDetailDto.paymentSummary?.frequency?.toString() || '-' }}</div>
+            </div>
+            <div fxFlex="49" class="content-form">
+              <span class="fill-black-70">{{
+                'PROFILE_DIRECT.PAYMENT_SUMMARY.PRINCIPAL_AND_INTEREST_PAYMENT' | translate
+              }}</span>
+              <div class="color-biz-black-100">
+                {{ (accountDetailDto.paymentSummary?.principalInterest | numberDecimal)?.toString() || '-' }}
+              </div>
+            </div>
+          </div>
+          <div fxLayout="row" fxLayoutGap="16px">
+            <div fxFlex="49" class="content-form">
+              <span class="fill-black-70">
+                {{ 'PROFILE_DIRECT.PAYMENT_SUMMARY.PAYMENT_CALCULATION_METHOD' | translate }}
+              </span>
+              <div class="color-biz-black-100">
+                {{ accountDetailDto.paymentSummary?.calculateMethod?.toString() || '-' }}
+              </div>
+            </div>
+            <div fxFlex="49" class="content-form">
+              <span class="fill-black-70"> {{ 'PROFILE_DIRECT.PAYMENT_SUMMARY.NEXT_DUE_DATE' | translate }}</span>
+              <div class="color-biz-black-100">
+                {{ (accountDetailDto.paymentSummary?.nextDueDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="mt-20 mb-20" />
+    <div class="pl-18 pr-18">
+      <div class="pb-20" fxLayoutGap="20" fxFlexFill>
+        <div fxFlex="15" fxLayoutAlign="top">
+          <h5>{{ 'PROFILE_DIRECT.PAYMENT_RECORDS_TITLE' | translate }}</h5>
+        </div>
+        <div fxFlex="70" fxLayout="column" fxLayoutGap="16px">
+          <div class="table-scroll" table-scroll>
+            <table mat-table [dataSource]="accountDetailDto.paymentRecords || []">
+              <ng-container matColumnDef="dueDate">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ 'PROFILE_DIRECT.TABLE_ACCOUNT_OVERVIEW_PR_HEADERS.DUE_DATE' | translate }}
+                </th>
+                <td mat-cell *matCellDef="let element">
+                  {{ (element.dueDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="total">
+                <th class="text-right" mat-header-cell *matHeaderCellDef>
+                  {{ 'PROFILE_DIRECT.TABLE_ACCOUNT_OVERVIEW_PR_HEADERS.TOTAL' | translate }}
+                </th>
+                <td class="text-right" mat-cell *matCellDef="let element">
+                  {{ (element.total | numberDecimal)?.toString() || '-' }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="unpaid">
+                <th class="text-right" mat-header-cell *matHeaderCellDef>
+                  {{ 'PROFILE_DIRECT.TABLE_ACCOUNT_OVERVIEW_PR_HEADERS.UNPAID' | translate }}
+                </th>
+                <td class="text-right" mat-cell *matCellDef="let element">
+                  {{ (element.unpaid | numberDecimal)?.toString() || '-' }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="unpaidInterest">
+                <th class="text-right" mat-header-cell *matHeaderCellDef>
+                  {{ 'PROFILE_DIRECT.TABLE_ACCOUNT_OVERVIEW_PR_HEADERS.UNPAID_INTEREST' | translate }}
+                </th>
+                <td class="text-right" mat-cell *matCellDef="let element">
+                  {{ (element.unpaidInterest | numberDecimal)?.toString() || '-' }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="unpaidPrincipal">
+                <th class="text-right" mat-header-cell *matHeaderCellDef>
+                  {{ 'PROFILE_DIRECT.TABLE_ACCOUNT_OVERVIEW_PR_HEADERS.UNPAID_PRINCIPAL' | translate }}
+                </th>
+                <td class="text-right" mat-cell *matCellDef="let element">
+                  {{ (element.unpaidPrincipal | numberDecimal)?.toString() || '-' }}
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="displayedColumns1"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns1"></tr>
+            </table>
+            <ng-container *ngIf="(accountDetailDto.paymentRecords || []).length === 0" [ngTemplateOutlet]="emptyList">
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="mt-20 mb-20" />
+    <div class="pl-18 pr-18">
+      <div class="pb-20" fxLayoutGap="20" fxFlexFill>
+        <div fxFlex="15" fxLayoutAlign="top">
+          <h5>{{ 'PROFILE_DIRECT.LOAN_ACCOUNT_INTEREST_FROM_DATE_TITLE' | translate }}</h5>
+        </div>
+        <div fxFlex="70" fxLayout="column" fxLayoutGap="16px">
+          <div fxLayout="row" fxLayoutGap="16px">
+            <div fxFlex="49" class="content-form">
+              <span class="fill-black-70">{{
+                'PROFILE_DIRECT.LOAN_ACCOUNT_INTEREST_FROM_DATE.LATE_CHARGE_START_DATE' | translate
+              }}</span>
+              <div class="color-biz-black-100">
+                {{
+                  (accountDetailDto.loanAccountInterest?.interestPaymentStartDate | buddhistEra: 'DD/MM/yyyy') || '-'
+                }}
+              </div>
+            </div>
+            <div fxFlex="49" class="content-form">
+              <span class="fill-black-70">{{
+                'PROFILE_DIRECT.LOAN_ACCOUNT_INTEREST_FROM_DATE.LATE_CHARGE_START_DATE_OVERDUE' | translate
+              }}</span>
+              <div class="color-biz-black-100">
+                {{
+                  (accountDetailDto.loanAccountInterest?.defaultInterestPaymentDate | buddhistEra: 'DD/MM/yyyy') || '-'
+                }}
+              </div>
+            </div>
+          </div>
+          <div class="table-scroll" table-scroll>
+            <table mat-table [dataSource]="accountDetailDto.loanAccountInterest?.loanAccountInterestDetails || []">
+              <!-- From -->
+              <ng-container matColumnDef="from">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ 'PROFILE_DIRECT.TABLE_ACCOUNT_OVERVIEW_LAIFD_HEADERS.FROM' | translate }}
+                </th>
+                <td mat-cell *matCellDef="let element">{{ (element.fromDate | buddhistEra: 'DD/MM/yyyy') || '-' }}</td>
+              </ng-container>
+
+              <!-- To -->
+              <ng-container matColumnDef="to">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ 'PROFILE_DIRECT.TABLE_ACCOUNT_OVERVIEW_LAIFD_HEADERS.TO' | translate }}
+                </th>
+                <td mat-cell *matCellDef="let element">{{ (element.toDate | buddhistEra: 'DD/MM/yyyy') || '-' }}</td>
+              </ng-container>
+
+              <!-- Balance -->
+              <ng-container matColumnDef="balance">
+                <th class="text-right" mat-header-cell *matHeaderCellDef>
+                  {{ 'PROFILE_DIRECT.TABLE_ACCOUNT_OVERVIEW_LAIFD_HEADERS.BALANCE' | translate }}
+                </th>
+                <td class="text-right" mat-cell *matCellDef="let element">
+                  {{ (element.balance | numberDecimal)?.toString() || '-' }}
+                </td>
+              </ng-container>
+
+              <!-- Int Rate -->
+              <ng-container matColumnDef="intRate">
+                <th class="text-right" mat-header-cell *matHeaderCellDef>
+                  {{ 'PROFILE_DIRECT.TABLE_ACCOUNT_OVERVIEW_LAIFD_HEADERS.INT_RATE' | translate }}
+                </th>
+                <td class="text-right" mat-cell *matCellDef="let element">
+                  {{ (element.intRate | numberDecimal)?.toString() || '-' }}
+                </td>
+              </ng-container>
+
+              <!-- Cal. Interest -->
+              <ng-container matColumnDef="calInterest">
+                <th class="text-right" mat-header-cell *matHeaderCellDef>
+                  {{ 'PROFILE_DIRECT.TABLE_ACCOUNT_OVERVIEW_LAIFD_HEADERS.CAL_INTEREST' | translate }}
+                </th>
+                <td class="text-right" mat-cell *matCellDef="let element">
+                  {{ (element.calInterest | numberDecimal)?.toString() || '-' }}
+                </td>
+              </ng-container>
+
+              <!-- Int Balance -->
+              <ng-container matColumnDef="intBalance">
+                <th class="text-right" mat-header-cell *matHeaderCellDef>
+                  {{ 'PROFILE_DIRECT.TABLE_ACCOUNT_OVERVIEW_LAIFD_HEADERS.INT_BALANCE' | translate }}
+                </th>
+                <td class="text-right" mat-cell *matCellDef="let element">
+                  {{ (element.intBalance | numberDecimal)?.toString() || '-' }}
+                </td>
+              </ng-container>
+
+              <!-- Cal. Late Charge -->
+              <ng-container matColumnDef="calLateCharge">
+                <th class="text-right" mat-header-cell *matHeaderCellDef>
+                  {{ 'PROFILE_DIRECT.TABLE_ACCOUNT_OVERVIEW_LAIFD_HEADERS.CAL_LATE_CHARGE' | translate }}
+                </th>
+                <td class="text-right" mat-cell *matCellDef="let element">
+                  {{ (element.calLateCharge | numberDecimal)?.toString() || '-' }}
+                </td>
+              </ng-container>
+
+              <!-- Penalty Rate -->
+              <ng-container matColumnDef="penaltyRate">
+                <th class="text-right" mat-header-cell *matHeaderCellDef>
+                  {{ 'PROFILE_DIRECT.TABLE_ACCOUNT_OVERVIEW_LAIFD_HEADERS.PENALTY_RATE' | translate }}
+                </th>
+                <td class="text-right" mat-cell *matCellDef="let element">
+                  {{ (element.penaltyRate | numberDecimal)?.toString() || '-' }}
+                </td>
+              </ng-container>
+
+              <!-- Late Charge -->
+              <ng-container matColumnDef="lateCharge" stickyEnd>
+                <th class="text-right" columnElevationRight mat-header-cell *matHeaderCellDef>
+                  {{ 'PROFILE_DIRECT.TABLE_ACCOUNT_OVERVIEW_LAIFD_HEADERS.LATE_CHARGE' | translate }}
+                </th>
+                <td class="text-right" columnElevationRight mat-cell *matCellDef="let element">
+                  {{ (element.lateCharge | numberDecimal)?.toString() || '-' }}
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns1_2"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns1_2"></tr>
+            </table>
+            <ng-container
+              *ngIf="(accountDetailDto.loanAccountInterest?.loanAccountInterestDetails || []).length === 0"
+              [ngTemplateOutlet]="emptyList">
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ng-container *ngIf="!!accountDetailDto.delinquencyOptions">
+      <hr class="mt-20 mb-20" />
+      <div class="pl-18 pr-18">
+        <div class="pb-20" fxLayoutGap="20" fxFlexFill>
+          <div fxFlex="15" fxLayoutAlign="top">
+            <h5>{{ 'PROFILE_DIRECT.DELINQUENCY_TITLE' | translate }}</h5>
+          </div>
+          <div fxFlex="35" fxLayout="column" fxLayoutGap="16px">
+            <h5>{{ 'PROFILE_DIRECT.DELINQUENCY.LATE_CHARGES' | translate }}</h5>
+            <div class="content-form">
+              <span class="fill-black-70">{{ 'PROFILE_DIRECT.DELINQUENCY.PENALTY_INDEX' | translate }}</span>
+              <div class="color-biz-black-100">
+                {{ accountDetailDto.delinquencyOptions.penaltyIndex?.toString() || '-' }}
+              </div>
+            </div>
+            <div class="content-form">
+              <span class="fill-black-70">{{ 'PROFILE_DIRECT.DELINQUENCY.PENALTY_SPREAD' | translate }}</span>
+              <div class="color-biz-black-100">
+                {{ accountDetailDto.delinquencyOptions.penaltySpread?.toString() || '-' }}
+              </div>
+            </div>
+            <div class="content-form">
+              <span class="fill-black-70">{{ 'PROFILE_DIRECT.DELINQUENCY.PENALTY_RATE' | translate }}</span>
+              <div class="color-biz-black-100">
+                {{ accountDetailDto.delinquencyOptions.penaltyRate?.toString() || '-' }}
+              </div>
+            </div>
+            <div class="content-form">
+              <span class="fill-black-70">{{
+                'PROFILE_DIRECT.DELINQUENCY.PERCENTAGE_OF_BASE_OVERRIDE' | translate
+              }}</span>
+              <div class="color-biz-black-100">
+                {{ accountDetailDto.delinquencyOptions.percentageOfBaseOverride?.toString() || '-' }}
+              </div>
+            </div>
+            <div class="content-form">
+              <span class="fill-black-70">{{ 'PROFILE_DIRECT.DELINQUENCY.LATE_CHARGE_ACTION_DATE' | translate }}</span>
+              <div class="color-biz-black-100">
+                {{ (accountDetailDto.delinquencyOptions.lateChargeActionDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+              </div>
+            </div>
+            <div class="content-form">
+              <span class="fill-black-70">{{
+                'PROFILE_DIRECT.DELINQUENCY.LATE_CHARGE_EFFECTIVE_DATE' | translate
+              }}</span>
+              <div class="color-biz-black-100">
+                {{ (accountDetailDto.delinquencyOptions.lateChargeEffectiveDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+              </div>
+            </div>
+          </div>
+
+          <div fxFlex="35" fxLayout="column" fxLayoutGap="16px">
+            <h5>{{ 'PROFILE_DIRECT.DELINQUENCY.MAXIMUM_CONTRACT_INTEREST' | translate }}</h5>
+            <div class="content-form">
+              <span class="fill-black-70">{{ 'PROFILE_DIRECT.RATE_DETERMINATION.INDEX' | translate }}</span>
+              <div class="color-biz-black-100">{{ accountDetailDto.delinquencyOptions.index || '-' }}</div>
+            </div>
+            <div class="content-form">
+              <span class="fill-black-70">{{ 'PROFILE_DIRECT.RATE_DETERMINATION.SPREAD' | translate }}</span>
+              <div class="color-biz-black-100">{{ accountDetailDto.delinquencyOptions.spread || '-' }}</div>
+            </div>
+            <div class="content-form">
+              <span class="fill-black-70">{{ 'PROFILE_DIRECT.RATE_DETERMINATION.RATE' | translate }}</span>
+              <div class="color-biz-black-100">{{ accountDetailDto.delinquencyOptions.rate || '-' }}</div>
+            </div>
+            <div class="content-form">
+              <span class="fill-black-70">{{ 'PROFILE_DIRECT.RATE_DETERMINATION.AS_OF_DATE' | translate }}</span>
+              <div class="color-biz-black-100">
+                {{ (accountDetailDto.delinquencyOptions.asOfDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="!!accountDetailDto.rateDetermination">
+      <hr class="mt-20 mb-20" />
+      <div class="pl-18 pr-18">
+        <div class="pb-20" fxLayoutGap="20" fxFlexFill>
+          <div fxFlex="15" fxLayoutAlign="top">
+            <h5>{{ 'PROFILE_DIRECT.RATE_DETERMINATION_TITLE' | translate }}</h5>
+          </div>
+          <div fxFlex="35" fxLayout="column" fxLayoutGap="16px">
+            <div class="content-form">
+              <span class="fill-black-70">{{ 'PROFILE_DIRECT.RATE_DETERMINATION.INTEREST_RATE' | translate }}</span>
+              <div class="color-biz-black-100">
+                {{ accountDetailDto.rateDetermination.interestRate?.toString() || '-' }}
+              </div>
+            </div>
+            <div class="content-form">
+              <span class="fill-black-70">{{ 'PROFILE_DIRECT.RATE_DETERMINATION.INTEREST_INDEX' | translate }}</span>
+              <div class="color-biz-black-100">
+                {{ accountDetailDto.rateDetermination.interestIndex?.toString() || '-' }}
+              </div>
+            </div>
+
+            <div class="content-form">
+              <span class="fill-black-70">{{ 'PROFILE_DIRECT.RATE_DETERMINATION.INTEREST_SPREAD' | translate }}</span>
+              <div class="color-biz-black-100">
+                {{ accountDetailDto.rateDetermination.interestSpread?.toString() || '-' }}
+              </div>
+            </div>
+            <div class="content-form">
+              <span class="fill-black-70">{{
+                'PROFILE_DIRECT.RATE_DETERMINATION.RATE_CHANGE_METHOD' | translate
+              }}</span>
+              <div class="color-biz-black-100">
+                {{ accountDetailDto.rateDetermination.rateChangeMthod?.toString() || '-' }}
+              </div>
+            </div>
+
+            <div class="content-form">
+              <span class="fill-black-70">{{
+                'PROFILE_DIRECT.RATE_DETERMINATION.ORIGINAL_INDEX_VALUE' | translate
+              }}</span>
+              <div class="color-biz-black-100">
+                {{ accountDetailDto.rateDetermination.originalIndexValue?.toString() || '-' }}
+              </div>
+            </div>
+            <div class="content-form">
+              <span class="fill-black-70">{{
+                'PROFILE_DIRECT.RATE_DETERMINATION.ORIGINAL_INTEREST_RATE' | translate
+              }}</span>
+              <div class="color-biz-black-100">
+                {{ accountDetailDto.rateDetermination.originalInterestRate?.toString() || '-' }}
+              </div>
+            </div>
+
+            <div class="content-form">
+              <span class="fill-black-70">{{
+                'PROFILE_DIRECT.RATE_DETERMINATION.INTEREST_CHANGE_FREQUENCY' | translate
+              }}</span>
+              <div class="color-biz-black-100">
+                {{ accountDetailDto.rateDetermination.interestChangeFrequency?.toString() || '-' }}
+              </div>
+            </div>
+
+            <div class="content-form">
+              <span class="fill-black-70">{{
+                'PROFILE_DIRECT.RATE_DETERMINATION.NEXT_INTEREST_RATE_CHANGE_DATE' | translate
+              }}</span>
+              <div class="color-biz-black-100">
+                {{
+                  (accountDetailDto.rateDetermination.nextInterestRateChangeDate | buddhistEra: 'DD/MM/yyyy') || '-'
+                }}
+              </div>
+            </div>
+            <div class="content-form">
+              <span class="fill-black-70">{{
+                'PROFILE_DIRECT.RATE_DETERMINATION.LAST_INTEREST_RATE_CHANGE_DATE' | translate
+              }}</span>
+              <div class="color-biz-black-100">
+                {{
+                  (accountDetailDto.rateDetermination.lastInterestRateChangeDate | buddhistEra: 'DD/MM/yyyy') || '-'
+                }}
+              </div>
+            </div>
+          </div>
+          <div fxFlex="35" fxLayout="column" fxLayoutGap="16px">
+            <h5>{{ 'PROFILE_DIRECT.RATE_DETERMINATION.MAXIMUM_CONTRACT_INTEREST' | translate }}</h5>
+            <div class="content-form">
+              <span class="fill-black-70">{{ 'PROFILE_DIRECT.RATE_DETERMINATION.INDEX' | translate }}</span>
+              <div class="color-biz-black-100">{{ accountDetailDto.rateDetermination.index?.toString() || '-' }}</div>
+            </div>
+            <div class="content-form">
+              <span class="fill-black-70">{{ 'PROFILE_DIRECT.RATE_DETERMINATION.SPREAD' | translate }}</span>
+              <div class="color-biz-black-100">{{ accountDetailDto.rateDetermination.spread?.toString() || '-' }}</div>
+            </div>
+            <div class="content-form">
+              <span class="fill-black-70">{{ 'PROFILE_DIRECT.RATE_DETERMINATION.RATE' | translate }}</span>
+              <div class="color-biz-black-100">{{ accountDetailDto.rateDetermination.rate?.toString() || '-' }}</div>
+            </div>
+            <div class="content-form">
+              <span class="fill-black-70">{{ 'PROFILE_DIRECT.RATE_DETERMINATION.AS_OF_DATE' | translate }}</span>
+              <div class="color-biz-black-100">
+                {{ (accountDetailDto.rateDetermination.asOfDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="accountDataType === 'OUTSTANDING_REPORT' && !!tfsOutstandingReportDto">
+  <div class="pl-18 pr-18" fxLayout="column">
+    <div fxLayout="column" fxLayoutGap="20" fxFlexFill>
+      <div fxFlex="95">
+        <div fxLayout="row" fxLayoutGap="16px">
+          <div fxFlex="33" class="content-form">
+            <span class="fill-black-70">
+              {{ 'RECEIPT_PAYER.DEBTOR' | translate }}
+            </span>
+            <div class="color-biz-black-100">
+              {{ tfsOutstandingReportDto.customerCifAndName || '-' }}
+            </div>
+          </div>
+          <div fxFlex="33" class="content-form">
+            <span class="fill-black-70">
+              {{ 'CUSTOMER.COLUMN_INFO_AT_DATE' | translate }}
+            </span>
+            <div class="color-biz-black-100">
+              {{ tfsOutstandingReportDto.reportDate || '-' }}
+            </div>
+          </div>
+          <div fxFlex="33" class="content-form">
+            <span class="fill-black-70">
+              {{ 'PROFILE_DIRECT.VIEW_BY' | translate }}
+            </span>
+            <div class="color-biz-black-100">
+              {{ tfsOutstandingReportDto.createdBy || '-' }}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pb-20" fxLayoutGap="20" fxFlexFill>
+        <div fxFlex="95">
+          <div fxLayout="row" fxLayoutGap="16px">
+            <div fxFlex="33" class="content-form">
+              <span class="fill-black-70">
+                {{ 'PROFILE_DIRECT.ACCOUNT' | translate }}
+              </span>
+              <div class="color-biz-black-100">
+                {{ tfsOutstandingReportDto.billNoAndCustomerName || '-' }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-20 mb-20" fxFlex>
+      <hr />
+    </div>
+
+    <div fxFlex="100">
+      <div class="table-scroll" table-scroll>
+        <table mat-table [dataSource]="tfsOutstandingReportDto.inqOutStandingReportDto?.inqOutStandingReportRes || []">
+          <ng-container matColumnDef="product">
+            <th mat-header-cell *matHeaderCellDef>PRODUCT</th>
+            <td mat-cell *matCellDef="let element">{{ element.prodType + ' (' + element.prodName + ')' }}</td>
+            <td class="bold" mat-footer-cell *matFooterCellDef>TOTAL</td>
+          </ng-container>
+
+          <ng-container matColumnDef="ccy">
+            <th mat-header-cell *matHeaderCellDef>CCY</th>
+            <td mat-cell *matCellDef="let element">{{ element.ccy }}</td>
+            <td mat-footer-cell *matFooterCellDef></td>
+          </ng-container>
+
+          <ng-container matColumnDef="reference">
+            <th mat-header-cell *matHeaderCellDef>REFERENCE</th>
+            <td mat-cell *matCellDef="let element">{{ element.referenceNo }}</td>
+            <td class="text-right bold" mat-footer-cell *matFooterCellDef>
+              {{ tfsOutstandingReportDto.inqOutStandingReportDto?.totalTxn || 0 }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="referRef">
+            <th mat-header-cell *matHeaderCellDef>REFER REF</th>
+            <td mat-cell *matCellDef="let element">{{ element.referRef }}</td>
+            <td class="bold" mat-footer-cell *matFooterCellDef>ITEMS</td>
+          </ng-container>
+
+          <ng-container matColumnDef="balanceAmt">
+            <th class="text-right" mat-header-cell *matHeaderCellDef>BALANCE<br />AMOUNT</th>
+            <td class="text-right" mat-cell *matCellDef="let element">
+              {{ (element.balanceAmt | numberDecimal) || '-' }}
+            </td>
+            <td class="text-right bold" mat-footer-cell *matFooterCellDef>
+              {{ (tfsOutstandingReportDto.inqOutStandingReportDto?.totalThbEquivalent | numberDecimal) || '-' }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="midRate">
+            <th class="text-right" mat-header-cell *matHeaderCellDef>MID RATE</th>
+            <td class="text-right" mat-cell *matCellDef="let element">{{ element.midRateBot }}</td>
+            <td mat-footer-cell *matFooterCellDef></td>
+          </ng-container>
+
+          <ng-container matColumnDef="thbEquivalent">
+            <th class="text-right" mat-header-cell *matHeaderCellDef>THB<br />EQUIVALENT</th>
+            <td class="text-right" mat-cell *matCellDef="let element">
+              {{ (element.thbEquivalent | numberDecimal) || '-' }}
+            </td>
+            <td class="text-right" mat-footer-cell *matFooterCellDef></td>
+          </ng-container>
+
+          <ng-container matColumnDef="customerReference">
+            <th mat-header-cell *matHeaderCellDef>CUSTOMER<br />REFERENCE</th>
+            <td mat-cell *matCellDef="let element">{{ element.customerRef }}</td>
+            <td mat-footer-cell *matFooterCellDef></td>
+          </ng-container>
+
+          <ng-container matColumnDef="valueDate">
+            <th mat-header-cell *matHeaderCellDef>VALUE DATE</th>
+            <td mat-cell *matCellDef="let element">{{ (element.eventDate | date: 'dd/MM/yyyy') || '-' }}</td>
+            <td mat-footer-cell *matFooterCellDef></td>
+          </ng-container>
+
+          <ng-container matColumnDef="dueDate">
+            <th mat-header-cell *matHeaderCellDef>DUE DATE</th>
+            <td mat-cell *matCellDef="let element">{{ (element.dueExpiry | date: 'dd/MM/yyyy') || '-' }}</td>
+            <td mat-footer-cell *matFooterCellDef></td>
+          </ng-container>
+
+          <ng-container matColumnDef="days">
+            <th class="text-right" mat-header-cell *matHeaderCellDef>DAYS</th>
+            <td class="text-right" mat-cell *matCellDef="let element">{{ element.days }}</td>
+            <td class="text-right" mat-footer-cell *matFooterCellDef></td>
+          </ng-container>
+
+          <ng-container matColumnDef="intRate">
+            <th class="text-right" mat-header-cell *matHeaderCellDef>Int. RATE</th>
+            <td class="text-right" mat-cell *matCellDef="let element">{{ element.intRate }}</td>
+            <td class="text-right" mat-footer-cell *matFooterCellDef></td>
+          </ng-container>
+
+          <ng-container matColumnDef="lastIntDate">
+            <th mat-header-cell *matHeaderCellDef>LAST INTEREST DATE</th>
+            <td mat-cell *matCellDef="let element">{{ (element.lastIntDate | date: 'dd/MM/yyyy') || '-' }}</td>
+            <td mat-footer-cell *matFooterCellDef></td>
+          </ng-container>
+
+          <ng-container matColumnDef="intAccrualAmtCcy" stickyEnd>
+            <th class="text-right" columnElevationRight mat-header-cell *matHeaderCellDef>INT ACCRUAL<br />AMT</th>
+            <td class="text-right" columnElevationRight mat-cell *matCellDef="let element">{{ element.intAmt }}</td>
+            <td class="text-right" columnElevationRight mat-footer-cell *matFooterCellDef></td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumnsOutstandingTable"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumnsOutstandingTable"></tr>
+          <tr mat-footer-row *matFooterRowDef="displayedColumnsOutstandingTable"></tr>
+        </table>
+        <ng-container
+          *ngIf="(tfsOutstandingReportDto?.inqOutStandingReportDto?.inqOutStandingReportRes || []).length === 0"
+          [ngTemplateOutlet]="emptyList">
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #emptyList>
+  <app-message-empty [message]="'COMMON.SEARCH_NOT_FOUND'"></app-message-empty>
+</ng-template>

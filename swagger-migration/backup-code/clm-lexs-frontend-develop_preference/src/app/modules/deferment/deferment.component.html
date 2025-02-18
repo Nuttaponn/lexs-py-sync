@@ -1,0 +1,118 @@
+<app-action-bar
+  [disabledBackButton]="actionBar?.disabledBackButton"
+  [backButtonText]="actionBar?.backButtonText || ''"
+  (backButtonHandler)="onBack($event)"
+  [hasSaveButton]="actionBar?.hasSave"
+  [saveButtonText]="actionBar?.saveText || 'COMMON.BUTTON_SAVE'"
+  (saveButtonHandler)="onSaveDraft()"
+  [hasPrimaryButton]="actionBar?.hasPrimaryButton"
+  [disabledPrimaryButton]="actionBar?.disabledPrimaryButton"
+  [primaryButtonText]="actionBar?.primaryButtonText"
+  (primaryButtonHandler)="onSave()"
+  [primaryButtonIcon]="actionBar?.primaryButtonIcon"
+  [showNavBarInformation]="actionBar?.showNavBarInformation"
+  [hasRejectButton]="actionBar?.hasRejectButton"
+  [rejectButtonText]="actionBar?.rejectButtonText"
+  [rejectButtonIcon]="actionBar?.rejectButtonIcon"
+  [disabledRejectButton]="actionBar?.disabledRejectButton"
+  (rejectButtonHandler)="
+    hasCeased
+      ? onSave()
+      : this.mode !== 'ADD' && dataForm.get('defermentTaskStatus')?.value !== 'DRAFT'
+        ? onExtendInitial()
+        : onDeleteExecution()
+  "
+  [hasEditButton]="actionBar?.hasEditButton"
+  [editButtonText]="actionBar?.editButtonText"
+  [disabledEditButton]="actionBar?.disabledEditButton"
+  [editButtonIcon]="actionBar?.editButtonIcon"
+  [editButtonPrimary]="actionBar?.editButtonPrimary"
+  (editButtonHandler)="actionBar.editButtonPrimary ? onCancelDeferment() : onCancelDefermentInitial()"
+  [hasDeleteButton]="actionBar?.hasDeleteButton"
+  [deleteButtonText]="actionBar?.deleteButtonText"
+  [deleteButtonClasses]="'neutral'"
+  [disabledDeleteButton]="actionBar?.disabledDeleteButton"
+  [deleteButtonIcon]="actionBar?.deleteButtonIcon"
+  [deleteButtonPositive]="actionBar?.deleteButtonPositive"
+  (deleteButtonHandler)="hasCancelCessation ? onCancelDeferment() : onCancelCessationInitial()">
+  <ng-container *ngIf="!isDetailView" navBarInformationTemplate>
+    <ng-container
+      *ngIf="
+        (defermentState === defermentStateEnum.NORMAL ||
+          defermentState === defermentStateEnum.NORMAL_PENDING_APPROVED ||
+          defermentState === defermentStateEnum.DEFERMENT_PENDING_APPROVED ||
+          (defermentState === defermentStateEnum.DEFERMENT && !hasCancelDeferment)) &&
+        !hasCeased
+      "
+      navBarInformationTemplate>
+      <mat-icon
+        svgIcon="icon-Pause"
+        *ngIf="!isExecution || (isExecution && !hasCancelDeferment)"
+        class="icon icon-xmedium"></mat-icon>
+      <span class="ml-05em bold" *ngIf="!isExecution">{{
+        (defermentState === defermentStateEnum.DEFERMENT && !hasCancelDeferment && !hasCeased && !hasExtendDeferment
+          ? 'LAWSUIT.DEFERMENT.DEFERMENT_DETAIL'
+          : hasExtendDeferment
+            ? 'LAWSUIT.DEFERMENT.DEFERMENT_EXTEND'
+            : 'LAWSUIT.DEFERMENT.CASE'
+        ) | translate
+      }}</span>
+      <span class="ml-05em bold" *ngIf="isExecution && !hasCancelDeferment">{{ title | translate }}</span>
+    </ng-container>
+    <ng-container
+      *ngIf="((defermentState === defermentStateEnum.DEFERMENT && !isExecution) || isExecution) && hasCancelDeferment"
+      navBarInformationTemplate>
+      <mat-icon svgIcon="icon-Dismiss-Circle" class="icon icon-xmedium"></mat-icon>
+      <span class="ml-05em bold">
+        {{
+          (defermentCategory === 'EXECUTION'
+            ? 'LAWSUIT.DEFERMENT.CANCEL_DEFERMENT_EXECUTION'
+            : 'LAWSUIT.DEFERMENT.CANCEL_DEFERMENT'
+          ) | translate
+        }}
+      </span>
+    </ng-container>
+    <ng-container *ngIf="hasCeased && !hasCancelCessation" navBarInformationTemplate>
+      <mat-icon svgIcon="icon-Record-Stop" class="icon icon-xmedium"></mat-icon>
+      <span class="ml-05em bold">{{ 'LAWSUIT.DEFERMENT.CESSATION_BTN' | translate }}</span>
+    </ng-container>
+    <ng-container *ngIf="hasCeased && hasCancelCessation" navBarInformationTemplate>
+      <mat-icon svgIcon="icon-Dismiss-Circle" class="icon icon-xmedium"></mat-icon>
+      <span class="ml-05em bold">{{ 'LAWSUIT.DEFERMENT.CANCEL_CESSATION' | translate }}</span>
+    </ng-container>
+  </ng-container>
+  <ng-container *ngIf="isDetailView" navBarInformationTemplate>
+    <mat-icon svgIcon="icon-Pause" class="icon icon-xmedium"></mat-icon>
+    <span class="ml-05em bold">{{
+      hasCeased
+        ? ('LAWSUIT.DEFERMENT.CESSATION_DETAIL_VIEW' | translate)
+        : isExecution
+          ? ('LAWSUIT.DEFERMENT.DEFERMENT_EXEC_DETAIL_VIEW' | translate)
+          : ('LAWSUIT.DEFERMENT.DEFERMENT_DETAIL_VIEW' | translate)
+    }}</span>
+  </ng-container>
+</app-action-bar>
+
+<ng-container>
+  <div class="content-below-action-bar-area">
+    <app-deferment-detail
+      [dataForm]="dataForm"
+      [hasCancelDeferment]="hasCancelDeferment"
+      [extendDeferment]="hasExtendDeferment"
+      [hasCeased]="hasCeased"
+      [defermentMessageBanner]="defermentMessageBanner"
+      [defermentState]="defermentState"
+      [cessationState]="cessationState"
+      [cessationMessageBanner]="cessationMessageBanner"
+      [documentUpload]="documentUpload"
+      [hasSufficientDoc]="hasSufficientDoc"
+      [hasCancelCessation]="hasCancelCessation"
+      [currentLitigationObj]="currentLitigation"
+      [_btnAction]="_btnAction"
+      [defermentCategory]="defermentCategory"
+      [isDetailView]="isDetailView"
+      [readOnlyDocuments]="readOnlyDocuments"
+      [state]="state"
+      (detailView)="checkDetailView()"></app-deferment-detail>
+  </div>
+</ng-container>

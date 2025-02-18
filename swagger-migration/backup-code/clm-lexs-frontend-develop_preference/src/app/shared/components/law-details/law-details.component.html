@@ -1,0 +1,72 @@
+<div class="content-container">
+  <div class="inner-container-padding-24">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+      <div class="title-text">
+        <h5 class="mt-12 mb-12 mr-12">รายการ LG ID ที่เกี่ยวข้องทั้งหมด</h5>
+      </div>
+      <div fxLayout="row">
+        <div class="description" (click)="isOpened = !isOpened">
+          <mat-icon [svgIcon]="isOpened ? 'icon-Slide-Hide' : 'icon-Expand'"
+            class="icon icon-xmedium icon-hide-show fill-blue mr-5">
+          </mat-icon>{{ isOpened ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' |
+          translate) }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <mat-accordion>
+    <mat-expansion-panel [expanded]="isOpened" hideToggle>
+      <mat-divider class="no-margin"></mat-divider>
+      <div class="mt-12">
+        <div class="table-scroll section" table-scroll>
+          <table mat-table [dataSource]="litigationCaseRelatedSource.data">
+            <ng-container matColumnDef="labelNumber" sticky>
+              <th class="text-center" mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_NO' | translate }}</th>
+              <td class="text-center" mat-cell *matCellDef="let element; let i = index;">
+                {{i + 1}}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="lgId">
+              <th mat-header-cell *matHeaderCellDef class="text-left">{{ 'COMMON.LABEL_LG_ID' | translate }} / {{
+                'LAWSUIT.BTN_CURRENT_STATUS' | translate }}</th>
+              <td mat-cell *matCellDef="let element">
+                <div class="lgNum">
+                  {{ element.litigationId || '-' }}
+                </div>
+                <div class="status-label status-normal">
+                  {{ element.litigationStatus }} {{ element.litigationStatusDesc }}
+                </div>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="customerId">
+              <th mat-header-cell *matHeaderCellDef class="text-left">{{ 'COMMON.LABEL_CIF_NO' | translate }} / {{
+                'SEARCH_CONTROL.PLACEHOLDER_CUSTOMER_FIRST_NAME' | translate }}</th>
+              <td mat-cell *matCellDef="let element" class="text-left">
+                <span>{{ element?.customerId | coerceString }} / {{ element?.customerName }}</span>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="responseUnit">
+              <th mat-header-cell *matHeaderCellDef class="text-left">{{ 'COMMON.LABEL_RESPONSE_UNIT' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element" class="text-left">
+                <span>{{ (element?.amdResponseUnitCode | coerceString: '') + ' - ' + (element?.amdResponseUnitName |
+                  coerceString: '')}}</span>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="collateralColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: collateralColumns"></tr>
+          </table>
+
+          <!-- Empty row handler -->
+          <app-message-empty *ngIf="litigationCaseRelatedSource.data.length === 0"
+            [message]="'COMMON.SEARCH_NOT_FOUND'">
+          </app-message-empty>
+        </div>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>

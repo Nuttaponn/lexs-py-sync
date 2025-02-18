@@ -1,0 +1,212 @@
+<ng-container *ngIf="!isEditMode && !isAddMode">
+  <div
+    [fxLayout]="contactConfig.layout ? contactConfig.layout : 'column'"
+    [fxLayoutAlign]="contactConfig.layout === 'row' ? 'start start' : 'start stretch'"
+    fxLayoutGap="12px">
+    <div
+      *ngIf="contactConfig?.hideTitle !== true"
+      [fxFlex]="contactConfig.layout === 'row' ? '14' : '100'"
+      class="inner-container-padding pl-0 pr-0">
+      >
+      <div fxLayout="row" fxLayoutAlign="space-between center">
+        <div *ngIf="contactConfig?.hideTitle !== true" class="title-text">
+          <h6 class="mt-12 mb-12">ผู้ติดต่อที่เกี่ยวข้อง</h6>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="center center">
+          <ng-container *ngIf="contactConfig?.hasAdd">
+            <button mat-stroked-button class="medium-aw-button" (click)="addMoreContact()">
+              <mat-icon [svgIcon]="'icon-Plus'" class="icon icon-small mr-10"></mat-icon>
+              เพิ่มผู้ติดต่อ
+            </button>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="end center" *ngIf="personDataSource.data.length === 0">
+      <span class="error-msg sub-desc">กรุณาเลือกผู้ติดต่อ</span>
+    </div>
+    <div
+      [fxFlex]="contactConfig.layout === 'row' ? (contactConfig.hideTitle ? '100' : '85') : '100'"
+      class="table-content mt-16">
+      <ng-container>
+        <table mat-table [dataSource]="personDataSource">
+          <ng-container matColumnDef="no">
+            <th mat-header-cell *matHeaderCellDef class="text-center width-pct-5">
+              {{ 'COMMON.LABEL_NO' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let element" class="text-center width-pct-5">
+              <span>
+                {{ element.no }}
+              </span>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="name">
+            <th class="text-left" mat-header-cell *matHeaderCellDef>ชื่อ-นามสกุล</th>
+            <td class="text-left" mat-cell *matCellDef="let element">
+              <span>{{ element?.name }}</span>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="relationship">
+            <th class="text-left" mat-header-cell *matHeaderCellDef>ความสัมพันธ์</th>
+            <td class="text-left" mat-cell *matCellDef="let element">
+              <ng-container *ngIf="element.isMainContact; else emptyRelation">
+                <span>ผู้กู้หลัก</span>
+              </ng-container>
+              <ng-template #emptyRelation>
+                <span>-</span>
+              </ng-template>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="identificationNo">
+            <th class="text-left" mat-header-cell *matHeaderCellDef>
+              หมายเลขประจำตัวประชาชน/<br />
+              หมายเลขประจำตัวผู้เสียภาษี
+            </th>
+            <td class="text-left" mat-cell *matCellDef="let element">
+              <span>
+                {{ element.identificationNo || '-' }}
+              </span>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="telephoneNo">
+            <th class="text-left" mat-header-cell *matHeaderCellDef>เบอร์โทรศัพท์</th>
+            <td class="text-left" mat-cell *matCellDef="let element">
+              <span>
+                {{ (element.telephoneNo | phone) || '-' }}
+              </span>
+            </td>
+          </ng-container>
+          <ng-container *ngIf="contactConfig?.hasAction" matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef class="text-center action-cell">
+              {{ 'COMMON.LABEL_COMMAND' | translate }}
+            </th>
+            <td mat-cell class="action-cell" *matCellDef="let element">
+              <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="30px">
+                <ng-container *ngIf="contactConfig?.hasDelete">
+                  <span (click)="deleteContact(element)" class="link link-red">{{
+                    'COMMON.BUTTON_DELETE' | translate
+                  }}</span>
+                </ng-container>
+                <ng-container *ngIf="contactConfig?.hasEdit">
+                  <span (click)="editContact(element)" class="link">{{ 'COMMON.BUTTON_EDIT' | translate }}</span>
+                </ng-container>
+              </div>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="lgPersonColumn"></tr>
+          <tr mat-row *matRowDef="let row; columns: lgPersonColumn"></tr>
+        </table>
+      </ng-container>
+    </div>
+  </div>
+  <ng-container
+    *ngIf="personDataSource.data.length === 0"
+    [ngTemplateOutlet]="dataNotFound"
+    [ngTemplateOutletContext]="{
+      value: 'ผู้ติดต่อ',
+    }">
+  </ng-container>
+</ng-container>
+
+<ng-container *ngIf="isEditMode || isAddMode">
+  <div [class.content-container]="!isAddMode">
+    <ng-container *ngIf="contactConfig.hasHeaderTitle">
+      <div class="inner-container-padding">
+        <div fxLayout="row" fxLayoutAlign="space-between center">
+          <div class="title-text">
+            <h6 class="mt-12 mb-12">ผู้ติดต่อที่เกี่ยวข้องกับทรัพย์ที่เลือก</h6>
+          </div>
+          <div fxLayout="row">
+            <div class="description" (click)="isContactOpened = !isContactOpened">
+              <mat-icon
+                [svgIcon]="isContactOpened ? 'icon-Slide-Hide' : 'icon-Expand'"
+                class="icon icon-xmedium icon-hide-show fill-blue mr-5">
+              </mat-icon
+              >{{
+                isContactOpened
+                  ? ('COMMON.ICON_EXPANSION_HIDE' | translate)
+                  : ('COMMON.ICON_EXPANSION_SHOW' | translate)
+              }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <mat-accordion>
+      <mat-divider *ngIf="!isAddMode && isContactOpened" class="mr-24"></mat-divider>
+      <mat-expansion-panel [expanded]="isContactOpened" hideToggle>
+        <div class="search-section pb-8" fxLayout="row" fxLayoutAlign="center start" fxLayoutGap="12px">
+          <div fxFlex="15" class="mt-20">
+            <ng-container *ngIf="isAddMode; else editModeTemplate">
+              <h6>รายละเอียดผู้ติดต่อ</h6>
+            </ng-container>
+            <ng-template #editModeTemplate>
+              <h6>ผู้ติดต่อหลัก</h6>
+            </ng-template>
+          </div>
+          <div fxFlex="85">
+            <ng-container *ngIf="isUpdated">
+              <spig-dropdown
+                classInput="input-md"
+                [formControl]="dropdownControl"
+                [config]="dropdownConfig"
+                [options]="contactTypeOptions"
+                (selectedOption)="onSelectedOption($event)"></spig-dropdown>
+              <spig-error-msg [control]="dropdownControl" [customErrorMsg]="'กรุณาเลือกชื่อผู้ติดต่อ'">
+              </spig-error-msg>
+            </ng-container>
+
+            <ng-container *ngIf="isAddNewContact">
+              <div
+                class="mt-10"
+                fxLayout="column"
+                fxLayoutAlign="start start"
+                fxLayoutGap="20px"
+                [formGroup]="contactFormGroup">
+                <mat-form-field fxFlex class="border-black-40">
+                  <mat-label>ชื่อ</mat-label>
+                  <input type="text" matInput formControlName="firstName" />
+                </mat-form-field>
+                <mat-form-field fxFlex class="border-black-40">
+                  <mat-label>นามสกุล</mat-label>
+                  <input type="text" matInput formControlName="lastName" />
+                </mat-form-field>
+                <mat-form-field fxFlex class="border-black-40">
+                  <mat-label>เบอร์ติดต่อ</mat-label>
+                  <input
+                    type="text"
+                    max-length="12"
+                    mask="000-000-0000"
+                    maxlength="12"
+                    appNumberOnly
+                    matInput
+                    formControlName="tel" />
+                </mat-form-field>
+                <ng-container *ngIf="!isAddMode">
+                  <div class="full-width" fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="10px">
+                    <button mat-raised-button class="long-button header-text-button" (click)="cancelAdd()">
+                      {{ 'COMMON.BUTTON_CANCEL' | translate }}
+                    </button>
+                    <button
+                      mat-flat-button
+                      color="primary"
+                      class="long-aw-button header-text-button w-120px"
+                      (click)="saveContact()">
+                      บันทึก
+                    </button>
+                  </div>
+                </ng-container>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+</ng-container>
+
+<ng-template let-value="value" #dataNotFound>
+  <app-message-empty message="{{ 'COMMON.LABEL_PREFIX_NOT_FOUND' | translate }}{{ value }}"></app-message-empty>
+</ng-template>

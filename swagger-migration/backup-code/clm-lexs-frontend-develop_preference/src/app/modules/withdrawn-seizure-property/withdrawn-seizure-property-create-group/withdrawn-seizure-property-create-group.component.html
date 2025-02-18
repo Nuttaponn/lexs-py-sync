@@ -1,0 +1,38 @@
+<app-action-bar
+  [backButtonText]="actionBar.backText || ''"
+  (backButtonHandler)="onCancel()"
+  [hasPrimaryButton]="actionBar.hasPrimary"
+  [primaryButtonText]="actionBar.primaryText || ''"
+  [primaryButtonIcon]="actionBar.primaryIcon || ''"
+  (primaryButtonHandler)="onSave()"
+  [hasCancelButton]="actionBar.hasCancel"
+  [cancelButtonText]="actionBar.cancelText || ''"
+  [showNavBarInformation]="true">
+  <ng-container navBarInformationTemplate>
+    <mat-icon svgIcon="icon-User-Group" class="icon icon-xmedium default-cursor"></mat-icon>
+    <span class="ml-05em bold">{{ 'WITHDRAWN_SEIZURE_PROPERTY.COLLATERAL.GROUP_TITLE' | translate }}</span>
+  </ng-container>
+</app-action-bar>
+<div class="content-below-action-bar-area">
+  <div class="content-container mb-0">
+    <app-message-banner [type]="'black-info'" [message]="messageBanner"></app-message-banner>
+  </div>
+  <div>
+    <app-withdrawn-seizure-property-asset-list
+      [config]="tableConfig"
+      [collateralColumns]="collateralColumns"
+      [assetColumns]="assetColumns"
+      [lgPersonColumn]="lgPersonColumn"
+      [collaterals]="collateralsSource"
+      [asset]="assetsSource"
+      (onUpdateSelectContact)="updateSelectContact($event)"
+      (onUpdateSelectProperty)="updateSelectProperty($event)"
+      (onUpdateSelectPropertyAsset)="updateSelectPropertyAsset($event)"
+      [contactTypeOptions]="withdrawnContactPersonSource"
+      [excludeProperty]="excluedItems"
+      [excludeAsset]="excluedAssetItems"
+      [tablePropertyControl]="tablePropertyControl"
+      [tablePropertyAssetControl]="tablePropertyAssetControl"
+      [contactDDLControl]="contactDDLControl"></app-withdrawn-seizure-property-asset-list>
+  </div>
+</div>

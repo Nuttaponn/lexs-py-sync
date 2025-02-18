@@ -1,0 +1,156 @@
+<div class="table-scroll" table-scroll>
+  <table mat-table [dataSource]="dataSource.filteredData">
+    <!-- Selection -->
+    <ng-container matColumnDef="select" sticky>
+      <th mat-header-cell *matHeaderCellDef>
+        <mat-checkbox
+          (change)="$event ? toggleAllRows() : null"
+          [checked]="selection.hasValue() && isAllSelected()"
+          [indeterminate]="selection.hasValue() && !isAllSelected()">
+        </mat-checkbox>
+      </th>
+      <td mat-cell *matCellDef="let row">
+        <mat-checkbox
+          (click)="$event.stopPropagation()"
+          (change)="onSelect(row)"
+          [checked]="selection.isSelected(row)"
+          [aria-label]="checkboxLabel(row)">
+        </mat-checkbox>
+      </td>
+    </ng-container>
+
+    <!-- Position Column -->
+    <ng-container matColumnDef="orderNumber" sticky>
+      <th mat-header-cell *matHeaderCellDef class="text-center" columnElevationLeft>
+        {{ 'COMMON.LABEL_NO' | translate }}
+      </th>
+      <td mat-cell *matCellDef="let element" class="text-center" columnElevationLeft>
+        {{ element.orderNumber }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="collateralId">
+      <th mat-header-cell *matHeaderCellDef>เลขที่หลักประกัน</th>
+      <td mat-cell *matCellDef="let element">
+        <span>
+          {{ element.collateralId }}
+        </span>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="collateralTypeDesc">
+      <th mat-header-cell *matHeaderCellDef>{{ 'SEIZURE_PROPERTY.SEIZURE_LIST_INFO.ASSET_TYPE' | translate }}</th>
+      <td mat-cell *matCellDef="let element">
+        <span>
+          {{ element.collateralTypeDesc }}
+        </span>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="collateralSubTypeDesc">
+      <th mat-header-cell *matHeaderCellDef>ประเภทย่อย</th>
+      <td mat-cell *matCellDef="let element">
+        <span>{{ element.collateralSubTypeDesc }}</span>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="documentNo">
+      <th mat-header-cell *matHeaderCellDef>เลขที่เอกสารสิทธิ์</th>
+      <td mat-cell *matCellDef="let element">
+        <span>{{ element.documentNo }}</span>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="collateralDetails">
+      <th mat-header-cell *matHeaderCellDef>รายละเอียดทรัพย์</th>
+      <td mat-cell *matCellDef="let element">
+        <span>{{ element.collateralDetails }}</span>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="ownerId">
+      <th mat-header-cell *matHeaderCellDef>เจ้าของกรรมสิทธิ์</th>
+      <td mat-cell *matCellDef="let element">
+        <span>{{ element.ownerId }}</span>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="totalAppraisalValue">
+      <th mat-header-cell *matHeaderCellDef class="text-right">
+        ราคาประเมิน (บาท)<app-tooltip
+          [iconClass]="['icon-small', 'fill-white']"
+          [params]="[
+            { title: '', content: 'ราคาประเมินของธนาคาร: ทรัพย์จำนอง<br>ราคาประเมินราชการ: ทรัพย์นอกจำนอง' },
+          ]"></app-tooltip>
+      </th>
+      <td mat-cell *matCellDef="let element" class="text-right">
+        <span>
+          {{ element.totalAppraisalValue | numberDecimal }}
+        </span>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="assentRlsStatus">
+      <th mat-header-cell *matHeaderCellDef class="text-center">
+        {{ 'ภาระผูกพัน' | translate }}
+      </th>
+      <td mat-cell *matCellDef="let element" class="text-center">
+        <div class="status-label status-normal m-auto full-width">
+          {{ element.assentRlsStatus || 'ไม่มี' }}
+        </div>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="obligationStatus">
+      <th mat-header-cell *matHeaderCellDef class="text-center">
+        {{ 'สถานะทรัพย์ที่สืบพบ' | translate }}
+      </th>
+      <td mat-cell *matCellDef="let element" class="text-center">
+        <div class="status-label status-normal m-auto full-width">
+          {{ element.obligationStatus || 'ไม่มี' }}
+        </div>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="collateralCmsStatus">
+      <th mat-header-cell *matHeaderCellDef class="text-center">สถานะทรัพย์ (CMS)</th>
+      <td mat-cell *matCellDef="let element">
+        <span class="status-label size-xl text-center full-width" [appBadgeStatus]="element.collateralCmsStatus">
+          {{ 'COLLATERAL_CMS_STATUS.' + element.collateralCmsStatus | translate }}
+        </span>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="collateralCaseLexsStatus" stickyEnd>
+      <th mat-header-cell *matHeaderCellDef class="text-center" columnElevationRight>สถานะทรัพย์ (LEXS)</th>
+      <td mat-cell *matCellDef="let element" columnElevationRight>
+        <span class="status-label size-xl text-center full-width" [appBadgeStatus]="element.collateralCaseLexsStatus">
+          <mat-icon
+            *ngIf="element.collateralCaseLexsStatus === 'SEIZURED'"
+            svgIcon="icon-Mark"
+            class="icon icon-small"></mat-icon>
+          {{ 'COLLATERAL_LEXS_STATUS.' + element.collateralCaseLexsStatus | translate }}
+        </span>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="assetDocuments" stickyEnd>
+      <th mat-header-cell *matHeaderCellDef class="min-width-192 text-center">
+        {{ 'รายการเอกสาร' | translate }}
+      </th>
+      <td mat-cell *matCellDef="let element" class="min-width-192">
+        <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="32">
+          <div fxFlex="100">
+            <button type="button" mat-stroked-button class="medium-fw-button" (click)="onClickAssetDocuments(element)">
+              {{ 'COMMON.BUTTON_VIEW_DOCUMENT' | translate }}
+            </button>
+          </div>
+        </div>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="collateralColumn"></tr>
+    <tr mat-row *matRowDef="let row; columns: collateralColumn"></tr>
+  </table>
+</div>
+
+<app-paginator (page)="onPaging($event)" [length]="collateral.length" [pageSize]="10"></app-paginator>

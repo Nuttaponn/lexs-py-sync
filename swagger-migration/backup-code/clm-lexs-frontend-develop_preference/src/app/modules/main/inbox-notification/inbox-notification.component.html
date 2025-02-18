@@ -1,0 +1,99 @@
+<div class="parent-container">
+  <div class="custom-sidenav">
+    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px">
+      <div class="custom-font">
+        <mat-icon
+          *ngIf="!notificationCount"
+          svgIcon="icon-Notification"
+          class="icon icon-small-xl default-cursor mr-7 mb-3"></mat-icon>
+        <span *ngIf="notificationCount" class="badge-without-cursor">{{ notificationCount }}</span>
+        <label>{{ 'INBOX.TITLE_NOTIFICATION' | translate }}</label>
+      </div>
+      <div (click)="onNotificationClose()">
+        <mat-icon svgIcon="icon-Cross" class="icon icon-small-xl"></mat-icon>
+        <label class="ml-3">{{ 'INBOX.BUTTON_CLOSE' | translate }}</label>
+      </div>
+    </div>
+    <mat-divider class="custom-divider"></mat-divider>
+    <div class="mt-15">
+      <spig-dropdown
+        [formControl]="notificationFormControl"
+        classInput="input-xsm icon"
+        [config]="notificationDropdownConfig"
+        [options]="notificationOptions"></spig-dropdown>
+    </div>
+    <!-- refactor -->
+    <ng-container
+      *ngIf="
+        notificationObj &&
+        notificationObj.messages &&
+        notificationObj.messages.content &&
+        notificationObj.messages.content.length > 0
+      ">
+      <div *ngFor="let message of notificationObj.messages?.content; index as j" [hidden]="!isMessageVisible(message)">
+        <div class="container-sidenav" [ngClass]="{ 'notification-read': message.status === 'R' }">
+          <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px">
+            <div>
+              <span
+                [ngClass]="{
+                  'custom-black-circle': message.status === 'U',
+                  'custom-black-circle-read': message.status === 'R',
+                }"
+                >&#9679;</span
+              >
+              <label class="vertical-align-text">
+                {{ 'INBOX.LABEL_NOTIFICATION_DATE' | translate }}
+                {{ (message.sentDatetime | buddhistEra: 'DD/MM/yyyy HH:mm') || '' }}
+              </label>
+            </div>
+            <div>
+              <mat-radio-group [(ngModel)]="message.status">
+                <mat-radio-button
+                  *ngIf="message.status === 'U'"
+                  id="notification-reader-{{ j }}"
+                  name="notification-readers-{{ j }}"
+                  value="R"
+                  (click)="onRadioButtonClick(notificationObj, j)"></mat-radio-button>
+                <span class="circle-checkmark" *ngIf="message.status === 'R'">&#10003;</span>
+              </mat-radio-group>
+              <label class="vertical-align-text" [ngClass]="{ 'text-read': message.status === 'R' }">{{
+                'INBOX.LABEL_STATUS_READED' | translate
+              }}</label>
+            </div>
+          </div>
+          <mat-divider class="divider-message"></mat-divider>
+          <div class="notification-details mt-10" fxLayout="column" fyLayoutAlign="center start" fxLayoutGap="10px">
+            <div hyperLink>
+              <a
+                *ngIf="message.hyperlink?.type !== 'G'"
+                class="custom-noti-hyperlink"
+                (click)="onNotificationReader(notificationObj, j, 'H', 'R')"
+                >{{ message.messageHeader }}</a
+              >
+              <span class="custom-noti-none-hyperlink" *ngIf="message.hyperlink?.type === 'G'">
+                {{ message.messageHeader }}
+              </span>
+            </div>
+            <div details>
+              <ng-container *ngIf="message.messageDetails">
+                <span *ngFor="let line of message.messageDetails.split('\n')" class="notification-detail-line">
+                  {{ line }}
+                </span>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <div class="empty-inbox-message" *ngIf="hasUnreadMessage()">
+      <div class="icon-container">
+        <mat-icon svgIcon="icon-File" class="icon icon-small-xl"></mat-icon>
+        <label>{{ 'INBOX.LABEL_NOTIFICATION_NOT_FOUND' | translate }}</label>
+      </div>
+    </div>
+    <div class="notification-paginator">
+      <spig-paginator [action]="pageActionConfig" (pageEvent)="onPageChange($event)"> </spig-paginator>
+    </div>
+  </div>
+</div>

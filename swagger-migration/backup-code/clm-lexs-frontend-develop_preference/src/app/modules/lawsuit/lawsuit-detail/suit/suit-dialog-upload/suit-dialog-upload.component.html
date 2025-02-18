@@ -1,0 +1,132 @@
+<ng-container *ngIf="initailizeData?.paymentImageId; else showForm">
+  <div class="content" fxlayout="column" fxLayoutGap="16px">
+    <app-upload-file-content
+      [title]="'LAWSUIT.SUIT.TITLE_PAYMENT_NOTICE'"
+      [labelAcceptFile]="labelAcceptFile"
+      [uploadInfo]="uploadInfo"
+      [acceptFile]="['application/pdf']"
+      [isReadDocument]="true"
+      taskCode="INDICTMENT_RECORD"
+      [isRequired]="isRequired"
+      [isSubmited]="isSubmited"
+      [isUpload]="isUploaded"
+      [paymentForm]="payFormDataResponse"
+      [isDisabledBtnUpload]="isDisabledBtnUpload"
+      (uploadError)="onUploadError($event)"
+      (readDocumentEvent)="onUploadSuccess($event)">
+    </app-upload-file-content>
+    <ng-container *ngIf="isUploadError">
+      <div>
+        <app-message-banner [message]="ErrMessage"> </app-message-banner>
+      </div>
+    </ng-container>
+  </div>
+  <div class="content" fxlayout="row" fxLayoutGap="16px">
+    <div fxFlex="50" class="text-end">
+      <div class="input-full" fxLayout="column">
+        <mat-label class="label-info"
+          >{{ 'LAWSUIT.SUIT.LABEL_COURT_FEE' | translate }}<span class="fill-red">*</span></mat-label
+        >
+        <mat-label>{{ initailizeData.courtFee | numberDecimal }}</mat-label>
+      </div>
+    </div>
+    <div fxFlex="50" class="text-end">
+      <div class="input-full" fxLayout="column">
+        <mat-label class="label-info"
+          >{{ 'LAWSUIT.SUIT.LABEL_PAY_PLEADING_ORDER' | translate }}<span class="fill-red">*</span></mat-label
+        >
+        <mat-label>{{ initailizeData.deliveryFeeForPleadings | numberDecimal }}</mat-label>
+      </div>
+    </div>
+  </div>
+  <div class="content" fxlayout="row" fxLayoutGap="16px">
+    <div fxFlex="50" class="text-end">
+      <div class="input-full" fxLayout="column">
+        <mat-label class="label-info"
+          >{{ 'LAWSUIT.SUIT.LABEL_DOCUMENT_PREPARATION_FEE' | translate }}<span class="fill-red">*</span>
+        </mat-label>
+        <mat-label>{{ initailizeData.documentPreparationFee | numberDecimal }}</mat-label>
+      </div>
+    </div>
+  </div>
+  <div class="mt-30">
+    <app-message-banner [message]="wanringMessage" [type]="'info'"> </app-message-banner>
+  </div>
+</ng-container>
+<ng-template #showForm>
+  <form [formGroup]="payCourtForm">
+    <div class="content" fxlayout="column" fxLayoutGap="16px">
+      <app-upload-file-content
+        [title]="title"
+        [labelAcceptFile]="labelAcceptFile"
+        [uploadInfo]="uploadInfo"
+        [isReadDocument]="true"
+        taskCode="INDICTMENT_RECORD"
+        [isRequired]="isRequired"
+        [isSubmited]="isSubmited"
+        (uploadError)="onUploadError($event)"
+        (readDocumentEvent)="onUploadSuccess($event)">
+      </app-upload-file-content>
+    </div>
+    <div class="content" fxlayout="row" fxLayoutGap="16px">
+      <div class="display-flex-column" fxFlex="50">
+        <mat-form-field fxFlex appearance="fill" class="input-full">
+          <mat-label>{{ 'LAWSUIT.SUIT.LABEL_COURT_FEE' | translate }}</mat-label>
+          <input class="text-right" matInput appNumberOnly="qualitative" formControlName="courtFee" required="" />
+        </mat-form-field>
+        <spig-error-msg
+          class="mt-4"
+          [control]="payCourtForm.get('courtFee')"
+          [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+        </spig-error-msg>
+      </div>
+      <div class="display-flex-column" fxFlex="50">
+        <mat-form-field fxFlex appearance="fill" class="input-full">
+          <mat-label>{{ 'LAWSUIT.SUIT.LABEL_PAY_PLEADING_ORDER' | translate }}</mat-label>
+          <input
+            class="text-right"
+            matInput
+            appNumberOnly="qualitative"
+            formControlName="deliveryFeeForPleadings"
+            required="" />
+        </mat-form-field>
+        <spig-error-msg
+          class="mt-4"
+          [control]="payCourtForm.get('deliveryFeeForPleadings')"
+          [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+        </spig-error-msg>
+      </div>
+    </div>
+    <div class="content" fxlayout="row" fxLayoutGap="16px">
+      <div class="display-flex-column" fxFlex="50">
+        <mat-form-field fxFlex appearance="fill" class="input-full">
+          <mat-label>{{ 'LAWSUIT.SUIT.LABEL_DOCUMENT_PREPARATION_FEE' | translate }}</mat-label>
+          <input
+            class="text-right"
+            matInput
+            appNumberOnly="qualitative"
+            formControlName="documentPreparationFee"
+            required="" />
+        </mat-form-field>
+        <spig-error-msg
+          class="mt-4"
+          [control]="payCourtForm.get('documentPreparationFee')"
+          [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+        </spig-error-msg>
+      </div>
+      <div fxFlex="50"></div>
+    </div>
+    <ng-container *ngIf="payCourtForm.valid && isValidPayment">
+      <div>
+        <app-message-banner [message]="wanringMessage"> </app-message-banner>
+      </div>
+    </ng-container>
+  </form>
+  <!-- <pre>
+    paymentImageId: {{ !!payFormDataResponse?.paymentImageId}}
+    isValidPayment: {{ isValidPayment }}
+    payCourtForm status: {{ payCourtForm.status }}
+    payCourtForm valid: {{ payCourtForm.valid }}
+    payCourtForm invalid: {{ payCourtForm.invalid }}
+  </pre> -->
+</ng-template>

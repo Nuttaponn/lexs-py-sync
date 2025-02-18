@@ -1,0 +1,60 @@
+<div fxLayoutGap="20" fxFlexFill>
+  <div fxFlex="20" fxLayoutAlign="top">
+    <h5>{{ 'CUSTOMER.MAPPING.ADDRESS_TYPE.REGISTRATION' | translate }}</h5>
+  </div>
+
+  <div [formGroup]="control" fxLayout="column" fxFlex="75" class="content-form">
+    <div class="content-form">
+      <mat-form-field class="min-width-pct-100">
+        <mat-label>{{ 'CUSTOMER.ADDRESS' | translate }}</mat-label>
+        <textarea
+          formControlName="addressLine"
+          matInput
+          maxlength="4000"
+          class="form-control no-resize"
+          cols="5"
+          rows="15"
+          required></textarea>
+      </mat-form-field>
+      <spig-error-msg [control]="getControl('addressLine')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+      </spig-error-msg>
+    </div>
+    <div fxLayout="row wrap" fxLayoutGap="20px" class="title-content">
+      <div fxFlex="45" class="mt-20">
+        <spig-dropdown
+          formControlName="provinceCode"
+          [classInput]="'input-s icon border-black-40'"
+          (selectedOption)="selectProvice($event)"
+          [config]="configProvice"
+          [options]="proviceOptions">
+        </spig-dropdown>
+        <spig-error-msg [control]="getControl('provinceCode')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+        </spig-error-msg>
+      </div>
+      <div fxFlex class="mt-20">
+        <spig-dropdown
+          formControlName="districtCode"
+          [classInput]="'input-s icon border-black-40'"
+          [config]="configDistrict"
+          (selectedOption)="selectDistrict($event)"
+          [options]="districtOptions">
+        </spig-dropdown>
+        <spig-error-msg [control]="getControl('districtCode')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+        </spig-error-msg>
+      </div>
+      <div fxFlex="45" class="mt-20">
+        <spig-dropdown
+          formControlName="subdistrictCode"
+          [classInput]="'input-s icon border-black-40'"
+          (selectedOption)="selectSubDistrict($event)"
+          [config]="configSubDistrict"
+          [options]="subDistrictOptions">
+        </spig-dropdown>
+        <spig-error-msg [control]="getControl('subdistrictCode')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+        </spig-error-msg>
+      </div>
+    </div>
+  </div>
+</div>
+<br />
+<app-message-banner [message]="'CUSTOMER.INFO_REGIST_ADDR_BANNER'" type="info"></app-message-banner>

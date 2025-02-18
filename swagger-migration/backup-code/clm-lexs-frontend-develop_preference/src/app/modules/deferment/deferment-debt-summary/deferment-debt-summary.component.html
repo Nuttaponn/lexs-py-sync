@@ -1,0 +1,18 @@
+<app-action-bar
+  (backButtonHandler)="onBack()"
+  [hasCancelButton]="false"
+  [hasSaveButton]="false"
+  [hasPrimaryButton]="false"
+  [showNavBarInformation]="true">
+  <ng-container navBarInformationTemplate>
+    <mat-icon svgIcon="icon-Window" class="icon icon-xmedium"></mat-icon>
+    <span class="ml-05em bold"
+      >{{ 'AUCTION_LED_CARD.DEFERMENT_DEBT.SUMMARY_DEBT' | translate }} {{ litigationId }}</span
+    >
+  </ng-container>
+</app-action-bar>
+<div class="content-below-action-bar-area">
+  <app-deferment-detail-sub
+    *ngIf="litigationDetailDto"
+    [litigationDetailDto]="litigationDetailDto"></app-deferment-detail-sub>
+</div>

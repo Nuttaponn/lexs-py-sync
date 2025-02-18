@@ -1,0 +1,36 @@
+<div>
+  <app-message-banner
+    type="warn-normal"
+    [icon]="'icon-Error'"
+    [message]="'MORE_THAN_1_SET_OF_ASSETS.MSG_BANNER_ONCE_CONFIRM_WONT_BE_ABLE_TO_EDIT'"></app-message-banner>
+</div>
+<div class="mt-20">
+  <div class="mb-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+    <h6 fxLayout="column" fxFlex="25">จำนวนชุดทรัพย์ที่เลือก</h6>
+    <div fxLayout="column" fxFlex="">
+      <span class="thin-letter">จำนวนชุดทรัพย์</span>
+      <div>{{ selectItems.length }}</div>
+    </div>
+  </div>
+  <div class="mb-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+    <h6 fxLayout="column" fxFlex="25">เหตุผลที่ขายไม่ได้</h6>
+    <div fxLayout="column" fxFlex="">
+      <div>ไม่มีผู้สนใจซื้อ</div>
+      <div class="mt-10">
+        <mat-form-field class="input-full-field">
+          <mat-label>{{ 'COMMON.LABEL_REMARKS' | translate }}</mat-label>
+          <textarea
+            class="input-full-field"
+            type="text"
+            matInput
+            cdkTextareaAutosize
+            #autosize="cdkTextareaAutosize"
+            cdkAutosizeMinRows="13"
+            autocomplete="off"
+            [formControl]="remark"
+            [maxlength]="500"></textarea>
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+</div>

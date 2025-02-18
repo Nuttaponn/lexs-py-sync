@@ -1,0 +1,94 @@
+<div class="wrap-title" mat-dialog-title fxLayout-="row" fxLayoutAlign="space-between center">
+  <div fxLayout-="row" fxLayoutAlign="start center" fxLayoutGap="14px">
+    <mat-icon svgIcon="icon-Search-Doc" class="icon icon-md"></mat-icon>
+    <strong id="dialog-title-text" class="dialog-title-margin dialog-title">
+      {{ data?.contract?.documentEditText }}: {{ data?.contract?.subDocumentPrefix }}
+      {{ data?.element?.documentDate || data?.element?.createdDate | buddhistEra: 'DD/MM/yyyy' }}
+    </strong>
+  </div>
+</div>
+
+<mat-dialog-content id="contentCssClasses" class="dialog-content">
+  <app-message-banner
+    class="pt-20"
+    [message]="
+      data?.contract?.subDocumentPrefix +
+      ' ' +
+      (data?.element?.documentDate || data?.element?.createdDate | buddhistEra: 'DD/MM/yyyy')
+    "
+    type="info"
+    actionButton="ดูสำเนา"
+    [actionButtonBorder]="false"
+    (actionButtonHandler)="openDoc()"
+    actionButtonIcon="icon-Expand"
+    actionButtonClass="info bold">
+  </app-message-banner>
+
+  <div class="pb-20 pt-20" fxLayout="row">
+    <div fxFlex="20">
+      <h6 class="pt-0">วงเงิน</h6>
+    </div>
+    <div fxFlex="80">
+      <table mat-table [dataSource]="data?.accounts">
+        <ng-container matColumnDef="checkbox">
+          <th mat-header-cell *matHeaderCellDef>
+            <mat-checkbox
+              (change)="selectAll()"
+              [indeterminate]="selection.hasValue() && !isAllSelected()"
+              [checked]="isAllSelected()"></mat-checkbox>
+          </th>
+          <td mat-cell *matCellDef="let element; let i = index">
+            <mat-checkbox (change)="selectCommitment(element)" [checked]="selection.isSelected(element)">
+            </mat-checkbox>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="accountNumber">
+          <th mat-header-cell *matHeaderCellDef>{{ 'DOC_PREP.ACCOUNT_NUMBER' | translate }}</th>
+          <td mat-cell *matCellDef="let element">
+            <span>{{ element.accountNumber }}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="accountTypeDesc">
+          <th mat-header-cell *matHeaderCellDef>ประเภทบัญชี</th>
+          <td mat-cell *matCellDef="let element">
+            <span>{{ element.accountTypeDesc || '-' }}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="accountName">
+          <th mat-header-cell *matHeaderCellDef>ชื่อบัญชี</th>
+          <td mat-cell *matCellDef="let element">
+            <span>{{ element.accountName || '-' }}</span>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="accountColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: accountColumns"></tr>
+      </table>
+      <ng-container *ngIf="data.accounts?.length === 0" [ngTemplateOutlet]="dataNotFound"> </ng-container>
+    </div>
+  </div>
+
+  <span class="fill-red" *ngIf="error.hasSelect"> กรุณาเลือกข้อมูลในตารางนี้ </span>
+</mat-dialog-content>
+<mat-dialog-actions class="footer justify-content-end">
+  <button type="button" class="medium-button mat-ghost" mat-button id="btn-dialog-close" mat-dialog-close>
+    {{ 'COMMON.BUTTON_CANCEL' | translate }}
+  </button>
+  <button
+    type="button"
+    mat-flat-button
+    color="primary"
+    class="medium-button w-132"
+    (click)="save()"
+    id="btn-dialog-active"
+    cdkFocusInitial>
+    <mat-icon svgIcon="icon-Selected" class="icon icon-md"></mat-icon>
+    {{ 'COMMON.BUTTON_APPLY' | translate }}
+  </button>
+</mat-dialog-actions>
+
+<ng-template #dataNotFound>
+  <app-message-empty [message]="'DOC_PREP.NOT_FOUND_DOC'"></app-message-empty>
+</ng-template>

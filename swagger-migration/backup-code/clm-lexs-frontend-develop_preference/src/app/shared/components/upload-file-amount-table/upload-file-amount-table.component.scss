@@ -1,0 +1,41 @@
+.display-none {
+  display: none;
+}
+.upload-table {
+  padding-bottom: 16px;
+
+  td {
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+  }
+  td.has-errors {
+    position: relative;
+    padding-bottom: 24px !important;
+    .error-msg {
+      position: absolute;
+      left: 16px;
+      bottom: 0;
+    }
+  }
+
+  .text-align-right {
+    text-align: right;
+  }
+  .full-width {
+    width: 100% !important;
+  }
+  .secondary-button {
+    width: auto;
+    min-width: fit-content;
+    padding: 0 4px;
+    box-shadow: none;
+  }
+  mat-form-field {
+    min-width: 200px;
+    text-align: right;
+  }
+  .receipt-name {
+    display: flex;
+    align-items: center;
+  }
+}

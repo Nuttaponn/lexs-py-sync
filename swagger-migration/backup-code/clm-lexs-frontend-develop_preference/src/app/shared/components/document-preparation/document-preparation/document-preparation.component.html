@@ -1,0 +1,370 @@
+<mat-card appearance="outlined" class="document-prep-info-card">
+  <div *ngIf="!!hasDocsList">
+    <div class="title-row mb-1em" fxLayout="row" fxLayoutAlign="space-between center">
+      <div fxLayoutAlign="flex-start stretch" fxLayoutGap="24">
+        <div fxLayout="row" fxLayoutAlign=" center">
+          <h5 class="ml-05em">{{ 'DOC_PREP.TITLE' | translate }}</h5>
+        </div>
+        <ng-container *ngIf="mode !== MODE.VIEW_PENDING_APPROVE && mode !== MODE.VIEW_PENDING">
+          <div fxLayout="row" fxLayoutAlign=" center">
+            <mat-icon
+              svgIcon="icon-notify"
+              class="icon default-cursor icon-hide-show"
+              [class.fill-krungthai-green]="
+                documentService.status.activeNotice === documentService.status.totalNotice &&
+                documentService.status.totalNotice > 0
+              "
+              [class.fill-gold]="documentService.status.activeNotice !== documentService.status.totalNotice">
+            </mat-icon>
+            &nbsp;
+            <span>
+              {{ 'DOC_PREP.TITLE_LABEL_NOTICE_DONE' | translate }}
+            </span>
+            &nbsp;
+            <h5>{{ documentService.status.activeNotice }}/{{ documentService.status.totalNotice }}</h5>
+          </div>
+          <div fxLayout="row" fxLayoutAlign=" center">
+            <mat-icon
+              svgIcon="icon-court"
+              class="icon default-cursor icon-hide-show fill-gold"
+              [class.fill-krungthai-green]="
+                documentService.status.activeLitigation === documentService.status.totalLitigation &&
+                documentService.status.totalLitigation > 0
+              "
+              [class.fill-gold]="documentService.status.activeLitigation !== documentService.status.totalLitigation">
+            </mat-icon>
+            &nbsp;
+            <span>
+              {{ 'DOC_PREP.TITLE_LABEL_LEGAL_DONE' | translate }}
+            </span>
+            &nbsp;
+            <h5>{{ documentService.status.activeLitigation }}/{{ documentService.status.totalLitigation }}</h5>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="mode === MODE.VIEW_PENDING_APPROVE || mode === MODE.VIEW_PENDING">
+          <div fxLayout="row" fxLayoutAlign=" center" *ngIf="mode === MODE.VIEW_PENDING_APPROVE">
+            <mat-icon
+              svgIcon="icon-Doc-circle"
+              class="icon default-cursor icon-hide-show fill-gold"
+              [class.fill-krungthai-green]="
+                documentService.status.activeReceived === documentService.status.totalReceived &&
+                documentService.status.totalReceived > 0
+              "
+              [class.fill-gold]="documentService.status.activeReceived !== documentService.status.totalReceived">
+            </mat-icon>
+            &nbsp;
+            <ng-container *ngIf="mode === MODE.VIEW_PENDING_APPROVE">
+              <span> เอกสารต้นฉบับที่ได้รับแล้ว </span>
+            </ng-container>
+            &nbsp;
+            <ng-container *ngIf="mode === MODE.VIEW_PENDING_APPROVE">
+              <h5>{{ documentService.status.activeReceived }}/{{ documentService.status.totalReceived }}</h5>
+            </ng-container>
+          </div>
+          <div fxLayout="row" fxLayoutAlign=" center" *ngIf="mode === MODE.VIEW_PENDING">
+            <mat-icon
+              svgIcon="icon-Doc-circle"
+              class="icon default-cursor icon-hide-show fill-gold"
+              [class.fill-krungthai-green]="
+                documentService.status.activeSent === documentService.status.totalSent &&
+                documentService.status.totalSent > 0
+              "
+              [class.fill-gold]="documentService.status.activeSent !== documentService.status.totalSent">
+            </mat-icon>
+            &nbsp;
+            <ng-container>
+              <span> เอกสารต้นฉบับที่ส่งแล้ว: </span>
+            </ng-container>
+            &nbsp;
+            <ng-container>
+              <h5>{{ documentService.status.activeSent }}/{{ documentService.status.totalSent }}</h5>
+            </ng-container>
+          </div>
+
+          <div fxLayout="row" fxLayoutAlign=" center" *ngIf="mode === MODE.VIEW_PENDING">
+            <mat-icon
+              svgIcon="icon-Doc-circle"
+              class="icon default-cursor icon-hide-show fill-gold"
+              [class.fill-krungthai-green]="
+                documentService.status.activeReceived === documentService.status.activeReceived &&
+                documentService.status.totalReceived > 0
+              "
+              [class.fill-gold]="documentService.status.activeReceived !== documentService.status.totalReceived">
+            </mat-icon>
+            &nbsp;
+            <span>
+              เอกสารต้นฉบับที่ทนายความรับแล้ว
+            </span>
+            &nbsp;
+            <h5>{{ documentService.status.activeReceived }}/{{ documentService.status.totalReceived }}</h5>
+          </div>
+        </ng-container>
+      </div>
+      <div>
+        <button
+          id="btn-doc-prep-change-mode"
+          *ngIf="mode === 'VIEW' && !taskCode"
+          [disabled]="
+            accessPermissions.subRoleCode === 'VIEWER' ||
+            !preparationCompleted ||
+            !permissionsOnScreen.canPreparationDoc
+          "
+          mat-stroked-button
+          class="overflow-ellipsis medium-aw-button"
+          (click)="changeMode()">
+          <mat-icon
+            svgIcon="icon-verify-doc"
+            [class.fill-gray]="
+              accessPermissions.subRoleCode === 'VIEWER' ||
+              !preparationCompleted ||
+              !permissionsOnScreen.canPreparationDoc
+            "
+            [class.fill-black]="
+              accessPermissions.subRoleCode !== 'VIEWER' &&
+              preparationCompleted &&
+              permissionsOnScreen.canPreparationDoc
+            "
+            class="icon-xmedium icon-hide-show">
+          </mat-icon>
+          {{ 'DOC_PREP.BTN_VERIFY_DOCS' | translate }}
+        </button>
+        <ng-container *ngIf="mode === 'EDIT' && preparationCompleted && permissionsOnScreen.canPreparationDoc">
+          <button id="btn-doc-prep-cancel" type="button" class="medium-button mat-ghost" mat-button (click)="cancel()">
+            {{ 'COMMON.BUTTON_CANCEL' | translate }}
+          </button>
+          &nbsp;
+          <button
+            id="btn-doc-prep-save"
+            type="button"
+            mat-flat-button
+            color="primary"
+            class="medium-button"
+            (click)="save()">
+            <mat-icon svgIcon="icon-save-primary" class="icon icon-md"></mat-icon>
+            {{ 'COMMON.BUTTON_SAVE' | translate }}
+          </button>
+        </ng-container>
+        <ng-container *ngIf="mode === MODE.VIEW_PENDING_APPROVE">
+          <button
+            type="button"
+            mat-stroked-button
+            class="long-button mat-primary"
+            color="warn"
+            (click)="rejectOriginalCopy()">
+            <ng-container> ปฏิเสธการรับเอกสารต้นฉบับที่ส่งเกิน </ng-container>
+          </button>
+          &nbsp;
+          <button
+            id="btn-doc-prep-download"
+            type="button"
+            mat-stroked-button
+            class="long-button"
+            (click)="receiveAll()">
+            รับเอกสารต้นฉบับทั้งหมด
+          </button>
+        </ng-container>
+        <ng-container
+          *ngIf="(mode === MODE.VIEW && taskCode === Task_Code.SUBMIT_ORIGINAL_DOCUMENT) || mode === MODE.VIEW_PENDING">
+          <button
+            id="btn-doc-prep-download"
+            type="button"
+            [class.mat-flat-button]="!isDownloaded"
+            [class.mat-stroked-button]="isDownloaded"
+            [class.mat-black]="isDownloaded"
+            [class.color.primary]="!isDownloaded"
+            class="long-button mat-primary"
+            (click)="download()">
+            <mat-icon svgIcon="icon-Arrow-Download" [class.fill-black]="isDownloaded" class="icon icon-md"> </mat-icon>
+            {{ 'DOC_PREP.BTN_DOWNLOAD_DOCS' | translate }}
+          </button>
+        </ng-container>
+        <!-- <ng-container *ngIf="mode === MODE.VIEW_PENDING_APPROVE">
+          <button class="long-button ml-10" type="button" mat-stroked-button [matMenuTriggerFor]="actionMenu">
+            <mat-icon svgIcon="icon-Option" class="icon btn-icon icon-sm"></mat-icon>
+          </button>
+          <mat-menu class="deb-menu-item" #actionMenu="matMenu" xPosition="before">
+            <div class="pt-12 pb-12 pl-16 pr-16">
+              <div class="cursor-pointer" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px"
+                (click)="receiveAll()">
+                <div>
+                  <mat-icon svgIcon="icon-Selected" class="icon icon-small-xl"></mat-icon>
+                </div>
+                <div>รับเอกสารต้นฉบับทั้งหมด</div>
+              </div>
+
+            </div>
+          </mat-menu>
+        </ng-container> -->
+      </div>
+    </div>
+    <app-doc-borrower-guarantor
+      [_mode]="mode"
+      [hasCancel]="hasCancel"
+      [receivedAll]="receivedAll"></app-doc-borrower-guarantor>
+    <app-document-account [_mode]="mode" [hasCancel]="hasCancel" [receivedAll]="receivedAll"></app-document-account>
+    <app-doc-collateral [_mode]="mode" [hasCancel]="hasCancel" [receivedAll]="receivedAll"></app-doc-collateral>
+    <app-doc-litigation
+      *ngIf="permissionsOnScreen.canSeeDoc && defermentDocuments && defermentDocuments.length > 0"
+      [documents]="defermentDocuments"
+      [title]="'DOC_PREP.DOC_DEFERMENT_TITLE' | translate">
+    </app-doc-litigation>
+    <app-doc-litigation
+      [forAsset]="false"
+      *ngIf="permissionsOnScreen.canSeeDoc && cessationDocuments && cessationDocuments.length > 0"
+      [documents]="cessationDocuments"
+      [title]="'DOC_PREP.DOC_CESSATION_TITLE' | translate">
+    </app-doc-litigation>
+    <app-doc-litigation
+      [documents]="litigationDocuments"
+      [forAsset]="false"
+      [title]="'DOC_PREP.DOC_LITIGATION_TITLE' | translate">
+    </app-doc-litigation>
+  </div>
+  <div *ngIf="!!!hasDocsList">
+    <div class="title-row mb-1em" fxLayout="row">
+      <div fxLayoutAlign="flex-start">
+        <div>
+          <h5 class="ml-05em">{{ 'DOC_PREP.TITLE' | translate }}</h5>
+        </div>
+      </div>
+    </div>
+    <ng-container *ngIf="!litigationDocuments" [ngTemplateOutlet]="dataNotFound"> </ng-container>
+    <!-- 20240717 support case data migration from eplg show litigationDocuments -->
+    <app-doc-litigation
+      *ngIf="litigationDocuments"
+      [documents]="litigationDocuments"
+      [forAsset]="false"
+      [title]="'DOC_PREP.DOC_LITIGATION_TITLE' | translate">
+    </app-doc-litigation>
+  </div>
+  <ng-container
+    *ngIf="(mode === MODE.VIEW_PENDING_APPROVE || mode === MODE.VIEW_PENDING) && overDocs && overDocs.length > 0">
+    <app-document-header
+      title="เอกสารต้นฉบับเกิน"
+      [isMain]="true"
+      [readyForLitigation]="false"
+      [expanded]="expanded"
+      [forLitigation]="false"
+      [forDoc]="true"
+      [readyForDoc]="null"
+      [forNoticeLetter]="false"
+      (expand)="expandPanel()">
+    </app-document-header>
+    <mat-expansion-panel [expanded]="expanded">
+      <div class="table-content">
+        <div class="table-scroll">
+          <table mat-table [dataSource]="overDocs">
+            <ng-container matColumnDef="index" sticky>
+              <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_NO' | translate }}</th>
+              <td mat-cell *matCellDef="let element; let i = index">
+                {{ i + 1 }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="documentName">
+              <th mat-header-cell *matHeaderCellDef>{{ 'DOC_PREP.COLUMN_DOC_NAME' | translate }}</th>
+              <td mat-cell *matCellDef="let element; let i = index">
+                {{ element.documentName || '-' }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="pageCount">
+              <th mat-header-cell *matHeaderCellDef>จำนวนหน้าที่เกิน</th>
+              <td mat-cell *matCellDef="let element">
+                <span>{{ element.pageCount }}</span>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="action">
+              <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_COMMAND' | translate }}</th>
+              <td mat-cell *matCellDef="let element; let i = index">
+                <span class="link-red" (click)="remove(i)">{{ 'COMMON.BUTTON_DELETE' | translate }}</span>
+                &nbsp; &nbsp;
+                <span class="link" (click)="rejectOriginalCopy(element, 'EDIT')">แก้ไข</span>
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="overDocsColumn"></tr>
+            <tr mat-row *matRowDef="let row; columns: overDocsColumn" class="bg-red-50"></tr>
+          </table>
+          <ng-container [ngTemplateOutlet]="dataNotFound" *ngIf="overDocs?.length === 0"> </ng-container>
+        </div>
+      </div>
+    </mat-expansion-panel>
+  </ng-container>
+</mat-card>
+
+<mat-card appearance="outlined" class="customer-info-card">
+  <div fxLayout="row" fxLayoutAlign="space-between center" class="mt-16">
+    <div fxFlex="74" fxLayoutGap="24">
+      <h5>
+        {{ 'DOC_PREP.TITLE_LABEL_VERIFY_HISTORY' | translate }}
+      </h5>
+    </div>
+    <div fxFlex="24" fxLayoutGap="24">
+      <spig-dropdown
+        classInput="input-sm icon"
+        (selectedOption)="filter($event)"
+        [config]="statusConfig"
+        [options]="statusOption">
+      </spig-dropdown>
+    </div>
+  </div>
+  <div class="table-content mt-10">
+    <div class="table-scroll" table-scroll>
+      <table mat-table [dataSource]="verifyDoc">
+        <ng-container matColumnDef="index" sticky>
+          <th mat-header-cell *matHeaderCellDef columnElevationLeft>{{ 'COMMON.LABEL_NO' | translate }}</th>
+          <td mat-cell *matCellDef="let element; let i = index" columnElevationLeft>
+            {{ (pageActionConfig.currentPage !== 0 ? ((pageActionConfig.currentPage || 0) - 1) * 10 + i : i) + 1 }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="timestamp">
+          <th mat-header-cell *matHeaderCellDef>{{ 'DOC_PREP.COLUMN_VERIFY_DATE' | translate }}</th>
+          <td mat-cell *matCellDef="let element">
+            <span>{{ element?.timestamp ? (element.timestamp | buddhistEra: 'DD/MM/yyyy HH:mm') : '-' }}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="documentGroup">
+          <th mat-header-cell *matHeaderCellDef>{{ 'DOC_PREP.COLUMN_DOC_TYPE' | translate }}</th>
+          <td mat-cell *matCellDef="let element">
+            <span>{{ element.documentGroupName }}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="documentName">
+          <th mat-header-cell *matHeaderCellDef>{{ 'DOC_PREP.COLUMN_DOC_NAME' | translate }}</th>
+          <td mat-cell *matCellDef="let element; let i = index">
+            {{ element.documentName || '-' }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef>{{ 'DOC_PREP.COLUMN_ACTIVITY' | translate }}</th>
+          <td mat-cell *matCellDef="let element">
+            <span>{{ element.action }}</span>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="userName">
+          <th mat-header-cell *matHeaderCellDef>{{ 'DOC_PREP.COLUMN_DONE_BY' | translate }}</th>
+          <td mat-cell *matCellDef="let element">
+            <span>{{ element.userName }}</span>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="screenAction">
+          <th mat-header-cell *matHeaderCellDef>{{ 'DOC_PREP.COLUMN_DONE_SCREEN' | translate }}</th>
+          <td mat-cell *matCellDef="let element">
+            <span>{{ element.screenAction }} {{ element.litigationId || '' }} </span>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="verifyDocColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: verifyDocColumns"></tr>
+      </table>
+      <ng-container [ngTemplateOutlet]="dataNotFound" *ngIf="verifyDoc?.length === 0"> </ng-container>
+    </div>
+    <spig-paginator [result]="pageResultConfig" [action]="pageActionConfig" (pageEvent)="pageEvent($event)">
+    </spig-paginator>
+  </div>
+</mat-card>
+
+<ng-template let-value="value" #dataNotFound>
+  <app-message-empty message="{{ 'COMMON.LABEL_PREFIX_NOT_FOUND' | translate }}{{ value }}"></app-message-empty>
+</ng-template>

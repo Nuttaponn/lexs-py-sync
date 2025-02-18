@@ -1,0 +1,258 @@
+<ng-container *ngIf="civilCases?.length ?? -1 > 0">
+  <div class="mat-elevation-z0 no-horizontal-padding">
+    <div fxLayout="row" class="title-content no-horizontal-padding" fxLayoutGap="5px">
+      <div fxLayout="row" fxLayoutAlign=" center">
+        <mat-icon svgIcon="icon-Window" class="icon icon-medium"></mat-icon>
+        <div class="title-text">
+          <h6>
+            <!-- รายการคำฟ้อง -->
+            {{ 'LAWSUIT.SUIT.SUIT_LIST' | translate }}
+          </h6>
+        </div>
+      </div>
+      <div fxFlex></div>
+      <!-- ไปที่เว็ปไซต์ e-Filing -->
+      <button mat-stroked-button class="medium-aw-button overflow-ellipsis" (click)="openNewTabEFillWebsite()">
+        <mat-icon [svgIcon]="'icon-Expand'" class="icon icon-medium mr-10"></mat-icon>
+        {{ 'LAWSUIT.SUIT.BTN_NVG_E_FILLING' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <ng-container [ngTemplateOutlet]="suitTable" [ngTemplateOutletContext]="{ list: civilCases, groupIndex: groupIndex }">
+  </ng-container>
+</ng-container>
+
+<ng-template #suitTable let-dataSource="list" let-groupIndex="groupIndex">
+  <div class="table-scroll" table-scroll>
+    <table mat-table [dataSource]="dataSource">
+      <ng-container matColumnDef="no">
+        <th class="text-center" mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_NO' | translate }}</th>
+        <td class="text-center" mat-cell *matCellDef="let element; let i = index">
+          {{ i + 1 }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="referenceNo">
+        <th mat-header-cell *matHeaderCellDef>{{ 'LAWSUIT.SUIT.HEAD_REFERENCE_NO' | translate }}</th>
+        <td mat-cell *matCellDef="let element">
+          <span *ngIf="!element?.actionFlag" class="link" (click)="onClickId(element)">
+            {{ element.referenceNo ?? '-' }}
+          </span>
+          <span *ngIf="element?.actionFlag">
+            {{ element.referenceNo ?? '-' }}
+          </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="caseDate">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'COMMON.LABEL_CASE_DATE' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ (element.caseDate | buddhistEra: 'DD/MM/yyyy') ?? '-' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="blackCaseNo">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'COMMON.LABEL_BLACK_CASE_NO' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.blackCaseNo ?? '-' }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="capitalAmount">
+        <th mat-header-cell *matHeaderCellDef class="text-right">
+          {{ 'LAWSUIT.SUIT.HEAD_CAPITAL_AMOUNT' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" class="text-right">
+          {{ (element.capitalAmount | numberDecimal) ?? '-' }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="court">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'COMMON.LABEL_COURT' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ (element.courtCode ?? '') + ' - ' + (element.courtName ?? '') }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="sla">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'LAWSUIT.SUIT.HEAD_SLA' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.sla | buddhistEra: 'DD/MM/yyyy' || '-' }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="paymentAuditingStatus" stickyEnd>
+        <th class="text-center" columnElevationRight mat-header-cell *matHeaderCellDef>
+          <!-- สถานะชำระค่าธรรมเนียมศาล -->
+          {{ 'LAWSUIT.SUIT.HEAD_PAYMENT_AUDITING_STATUS' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" columnElevationRight>
+          <div fxLayout="row" fxLayoutAlign="center center">
+            <ng-container
+              *ngIf="
+                taskCodeFromTask === 'TRY_CONFIRM_COURT_FEES_PAYMENT';
+                then tryConfirmTemplate;
+                else commonStatusTemplate
+              "></ng-container>
+            <ng-template #tryConfirmTemplate>
+              <div class="status-label status-pending">
+                {{ 'TASK_CODE_BUTTON.PENDING_TRY_CONFIRM_COURT_FEES_PAYMENT' | translate }}
+              </div>
+            </ng-template>
+            <ng-template #commonStatusTemplate>
+              <ng-container *ngIf="element.channel === 'DIRECT'; else efilingStatusTemplate">
+                <ng-container *ngIf="element.courtFeeStatus; else emptyCourtFeeStatus">
+                  <div
+                    *ngIf="element.courtFeeStatus"
+                    class="status-label"
+                    [ngClass]="
+                      element.courtFeeStatus === COURT_FEE_STATUS.TRANSFERRED ? 'status-success' : 'status-pending'
+                    ">
+                    <mat-icon
+                      *ngIf="element.courtFeeStatus === COURT_FEE_STATUS.TRANSFERRED"
+                      svgIcon="icon-Mark"
+                      class="icon icon-small">
+                    </mat-icon>
+                    {{
+                      'LAWSUIT.MAPPING.COURT_FEE_STATUS.' +
+                        element.courtFeeStatus +
+                        (element.courtFeeStatus === COURT_FEE_STATUS.TRANSFERRED ? '_SUCCESS' : '') | translate
+                    }}
+                  </div>
+                </ng-container>
+              </ng-container>
+              <ng-template #efilingStatusTemplate>
+                <ng-container *ngIf="element.courtFeeStatus; else emptyCourtFeeStatus">
+                  <div
+                    class="status-label"
+                    [ngClass]="
+                      element.courtFeeStatus === COURT_FEE_STATUS.TRANSFERRED && element.confirmImageId
+                        ? 'status-success'
+                        : 'status-pending'
+                    ">
+                    <mat-icon
+                      *ngIf="element.courtFeeStatus === COURT_FEE_STATUS.TRANSFERRED && element.confirmImageId"
+                      svgIcon="icon-Mark"
+                      class="icon icon-small">
+                    </mat-icon>
+                    {{
+                      'LAWSUIT.MAPPING.COURT_FEE_STATUS.' +
+                        element.courtFeeStatus +
+                        (element.courtFeeStatus === COURT_FEE_STATUS.TRANSFERRED && element.confirmImageId
+                          ? '_SUCCESS'
+                          : '') | translate
+                    }}
+                  </div>
+                </ng-container>
+              </ng-template>
+              <ng-template #emptyCourtFeeStatus>
+                <span>-</span>
+              </ng-template>
+            </ng-template>
+          </div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="button" stickyEnd>
+        <th class="text-center" mat-header-cell *matHeaderCellDef>
+          <!-- คำสั่ง -->
+          {{ 'COMMON.LABEL_COMMAND' | translate }}
+        </th>
+        <td class="text-center" mat-cell *matCellDef="let element; let i = index">
+          <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="32px">
+            <ng-container
+              *ngIf="
+                taskCodeFromTask === 'TRY_CONFIRM_COURT_FEES_PAYMENT';
+                then tryConfirmButtonTemplate;
+                else commonButtonsTemplate
+              "></ng-container>
+            <ng-template #tryConfirmButtonTemplate>
+              <!-- LEX2-7505: button(s) -->
+              <button
+                type="button"
+                color="primary"
+                mat-flat-button
+                class="medium-fw-button"
+                (click)="callUploadDoc(groupIndex, element, i)">
+                {{ 'TASK_CODE_BUTTON.PENDING_TRY_CONFIRM_COURT_FEES_PAYMENT' | translate }}
+              </button>
+            </ng-template>
+            <ng-template #commonButtonsTemplate>
+              <!-- 170 -> PENDING, CREATE -->
+              <span
+                *ngIf="
+                  element.buttonAction === buttonActionEnum.PendingPayCourtFee &&
+                  element.courtFeeStatus === COURT_FEE_STATUS.NEW
+                "
+                class="link"
+                (click)="navigateToIndictment(element)">
+                <!-- แก้ไข -->
+                {{ 'COMMON.BUTTON_EDIT' | translate }}
+              </span>
+
+              <!-- 174-175 -->
+              <!-- ชำระค่าธรรมเนียม -->
+              <button
+                *ngIf="!isViewMode && [COURT_FEE_STATUS.NEW, COURT_FEE_STATUS.PARTIAL].includes(element.courtFeeStatus)"
+                type="button"
+                mat-flat-button
+                color="primary"
+                class="medium-fw-button"
+                [disabled]="element.buttonAction !== buttonActionEnum.PayCourtFee"
+                (click)="callUploadDoc(groupIndex, element, i)">
+                {{ 'LAWSUIT.SUIT.BTN_PAY_FEE' | translate }}
+              </button>
+              <!-- อัปโหลดใบยืนยัน -->
+              <ng-container *ngIf="!isViewMode && element.buttonAction === buttonActionEnum.ConfirmCourtFee">
+                <button
+                  *ngIf="!isExistedConfirmImageId"
+                  type="button"
+                  color="accent"
+                  mat-flat-button
+                  class="medium-fw-button"
+                  (click)="callUploadDoc(groupIndex, element, i)">
+                  {{ 'TASK_CODE_BUTTON.PENDING_CONFIRM_COURT_FEES_PAYMENT' | translate }}
+                </button>
+                <button
+                  *ngIf="isExistedConfirmImageId"
+                  mat-stroked-button
+                  class="medium-aw-button overflow-ellipsis"
+                  (click)="callUploadDoc(groupIndex, element, i)">
+                  {{ 'TASK_CODE_BUTTON.PENDING_CONFIRM_COURT_FEES_PAYMENT' | translate }}
+                </button>
+              </ng-container>
+
+              <!-- 190 -> อัปโหลดใบเสร็จ -->
+              <ng-container *ngIf="!isViewMode && element.buttonAction === buttonActionEnum.UploadCourtFeesReceipt">
+                <button
+                  *ngIf="!uploadCourtFeeReceipt"
+                  type="button"
+                  color="primary"
+                  mat-flat-button
+                  class="medium-fw-button"
+                  (click)="callUploadDoc(groupIndex, element, i)">
+                  {{ 'LAWSUIT.SUIT.BTN_UPLOAD_PAYMENT_DOC' | translate }}
+                </button>
+                <button
+                  *ngIf="uploadCourtFeeReceipt"
+                  mat-stroked-button
+                  class="medium-fw-button overflow-ellipsis"
+                  (click)="callUploadDoc(groupIndex, element, i)">
+                  {{ 'LAWSUIT.SUIT.BTN_UPLOAD_PAYMENT_DOC' | translate }}
+                </button>
+              </ng-container>
+            </ng-template>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="isShowButtonColumn ? displayedColumns : viewDisplayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: isShowButtonColumn ? displayedColumns : viewDisplayedColumns"></tr>
+    </table>
+  </div>
+</ng-template>

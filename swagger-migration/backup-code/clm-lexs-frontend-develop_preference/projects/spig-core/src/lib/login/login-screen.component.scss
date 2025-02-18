@@ -1,0 +1,29 @@
+@import '../../../styles/theme/core-default/variables';
+.disabled-button {
+  background: map-get($ktb-palette-biz-gray, 300) !important;
+  color: $white !important;
+}
+.show-password-icon {
+  &.invalid {
+    color: map-get($ktb-palette-red, 600);
+  }
+  &.valid {
+    color: map-get($ktb-palette-precious-blue, 50);
+  }
+}
+.login-sub-description {
+  font-weight: 400;
+  font-family: KrungthaiFastRegular;
+  color: map-get($ktb-palette-red, 600) !important;
+  padding-left: 25px;
+  margin-top: -0.8em !important;
+}
+
+.version-text {
+  position: absolute;
+  color: $white;
+  bottom: 10px;
+  text-align: center;
+  width: 100%;
+  font-size: 16px;
+}

@@ -1,0 +1,28 @@
+{
+  "MAIN": {
+    "MENU_DASHBOARD": "หน้าจอหลัก",
+    "MENU_TASKS_POOL": "งานรอรับมอบหมาย",
+    "MENU_TASKS": "งานทั้งหมด",
+    "MENU_LAWSUIT": "คดีทั้งหมด",
+    "MENU_CUSTOMERS": "ลูกหนี้ทั้งหมด",
+    "MENU_FINANCE": "งานการเงิน",
+    "MENU_EXPENSE": "รายจ่าย",
+    "MENU_RECEIPT": "รายรับ",
+    "MENU_ADVANCE": "โอนเงินทดรองจ่ายเป็นค่าใช้จ่าย",
+    "MENU_DOPA": "ตรวจสอบข้อมูลจาก DOPA",
+    "MENU_EXTERNAL_DOCUMENTS": "ประกาศขายทอดตลาดทั้งหมด",
+    "MENU_PREFERENCE": "บุริมสิทธิจำนอง",
+    "MENU_USERS": "ผู้ใช้งานทั้งหมด",
+    "MENU_CONFIGURATION": "การตั้งค่า",
+    "MENU_REPORTS": "รายงาน",
+    "TITLE_BAR_VIEW_AS": "มุมมองการใช้งาน",
+    "LABEL_LOGOUT": "ออกจากระบบงาน"
+  },
+  "INBOX": {
+    "TITLE_NOTIFICATION": "การแจ้งเตือน",
+    "BUTTON_CLOSE": "ปิด",
+    "LABEL_NOTIFICATION_NOT_FOUND": "ไม่พบการแจ้งเตือน",
+    "LABEL_NOTIFICATION_DATE": "วันที่แจ้งเตือน",
+    "LABEL_STATUS_READED": "อ่านแล้ว"
+  }
+}

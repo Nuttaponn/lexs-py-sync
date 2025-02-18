@@ -1,0 +1,209 @@
+<mat-accordion class="accordion-headers-align configuration-matching">
+  <div fxLayout="row" fxLayoutAlign="space-between center" class="title-content">
+    <h6>
+      {{ 'CONFIGURATION.TITLE_SECTION_USER_MATCH' | translate }}
+    </h6>
+    <div fxLayout="row">
+      <div class="description" (click)="isOpened = !isOpened">
+        <mat-icon [svgIcon]="isOpened ? 'icon-Slide-Hide' : 'icon-Expand'" class="icon icon-hide-show fill-blue">
+        </mat-icon
+        >{{ isOpened ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate) }}
+      </div>
+    </div>
+  </div>
+  <mat-expansion-panel [expanded]="isOpened" hideToggle>
+    <mat-divider class="no-margin"></mat-divider>
+    <div class="tab-group-content">
+      <div class="search-filter-content">
+        <div [formGroup]="searchCtrl">
+          <div class="search-section" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="12px">
+            <div fxFlex="35">
+              <spig-dropdown
+                classInput="input-xsm icon text-center"
+                [config]="ddlUserConfig"
+                [options]="ddlUserOptions"
+                (selectedOption)="onSearchFilter(true)"
+                formControlName="userId">
+              </spig-dropdown>
+            </div>
+            <div fxFlex="35">
+              <mat-form-field class="no-label input-sm-icon input-full-field">
+                <input
+                  type="text"
+                  matInput
+                  [placeholder]="placeholder | translate"
+                  autocomplete="off"
+                  (keyup)="onKeyup($event)"
+                  (focus)="placeholder = ''"
+                  (blur)="placeholder = 'CONFIGURATION.HEAD_COLUMN_RESPONSE_UNIT_CODE'"
+                  formControlName="responseUnitCode" />
+                <mat-icon matSuffix class="icon icon-small-xl" svgIcon="icon-Search" (click)="onSearchFilter()">
+                </mat-icon>
+              </mat-form-field>
+              <spig-error-msg
+                [control]="searchCtrl.get('responseUnitCode')"
+                [customErrorMsg]="'SEARCH_CONTROL.ERROR_SEARCH_CONDITION'">
+              </spig-error-msg>
+            </div>
+          </div>
+
+          <div class="second-section" fxLayout="row" fxLayoutAlign="start" fxLayoutGap="12px">
+            <button mat-stroked-button class="xsmall-aw-button overflow-ellipsis" (click)="onClickPairResponseUnits()">
+              <mat-icon svgIcon="icon-Person-Swap" class="icon icon-small-xl"></mat-icon>
+              {{ 'CONFIGURATION.MULTI_USER_MATCH_DIALOG_TITLE' | translate }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ng-container
+      *ngIf="extendResponseUnitUserDtoList.length > 0"
+      [ngTemplateOutlet]="mainTable"
+      [ngTemplateOutletContext]="{ list: extendResponseUnitUserDtoList || [] }">
+    </ng-container>
+    <spig-paginator
+      *ngIf="extendResponseUnitUserDtoList.length > 0 && pageResultConfig && pageActionConfig"
+      [result]="pageResultConfig"
+      [action]="pageActionConfig"
+      (pageEvent)="pageEvent($event)">
+    </spig-paginator>
+    <ng-container *ngIf="extendResponseUnitUserDtoList.length === 0" [ngTemplateOutlet]="searchEmpty"></ng-container>
+  </mat-expansion-panel>
+</mat-accordion>
+
+<ng-template #mainTable let-dataSource="list">
+  <div class="table-scroll section" table-scroll>
+    <table mat-table [dataSource]="dataSource">
+      <!-- Checkboc Column -->
+      <ng-container matColumnDef="selection" sticky>
+        <th mat-header-cell *matHeaderCellDef columnElevationLeft>
+          <mat-checkbox
+            (change)="$event ? toggleAllRows() : null"
+            [checked]="selection.hasValue() && isAllSelected()"
+            [indeterminate]="selection.hasValue() && !isAllSelected()">
+          </mat-checkbox>
+        </th>
+        <td mat-cell *matCellDef="let row" columnElevationLeft>
+          <mat-checkbox
+            (click)="$event.stopPropagation()"
+            (change)="$event ? onCheckboxChange(row) : null"
+            [checked]="selection.isSelected(row.customPrimaryKey)">
+          </mat-checkbox>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="no">
+        <th class="text-center" mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_NO' | translate }}</th>
+        <td class="text-center" mat-cell *matCellDef="let element; let i = index">{{ element.no }}</td>
+      </ng-container>
+      <ng-container matColumnDef="responseUnitCode">
+        <th mat-header-cell *matHeaderCellDef>{{ 'CONFIGURATION.HEAD_COLUMN_RESPONSE_UNIT_CODE' | translate }}</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.responseUnitCode }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="responseUnitName">
+        <th mat-header-cell *matHeaderCellDef>{{ 'CONFIGURATION.HEAD_COLUMN_RESPONSE_UNIT_NAME' | translate }}</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.responseUnitName }}
+        </td>
+      </ng-container>
+
+      <!-- ชื่อผู้ดูแล -->
+      <ng-container matColumnDef="userIdName">
+        <th mat-header-cell *matHeaderCellDef>{{ 'CONFIGURATION.USER_NAME' | translate }}</th>
+        <td mat-cell *matCellDef="let element">
+          {{ (element.userId || '') + ' - ' + (element.name || '') + ' ' + (element.surName || '') }}
+        </td>
+      </ng-container>
+      <!-- ชื่อทีม -->
+      <ng-container matColumnDef="teamName">
+        <th mat-header-cell *matHeaderCellDef>{{ 'CONFIGURATION.HEAD_COLUMN_TEAM_NAME' | translate }}</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.teamName || '-' }}
+        </td>
+      </ng-container>
+      <!-- หัวหน้าทีม -->
+      <ng-container matColumnDef="bossIdName">
+        <th mat-header-cell *matHeaderCellDef>{{ 'LAWSUIT.HEAD_COLUMN_CC_CARE_TEAM_LEADER' | translate }}</th>
+        <td mat-cell *matCellDef="let element">
+          {{ (element.ktbBossUserId || '') + '-' + (element.ktbBossName || '') }}
+        </td>
+      </ng-container>
+      <!-- วันที่นำเข้าทีม -->
+      <ng-container matColumnDef="createdDate">
+        <th mat-header-cell *matHeaderCellDef>{{ 'CONFIGURATION.HEAD_COLUMN_CREATED_DATE' | translate }}</th>
+        <td mat-cell *matCellDef="let element">{{ element.createdDate | buddhistEra: 'DD/MM/yyyy' || '-' }}</td>
+      </ng-container>
+      <!-- วันที่เริ่มดูแล -->
+      <ng-container matColumnDef="effectiveDate">
+        <th mat-header-cell *matHeaderCellDef>{{ 'CONFIGURATION.HEAD_COLUMN_EFFECTIVE_DATE' | translate }}</th>
+        <td mat-cell *matCellDef="let element">{{ element.effectiveDate | buddhistEra: 'DD/MM/yyyy' || '-' }}</td>
+      </ng-container>
+      <ng-container matColumnDef="cmd" stickyEnd>
+        <th class="centre" columnElevationRight mat-header-cell *matHeaderCellDef>
+          {{ 'COMMON.LABEL_COMMAND' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" class="fill-blue text-center" columnElevationRight>
+          <a mat-button color="primary" class="text-underline" (click)="onOpenUserMatchDialog(element)">{{
+            'CONFIGURATION.BTN_EDIT_MATCHING' | translate
+          }}</a>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </div>
+</ng-template>
+
+<ng-template #searchEmpty>
+  <div class="table-scroll" table-scroll>
+    <table mat-table>
+      <ng-container matColumnDef="selection" stickyEnd>
+        <th mat-header-cell *matHeaderCellDef columnElevationLeft></th>
+      </ng-container>
+
+      <ng-container matColumnDef="no">
+        <th class="text-center" mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_NO' | translate }}</th>
+      </ng-container>
+      <ng-container matColumnDef="responseUnitCode">
+        <th mat-header-cell *matHeaderCellDef>{{ 'CONFIGURATION.HEAD_COLUMN_RESPONSE_UNIT_CODE' | translate }}</th>
+      </ng-container>
+      <ng-container matColumnDef="responseUnitName">
+        <th mat-header-cell *matHeaderCellDef>{{ 'CONFIGURATION.HEAD_COLUMN_RESPONSE_UNIT_NAME' | translate }}</th>
+      </ng-container>
+
+      <!-- ชื่อผู้ดูแล -->
+      <ng-container matColumnDef="userIdName">
+        <th mat-header-cell *matHeaderCellDef>{{ 'CONFIGURATION.USER_NAME' | translate }}</th>
+      </ng-container>
+      <!-- ชื่อทีม -->
+      <ng-container matColumnDef="teamName">
+        <th mat-header-cell *matHeaderCellDef>{{ 'CONFIGURATION.HEAD_COLUMN_TEAM_NAME' | translate }}</th>
+      </ng-container>
+      <!-- หัวหน้าทีม -->
+      <ng-container matColumnDef="bossIdName">
+        <th mat-header-cell *matHeaderCellDef>{{ 'LAWSUIT.HEAD_COLUMN_CC_CARE_TEAM_LEADER' | translate }}</th>
+      </ng-container>
+      <!-- วันที่นำเข้าทีม -->
+      <ng-container matColumnDef="createdDate">
+        <th mat-header-cell *matHeaderCellDef>{{ 'CONFIGURATION.HEAD_COLUMN_CREATED_DATE' | translate }}</th>
+      </ng-container>
+      <!-- วันที่เริ่มดูแล -->
+      <ng-container matColumnDef="effectiveDate">
+        <th mat-header-cell *matHeaderCellDef>{{ 'CONFIGURATION.HEAD_COLUMN_EFFECTIVE_DATE' | translate }}</th>
+      </ng-container>
+      <ng-container matColumnDef="cmd" stickyEnd>
+        <th class="centre" mat-header-cell *matHeaderCellDef columnElevationRight>
+          {{ 'COMMON.LABEL_COMMAND' | translate }}
+        </th>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    </table>
+  </div>
+  <div>
+    <app-message-empty [message]="'COMMON.SEARCH_EMPTY'"></app-message-empty>
+  </div>
+</ng-template>

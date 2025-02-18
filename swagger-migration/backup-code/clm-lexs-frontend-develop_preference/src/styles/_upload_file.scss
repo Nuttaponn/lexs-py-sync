@@ -1,0 +1,27 @@
+.upload-file-content {
+  @include flex-row-align-center;
+  place-content: space-between;
+  padding: 12px;
+  background-color: map-get($ktb-palette-precious-blue, 00);
+  border-radius: 8px;
+
+  &.gray-content {
+    background-color: map-get($ktb-palette-biz-gray, 50);
+  }
+
+  .upload-file-description {
+    @include flex-column;
+    @include font-style;
+    gap: 4px;
+
+    .upload-file-title {
+      &.uploaded {
+        font-size: $font-sub-description;
+      }
+    }
+
+    .upload-file-detail {
+      font-size: $font-sub-description;
+    }
+  }
+}

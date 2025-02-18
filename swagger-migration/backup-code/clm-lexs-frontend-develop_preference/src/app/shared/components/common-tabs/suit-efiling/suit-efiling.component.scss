@@ -1,0 +1,17 @@
+button.mat-mdc-outlined-button {
+  &.medium-aw-button {
+    border: 1.5px solid;
+  }
+}
+
+.content-container {
+  .no-horizontal-padding {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .title-content {
+    padding: 1em;
+    border-radius: 8px;
+  }
+}

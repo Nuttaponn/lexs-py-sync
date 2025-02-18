@@ -1,0 +1,3142 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "KTB Backend for Frontend APIs.",
+    "description": "Microservice: master-data",
+    "contact": {
+      "name": "Krungthai Bank Public Company Limited",
+      "url": "https://krungthai.com",
+      "email": ""
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://lexsdev.krungthai/ktb/rest/lexs",
+      "description": "Generated server url"
+    }
+  ],
+  "paths": {
+    "/v1/master-data/ktb-org/options": {
+      "post": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getKtbOrgOptions",
+        "parameters": [
+          {
+            "name": "searchString",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/KtbOrgRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KtbOrgDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/write-off-status": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getWriteOffStatus",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WriteOffStatusDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/title": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getTitle",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TitleDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/tax-rate/{expenseTypeCode}": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getTaxRate",
+        "parameters": [
+          {
+            "name": "expenseTypeCode",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaxRateDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/task-type": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getTaskType",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskTypeDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/task-status": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getTaskStatus",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskStatusDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/tamc-flag": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getTamcFlag",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TamcFlagDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/suspens-execution": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getSuspensExecution",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuspensExecutionDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/subdistrict": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getSubdistrict",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubdistrictDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/scope": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getScope",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScopeDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/sam-flag": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getSamFlag",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SamFlagDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/sale-type-desc": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getSaleTypeDesc",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SaleTypeDescDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/result-of-action": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getResultOfAction",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultOfActionDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/reject-original-document-reason": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getRejectOriginalDocumentReason",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RejectOriginalDocumentReasonDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/receive-type": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getReceiveType",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReceiveTypeDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/receive-status": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getReceiveStatus",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReceiveStatusDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/receive-cancel-reason": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getReceiveCancelReason",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReceiveCancelReasonDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/receive-account-code": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getReceiveAccountCode",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReceiveAccountCodeDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/province": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getProvince",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProvinceDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/occupant": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getOccupant",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OccupantDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/obligation-type": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getObligationType",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObligationTypeDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/loan-type": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getLoanType",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoanTypeDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/litigation-result-of-action": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getLitigationResultOfAction",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LitigationResultOfActionDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/litigation-close-status": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getLitigationCloseStatus",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LitigationCloseStatusDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/litigation-action": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getLitigationAction",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LitigationActionDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/legal-status": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getLegalStatus",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LegalStatusDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/led": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getLed",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LedDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/ktb-org": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getKtbOrg",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KtbOrgDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/kcorp-transfer-status": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getKcorpTransferStatus",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KcorpTransferStatusDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/juristic-type": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getJuristicType",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JuristicTypeDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/followup-status": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getFollowUpStatus",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FollowUpStatusDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/financial-object-type": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getFinancialObjectType",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FinancialObjectTypeDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/financial-institutions": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getFinancialInstitutions",
+        "parameters": [
+          {
+            "name": "purpose",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FinancialInstitutionsDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/financial-account-type": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getFinancialAccountType",
+        "parameters": [
+          {
+            "name": "financialObjectType",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FinancialAccountTypeDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/financial-account-code": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getFinancialAccountCode",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FinancialAccountCodeDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/external-asset-status": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getExternalAssetStatus",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalAssetStatusDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/expense-type": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getExpenseTypeCode",
+        "parameters": [
+          {
+            "name": "stepCode",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "stepSubCode",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "expenseGroup",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "format": "int64"
+              }
+            }
+          },
+          {
+            "name": "expenseTypeCode",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ExpenseRateDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/expense-step-type": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getExpenseStepType",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ExpenseStepType"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/expense-step-sub-type": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getExpenseStepSubType",
+        "parameters": [
+          {
+            "name": "stepCode",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "expenseGroup",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "format": "int64"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ExpenseStepSubType"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/expense-status": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getExpenseStatus",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExpenseStatusDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/expense-revise-reason": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getExpenseReviseReason",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExpenseReviseReasonDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/expense-receive": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getExpenseReceive",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExpenseReceiveDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/expense-rate": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getExpenseRate",
+        "parameters": [
+          {
+            "name": "stepCode",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "stepSubCode",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "expenseGroup",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "format": "int64"
+              }
+            }
+          },
+          {
+            "name": "expenseTypeCode",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "expenseSubTypeCode",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ExpenseRateDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/expense-object": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getExpenseObject",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExpenseObjectDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/expense-cancel-reason": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getExpenseCancelReason",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExpenseCancelReasonDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/expense-action": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getExpenseAction",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExpenseActionDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/done-by": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getDoneBy",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DoneByDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/district": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getDistrict",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DistrictDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/deferment-reason": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getDefermentReson",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefermentReasonDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/debtor": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getDebtor",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DebtorDto"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": true
+      }
+    },
+    "/v1/master-data/debtor-status": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getDebtorStatus",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DebtorStatusDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/debt-transfer-to": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getDebtTransferTo",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DebtTransferToDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/customer-status": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getCustomerStatus",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerStatusDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/court": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getCourt",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CourtDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/court-verdict": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getCourtVerdict",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CourtVerdictDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/court-verdict-type": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getCourtVerdictType",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CourtVerdictTypeDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/court-type": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getCourtType",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CourtTypeDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/court-sub-verdict": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getCourtSubVerdict",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CourtSubVerdictDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/court-order": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getCourtOrder",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CourtOrderDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/court-fee-type": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getCourtFeeType",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CourtFeeTypeDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/court-fee-sub-type": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getCourtFeeSubType",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CourtFeeSubTypeDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/collateral-type": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getCollateralType",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollateralTypeDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/collateral-sub-type": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getCollateralSubType",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollateralSubTypeDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/collateral-status": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getCollateralStatus",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollateralStatusDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/cios-case-types": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getCiosCaseType",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CiosCaseTypeDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/cessation-reason": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getCessationReason",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CessationReasonDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/case-type": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getCaseType",
+        "parameters": [
+          {
+            "name": "x-request-id",
+            "in": "header",
+            "description": "36 characters unique ID used for traceability purpose. If provided on a request, the same value is echoed back. If not provided on a request, API generates and returns UUID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "f6cb2742-45ca-433f-a69b-b06deebf98e6"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "x-request-id": {
+                "description": "36 characters unique ID used for traceability purpose. If provided on a request, the same value is echoed back. If not provided on a request, API generates and returns UUID.",
+                "style": "simple"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "headers": {
+              "x-request-id": {
+                "description": "36 characters unique ID used for traceability purpose. If provided on a request, the same value is echoed back. If not provided on a request, API generates and returns UUID.",
+                "style": "simple"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsList"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseTypeDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseTypeDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseTypeDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity (Business Error)",
+            "headers": {
+              "x-request-id": {
+                "description": "36 characters unique ID used for traceability purpose. If provided on a request, the same value is echoed back. If not provided on a request, API generates and returns UUID.",
+                "style": "simple"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsList"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error occurred",
+            "headers": {
+              "x-request-id": {
+                "description": "36 characters unique ID used for traceability purpose. If provided on a request, the same value is echoed back. If not provided on a request, API generates and returns UUID.",
+                "style": "simple"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsList"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "headers": {
+              "x-request-id": {
+                "description": "36 characters unique ID used for traceability purpose. If provided on a request, the same value is echoed back. If not provided on a request, API generates and returns UUID.",
+                "style": "simple"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsList"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "Gateway Timeout",
+            "headers": {
+              "x-request-id": {
+                "description": "36 characters unique ID used for traceability purpose. If provided on a request, the same value is echoed back. If not provided on a request, API generates and returns UUID.",
+                "style": "simple"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsList"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/case-creator": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getCaseCreator",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CaseCreatorDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/approval-authority": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getApprovalAuthority",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApprovalAuthorityDto"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": true
+      }
+    },
+    "/v1/master-data/approval-authority/{defermentType}": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getApprovalAuthorityByType",
+        "parameters": [
+          {
+            "name": "defermentType",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "DEFERMENT",
+                "CESSATION",
+                "DEFERMENT_EXEC_SEIZURE",
+                "DEFERMENT_EXEC_SALE",
+                "DEFERMENT_EXEC_SEIZURE_SALE"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApprovalAuthorityDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/approval-authority-dla": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getApprovalAuthorityDla",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApprovalAuthorityDlaDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/allegations/{caseTypeCode}": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getAllegation",
+        "parameters": [
+          {
+            "name": "caseTypeCode",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-request-id",
+            "in": "header",
+            "description": "36 characters unique ID used for traceability purpose. If provided on a request, the same value is echoed back. If not provided on a request, API generates and returns UUID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "f6cb2742-45ca-433f-a69b-b06deebf98e6"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "x-request-id": {
+                "description": "36 characters unique ID used for traceability purpose. If provided on a request, the same value is echoed back. If not provided on a request, API generates and returns UUID.",
+                "style": "simple"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "headers": {
+              "x-request-id": {
+                "description": "36 characters unique ID used for traceability purpose. If provided on a request, the same value is echoed back. If not provided on a request, API generates and returns UUID.",
+                "style": "simple"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsList"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AllegationDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AllegationDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AllegationDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity (Business Error)",
+            "headers": {
+              "x-request-id": {
+                "description": "36 characters unique ID used for traceability purpose. If provided on a request, the same value is echoed back. If not provided on a request, API generates and returns UUID.",
+                "style": "simple"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsList"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error occurred",
+            "headers": {
+              "x-request-id": {
+                "description": "36 characters unique ID used for traceability purpose. If provided on a request, the same value is echoed back. If not provided on a request, API generates and returns UUID.",
+                "style": "simple"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsList"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "headers": {
+              "x-request-id": {
+                "description": "36 characters unique ID used for traceability purpose. If provided on a request, the same value is echoed back. If not provided on a request, API generates and returns UUID.",
+                "style": "simple"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsList"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "Gateway Timeout",
+            "headers": {
+              "x-request-id": {
+                "description": "36 characters unique ID used for traceability purpose. If provided on a request, the same value is echoed back. If not provided on a request, API generates and returns UUID.",
+                "style": "simple"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsList"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/advance-payment-status": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getAdvancePaymentStatus",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdvancePaymentStatusDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/master-data/action": {
+      "get": {
+        "tags": [
+          "master-data-controller"
+        ],
+        "operationId": "getAction",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "KtbOrgRequest": {
+        "type": "object",
+        "properties": {
+          "roleCodeList": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "KtbOrgDto": {
+        "type": "object",
+        "properties": {
+          "ktbOrg": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "NameValuePair": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        }
+      },
+      "WriteOffStatusDto": {
+        "type": "object",
+        "properties": {
+          "writeOffStatus": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "TitleDto": {
+        "type": "object",
+        "properties": {
+          "titleList": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TitlePair"
+            }
+          }
+        }
+      },
+      "TitlePair": {
+        "type": "object",
+        "properties": {
+          "titleCode": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "personFlag": {
+            "type": "string"
+          }
+        }
+      },
+      "TaxRateDto": {
+        "type": "object",
+        "properties": {
+          "expenseCode": {
+            "type": "string"
+          },
+          "whtRate": {
+            "type": "number"
+          },
+          "vat": {
+            "type": "number"
+          }
+        }
+      },
+      "TaskTypeDto": {
+        "type": "object",
+        "properties": {
+          "taskType": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "TaskStatusDto": {
+        "type": "object",
+        "properties": {
+          "taskStatus": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TaskStatusValue"
+            }
+          }
+        }
+      },
+      "TaskStatusValue": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        }
+      },
+      "TamcFlagDto": {
+        "type": "object",
+        "properties": {
+          "tamcFlag": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "SuspensExecutionDto": {
+        "type": "object",
+        "properties": {
+          "suspensExecution": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "Subd": {
+        "type": "object",
+        "properties": {
+          "provinceCode": {
+            "type": "string"
+          },
+          "districtCode": {
+            "type": "string"
+          },
+          "subdistrictCode": {
+            "type": "string"
+          },
+          "subdistrictDesc": {
+            "type": "string"
+          }
+        }
+      },
+      "SubdistrictDto": {
+        "type": "object",
+        "properties": {
+          "subdistrict": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Subd"
+            }
+          }
+        }
+      },
+      "ScopeDto": {
+        "type": "object",
+        "properties": {
+          "scope": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "SamFlagDto": {
+        "type": "object",
+        "properties": {
+          "samFlag": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "SaleTypeDescDto": {
+        "type": "object",
+        "properties": {
+          "saleTypeDesc": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "ResultOfActionDto": {
+        "type": "object",
+        "properties": {
+          "resultOfAction": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "RejectOriginalDocumentReasonDto": {
+        "type": "object",
+        "properties": {
+          "rejectOriginalDocumentReason": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "ReceiveTypeDto": {
+        "type": "object",
+        "properties": {
+          "receiveType": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "ReceiveStatusDto": {
+        "type": "object",
+        "properties": {
+          "receiveStatus": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "ReceiveCancelReasonDto": {
+        "type": "object",
+        "properties": {
+          "receiveCancelReason": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "ReceiveAccountCode": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "caption": {
+            "type": "string"
+          },
+          "receiveType": {
+            "type": "string",
+            "enum": [
+              "INTER_OFFICE",
+              "SUSPENSE",
+              "SUSPENSE_COURT",
+              "AUTO_CLEARING"
+            ]
+          }
+        }
+      },
+      "ReceiveAccountCodeDto": {
+        "type": "object",
+        "properties": {
+          "receiveAccountCode": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReceiveAccountCode"
+            }
+          }
+        }
+      },
+      "Prov": {
+        "type": "object",
+        "properties": {
+          "provinceCode": {
+            "type": "string"
+          },
+          "provinceDesc": {
+            "type": "string"
+          }
+        }
+      },
+      "ProvinceDto": {
+        "type": "object",
+        "properties": {
+          "province": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Prov"
+            }
+          }
+        }
+      },
+      "OccupantDto": {
+        "type": "object",
+        "properties": {
+          "occupants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "ObligationTypeDto": {
+        "type": "object",
+        "properties": {
+          "obligationType": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "LoanTypeDto": {
+        "type": "object",
+        "properties": {
+          "loanType": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "LitigationResultOfActionDto": {
+        "type": "object",
+        "properties": {
+          "litigationResultOfAction": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "LitigationCloseStatusDto": {
+        "type": "object",
+        "properties": {
+          "litigationCloseStatus": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "LitigationActionDto": {
+        "type": "object",
+        "properties": {
+          "litigationAction": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "LegalStatusDto": {
+        "type": "object",
+        "properties": {
+          "legalStatus": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "Led": {
+        "type": "object",
+        "properties": {
+          "ledId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "ledName": {
+            "type": "string"
+          }
+        }
+      },
+      "LedDto": {
+        "type": "object",
+        "properties": {
+          "leds": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Led"
+            }
+          }
+        }
+      },
+      "KcorpTransferStatusDto": {
+        "type": "object",
+        "properties": {
+          "kcorpTransferStatus": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "JuristicTypeDto": {
+        "type": "object",
+        "properties": {
+          "juristicType": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "FollowUpStatusDto": {
+        "type": "object",
+        "properties": {
+          "followUpStatus": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "FinancialObjectTypeDto": {
+        "type": "object",
+        "properties": {
+          "financialObjectType": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "CodeNameThaiPair": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "nameThai": {
+            "type": "string"
+          }
+        }
+      },
+      "FinancialInstitutionsDto": {
+        "type": "object",
+        "properties": {
+          "financialInstitutions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CodeNameThaiPair"
+            }
+          }
+        }
+      },
+      "FinancialAccountTypeDto": {
+        "type": "object",
+        "properties": {
+          "financialAccountTypeDto": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "FinancialAccountCodeDto": {
+        "type": "object",
+        "properties": {
+          "financialAccountCodeDto": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "ExternalAssetStatusDto": {
+        "type": "object",
+        "properties": {
+          "externalAssetStatus": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "ExpenseRateDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "expenseGroup": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "stepCode": {
+            "type": "string"
+          },
+          "stepName": {
+            "type": "string"
+          },
+          "stepSubCode": {
+            "type": "string"
+          },
+          "stepSubName": {
+            "type": "string"
+          },
+          "expenseTypeCode": {
+            "type": "string"
+          },
+          "expenseTypeName": {
+            "type": "string"
+          },
+          "expenseSubTypeCode": {
+            "type": "string"
+          },
+          "expenseSubTypeName": {
+            "type": "string"
+          },
+          "accountCode": {
+            "type": "string"
+          },
+          "paymentMethod": {
+            "type": "string"
+          },
+          "paymentMethodName": {
+            "type": "string"
+          },
+          "rateTypeCode": {
+            "type": "string"
+          },
+          "rateTypeName": {
+            "type": "string"
+          },
+          "contractRate": {
+            "type": "number"
+          },
+          "refUnitCode": {
+            "type": "string"
+          },
+          "fieldName": {
+            "type": "string"
+          },
+          "docType": {
+            "type": "string"
+          },
+          "whtRate": {
+            "type": "number"
+          },
+          "receiverName": {
+            "type": "string"
+          },
+          "objectType": {
+            "type": "string"
+          },
+          "seizureType": {
+            "type": "string"
+          },
+          "manualClaim": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ExpenseStepType": {
+        "type": "object",
+        "properties": {
+          "stepCode": {
+            "type": "string"
+          },
+          "stepName": {
+            "type": "string"
+          },
+          "financialSummaryName": {
+            "type": "string"
+          }
+        }
+      },
+      "ExpenseStepSubType": {
+        "type": "object",
+        "properties": {
+          "stepCode": {
+            "type": "string"
+          },
+          "stepSubCode": {
+            "type": "string"
+          },
+          "stepSubName": {
+            "type": "string"
+          }
+        }
+      },
+      "ExpenseStatusDto": {
+        "type": "object",
+        "properties": {
+          "expenseStatus": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "ExpenseReviseReasonDto": {
+        "type": "object",
+        "properties": {
+          "reviseReason": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "ExpenseReceiveData": {
+        "type": "object",
+        "properties": {
+          "expenseTypeCode": {
+            "type": "string"
+          },
+          "receiveTypeCode": {
+            "type": "string"
+          },
+          "receiveTypeDesc": {
+            "type": "string"
+          }
+        }
+      },
+      "ExpenseReceiveDto": {
+        "type": "object",
+        "properties": {
+          "expenseReceive": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExpenseReceiveData"
+            }
+          }
+        }
+      },
+      "ExpenseObjectDto": {
+        "type": "object",
+        "properties": {
+          "expenseObject": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "ExpenseCancelReasonDto": {
+        "type": "object",
+        "properties": {
+          "cancelReason": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "ExpenseActionDto": {
+        "type": "object",
+        "properties": {
+          "expenseAction": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "DoneByDto": {
+        "type": "object",
+        "properties": {
+          "doneBy": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "Dist": {
+        "type": "object",
+        "properties": {
+          "provinceCode": {
+            "type": "string"
+          },
+          "districtCode": {
+            "type": "string"
+          },
+          "districtDesc": {
+            "type": "string"
+          }
+        }
+      },
+      "DistrictDto": {
+        "type": "object",
+        "properties": {
+          "district": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Dist"
+            }
+          }
+        }
+      },
+      "DefermentReasonDto": {
+        "type": "object",
+        "properties": {
+          "defermentReason": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "DebtorDto": {
+        "type": "object",
+        "properties": {
+          "debtor": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "DebtorStatusDto": {
+        "type": "object",
+        "properties": {
+          "debtorStatus": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "DebtTransferToDto": {
+        "type": "object",
+        "properties": {
+          "debtTransferTo": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "CustomerStatusDto": {
+        "type": "object",
+        "properties": {
+          "customerStatus": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "CourtDto": {
+        "type": "object",
+        "properties": {
+          "court": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "CourtVerdict": {
+        "type": "object",
+        "properties": {
+          "verdictTypesCode": {
+            "type": "string"
+          },
+          "verdictCode": {
+            "type": "string"
+          },
+          "verdictName": {
+            "type": "string"
+          }
+        }
+      },
+      "CourtVerdictDto": {
+        "type": "object",
+        "properties": {
+          "courtVerdictList": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CourtVerdict"
+            }
+          }
+        }
+      },
+      "CourtVerdictTypeDto": {
+        "type": "object",
+        "properties": {
+          "courtVerdictTypesList": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CourtVerdictTypes"
+            }
+          }
+        }
+      },
+      "CourtVerdictTypes": {
+        "type": "object",
+        "properties": {
+          "verdictTypesCode": {
+            "type": "string"
+          },
+          "verdictTypesName": {
+            "type": "string"
+          },
+          "civilCourt": {
+            "type": "boolean"
+          }
+        }
+      },
+      "CourtTypeDto": {
+        "type": "object",
+        "properties": {
+          "courtTypeDto": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "CourtSubVerdict": {
+        "type": "object",
+        "properties": {
+          "verdictTypesCode": {
+            "type": "string"
+          },
+          "verdictCode": {
+            "type": "string"
+          },
+          "subVerdictCode": {
+            "type": "string"
+          },
+          "subVerdictName": {
+            "type": "string"
+          },
+          "dismissReasonCode": {
+            "type": "string"
+          }
+        }
+      },
+      "CourtSubVerdictDto": {
+        "type": "object",
+        "properties": {
+          "courtSubVerdictList": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CourtSubVerdict"
+            }
+          }
+        }
+      },
+      "CourtOrderDto": {
+        "type": "object",
+        "properties": {
+          "courtOrder": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "CourtFeeTypeDto": {
+        "type": "object",
+        "properties": {
+          "courtFeeTypesList": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CourtFeeTypes"
+            }
+          }
+        }
+      },
+      "CourtFeeTypes": {
+        "type": "object",
+        "properties": {
+          "feeTypesCode": {
+            "type": "string"
+          },
+          "feeTypesName": {
+            "type": "string"
+          }
+        }
+      },
+      "CourtFeeSubTypeDto": {
+        "type": "object",
+        "properties": {
+          "courtFeeSubTypesList": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CourtFeeSubTypes"
+            }
+          }
+        }
+      },
+      "CourtFeeSubTypes": {
+        "type": "object",
+        "properties": {
+          "feeTypesCode": {
+            "type": "string"
+          },
+          "feeSubTypesCode": {
+            "type": "string"
+          },
+          "feeSubTypesName": {
+            "type": "string"
+          }
+        }
+      },
+      "CollType": {
+        "type": "object",
+        "properties": {
+          "collateralTypeCode": {
+            "type": "string"
+          },
+          "collateralTypeDesc": {
+            "type": "string"
+          },
+          "externalPropertyFlag": {
+            "type": "string"
+          }
+        }
+      },
+      "CollateralTypeDto": {
+        "type": "object",
+        "properties": {
+          "collateralType": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CollType"
+            }
+          }
+        }
+      },
+      "CollSubType": {
+        "type": "object",
+        "properties": {
+          "collateralTypeCode": {
+            "type": "string"
+          },
+          "collateralSubTypeCode": {
+            "type": "string"
+          },
+          "collateralSubTypeDesc": {
+            "type": "string"
+          }
+        }
+      },
+      "CollateralSubTypeDto": {
+        "type": "object",
+        "properties": {
+          "collateralSubType": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CollSubType"
+            }
+          }
+        }
+      },
+      "CollateralStatusDto": {
+        "type": "object",
+        "properties": {
+          "collateralStatus": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "CiosCaseType": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "CiosCaseTypeDto": {
+        "type": "object",
+        "properties": {
+          "ciosCaseTypeList": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CiosCaseType"
+            }
+          }
+        }
+      },
+      "CessationReasonDto": {
+        "type": "object",
+        "properties": {
+          "cessationReason": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "ErrorInfo": {
+        "required": [
+          "code",
+          "message"
+        ],
+        "type": "object",
+        "properties": {
+          "moreInfo": {
+            "type": "string",
+            "writeOnly": true
+          },
+          "code": {
+            "type": "string",
+            "description": "Error Code",
+            "example": "1234"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error Message",
+            "example": "Error message"
+          },
+          "description": {
+            "type": "string",
+            "description": "More information on the problem and solution. Or, the error message from backend.",
+            "example": "ORIGINAL ERROR: E1234 ORIGINAL ERROR MESSAGE"
+          },
+          "originalErrorCode": {
+            "type": "string",
+            "description": "Original error code from backend.",
+            "example": "E1234"
+          },
+          "originalErrorDesc": {
+            "type": "string",
+            "description": "Original error message from backend.",
+            "example": "ORIGINAL ERROR MESSAGE"
+          },
+          "traceId": {
+            "type": "string",
+            "description": "More information on the problem and solution. Or, the error message from backend.",
+            "example": "ORIGINAL ERROR: E1234 ORIGINAL ERROR MESSAGE"
+          }
+        },
+        "description": "Detailed of Error"
+      },
+      "ErrorsList": {
+        "required": [
+          "errors"
+        ],
+        "type": "object",
+        "properties": {
+          "errors": {
+            "type": "array",
+            "description": "List of ErrorInfo",
+            "items": {
+              "$ref": "#/components/schemas/ErrorInfo"
+            }
+          }
+        },
+        "description": "List of Error Information"
+      },
+      "CaseTypeDto": {
+        "type": "object",
+        "properties": {
+          "caseTypes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "CaseCreatorDto": {
+        "type": "object",
+        "properties": {
+          "caseCreator": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "ApprovalAuthorityDto": {
+        "type": "object",
+        "properties": {
+          "approvalAuthority": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "ApprovalAuthorityDlaDto": {
+        "type": "object",
+        "properties": {
+          "approvalAuthorityDla": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "AllegationDto": {
+        "type": "object",
+        "properties": {
+          "allegations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "AdvancePaymentStatusDto": {
+        "type": "object",
+        "properties": {
+          "advancePaymentStatus": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      },
+      "ActionDto": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameValuePair"
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,19 @@
+table {
+  width: 100%;
+}
+
+section:not(:first-of-type) {
+  padding-top: 20px;
+}
+
+.search-user-field {
+
+  /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
+  ::ng-deep .mat-form-field-wrapper {
+
+    /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
+    .mat-form-field-flex .mat-form-field-suffix {
+      right: 4px;
+    }
+  }
+}

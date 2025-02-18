@@ -1,0 +1,107 @@
+<div fxFlex="100">
+  <table class="tablemargin" mat-table [dataSource]="dataSource">
+    <ng-container matColumnDef="no">
+      <th mat-header-cell *matHeaderCellDef class="text-center">
+        {{ 'COMMON.LABEL_NO' | translate }}
+      </th>
+      <td mat-cell *matCellDef="let element; let i = index" class="text-center">
+        {{ i + 1 }}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="documentTemplate">
+      <th mat-header-cell *matHeaderCellDef>
+        {{ 'FINANCE.EXPENSE_DETAIL.DOCUMENT_NAME' | translate }}
+      </th>
+      <td mat-cell *matCellDef="let element; let i = index">
+        <span [ngClass]="element.imageId ? 'link' : ''" (click)="element.imageId ? onViewDocument(i) : ''">
+          {{ element.documentTemplate.documentName }}</span
+        >
+        <label *ngIf="element.required && (!element.imageId || element.imageId === '')" class="color-red">*</label>
+        <br />
+        <span
+          *ngIf="
+            (element.imageId === undefined || element.imageId === '') &&
+            element.editableFlag &&
+            element.required &&
+            showErrors
+          "
+          class="color-red pl-16">
+          {{ 'UPLOAD_FILE.ERROR_FILE_UPLOAD_REQUIRED' | translate }}
+        </span>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="uploadUserId">
+      <th mat-header-cell *matHeaderCellDef>
+        {{ 'FINANCE.EXPENSE_DETAIL.UPLOAD_DOCUMENTS_BY' | translate }}
+      </th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.uploadUserId === 'System' ? 'ระบบ LEXS' : element.uploadUserId || '-' }}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="subjectTo">
+      <th mat-header-cell *matHeaderCellDef>
+        {{ 'FINANCE.EXPENSE_DETAIL.AFFILIATION' | translate }}
+      </th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.subjectTo || '-' }}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="documentDate">
+      <th mat-header-cell *matHeaderCellDef>
+        {{ 'FINANCE.EXPENSE_DETAIL.LAST_TRANSACTION_DATE' | translate }}
+      </th>
+      <td mat-cell *matCellDef="let element">
+        {{ (element?.documentDate | buddhistEra: 'DD/MM/yyyy HH:mm:ss') || '-' }}
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="delete">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let element; let i = index">
+        <mat-icon
+          *ngIf="element.imageId && element.editableFlag"
+          svgIcon="icon-Bin"
+          class="icon icon-xmedium fill-red mr-10"
+          (click)="onRemoveDocument(i, element?.isSubContract)"></mat-icon>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="active">
+      <th mat-header-cell *matHeaderCellDef class="text-center">
+        {{ 'COMMON.LABEL_COMMAND' | translate }}
+      </th>
+      <td mat-cell *matCellDef="let element; let i = index" class="text-center">
+        <ng-container *ngIf="element.editableFlag">
+          <input type="file" #fileUpload name="fileUpload" [accept]="acceptFile.toString()" class="hidden" />
+          <button
+            *ngIf="!(element.isUpload || element.imageId)"
+            type="button"
+            mat-flat-button
+            color="primary"
+            class="medium-fw-button"
+            (click)="onUploadDocument(i, element.documentTemplateId, element.litigationId)">
+            <mat-icon svgIcon="icon-Arrow-Upload" class="icon-xmedium"></mat-icon>
+            {{ 'COMMON.BUTTON_UPLOAD' | translate }}
+          </button>
+          <button
+            *ngIf="element.isUpload || element.imageId"
+            type="button"
+            mat-stroked-button
+            class="medium-7w-button"
+            (click)="onUploadDocument(i, element.documentTemplateId, element.litigationId)">
+            <mat-icon svgIcon="icon-Arrow-Upload" class="icon-xmedium"></mat-icon>
+            {{ 'COMMON.BUTTON_UPLOAD' | translate }}
+          </button>
+        </ng-container>
+        <ng-container *ngIf="!element.editableFlag">
+          <span>-</span>
+        </ng-container>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+  <ng-container *ngIf="dataSource.length === 0" [ngTemplateOutlet]="dataNotFound"> </ng-container>
+</div>
+
+<ng-template #dataNotFound>
+  <app-message-empty [message]="'FINANCE.NO_PAYMENT_LIST_OF_PROPERT_DETAIL'"></app-message-empty>
+</ng-template>

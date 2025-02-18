@@ -1,0 +1,62 @@
+@import '/src/styles/colors';
+
+.dashboard-content {
+  padding: 24px;
+}
+
+.content-container {
+  margin: 0 !important;
+  overflow: hidden;
+}
+
+.data-table-content {
+  padding: 24px 16px;
+}
+
+.search-filter-content {
+  padding: 0 16px;
+}
+
+.text-no-wrap {
+  white-space: nowrap;
+}
+
+.status-label {
+  max-width: 140px;
+  white-space: initial;
+  margin: auto;
+
+  &:first-child {
+    margin-top: 0;
+  }
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.status-cell {
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+}
+
+.new-line {
+  white-space: initial;
+}
+
+button.neutral {
+  border: 1px solid map-get($ktb-palette-biz-black, 50);
+  color: map_get($ktb-palette-biz-gray, A400);
+}
+
+button.neutral:active {
+  border: 1px solid map-get($ktb-palette-biz-black, 30);
+  border-radius: 8px;
+  background-color: map-get($ktb-palette-biz-black, 20);
+}
+
+button.neutral:hover {
+  border: 1px solid map-get($ktb-palette-biz-black, 30);
+  border-radius: 8px;
+  background-color: map-get($ktb-palette-biz-black, 10);
+}

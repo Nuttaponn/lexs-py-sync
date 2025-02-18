@@ -1,0 +1,17 @@
+@import '/src/styles/colors';
+table {
+  .pin-header {
+    .mat-mdc-header-cell {
+      background-color: map-get($ktb-palette-blue, 10);
+      color: $black;
+      font-weight: 600;
+      font-family: KrungthaiFastRegular;
+      border-bottom: 2px solid map-get($ktb-palette-biz-gray, 300) !important;
+    }
+  }
+}
+
+.mat-column-col5 {
+  max-width: 200px;
+  white-space: pre-wrap;
+}

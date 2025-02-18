@@ -1,0 +1,32 @@
+<mat-tab-group
+  class="tab-group-container"
+  [ngClass]="tabIndex === 0 ? 'mat-ink-bar-width-100' : ''"
+  mat-align-tabs="start"
+  [(selectedIndex)]="tabIndex"
+  (selectedTabChange)="onTabChanged($event)">
+  <mat-tab>
+    <ng-template matTabLabel>
+      <span
+        *ngIf="totalProcessAnnounces > 0"
+        class="bg-color-red"
+        matBadge="{{ totalProcessAnnounces }}"
+        matBadgeOverlap="false">
+        {{ 'AUCTION_LED_CARD.ANNOUNCEMENT.PROCESS' | translate }}</span
+      >
+      <span *ngIf="totalProcessAnnounces === 0"> {{ 'AUCTION_LED_CARD.ANNOUNCEMENT.PROCESS' | translate }}</span>
+    </ng-template>
+    <ng-template matTabContent>
+      <app-auction-led-card-announcement-table
+        [isOnTabSuccess]="false"
+        [ledInfo]="ledInfo"
+        [announcementInfo]="dataSource"></app-auction-led-card-announcement-table>
+    </ng-template>
+  </mat-tab>
+  <mat-tab label="{{ 'AUCTION_LED_CARD.ANNOUNCEMENT.DONE' | translate }}">
+    <ng-template matTabContent>
+      <app-auction-led-card-announcement-table
+        [ledInfo]="ledInfo"
+        [announcementInfo]="dataSource"></app-auction-led-card-announcement-table>
+    </ng-template>
+  </mat-tab>
+</mat-tab-group>

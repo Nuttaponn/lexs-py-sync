@@ -1,0 +1,129 @@
+@import '/src/styles/colors';
+@import '/src/styles/typography';
+
+.mat-column-action,
+.mat-column-statusSuccess,
+.mat-column-statusPending,
+.mat-column-landtype {
+  min-width: 100px;
+}
+
+.mat-column-assetDetail,
+.mat-column-landtype,
+.mat-column-pin_landtype,
+.mat-column-assettypedesc,
+.mat-column-pin_assettypedesc,
+.mat-column-pin_assetDetail,
+.mat-column-pin_remark,
+.mat-column-remark {
+  min-width: 220px;
+  white-space: pre-wrap;
+}
+
+.example-detail-row {
+  height: 0;
+}
+
+.example-element-detail-border-expand {
+  background: map-get($ktb-palette-biz-gray, 100);
+  overflow: hidden;
+  display: flex;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: map-get($ktb-palette-biz-black, B012);
+}
+
+.example-detail-td {
+  height: 0;
+  padding-left: 0px !important;
+}
+
+.example-element-detail {
+  background: map-get($ktb-palette-biz-gray, 100);
+  overflow: hidden;
+  display: flex;
+}
+
+.detail-table {
+  background: map-get($ktb-palette-biz-gray, 100);
+}
+
+table {
+  .pin-header {
+    .mat-mdc-header-cell {
+      background-color: map-get($ktb-palette-blue, 10);
+      color: $black;
+      font-weight: normal !important;
+      font-family: KrungthaiFastRegular;
+      border-bottom: 2px solid map-get($ktb-palette-biz-gray, 300) !important;
+    }
+
+    &.row-shadow {
+      position: relative !important;
+      z-index: 9 !important;
+    }
+
+    .cdk-column-pin_assetDetail {
+      padding-top: 10px !important;
+      padding-bottom: 10px !important;
+    }
+  }
+}
+
+::ng-deep app-auction-detail-led-collateral-table {
+
+  /* FIXED(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version. */
+  .mat-mdc-radio-button.mat-primary.mat-mdc-radio-checked .mdc-radio__outer-circle {
+    border-color: $krungthai-blue !important;
+  }
+
+  .mat-expansion-panel-content {
+    font-size: 16px !important;
+  }
+
+  button.mat-mdc-outlined-button {
+    padding-left: 31px;
+    padding-right: 31px;
+  }
+}
+
+::ng-deep .cdk-overlay-pane {
+  padding-top: 4vh;
+  padding-bottom: 1vh;
+  padding-right: 3vh !important;
+}
+
+.content-form {
+  margin: 10px 52px 10px 52px;
+}
+
+.vertical-divider {
+  width: 1px;
+  background-color: map_get($ktb-palette-biz-gray, 200);
+}
+
+.sub-title {
+  line-height: 2;
+  font-size: $font-sub-description;
+}
+
+.remark-style {
+  min-width: 40px;
+  max-width: 40px;
+  padding: unset;
+}
+
+.can-scroll {
+  max-height: 650px;
+  overflow: auto;
+}
+
+.inline-block-size-18 {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+}
+
+.btn-lexs-added-min-width {
+  min-width: -webkit-fill-available;
+}

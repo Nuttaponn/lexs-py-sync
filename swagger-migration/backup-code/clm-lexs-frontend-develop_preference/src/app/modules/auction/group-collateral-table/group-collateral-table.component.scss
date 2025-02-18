@@ -1,0 +1,142 @@
+@import '/src/styles/colors';
+
+.hide-row {
+  height: 0;
+}
+
+.hide-td {
+  height: 0;
+
+  div {
+    display: none !important;
+  }
+}
+
+.expanded-row {
+  background: #b7b7b773;
+}
+
+.display-row-custom {
+  display: block !important;
+}
+
+.mat-column-action,
+.mat-column-statusSuccess,
+.mat-column-statusPending {
+  min-width: 100px;
+}
+
+.d-inline-block {
+  display: inline-block;
+}
+
+::ng-deep app-group-collateral-table {
+  .expansion-inside .mat-expansion-panel-body {
+    padding: 0;
+  }
+
+  .mat-mdc-header-cell {
+    white-space: pre !important;
+  }
+
+  .mat-mdc-cell {
+    white-space: initial !important;
+  }
+
+  button.mat-mdc-outlined-button {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+
+  .text-rigth {
+    text-align: right !important;
+  }
+
+  .mat-expansion-panel-content {
+    font-size: 16px !important;
+  }
+
+  /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version. */
+  .mat-checkbox-layout .mat-checkbox-label {
+    font-size: 16px !important;
+  }
+
+  button.mat-mdc-outlined-button.xsmall-aw-button {
+    font-size: 16px !important;
+  }
+}
+
+.padding-left-remark {
+  padding-left: 175px;
+}
+
+.padding-left-remark-show {
+  padding-left: 167px;
+}
+
+.fill-krungthai-green {
+  color: $krungthai-green;
+}
+
+.example-detail-td {
+  height: 0;
+  padding-left: 0px !important;
+}
+
+.detail-table {
+  background: map-get($ktb-palette-biz-gray, 100);
+}
+
+.example-element-detail {
+  background: map-get($ktb-palette-biz-gray, 100);
+  overflow: hidden;
+  display: flex;
+}
+
+.example-element-detail-border-expand {
+  background: map-get($ktb-palette-biz-gray, 100);
+  overflow: hidden;
+  display: flex;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: map-get($ktb-palette-biz-black, B012);
+}
+
+.content-form {
+  margin-top: 26px;
+  margin-bottom: 26px;
+  max-width: 82%;
+}
+
+.fixpadding-first {
+  margin-top: 26px;
+  margin-bottom: 26px;
+  width: 265px !important;
+  max-width: 265px !important;
+}
+
+.ordernumber-first {
+  width: 35px !important;
+  max-width: 35px !important;
+}
+
+.fsubidnum-first {
+  width: 150px !important;
+  max-width: 150px !important;
+}
+
+.remark-style {
+  min-width: 30px;
+  max-width: 30px;
+  padding: unset;
+}
+
+.col-total-appraisal-value {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.label-total-result {
+  font-size: 16px !important;
+}

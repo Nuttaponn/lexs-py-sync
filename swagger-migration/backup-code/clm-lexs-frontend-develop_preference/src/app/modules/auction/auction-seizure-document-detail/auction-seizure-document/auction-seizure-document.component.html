@@ -1,0 +1,259 @@
+<div class="content-container">
+  <div class="inner-container-padding-24">
+    <app-auction-header [title]="title" [isMain]="true" [expanded]="expanded" (expand)="expanded = !expanded">
+    </app-auction-header>
+  </div>
+  <mat-accordion>
+    <mat-expansion-panel [expanded]="expanded" hideToggle>
+      <mat-divider class="no-margin"></mat-divider>
+      <div class="pt-24">
+        <ng-container *ngIf="canSeeDocument">
+          <div fxLayout="row" class="pb-20 padded-container" fxLayoutAlign="start center">
+            <span class="mr-10 bg-color-gray" matBadge="1" matBadgeOverlap="false"></span>
+            <h6 class="pl-20">{{ 'AUCTION_SEIZURE_DOC.TITLE_MAIN_SEIZURE_DOCUMENT' | translate }}</h6>
+          </div>
+          <div class="pt-5">
+            <div class="table-scroll mt-2">
+              <table mat-table [dataSource]="mainDocuments">
+                <ng-container matColumnDef="no">
+                  <th mat-header-cell *matHeaderCellDef class="text-center">
+                    {{ 'COMMON.LABEL_NO' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let element; let rowNo = index" class="text-center order-cell">
+                    <ng-container>
+                      <span *ngIf="!!!element.documentTemplate?.optional || isViewMode">
+                        {{ rowNo + 1 }}
+                      </span>
+                      <div class="elm-form d-inti" *ngIf="element.documentTemplate?.optional && !isViewMode">
+                        <input
+                          class="elm-check height-auto md-line"
+                          [ngClass]="{
+                            inactive:
+                              (element?.imageId && element.active && isViewMode) ||
+                              (element?.multipleUpload && element?.imageId),
+                            disabled: isViewMode,
+                          }"
+                          [disabled]="isViewMode || (element?.multipleUpload && element?.imageId)"
+                          [checked]="element.active"
+                          type="checkbox"
+                          id="rowNo"
+                          (change)="onClickActive(element)" />
+                        <label for=""></label>
+                      </div>
+                    </ng-container>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="set">
+                  <th mat-header-cell *matHeaderCellDef class="text-right">
+                    {{ 'AUCTION_SEIZURE_DOC.LABEL_NUMBER_OF_ASSETS_LIST' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let element" class="name-cell text-right">
+                    {{ element?.assetsList?.length || (element?.multipleUpload ? '' : '-') }}
+                    <app-tooltip
+                      *ngIf="element.assetsList && element.assetsList?.length > 0"
+                      [params]="element?.assetsListMapping || []"></app-tooltip>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="documentName">
+                  <th mat-header-cell *matHeaderCellDef>{{ 'DOC_PREP.DOC_NAME' | translate }}</th>
+                  <td mat-cell *matCellDef="let element; let i = index" class="name-cell">
+                    <span [class.link]="element.imageId" (click)="onViewDocument(i)"
+                      >{{ element.documentTemplate?.documentName }}
+                    </span>
+                    <label
+                      *ngIf="element.documentTemplate?.optional === false && !element.imageId && !isViewMode"
+                      class="color-red"
+                      >*</label
+                    >
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="uploadDate">
+                  <th mat-header-cell *matHeaderCellDef>
+                    {{ 'UPLOAD_FILE.MULTI_COLUMN_UPLOAD_DATE_2' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let element; let i = index">
+                    {{ (element.uploadTimestamp | buddhistEra: 'DD/MM/yyyy') || (element?.multipleUpload ? '' : '-') }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="command">
+                  <th mat-header-cell *matHeaderCellDef class="text-center width-pct-25">
+                    {{ 'COMMON.LABEL_COMMAND' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let element; let i = index" class="width-pct-25" [ngClass]="'text-center'">
+                    <input type="file" #fileUpload name="fileUpload" [accept]="acceptFile.toString()" class="hidden" />
+                    <mat-icon
+                      *ngIf="
+                        !isViewMode &&
+                        element.imageId &&
+                        element.active &&
+                        element.documentTemplate.documentTemplateId !== DOC_TEMPLATE.LEXSF147 &&
+                        !!!element?.disabled
+                      "
+                      svgIcon="icon-Bin"
+                      class="icon btn-icon fill-red icon-xmedium mr-24"
+                      (click)="onRemoveDocument(element, i)"></mat-icon>
+                    <ng-container
+                      *ngIf="element.active && element?.documentTemplate?.documentTemplateId !== DOC_TEMPLATE.LEXSF147">
+                      <button
+                        *ngIf="!element.imageId"
+                        id="btn-doc-borw-select-doc-1"
+                        type="button"
+                        mat-flat-button
+                        color="primary"
+                        class="medium-fw-button"
+                        (click)="onUploadDocument(element, element.documentTemplateId)">
+                        <mat-icon svgIcon="icon-Arrow-Upload" class="icon icon-md"></mat-icon>
+                        {{ 'COMMON.BUTTON_UPLOAD' | translate }}
+                      </button>
+                      <button
+                        *ngIf="element.imageId && !!!element?.disabled"
+                        type="button"
+                        class="medium-7w-button"
+                        mat-stroked-button
+                        (click)="onUploadDocument(element, element.documentTemplateId)">
+                        <mat-icon svgIcon="icon-Arrow-Upload" class="icon-xmedium"></mat-icon>
+                        {{ 'COMMON.BUTTON_UPLOAD' | translate }}
+                      </button>
+                    </ng-container>
+                    <button
+                      *ngIf="element.imageId && !!element?.disabled"
+                      type="button"
+                      mat-flat-button
+                      color="primary"
+                      [disabled]="!!element?.disabled"
+                      class="medium-fw-button"
+                      (click)="onUploadDocument(i, element.documentTemplateId)">
+                      <mat-icon
+                        [svgIcon]="!!!element?.disabled ? 'icon-Arrow-Upload' : 'icon-Mark'"
+                        class="icon-xmedium"></mat-icon>
+                      {{ 'COMMON.BUTTON_UPLOAD' | translate }}
+                    </button>
+                    <span
+                      *ngIf="
+                        !element.imageId &&
+                        element.active &&
+                        element?.documentTemplate?.documentTemplateId === DOC_TEMPLATE.LEXSF147
+                      ">
+                      <button
+                        id="btn-doc-borw-select-doc-1"
+                        type="button"
+                        mat-flat-button
+                        color="primary"
+                        class="medium-fw-button"
+                        (click)="saveDetail()">
+                        {{ 'AUCTION_SEIZURE_DOC.BUTTON_SAVE_DETAIL' | translate }}
+                      </button>
+                    </span>
+                    <span
+                      *ngIf="
+                        element.imageId &&
+                        element.active &&
+                        element?.documentTemplate?.documentTemplateId === DOC_TEMPLATE.LEXSF147
+                      ">
+                      <button type="button" mat-flat-button color="primary" [disabled]="true" class="medium-fw-button">
+                        <mat-icon [svgIcon]="'icon-Mark'" class="icon-xmedium"></mat-icon>
+                        {{ 'AUCTION_SEIZURE_DOC.BUTTON_SAVE_DETAIL' | translate }}
+                      </button>
+                    </span>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="isViewMode ? _column.slice(0, -1) : _column"></tr>
+                <tr mat-row *matRowDef="let row; columns: isViewMode ? _column.slice(0, -1) : _column"></tr>
+              </table>
+              <ng-container *ngIf="mainDocuments && mainDocuments.length === 0" [ngTemplateOutlet]="dataNotFound">
+              </ng-container>
+              <div [ngClass]="isErrorFiletypeOrFileSize ? 'error-msg sub-desc' : ''" class="label mt-8">
+                {{ 'UPLOAD_FILE.LABEL_HINT_DOCUMENT_PDF_JPG_JPEG' | translate }}
+              </div>
+              <spig-error-msg
+                *ngIf="isUploaded"
+                [customErrorMsg]="'UPLOAD_FILE.ERROR_FILE_UPLOAD_REQUIRED'"></spig-error-msg>
+            </div>
+          </div>
+          <div fxLayout="row" class="mt-24 mb-24 space-between">
+            <div fxFlex="40" fxLayout="row" class="pb-10" fxLayoutAlign="start">
+              <span class="mr-10 mt-10 bg-color-gray" matBadge="2" matBadgeOverlap="false"></span>
+              <h6 class="pb-5 pl-20">{{ 'AUCTION_SEIZURE_DOC.LABEL_ASSET_DOCUMENT' | translate }}</h6>
+            </div>
+            <div fxFlex="60" class="text-end" fxLayout="row" fxLayoutAlign="end">
+              <div class="elm-form">
+                <input
+                  class="elm-check md-line"
+                  type="checkbox"
+                  id=""
+                  (change)="$event ? masterToggle($event) : null" />
+                <label for=""></label>
+              </div>
+              <span class="label-normal">{{ 'AUCTION_SEIZURE_DOC.LABEL_VIEW_ASSETS_RELATED' | translate }}</span>
+            </div>
+          </div>
+        </ng-container>
+
+        <div class="mt-16 mb-16 sub-expansion" *ngFor="let data of conveyanceDeedGroupDocuments; let i = index">
+          <ng-container *ngIf="!data.hided">
+            <app-auction-header
+              [title]="'เอกสารประกอบชุดทรัพย์ที่ ' + (data?.fsubbidnum || '1')"
+              [isMain]="false"
+              [isMainSub]="true"
+              [showIcon]="true"
+              [ready]="data.readyForSet || false"
+              [details]="data.details"
+              [expanded]="data.expand || false"
+              (expand)="data.expand = !data.expand"
+              [classInput]="'pr-30'"
+              [titleClass]="'text-gray-700'">
+            </app-auction-header>
+            <mat-accordion>
+              <mat-expansion-panel class="expansion-inside" [expanded]="data.expand" hideToggle>
+                <ng-container [formGroup]="formGroup">
+                  <div formArrayName="conveyanceDeedGroupUploadDocuments">
+                    <app-auction-header
+                      [title]="'หนังสือโอนกรรมสิทธิ์และสัญญาจำนอง'"
+                      [isMain]="false"
+                      [isMainSub]="false"
+                      [showIcon]="true"
+                      [details]="[]"
+                      [ready]="data.readyForContract || false"
+                      [expanded]="data.expandSub || false"
+                      (expand)="data.expandSub = !data.expandSub"
+                      [classInput]="'pr-30 ' + (data.readyForContract ? 'bg-l-green' : 'bg-l-gray')"
+                      [fxLayoutGap]="'24'"
+                      [titleClass]="'text-gray-700'">
+                    </app-auction-header>
+                    <mat-accordion>
+                      <mat-expansion-panel class="expansion-inside" [expanded]="data.expandSub" hideToggle>
+                        <app-upload-multi-file-content
+                          [uploadMultiInfo]="uploadMultiInfo"
+                          [list]="data?.conveyanceDeedGroupUploadDocuments || []"
+                          [column]="documentColumns"
+                          (uploadFileEvent)="uploadFileEvent($event, i)"
+                          [readonly]="isViewModeAsset"
+                          [labelAcceptFile]="'UPLOAD_FILE.LABEL_HINT_DOCUMENT_PDF_JPG_JPEG'">
+                        </app-upload-multi-file-content>
+                        <spig-error-msg
+                          [control]="conveyanceDeedGroupUploadDocumentsForm.at(i).get('requiredDoc')"
+                          [customErrorMsg]="'UPLOAD_FILE.ERROR_FILE_UPLOAD_REQUIRED'"></spig-error-msg>
+                      </mat-expansion-panel>
+                    </mat-accordion>
+                    <app-common-document-table
+                      [config]="data.deedConfig || deedConfig"
+                      [showMainAccount]="data.expandSub || false"
+                      [_documents]="data.deedDocumentsMapping"
+                      [displayedColumns]="displayDeed"></app-common-document-table>
+                  </div>
+                </ng-container>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </ng-container>
+        </div>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>
+
+<ng-template #dataNotFound>
+  <app-message-empty [message]="'DOC_PREP.NOT_FOUND_DOC'"></app-message-empty>
+</ng-template>

@@ -1,0 +1,67 @@
+<div class="dialog-content normal-xsm">
+  <div fxLayout="column">
+    <app-upload-file-content
+      [imageId]="auctionPaymentForm.imageId || ''"
+      [isUpload]="!!auctionPaymentForm.imageId"
+      [title]="auctionPaymentDialogConfig.title"
+      [readState]="'payment'"
+      [taskCode]="auctionPaymentTaskCode"
+      [isReadDocument]="true"
+      [isSubmited]="auctionPaymentDialogConfig.isSubmitted"
+      [seizureLedId]="auctionExpenseId"
+      [seizureUploadForm]="auctionPaymentForm"
+      [uploadInfo]="auctionPaymentDialogConfig.uploadInfo"
+      [isDisabledBtnUpload]="!uploadableBtn"
+      [acceptFile]="['application/pdf']"
+      (uploadError)="onUploadError($event)"
+      (readDocumentEvent)="onUploadSuccess($event)"
+      [isRequired]="true"
+      [labelAcceptFile]="'UPLOAD_FILE.LABEL_HINT_DOCUMENT_PDF'"
+      [invalidAmount]="auctionPaymentForm.amount?.toString() !== auctionPaymentFormControl.value?.toString()">
+    </app-upload-file-content>
+  </div>
+  <div class="mt-24" fxLayout="column">
+    <mat-form-field>
+      <mat-label [class.invalid]="auctionPaymentFormControl.invalid">{{
+        'ADVANCE_PAYMENT.LABEL_PAYMENT_AMOUNT' | translate
+      }}</mat-label>
+      <input appNumberOnly="number" [formControl]="auctionPaymentFormControl" matInput autocomplete="off" />
+    </mat-form-field>
+    <spig-error-msg class="mt-4" [control]="auctionPaymentFormControl" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+    </spig-error-msg>
+  </div>
+
+  <!-- display after get error from upload document -->
+  <ng-container *ngIf="messageType">
+    <ng-container [ngSwitch]="messageType">
+      <ng-container *ngSwitchCase="'error'">
+        <ng-container
+          *ngIf="errorMsg !== 'F033'"
+          [ngTemplateOutlet]="msgBannerTemplate"
+          [ngTemplateOutletContext]="{ msg: errorMsg }"></ng-container>
+      </ng-container>
+      <ng-container *ngSwitchCase="'success'">
+        <ng-container
+          [ngTemplateOutlet]="msgBannerTemplate"
+          [ngTemplateOutletContext]="{ msg: successMsg }"></ng-container>
+      </ng-container>
+      <ng-container *ngSwitchCase="'invalid'">
+        <ng-container
+          [ngTemplateOutlet]="msgBannerTemplate"
+          [ngTemplateOutletContext]="{ msg: invalidMsg }"></ng-container>
+      </ng-container>
+      <ng-container *ngSwitchCase="'paymentSuccess'">
+        <ng-container
+          [ngTemplateOutlet]="msgBannerTemplate"
+          [ngTemplateOutletContext]="{ msg: paymentSuccessMsg }"></ng-container>
+      </ng-container>
+      <ng-container *ngSwitchDefault></ng-container>
+    </ng-container>
+  </ng-container>
+</div>
+
+<ng-template let-msg="msg" #msgBannerTemplate>
+  <div class="mt-24">
+    <app-message-banner [message]="msg"></app-message-banner>
+  </div>
+</ng-template>

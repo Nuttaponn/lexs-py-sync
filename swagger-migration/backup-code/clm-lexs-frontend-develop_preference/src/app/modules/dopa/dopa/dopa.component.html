@@ -1,0 +1,109 @@
+<div class="content-container">
+  <mat-card appearance="outlined">
+    <mat-card-content>
+      <section fxLayout="row wrap" fxLayoutGap="" fxLayoutAlign="start center">
+        <mat-icon svgIcon="icon-Person-Board" class="icon icon-medium default-cursor mb-05em"></mat-icon>
+        <h5 class="ml-05em">
+          {{ 'DOPA.TITLE' | translate }}
+        </h5>
+      </section>
+      <div class="related-info-status mt-2em mb-1em">
+        <app-message-banner
+          [message]="'DOPA.LOGIN_MESSAGE_ALERT'"
+          type="info"
+          *ngIf="(loading$ | async) === false"></app-message-banner>
+        <app-message-banner
+          [message]="'DOPA.UPDATE_MESSAGE'"
+          type="warn"
+          *ngIf="(loading$ | async) === true"></app-message-banner>
+      </div>
+
+      <button
+        mat-flat-button
+        id="btn-dopa-update"
+        color="primary"
+        *ngIf="(loading$ | async) === false"
+        class="bg-gradient long-aw-button"
+        (click)="canUpdateDOPA && updateDOPA()">
+        <mat-icon svgIcon="icon-Arrow-Sync" class="icon icon-medium icon-fill-white"></mat-icon>
+        {{ 'DOPA.UPDATE' | translate }}
+      </button>
+      <div class="table-content pt-20">
+        <div class="table-scroll" *ngIf="dopaTaskList && dopaTaskList.length > 0">
+          <table mat-table [dataSource]="dopaTaskList">
+            <ng-container matColumnDef="identificationNo">
+              <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_NATIONAL_ID' | translate }}</th>
+              <td mat-cell *matCellDef="let element; let i = index" [class.bg-red]="element.responseDesc">
+                {{ element.identificationNo || '-' }}
+                <app-tooltip
+                  *ngIf="element.responseDesc"
+                  [params]="[
+                    { title: 'CUSTOMER.TOOLTIP.TITLE_WARNING' | translate, content: element.responseDesc || '' },
+                  ]"
+                  [iconClass]="['icon-small', 'fill-red']"></app-tooltip>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_FULL_NAME' | translate }}</th>
+              <td mat-cell *matCellDef="let element" [class.bg-red]="element.responseDesc">
+                {{ element.name || '-' }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="createdBy">
+              <th mat-header-cell *matHeaderCellDef>{{ 'DOPA.CREATED_BY' | translate }}</th>
+              <td mat-cell *matCellDef="let element" [class.bg-red]="element.responseDesc">
+                {{ element.createdBy || '-' }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="createdDate">
+              <th mat-header-cell *matHeaderCellDef>{{ 'DOPA.CREATED_DATE' | translate }}</th>
+              <td mat-cell *matCellDef="let element" [class.bg-red]="element.responseDesc">
+                {{ element.createdDate | buddhistEra: 'DD/MM/yyyy HH:mm:ss' || '-' }}
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="dopaTaskColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: dopaTaskColumns"></tr>
+          </table>
+          <spig-paginator [result]="pageResultConfig" [action]="pageActionConfig" (pageEvent)="pageEvent($event)">
+          </spig-paginator>
+        </div>
+        <ng-container *ngIf="!dopaTaskList || dopaTaskList.length === 0" [ngTemplateOutlet]="searchEmpty">
+        </ng-container>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<ng-template #searchEmpty>
+  <div class="table-scroll">
+    <table mat-table [dataSource]="dopaTaskList">
+      <ng-container matColumnDef="identificationNo">
+        <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_NATIONAL_ID' | translate }}</th>
+      </ng-container>
+
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_FULL_NAME' | translate }}</th>
+      </ng-container>
+
+      <ng-container matColumnDef="createdBy">
+        <th mat-header-cell *matHeaderCellDef>{{ 'DOPA.CREATED_BY' | translate }}</th>
+      </ng-container>
+
+      <ng-container matColumnDef="createdDate">
+        <th mat-header-cell *matHeaderCellDef>{{ 'DOPA.CREATED_DATE' | translate }}</th>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="dopaTaskColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: dopaTaskColumns"></tr>
+    </table>
+    <div>
+      <app-message-empty [message]="'DOC_PREP.NOT_FOUND_DOC'"></app-message-empty>
+    </div>
+    <spig-paginator [result]="pageResultConfig" [action]="pageActionConfig" (pageEvent)="pageEvent($event)">
+    </spig-paginator>
+  </div>
+</ng-template>

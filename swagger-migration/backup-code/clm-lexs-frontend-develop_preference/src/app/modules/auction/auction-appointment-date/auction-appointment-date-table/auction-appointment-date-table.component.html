@@ -1,0 +1,134 @@
+<div class="mt-12">
+  <div class="search-section pb-16" fxLayout="row" fxLayoutAlign="center start" fxLayoutGap="12px">
+    <div fxFlex>
+      <spig-dropdown
+        classInput="input-xsm icon"
+        [formControl]="typeFilterControl"
+        [config]="dropdownFilterGroupConfig"
+        [options]="collateralGroupOption"
+        (selectedOption)="applyFilter($event, TABLE_FILTER_KEY.FSUBBIDNUM)">
+      </spig-dropdown>
+    </div>
+    <div fxFlex>
+      <spig-dropdown
+        classInput="input-xsm icon"
+        [formControl]="statusFilterControl"
+        [config]="dropdownFilterDocumentConfig"
+        [options]="deedNoFilterOption"
+        (selectedOption)="applyFilter($event, TABLE_FILTER_KEY.AUCRESULT)"></spig-dropdown>
+    </div>
+    <div fxFlex>
+      <spig-dropdown
+        classInput="input-xsm icon"
+        [formControl]="assetFilterControl"
+        [config]="dropdownResultConfig"
+        [options]="assetNoFilterOption"
+        (selectedOption)="applyFilter($event, TABLE_FILTER_KEY.BUYERTYPE)"></spig-dropdown>
+    </div>
+  </div>
+
+  <div class="table-scroll section" table-scroll>
+    <table mat-table [dataSource]="collateralsSource.filteredData">
+      <ng-container matColumnDef="INDEX" sticky>
+        <th class="text-center" mat-header-cell *matHeaderCellDef>
+          {{ 'COMMON.LABEL_NO' | translate }}
+        </th>
+        <td class="text-center" mat-cell *matCellDef="let row; let i = index">
+          {{ i + startIndex }}
+        </td>
+        <td mat-footer-cell *matFooterCellDef></td>
+      </ng-container>
+      <ng-container matColumnDef="PROPERTY_SET_NUMBER">
+        <th class="text-left" mat-header-cell *matHeaderCellDef>
+          {{ 'PROPERTY.PROPERTY_SET' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <div class="link" (click)="onClickItem(row)">
+            {{ 'PROPERTY.PROPERTY_NO' | translate }} {{ row.fsubbidnum }}
+          </div>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="SAVEDATE">
+        <th class="text-left" mat-header-cell *matHeaderCellDef>
+          {{ 'PROPERTY.SAVEDATE' | translate }}
+        </th>
+        <td class="text-left" mat-cell *matCellDef="let row">
+          {{ (row.aucResultTimestamp | buddhistEra: 'DD/MM/yyyy') || '-' }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="AUCTION_RESULT">
+        <th class="text-left" mat-header-cell *matHeaderCellDef>
+          {{ 'PROPERTY.AUCTION_RESULT' | translate }}
+        </th>
+        <td class="text-left" mat-cell *matCellDef="let row">
+          <ng-container *ngIf="row.aucResult; else elseTemplate">
+            {{ TRANSLATE_PREFIX.MAPPING_RESULT_LABEL + row.aucResult | translate }}
+          </ng-container>
+          <ng-template #elseTemplate>
+            <span>-</span>
+          </ng-template>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="TYPE_BUYER">
+        <th class="text-left new-line preserve-breaks" mat-header-cell *matHeaderCellDef>
+          {{ 'PROPERTY.TYPE_BUYER' | translate }}
+        </th>
+        <td class="text-left" mat-cell *matCellDef="let row">
+          <ng-container *ngIf="row.buyerType; else elseBuyerTemplate">
+            {{ TRANSLATE_PREFIX.RESULT_BUYER_TYPE + row.buyerType | translate }}
+          </ng-container>
+          <ng-template #elseBuyerTemplate>
+            <span>-</span>
+          </ng-template>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="REMARK">
+        <th class="text-left new-line preserve-breaks" mat-header-cell *matHeaderCellDef>
+          {{ 'COMMON.LABEL_REMARKS' | translate }}
+        </th>
+        <td class="text-left" mat-cell *matCellDef="let row">
+          <ng-container *ngIf="row.aucResult === AUCTION_RESULT_SUBMIT_STATUS.SOLD">
+            <span>-</span>
+          </ng-container>
+          <ng-container *ngIf="row.aucResult === AUCTION_RESULT_SUBMIT_STATUS.UNSOLD">
+            <span>{{ TRANSLATE_PREFIX.MAPPING_RESULT_LABEL + row.unsoldReasonType | translate }}</span>
+          </ng-container>
+          <ng-container *ngIf="row.aucResult === AUCTION_RESULT_SUBMIT_STATUS.CANCEL">
+            <span>{{ TRANSLATE_PREFIX.MAPPING_RESULT_LABEL + row.cancelReasonType | translate }}</span>
+          </ng-container>
+        </td>
+      </ng-container>
+      <!-- Status Column -->
+      <ng-container matColumnDef="STATUS" stickyEnd>
+        <th class="text-center" mat-header-cell *matHeaderCellDef>
+          {{ 'PROPERTY.DEATAIL' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10px">
+            <button mat-stroked-button class="medium-button overflow-ellipsis" (click)="actionClick(row)">
+              <mat-icon svgIcon="icon-view-detail" class="icon icon-xmedium"></mat-icon>
+              {{ 'COMMON.BUTTON_VIEW_DETAIL' | translate }}
+            </button>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </div>
+
+  <!-- Empty row handler -->
+  <app-message-empty
+    *ngIf="collateralsSource.data.length === 0 || collateralsSource.filteredData.length === 0"
+    [message]="'COMMON.SEARCH_NOT_FOUND'">
+  </app-message-empty>
+
+  <!-- Paginator -->
+  <app-paginator
+    *ngIf="allCurrentData.length > 0"
+    #paginator
+    [pageSize]="pageSize"
+    [length]="allCurrentData.length"
+    (page)="onPaging($event)"></app-paginator>
+</div>

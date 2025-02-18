@@ -1,0 +1,50 @@
+<div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="64" class="pb-32">
+  <div fxFlex="30">
+    <div fxLayout="column" fxLayoutGap="16" class="pl-24">
+      <div
+        fxLayout="row"
+        fxLayoutGap="16"
+        fxLayoutAlign="space-between center"
+        class="legend"
+        *ngFor="let label of labels; let i = index"
+        (click)="onPieClick(i)"
+        (mouseenter)="onLegendMouseEnter(i)"
+        (mouseleave)="onLegendMouseLeave()">
+        <div fxLayout="row" fxLayoutGap="16" fxLayoutAlign="center center">
+          <div class="legend-color" [style]="'--c:' + colors[i]"></div>
+          <span>{{ label }}</span>
+        </div>
+        <h6>{{ data[i] }}</h6>
+      </div>
+    </div>
+  </div>
+  <div fxFlex="60" fxLayoutAlign="center center">
+    <div class="pie">
+      <div class="pie-section-wrap" [class.on-hover]="activeLegend === i" *ngFor="let datapoint of data; let i = index">
+        <div
+          class="pie-section"
+          *ngIf="!isSectionHidden[i]"
+          (mouseenter)="onLegendMouseEnter(i)"
+          (mouseleave)="onLegendMouseLeave()"
+          (click)="onPieClick(i)"
+          [style]="'--c:' + colors[i] + '; clip-path:' + clipPaths[i]"></div>
+      </div>
+      <div
+        class="tooltip"
+        [class.active]="activeLegend === i"
+        *ngFor="let label of labels; let i = index"
+        [style]="'top: ' + tooltipPositions[i].y + '%; left: ' + tooltipPositions[i].x + '%'">
+        <span>{{ label }}</span
+        ><br />
+        <span class="bold">{{ data[i] }}</span>
+      </div>
+      <div class="pie-center">
+        <div class="pie-center-text" (click)="onTotalClick()">
+          <span>{{ 'DASHBOARD.TITLE_ALL_LAWSUITS' | translate }}</span>
+          <h3 class="mt-0 mb-0">{{ total }}</h3>
+        </div>
+      </div>
+      <!-- <div class="debug-point" *ngFor="let point of debugPoints" [style]="'top: ' + point.y + '%; left: ' + point.x + '%'"></div> -->
+    </div>
+  </div>
+</div>

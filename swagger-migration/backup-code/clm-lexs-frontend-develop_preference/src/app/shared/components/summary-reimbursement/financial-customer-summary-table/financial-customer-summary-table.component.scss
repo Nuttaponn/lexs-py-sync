@@ -1,0 +1,31 @@
+@import '/src/styles/colors';
+
+.example-detail-row {
+  height: 0;
+}
+
+.example-detail-td {
+  height: 0;
+}
+
+.example-element-detail {
+  background-color: map-get($ktb-palette-biz-gray, 100);
+  overflow: hidden;
+  display: flex;
+}
+
+.detail-table {
+  background: #b7b7b773;
+}
+
+.status-normal {
+  background-color: map-get($ktb-palette-blue, 10) !important;
+}
+
+.total-cell {
+  font-weight: bold;
+}
+
+.content-form {
+  margin: 10px 52px 10px 52px;
+}

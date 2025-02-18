@@ -1,0 +1,77 @@
+<div fxLayout="column" fxLayoutGap="24">
+  <div fxLayout="column" fxLayoutGap="8">
+    <app-defendant-table
+      [defendants]="defendantsData || []"
+      [showId]="false"
+      [isSelectable]="!!!executionFeeData"
+      (onSelectionChange)="onDefendantChange($event)">
+    </app-defendant-table>
+    <spig-error-msg [control]="defendantsControl" [customErrorMsg]="'COMMON.ERROR_MSG_TABLE_REQUIRED'">
+    </spig-error-msg>
+  </div>
+
+  <input
+    type="file"
+    #fileUpload
+    name="fileUpload"
+    onclick="this.value=null;"
+    accept="application/pdf"
+    class="display-none" />
+
+  <div fxLayout="column" fxLayoutGap="8">
+    <mat-card appearance="outlined" class="no-padding mat-elevation-z0" *ngIf="!file && !executionFeeData">
+      <div fxLayoutAlign="space-between center" class="title-content bg-blue-00">
+        <span>
+          {{ 'COURT.DECREE.DIALOG_UPLOAD_EXECUTION_FEE' | translate }}
+          <span class="red-text">*</span>
+        </span>
+        <button
+          mat-flat-button
+          color="primary"
+          type="button"
+          class="medium-aw-button overflow-ellipsis primary-button"
+          (click)="selectDocument()">
+          <mat-icon svgIcon="icon-Arrow-Upload" class="icon-xmedium"></mat-icon>
+          {{ 'COMMON.BUTTON_UPLOAD' | translate }}
+        </button>
+      </div>
+    </mat-card>
+    <mat-card appearance="outlined" class="no-padding mat-elevation-z0" *ngIf="file || executionFeeData">
+      <div fxLayoutAlign="space-between start" class="title-content bg-gray-900">
+        <div>
+          <div class="pb-12">
+            <span class="thin-letter">{{ 'COURT.DECREE.DIALOG_LABEL_FEE_DOCUMENT' | translate }}</span
+            ><br />
+            <span>{{ executionFeeData ? executionFeeData.documentDto?.imageName : file.name }}</span>
+          </div>
+          <div>
+            <span class="thin-letter">{{ 'COURT.DECREE.DIALOG_LABEL_FEE_RECEIPT_AMOUNT' | translate }}: </span
+            ><span class="bold">
+              {{ executionFeeData ? executionFeeData.amount : (this.receiptAmount | numberDecimal) || '' }}
+            </span>
+          </div>
+        </div>
+        <button mat-stroked-button type="button" class="medium-aw-button overflow-ellipsis" (click)="selectDocument()">
+          <mat-icon svgIcon="icon-Arrow-Upload" class="icon-xmedium"></mat-icon>
+          {{ 'COMMON.BUTTON_UPLOAD' | translate }}
+        </button>
+      </div>
+    </mat-card>
+    <spig-error-msg [control]="fileControl" [customErrorMsg]="'UPLOAD_FILE.ERROR_UPLOAD_REQUIRED'"></spig-error-msg>
+  </div>
+  <div fxLayout="column" fxLayoutGap="8" *ngIf="!executionFeeData?.amount">
+    <mat-form-field class="half-width">
+      <mat-label>{{ 'COURT.DECREE.DIALOG_LABEL_FEE_AMOUNT' | translate }}</mat-label>
+      <input matInput appNumberOnly="integer" type="text" [formControl]="amountControl" />
+    </mat-form-field>
+    <spig-error-msg [control]="amountControl" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED_2'"> </spig-error-msg>
+  </div>
+  <div fxFlex="50" *ngIf="executionFeeData?.amount">
+    <span class="thin-letter">{{ 'COURT.DECREE.DIALOG_LABEL_FEE_AMOUNT' | translate }}</span
+    ><br />
+    <span>{{ executionFeeData?.amount | numberDecimal }}</span>
+  </div>
+
+  <app-message-banner type="fail" [message]="'COURT.DECREE.DIALOG_BANNER_FEE_WARNING'" *ngIf="file">
+  </app-message-banner>
+</div>

@@ -1,0 +1,89 @@
+<div class="content-container mt-0">
+  <div class="inner-container-padding-24">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+      <div class="title-text">
+        <h5 class="mt-12 mb-12 mr-12">
+          {{ 'AUCTION_DETAIL.NPA_DETAIL.DETAIL_NPA' | translate }}
+        </h5>
+      </div>
+      <div fxLayout="row">
+        <div class="description" (click)="isOpened = !isOpened">
+          <mat-icon
+            [svgIcon]="isOpened ? 'icon-Slide-Hide' : 'icon-Expand'"
+            class="icon icon-xmedium icon-hide-show fill-blue mr-5">
+          </mat-icon
+          >{{ isOpened ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate) }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <mat-accordion>
+    <mat-expansion-panel [expanded]="isOpened" hideToggle>
+      <mat-divider class="no-margin"></mat-divider>
+      <div class="mb-16 mt-24 mr-16" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+        <div fxLayout="column" fxFlex="15">
+          <h6>{{ 'AUCTION_DETAIL.NPA_DETAIL.NPA_INFO' | translate }}</h6>
+        </div>
+        <div fxLayout="column" fxFlex="30" fxLayoutGap="12px">
+          <span class="thin-letter">{{ 'AUCTION_DETAIL.NPA_DETAIL.NPA_MEETING' | translate }}</span>
+          <div>
+            {{ resolution.get(data?.resolution || '') }}
+          </div>
+        </div>
+        <div fxLayout="column" fxFlex="30" fxLayoutGap="12px">
+          <span class="thin-letter">{{ 'AUCTION_DETAIL.NPA_DETAIL.SALE_SOLVE' | translate }}</span>
+          <div>{{ data?.saletypedesc || '-' }}</div>
+        </div>
+        <div fxLayout="column" fxFlex="30"></div>
+      </div>
+
+      <div class="mb-16 mr-16" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+        <div fxLayout="column" fxFlex="15"></div>
+        <div fxLayout="column" fxFlex="30" fxLayoutGap="12px">
+          <span class="thin-letter">{{ 'AUCTION_DETAIL.NPA_DETAIL.LOW' | translate }}</span>
+          <div>
+            {{ (data?.minPrice | numberDecimal) || '-' }}
+          </div>
+        </div>
+        <div fxLayout="column" fxFlex="30" fxLayoutGap="12px">
+          <span class="thin-letter">{{ 'AUCTION_DETAIL.NPA_DETAIL.DEFINE_HIGH_PRICE' | translate }}</span>
+          <div>
+            {{ (data?.maxPrice | numberDecimal) || '-' }}
+          </div>
+        </div>
+        <div fxLayout="column" fxFlex="30" fxLayoutGap="12px">
+          <span class="thin-letter"
+            >{{ 'AUCTION_DETAIL.NPA_DETAIL.PRICE_ESTIMATE' | translate }}
+            <app-tooltip
+              [params]="[
+                { title: 'ราคาประเมินของธนาคาร: ' + 'ทรัพย์จำนอง' },
+                { title: 'ราคาประเมินราชการ: ' + 'ทรัพย์นอกจำนอง' },
+              ]">
+            </app-tooltip>
+          </span>
+          <div>{{ (data?.genCbsAppval | numberDecimal) || '-' }}</div>
+        </div>
+      </div>
+
+      <div class="mb-16 mr-16" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+        <div fxLayout="column" fxFlex="15"></div>
+        <div fxLayout="column" fxFlex="30" fxLayoutGap="12px">
+          <span class="thin-letter">{{ 'AUCTION_DETAIL.NPA_DETAIL.DATE_APPROVE' | translate }}</span>
+          <div>{{ (data?.effectiveDateTo | buddhistEra: 'DD/MM/yyyy') || '-' }}</div>
+        </div>
+        <div fxLayout="column" fxFlex="30" fxLayoutGap="12px">
+          <span class="thin-letter">{{ 'AUCTION_DETAIL.NPA_DETAIL.DOCUMENT' | translate }}</span>
+          <ng-container *ngIf="data?.chronicleId; else elseTemplate">
+            <div class="link" (click)="onViewDocument(data?.chronicleId)">
+              <a class="label-link" target="_blank">{{ 'AUCTION_DETAIL.NPA_DETAIL.NPA_MEETING' | translate }}</a>
+            </div>
+          </ng-container>
+          <ng-template #elseTemplate>
+            <span>-</span>
+          </ng-template>
+        </div>
+        <div fxLayout="column" fxFlex="30"></div>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

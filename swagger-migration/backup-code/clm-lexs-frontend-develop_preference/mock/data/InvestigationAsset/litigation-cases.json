@@ -1,0 +1,44 @@
+{
+  "litigationCases": [
+    {
+      "litigationCaseId": "10184",
+      "litigationCaseSeqNo": 1,
+      "blackCaseNo": "ผบ.1274\/2561",
+      "redCaseNo": "ผบ.1274\/2561",
+      "assetInvestigations": [
+        {
+          "assetInvestigationId": 110,
+          "assetInvestigationRound": 1,
+          "submittedTimestamp": "",
+          "resultTimestamp": "",
+          "reasonCode": "2",
+          "reasonDesc": "ขายทรัพย์แล้วไม่พอชำระหนี้",
+          "totalPersons": 3,
+          "totalAssets": 4,
+          "status": "COMPLETE",
+          "statusName": "สืบทรัพย์แล้ว"
+        },
+        {
+          "assetInvestigationId": 111,
+          "assetInvestigationRound": 2,
+          "submittedTimestamp": "",
+          "resultTimestamp": "",
+          "reasonCode": "2",
+          "reasonDesc": "ขายทรัพย์แล้วไม่พอชำระหนี้",
+          "totalPersons": "",
+          "totalAssets": "",
+          "status": "PENDING",
+          "statusName": "รอสั่งการสืบทรัพย์"
+        }
+      ]
+    },
+    {
+      "litigationCaseId": "10184",
+      "litigationCaseSeqNo": 2,
+      "blackCaseNo": "ผบ.1274\/2561",
+      "redCaseNo": "ผบ.1274\/2561",
+      "assetInvestigations": []
+    }
+  ],
+  "viewMode": true
+}

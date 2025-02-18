@@ -1,0 +1,19 @@
+.custom-stepper {
+  .mat-horizontal-stepper-header-container {
+    margin-bottom: 20px;
+  }
+
+  .step-actions {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+
+    button {
+      min-width: 100px;
+    }
+  }
+
+  .mat-step-label {
+    font-weight: bold;
+  }
+}

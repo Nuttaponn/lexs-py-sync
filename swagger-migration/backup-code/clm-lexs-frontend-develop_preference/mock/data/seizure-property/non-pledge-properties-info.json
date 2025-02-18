@@ -1,0 +1,436 @@
+{
+  "seizureId": "12345",
+  "seizureStatus": "In Progress",
+  "lawyerId": "67890",
+  "lawyerName": "John Doe",
+  "recommendLawyerId": "userId userOptions : 0",
+  "selectedAppraisalValue": 50000,
+  "assets": [
+    {
+      "assetId": 1,
+      "assetType": 2,
+      "assetSubType": 1,
+      "assetTypeDesc": "Real Estate",
+      "assetSubTypeDesc": "Residential Property",
+      "documentNo": "DOC120",
+      "collateralDetails": "Property located at 123 Main St.",
+      "ownerFullName": "Alice Johnson",
+      "totalAppraisalValue": 300000,
+      "collateralCaseLexStatus": "SEIZURED",
+      "assentRlsStatus": "Released",
+      "obligationStatus": "Current",
+      "isSelected": true,
+      "disabled": false,
+      "seizureStatus": "Not Seized",
+      "seizuredByLitigationId": "",
+      "seizuredByCaseId": null,
+      "seizuredBySeizureId": "",
+      "seizuredByParty": null,
+      "assetDocuments": [
+        {
+          "documentId": 101,
+          "documentTemplate": {
+            "documentTemplateId": "DOC_TEMPLATE_1",
+            "documentName": "Property Deed"
+          },
+          "imageSource": "LEXS",
+          "imageId": "IMAGE_101",
+          "imageName": "Deed Image",
+          "uploadTimestamp": "2023-01-15T10:30:00Z"
+        }
+      ]
+    },
+    {
+      "assetId": 2,
+      "assetType": 2,
+      "assetSubType": 1,
+      "assetTypeDesc": "Real Estate",
+      "assetSubTypeDesc": "Residential Property",
+      "documentNo": "DOC123",
+      "collateralDetails": "Property located at 123 Main St.",
+      "ownerFullName": "Alice Johnson",
+      "totalAppraisalValue": 300000,
+      "collateralCaseLexStatus": "PLEDGE",
+      "assentRlsStatus": "Released",
+      "obligationStatus": "Current",
+      "isSelected": true,
+      "disabled": false,
+      "seizureStatus": "Not Seized",
+      "seizuredByLitigationId": "LE2566040004",
+      "seizuredByCaseId": null,
+      "seizuredBySeizureId": "",
+      "seizuredByParty": null,
+      "assetDocuments": [
+        {
+          "documentId": 101,
+          "documentTemplate": {
+            "documentTemplateId": "DOC_TEMPLATE_1",
+            "documentName": "Property Deed"
+          },
+          "imageSource": "LEXS",
+          "imageId": "IMAGE_101",
+          "imageName": "Deed Image",
+          "uploadTimestamp": "2023-01-15T10:30:00Z"
+        }
+      ]
+    },
+    {
+      "assetId": 3,
+      "assetType": 2,
+      "assetSubType": 1,
+      "assetTypeDesc": "Real Estate",
+      "assetSubTypeDesc": "Residential Property",
+      "documentNo": "DOC123",
+      "collateralDetails": "Property located at 123 Main St.",
+      "ownerFullName": "Alice Johnson",
+      "totalAppraisalValue": 300000,
+      "collateralCaseLexStatus": "-",
+      "assentRlsStatus": "Released",
+      "obligationStatus": "Current",
+      "isSelected": true,
+      "disabled": false,
+      "seizureStatus": "Not Seized",
+      "seizuredByLitigationId": null,
+      "seizuredByCaseId": null,
+      "seizuredBySeizureId": "",
+      "seizuredByParty": null,
+      "assetDocuments": [
+        {
+          "documentId": 101,
+          "documentTemplate": {
+            "documentTemplateId": "DOC_TEMPLATE_1",
+            "documentName": "Property Deed"
+          },
+          "imageSource": "LEXS",
+          "imageId": "IMAGE_101",
+          "imageName": "Deed Image",
+          "uploadTimestamp": "2023-01-15T10:30:00Z"
+        }
+      ]
+    },
+    {
+      "assetId": 4,
+      "assetType": 2,
+      "assetSubType": 1,
+      "assetTypeDesc": "Real Estate",
+      "assetSubTypeDesc": "Residential Property",
+      "documentNo": "DOC123",
+      "collateralDetails": "Property located at 123 Main St.",
+      "ownerFullName": "Alice Johnson",
+      "totalAppraisalValue": 300000,
+      "collateralCaseLexStatus": "PLEDGE",
+      "assentRlsStatus": "Released",
+      "obligationStatus": "Current",
+      "isSelected": true,
+      "disabled": false,
+      "seizureStatus": "Not Seized",
+      "seizuredByLitigationId": null,
+      "seizuredByCaseId": null,
+      "seizuredBySeizureId": "",
+      "seizuredByParty": null,
+      "assetDocuments": [
+        {
+          "documentId": 101,
+          "documentTemplate": {
+            "documentTemplateId": "DOC_TEMPLATE_1",
+            "documentName": "Property Deed"
+          },
+          "imageSource": "LEXS",
+          "imageId": "IMAGE_101",
+          "imageName": "Deed Image",
+          "uploadTimestamp": "2023-01-15T10:30:00Z"
+        }
+      ]
+    },
+    {
+      "assetId": 5,
+      "assetType": 2,
+      "assetSubType": 1,
+      "assetTypeDesc": "Real Estate",
+      "assetSubTypeDesc": "Residential Property",
+      "documentNo": "DOC123",
+      "collateralDetails": "Property located at 123 Main St.",
+      "ownerFullName": "Alice Johnson",
+      "totalAppraisalValue": 300000,
+      "collateralCaseLexStatus": "PLEDGE",
+      "assentRlsStatus": "Released",
+      "obligationStatus": "Current",
+      "isSelected": true,
+      "disabled": false,
+      "seizureStatus": "Not Seized",
+      "seizuredByLitigationId": null,
+      "seizuredByCaseId": null,
+      "seizuredBySeizureId": "",
+      "seizuredByParty": null,
+      "assetDocuments": [
+        {
+          "documentId": 101,
+          "documentTemplate": {
+            "documentTemplateId": "DOC_TEMPLATE_1",
+            "documentName": "Property Deed"
+          },
+          "imageSource": "LEXS",
+          "imageId": "IMAGE_101",
+          "imageName": "Deed Image",
+          "uploadTimestamp": "2023-01-15T10:30:00Z"
+        }
+      ]
+    },
+    {
+      "assetId": 6,
+      "assetType": 2,
+      "assetSubType": 1,
+      "assetTypeDesc": "Real Estate",
+      "assetSubTypeDesc": "Residential Property",
+      "documentNo": "DOC123",
+      "collateralDetails": "Property located at 123 Main St.",
+      "ownerFullName": "Alice Johnson",
+      "totalAppraisalValue": 300000,
+      "collateralCaseLexStatus": "PLEDGE",
+      "assentRlsStatus": "Released",
+      "obligationStatus": "Current",
+      "isSelected": true,
+      "disabled": false,
+      "seizureStatus": "Not Seized",
+      "seizuredByLitigationId": null,
+      "seizuredByCaseId": null,
+      "seizuredBySeizureId": "",
+      "seizuredByParty": null,
+      "assetDocuments": [
+        {
+          "documentId": 101,
+          "documentTemplate": {
+            "documentTemplateId": "DOC_TEMPLATE_1",
+            "documentName": "Property Deed"
+          },
+          "imageSource": "LEXS",
+          "imageId": "IMAGE_101",
+          "imageName": "Deed Image",
+          "uploadTimestamp": "2023-01-15T10:30:00Z"
+        }
+      ]
+    },
+    {
+      "assetId": 7,
+      "assetType": 2,
+      "assetSubType": 1,
+      "assetTypeDesc": "Real Estate",
+      "assetSubTypeDesc": "Residential Property",
+      "documentNo": "DOC123",
+      "collateralDetails": "Property located at 123 Main St.",
+      "ownerFullName": "Alice Johnson",
+      "totalAppraisalValue": 300000,
+      "collateralCaseLexStatus": "PLEDGE",
+      "assentRlsStatus": "Released",
+      "obligationStatus": "Current",
+      "isSelected": true,
+      "disabled": false,
+      "seizureStatus": "Not Seized",
+      "seizuredByLitigationId": null,
+      "seizuredByCaseId": null,
+      "seizuredBySeizureId": "",
+      "seizuredByParty": null,
+      "assetDocuments": [
+        {
+          "documentId": 101,
+          "documentTemplate": {
+            "documentTemplateId": "DOC_TEMPLATE_1",
+            "documentName": "Property Deed"
+          },
+          "imageSource": "LEXS",
+          "imageId": "IMAGE_101",
+          "imageName": "Deed Image",
+          "uploadTimestamp": "2023-01-15T10:30:00Z"
+        }
+      ]
+    },
+    {
+      "assetId": 8,
+      "assetType": 2,
+      "assetSubType": 1,
+      "assetTypeDesc": "Real Estate",
+      "assetSubTypeDesc": "Residential Property",
+      "documentNo": "DOC123",
+      "collateralDetails": "Property located at 123 Main St.",
+      "ownerFullName": "Alice Johnson",
+      "totalAppraisalValue": 300000,
+      "collateralCaseLexStatus": "PLEDGE",
+      "assentRlsStatus": "Released",
+      "obligationStatus": "Current",
+      "isSelected": true,
+      "disabled": false,
+      "seizureStatus": "Not Seized",
+      "seizuredByLitigationId": null,
+      "seizuredByCaseId": null,
+      "seizuredBySeizureId": "",
+      "seizuredByParty": null,
+      "assetDocuments": [
+        {
+          "documentId": 101,
+          "documentTemplate": {
+            "documentTemplateId": "DOC_TEMPLATE_1",
+            "documentName": "Property Deed"
+          },
+          "imageSource": "LEXS",
+          "imageId": "IMAGE_101",
+          "imageName": "Deed Image",
+          "uploadTimestamp": "2023-01-15T10:30:00Z"
+        }
+      ]
+    },
+    {
+      "assetId": 9,
+      "assetType": 2,
+      "assetSubType": 1,
+      "assetTypeDesc": "Real Estate",
+      "assetSubTypeDesc": "Residential Property",
+      "documentNo": "DOC123",
+      "collateralDetails": "Property located at 123 Main St.",
+      "ownerFullName": "Alice Johnson",
+      "totalAppraisalValue": 300000,
+      "collateralCaseLexStatus": "PLEDGE",
+      "assentRlsStatus": "Released",
+      "obligationStatus": "Current",
+      "isSelected": false,
+      "disabled": true,
+      "seizureStatus": "Not Seized",
+      "seizuredByLitigationId": null,
+      "seizuredByCaseId": null,
+      "seizuredBySeizureId": "",
+      "seizuredByParty": null,
+      "assetDocuments": [
+        {
+          "documentId": 101,
+          "documentTemplate": {
+            "documentTemplateId": "DOC_TEMPLATE_1",
+            "documentName": "Property Deed"
+          },
+          "imageSource": "LEXS",
+          "imageId": "IMAGE_101",
+          "imageName": "Deed Image",
+          "uploadTimestamp": "2023-01-15T10:30:00Z"
+        }
+      ]
+    },
+    {
+      "assetId": 10,
+      "assetType": 2,
+      "assetSubType": 1,
+      "assetTypeDesc": "Real Estate",
+      "assetSubTypeDesc": "Residential Property",
+      "documentNo": "DOC123",
+      "collateralDetails": "Property located at 123 Main St.",
+      "ownerFullName": "Alice Johnson",
+      "totalAppraisalValue": 300000,
+      "collateralCaseLexStatus": "PLEDGE",
+      "assentRlsStatus": "Released",
+      "obligationStatus": "Current",
+      "isSelected": true,
+      "disabled": false,
+      "seizureStatus": "Not Seized",
+      "seizuredByLitigationId": null,
+      "seizuredByCaseId": null,
+      "seizuredBySeizureId": "",
+      "seizuredByParty": null,
+      "assetDocuments": [
+        {
+          "documentId": 101,
+          "documentTemplate": {
+            "documentTemplateId": "DOC_TEMPLATE_1",
+            "documentName": "Property Deed"
+          },
+          "imageSource": "LEXS",
+          "imageId": "IMAGE_101",
+          "imageName": "Deed Image",
+          "uploadTimestamp": "2023-01-15T10:30:00Z"
+        }
+      ]
+    },
+    {
+      "assetId": 11,
+      "assetType": 2,
+      "assetSubType": 1,
+      "assetTypeDesc": "Real Estate",
+      "assetSubTypeDesc": "Residential Property",
+      "documentNo": "DOC123",
+      "collateralDetails": "Property located at 123 Main St.",
+      "ownerFullName": "Alice Johnson",
+      "totalAppraisalValue": 300000,
+      "collateralCaseLexStatus": "PLEDGE",
+      "assentRlsStatus": "Released",
+      "obligationStatus": "Current",
+      "isSelected": false,
+      "disabled": false,
+      "seizureStatus": "Not Seized",
+      "seizuredByLitigationId": null,
+      "seizuredByCaseId": null,
+      "seizuredBySeizureId": "",
+      "seizuredByParty": null,
+      "assetDocuments": [
+        {
+          "documentId": 101,
+          "documentTemplate": {
+            "documentTemplateId": "DOC_TEMPLATE_1",
+            "documentName": "Property Deed"
+          },
+          "imageSource": "LEXS",
+          "imageId": "IMAGE_101",
+          "imageName": "Deed Image",
+          "uploadTimestamp": "2023-01-15T10:30:00Z"
+        }
+      ]
+    },
+    {
+      "assetId": 12,
+      "assetType": 2,
+      "assetSubType": 1,
+      "assetTypeDesc": "Real Estate",
+      "assetSubTypeDesc": "Residential Property",
+      "documentNo": "DOC123",
+      "collateralDetails": "Property located at 123 Main St.",
+      "ownerFullName": "Alice Johnson",
+      "totalAppraisalValue": 300000,
+      "collateralCaseLexStatus": "PLEDGE",
+      "assentRlsStatus": "Released",
+      "obligationStatus": "Current",
+      "isSelected": true,
+      "disabled": false,
+      "seizureStatus": "Not Seized",
+      "seizuredByLitigationId": null,
+      "seizuredByCaseId": null,
+      "seizuredBySeizureId": "",
+      "seizuredByParty": null,
+      "assetDocuments": [
+        {
+          "documentId": 101,
+          "documentTemplate": {
+            "documentTemplateId": "DOC_TEMPLATE_1",
+            "documentName": "Property Deed"
+          },
+          "imageSource": "LEXS",
+          "imageId": "IMAGE_101",
+          "imageName": "Deed Image",
+          "uploadTimestamp": "2023-01-15T10:30:00Z"
+        }
+      ]
+    }
+  ],
+  "processingDocument": [
+    {
+      "documentId": 201,
+      "documentTemplate": {
+        "documentTemplateId": "DOC_TEMPLATE_2",
+        "documentName": "Income Tax Return"
+      },
+      "imageSource": "https://example.com/tax-return-image.jpg",
+      "imageId": "IMAGE_201",
+      "imageName": "Tax Return Image",
+      "uploadTimestamp": "2023-02-20T14:45:00Z",
+      "documentType": "Income Tax Return",
+      "cifNo": "CIF123456",
+      "taxId": "TAX7890",
+      "name": "Alice Johnson",
+      "relation": "Owner"
+    }
+  ]
+}

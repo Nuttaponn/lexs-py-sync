@@ -1,0 +1,28 @@
+<div class="chart-container" [id]="chartId" fxLayout="row-reverse" fxLayoutGap="8" [class.tall]="data.length > 2">
+  <div
+    *ngFor="let dataPoint of data; let i = index"
+    class="chart-bar"
+    [fxFlex]="percentages[i]"
+    [style]="'background-color: ' + colors[i]"
+    (click)="onArrowClick(i, $event)"
+    [class.end-label]="i === 1 && midSectionHasEndLabel">
+    <div
+      class="chart-arrow-before"
+      [style]="'border-top-color: ' + colors[i] + '; border-left-color: ' + colors[i]"
+      (click)="onArrowClick(i, $event)"></div>
+    <div class="chart-arrow-after"></div>
+    <div
+      class="label-container"
+      [class.tall]="data.length > 2 && i % 2 === 0"
+      [style]="'border-right-color: ' + colors[i] + '; border-left-color: ' + colors[i]">
+      <div class="arrow-chart-label">
+        <span
+          >{{ labels[i] }}<span class="ml-12 bold">{{ data[i] }}</span></span
+        >
+      </div>
+    </div>
+    <div class="total-label">
+      <span class="bold">{{ totals[i] }}</span>
+    </div>
+  </div>
+</div>

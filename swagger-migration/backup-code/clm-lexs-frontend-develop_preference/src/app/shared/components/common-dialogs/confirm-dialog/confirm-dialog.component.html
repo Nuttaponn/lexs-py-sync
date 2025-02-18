@@ -1,0 +1,62 @@
+<div class="m-24">
+  <div *ngIf="data.title || data.icon || data.iconName" class="title" [ngClass]="data.contentCssClasses">
+    <div *ngIf="data.icon || data.iconName" class="icon icon-medium mr-10">
+      <mat-icon svgIcon="{{ data.iconName }}" class="fill-red {{ data.iconClass }}"></mat-icon>
+    </div>
+    <strong
+      *ngIf="data.title"
+      id="dialog-title-text"
+      class="dialog-title-margin"
+      [innerHTML]="data.title | translate"></strong>
+  </div>
+  <ng-container *ngIf="data.messageBanner">
+    <div class="banner-container full-width mt-24 {{ data.typeBanner }}">
+      <div class="element-inline full-width banner-content" fxLayout="row" fxLayoutAlign="space-between center">
+        <div class="full-width" fxLayout="row" fxLayoutAlign="start">
+          <mat-icon class="icon icon-medium mr-10" [svgIcon]="data.iconBanner"></mat-icon>
+          <div class="full-width" fxLayout="column" fxLayoutAlign="center">
+            <span
+              class="element-inline full-width bold"
+              [ngClass]="data.messageClassBanner"
+              *ngIf="data.messageBanner"
+              [innerHtml]="data.messageBanner | translate"></span>
+            <span *ngIf="data.subMessageBanner" [innerHtml]="data.subMessageBanner | translate"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+  <div *ngIf="data.message" [ngClass]="{ 'mt-24': data.message }">
+    <span [innerHTML]="data.message | translate | convertDomPipe"></span>
+  </div>
+  <div class="mt-20" fxLayoutAlign="end">
+    <div id="actions-right-button">
+      <button
+        type="button"
+        class="medium-aw-button mr-10"
+        [ngClass]="data.leftButtonClass"
+        mat-raised-button
+        *ngIf="data.leftButtonLabel"
+        mat-flat-button
+        (click)="leftButtonClicked()">
+        {{ data.leftButtonLabel | translate }}
+      </button>
+      <button
+        type="button"
+        class="medium-aw-button"
+        [ngClass]="data.rightButtonClass || 'long-button mat-warn'"
+        mat-flat-button
+        *ngIf="data.rightButtonLabel"
+        color="primary"
+        (click)="rightButtonClicked()"
+        cdkFocusInitial>
+        <mat-icon
+          *ngIf="data.buttonIconName"
+          svgIcon="{{ data.buttonIconName }}"
+          class="icon icon-small-xl mr-5"
+          [ngClass]="data.rightIconButtonClass"></mat-icon>
+        {{ data.rightButtonLabel | translate }}
+      </button>
+    </div>
+  </div>
+</div>

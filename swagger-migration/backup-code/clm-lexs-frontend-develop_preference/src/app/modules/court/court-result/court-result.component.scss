@@ -1,0 +1,22 @@
+.content-below-action-bar-area {
+  .info-container {
+
+    /* TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version. */
+    mat-card-title {
+      padding: 20px;
+    }
+
+    .sub-container {
+      margin: 1.5em;
+    }
+  }
+}
+
+.case-end {
+  font-size: 14px;
+  margin: 0 0 0 16px;
+}
+
+::ng-deep .mat-expansion-panel-body {
+  padding: 0 !important;
+}

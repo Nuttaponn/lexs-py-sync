@@ -1,0 +1,39 @@
+<app-action-bar (backButtonHandler)="onBack()" [showNavBarInformation]="true">
+  <ng-container navBarInformationTemplate>
+    <mat-icon svgIcon="icon-Activity" class="icon icon-xmedium default-cursor"></mat-icon>
+    <span class="ml-8">{{ 'FINANCE.AUDIT_LOG' | translate }}</span>
+  </ng-container>
+</app-action-bar>
+
+<div class="content-below-action-bar-area">
+  <div class="content-container-no-bg">
+    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+      <h3 class="mt-0 mb-0">
+        {{
+          financeMode === 'EXPENSE'
+            ? ('FINANCE.EXPENSE_REQUEST_NO' | translate)
+            : ('FINANCE.EXPENSE_REQUEST_NO_KCORP' | translate)
+        }}
+      </h3>
+      <span class="divider-vertical pl-0"></span>
+      <h3 class="mt-0 mb-0">{{ financeCaseId }}</h3>
+      <span
+        class="status-section status-label"
+        [ngClass]="
+          status
+            | financeStatusBtn
+              : (financeMode !== 'ADVANCE'
+                  ? financeMode === 'EXPENSE'
+                    ? 'EXPENSE_STATUS'
+                    : 'RECEIPT_STATUS'
+                  : 'ADVANCE_STATUS')
+              : status
+        ">
+        {{ statusName }}
+      </span>
+    </div>
+    <div class="expense-audit-log-container">
+      <app-audit-log></app-audit-log>
+    </div>
+  </div>
+</div>

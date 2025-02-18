@@ -1,0 +1,124 @@
+<div class="content-container">
+  <div class="inner-container-padding">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+      <div class="title-text">
+        <h5 class="mt-12 mb-12 mr-12">
+          {{ title | translate }}
+        </h5>
+      </div>
+      <!-- <div fxLayout="row">
+        <div class="description" (click)="isOpened = !isOpened">
+          <mat-icon [svgIcon]="isOpened ? 'icon-Slide-Hide' : 'icon-Expand'" class="icon icon-hide-show fill-blue">
+          </mat-icon>{{ isOpened ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' |
+          translate) }}
+        </div>
+      </div> -->
+    </div>
+  </div>
+  <mat-accordion>
+    <!-- <mat-divider class="mr-24"></mat-divider> -->
+    <mat-expansion-panel [expanded]="isOpened" hideToggle>
+      <ng-template matExpansionPanelContent>
+        <app-auction-detail-led-collateral-table
+          [data]="mappingData"
+          [config]="defaultConfig"
+          [collateralColumns]="tableColumns"
+          [buttonType]="actionType === 'MAPPING' ? 'MAPPING' : 'RE_SELECT'"
+          [dataType]="actionType === 'MAPPING' ? 'LEXS_MAPPING' : 'LEXS_VERIFY'"
+          [mode]="mode"
+          [pinData]="dataToVerify"
+          (onUpdateSelectItem)="updateSelectItem($event)"
+          (onReSelectCollateral)="reSelectCollateral($event)"
+          [selectCollateralId]="selectCollateralId"></app-auction-detail-led-collateral-table>
+        <ng-container *ngIf="actionType === 'VERIFY'">
+          <form [formGroup]="dataForm">
+            <div
+              class="search-section pb-16 pt-16 mt-12"
+              fxLayout="row"
+              fxLayoutAlign="center start"
+              fxLayoutGap="12px">
+              <h6 fxFlex="15">
+                {{ 'ANNOUNCE_VERIFY_COLLATERAL.VERIFIED_RESULTS' | translate }}
+                <span *ngIf="mode !== 'VIEW'" class="fill-red">*</span>
+              </h6>
+              <div fxLayout="column" fxFlex="100" fxLayoutGap="30px">
+                <ng-container *ngIf="mode === 'VIEW'; else elseResultTemplate">
+                  <ng-container *ngIf="dataToVerify?.isDeedInfoValid; else elseDeedInfoTemplate">
+                    <span>{{ 'ANNOUNCE_VERIFY_COLLATERAL.CORRECT_INFO' | translate }}</span>
+                  </ng-container>
+                  <ng-template #elseDeedInfoTemplate>
+                    <span>{{ 'ANNOUNCE_VERIFY_COLLATERAL.INCORRECT_INFO' | translate }}</span>
+                  </ng-template>
+                </ng-container>
+                <ng-template #elseResultTemplate>
+                  <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="20px">
+                    <div fxLayout="column" fxFlex="100" fxLayoutGap="12px">
+                      <mat-radio-group
+                        (ngModelChange)="onRadioChang($event)"
+                        class="full-width"
+                        formControlName="result">
+                        <div fxLayout="row" class="full-width">
+                          <div fxFlex="20">
+                            <mat-radio-button value="CORRECT" [checked]="dataToVerify?.isDeedInfoValid">{{
+                              'ANNOUNCE_VERIFY_COLLATERAL.CORRECT_INFO' | translate
+                            }}</mat-radio-button>
+                          </div>
+                          <div fxFlex="20">
+                            <mat-radio-button value="INCORRECT" [checked]="!dataToVerify?.isDeedInfoValid">{{
+                              'ANNOUNCE_VERIFY_COLLATERAL.INCORRECT_INFO' | translate
+                            }}</mat-radio-button>
+                          </div>
+                          <div fxFlex="20">
+                            <mat-radio-button value="UNMAP">{{
+                              'ANNOUNCE_VERIFY_COLLATERAL.UNMAP' | translate
+                            }}</mat-radio-button>
+                          </div>
+                        </div>
+                      </mat-radio-group>
+                      <spig-error-msg [control]="dataForm.get('result')" [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'">
+                      </spig-error-msg>
+                    </div>
+                  </div>
+                </ng-template>
+              </div>
+            </div>
+            <div class="search-section pb-16 pt-16" fxLayout="row" fxLayoutAlign="center start" fxLayoutGap="12px">
+              <h6 fxLayout="column" fxFlex="15">
+                {{ 'ANNOUNCE_VERIFY_COLLATERAL.VERIFIED_REMARKS' | translate }}
+              </h6>
+              <div fxLayout="column" fxFlex="100" fxLayoutGap="30px">
+                <ng-container *ngIf="mode === 'VIEW'; else elseReasonTemplate">
+                  <span>{{ dataToVerify?.validationNote || '-' }}</span>
+                </ng-container>
+                <ng-template #elseReasonTemplate>
+                  <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="gappx">
+                    <div fxFlex="60">
+                      <mat-form-field class="input-full-field">
+                        <mat-label>{{ 'COMMON.LABEL_REMARKS' | translate }}</mat-label>
+                        <textarea
+                          class="input-full-field"
+                          type="text"
+                          matInput
+                          cdkTextareaAutosize
+                          #autosize="cdkTextareaAutosize"
+                          cdkAutosizeMinRows="5"
+                          [required]="dataForm.get('result')?.value === 'INCORRECT'"
+                          autocomplete="off"
+                          formControlName="reason"
+                          [maxlength]="500"></textarea>
+                      </mat-form-field>
+                      <spig-error-msg
+                        [control]="dataForm.get('reason')"
+                        [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED_2'"></spig-error-msg>
+                    </div>
+                    <div fxFlex=""></div>
+                  </div>
+                </ng-template>
+              </div>
+            </div>
+          </form>
+        </ng-container>
+      </ng-template>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

@@ -1,0 +1,237 @@
+<div fxLayout class="space-around content mt-20" [formGroup]="control" *ngIf="control">
+  <div fxLayout="column" fxFlex="20">
+    <div class="collateral-info header mx-width-pct-60">
+      {{ 'CUSTOMER.BUILDING_INFO' | translate }}
+    </div>
+  </div>
+  <div fxLayout="column" fxFlex="80">
+    <div fxLayout fxLayoutAlign="space-between">
+      <ng-container *ngIf="mode === MODE.ADD || mode === MODE.EDIT">
+        <div fxFlex="49" fxLayout="column">
+          <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+            <mat-label>{{ 'CUSTOMER.BUILDING_NAME' | translate }}</mat-label>
+            <input
+              type="text"
+              maxlength="40"
+              matInput
+              formControlName="buildingName"
+              [placeholder]="'CUSTOMER.BUILDING_NAME' | translate" />
+          </mat-form-field>
+          <spig-error-msg [control]="getControl('buildingName')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+          </spig-error-msg>
+        </div>
+        <div fxFlex="49" fxLayout="column">
+          <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+            <mat-label>{{ 'CUSTOMER.BUILDING_NO' | translate }}</mat-label>
+            <input
+              type="text"
+              maxlength="40"
+              matInput
+              formControlName="buildingNo"
+              [placeholder]="'CUSTOMER.BUILDING_NO' | translate" />
+          </mat-form-field>
+          <spig-error-msg [control]="getControl('buildingNo')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+          </spig-error-msg>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="mode === MODE.VIEW">
+        <div fxFlex="49">
+          <div class="collateral-info title">
+            {{ 'CUSTOMER.BUILDING_NAME' | translate }}
+          </div>
+          <div class="collateral-info detail">
+            {{ getControl('buildingName')?.value || '-' }}
+          </div>
+        </div>
+        <div fxFlex="49">
+          <div class="collateral-info title">
+            {{ 'CUSTOMER.BUILDING_NO' | translate }}
+          </div>
+          <div class="collateral-info detail">
+            {{ getControl('buildingNo')?.value || '-' }}
+          </div>
+        </div>
+      </ng-container>
+    </div>
+    <div fxLayout fxLayoutAlign="space-between center " class="mt-20">
+      <ng-container *ngIf="mode === MODE.ADD || mode === MODE.EDIT">
+        <div fxFlex fxLayout="column">
+          <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+            <mat-label>{{ 'CUSTOMER.BUILDING_LOCATION' | translate }}</mat-label>
+            <input
+              type="text"
+              maxlength="40"
+              matInput
+              formControlName="address1"
+              [placeholder]="'CUSTOMER.BUILDING_LOCATION' | translate" />
+          </mat-form-field>
+          <spig-error-msg [control]="getControl('address1')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+          </spig-error-msg>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="mode === MODE.VIEW">
+        <div fxFlex>
+          <div class="collateral-info title">
+            {{ 'CUSTOMER.BUILDING_LOCATION' | translate }}
+          </div>
+          <div class="collateral-info detail">
+            {{ getControl('address1')?.value || '-' }}
+          </div>
+        </div>
+      </ng-container>
+    </div>
+    <div fxLayout fxLayoutAlign="space-between center " class="mt-20">
+      <ng-container *ngIf="mode === MODE.ADD || mode === MODE.EDIT">
+        <div fxFlex="49">
+          <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+            <mat-label>{{ 'CUSTOMER.BUILDING_LOCATION_NEXT' | translate }}</mat-label>
+            <input
+              type="text"
+              maxlength="40"
+              matInput
+              formControlName="address2"
+              [placeholder]="'CUSTOMER.BUILDING_LOCATION_NEXT' | translate" />
+          </mat-form-field>
+        </div>
+        <div fxFlex="49">
+          <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+            <mat-label>{{ 'CUSTOMER.BUILDING_LOCATION_NEXT' | translate }}</mat-label>
+            <input
+              type="text"
+              maxlength="40"
+              matInput
+              formControlName="address3"
+              [placeholder]="'CUSTOMER.BUILDING_LOCATION_NEXT' | translate" />
+          </mat-form-field>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="mode === MODE.VIEW">
+        <div fxFlex="49">
+          <div class="collateral-info title">
+            {{ 'CUSTOMER.BUILDING_LOCATION_NEXT' | translate }}
+          </div>
+          <div class="collateral-info detail">
+            {{ getControl('address2')?.value || '-' }}
+          </div>
+        </div>
+        <div fxFlex="49">
+          <div class="collateral-info title">
+            {{ 'CUSTOMER.BUILDING_LOCATION_NEXT' | translate }}
+          </div>
+          <div class="collateral-info detail">
+            {{ getControl('address3')?.value || '-' }}
+          </div>
+        </div>
+      </ng-container>
+    </div>
+    <div fxLayout="row" class="mt-20" fxLayoutAlign="space-between center">
+      <ng-container *ngIf="mode === MODE.ADD || mode === MODE.EDIT">
+        <div fxFlex="49">
+          <spig-dropdown
+            [classInput]="'input-s icon border-black-40'"
+            (selectedOption)="selectProvice($event)"
+            formControlName="provinceCode"
+            [config]="configProvice"
+            [options]="proviceOptions">
+          </spig-dropdown>
+        </div>
+        <div fxFlex="49" *ngIf="getControl('provinceCode')?.value">
+          <spig-dropdown
+            [classInput]="'input-s icon border-black-40'"
+            formControlName="districtCode"
+            [config]="configDistrict"
+            (selectedOption)="selectDistrict($event)"
+            [options]="districtOptions">
+          </spig-dropdown>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="mode === MODE.VIEW">
+        <div fxFlex="49">
+          <div class="collateral-info title">
+            {{ 'CUSTOMER.PROVICE' | translate }}
+          </div>
+          <div class="collateral-info detail">
+            {{ getControl('province')?.value || '-' }}
+          </div>
+        </div>
+        <div fxFlex="49">
+          <div class="collateral-info title">
+            {{ 'CUSTOMER.DISTRICE' | translate }}
+          </div>
+          <div class="collateral-info detail">
+            {{ getControl('district')?.value || '-' }}
+          </div>
+        </div>
+      </ng-container>
+    </div>
+    <div fxLayout="row" class="mt-20" fxLayoutAlign="space-between center">
+      <ng-container
+        *ngIf="
+          (mode === MODE.ADD || mode === MODE.EDIT) &&
+          getControl('provinceCode')?.value &&
+          getControl('districtCode')?.value
+        ">
+        <div fxFlex="49">
+          <spig-dropdown
+            [classInput]="'input-s icon border-black-40'"
+            formControlName="subdistrictCode"
+            (selectedOption)="selectSubDistrict($event)"
+            [config]="configSubDistrict"
+            [options]="subDistrictOptions">
+          </spig-dropdown>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="mode === MODE.VIEW">
+        <div fxFlex="49">
+          <div class="collateral-info title">
+            {{ 'CUSTOMER.SUB_DISTRICE' | translate }}
+          </div>
+          <div class="collateral-info detail">
+            {{ getControl('subDistrict')?.value || '-' }}
+          </div>
+        </div>
+      </ng-container>
+    </div>
+    <div fxLayout fxLayoutAlign="space-between center " class="mt-20">
+      <ng-container *ngIf="mode === MODE.ADD || mode === MODE.EDIT">
+        <div fxFlex="49">
+          <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+            <mat-label>{{ 'CUSTOMER.AVERAGE_PRICE_GOV' | translate }}</mat-label>
+            <input
+              type="text"
+              maxlength="20"
+              appNumberOnly="integer"
+              matInput
+              formControlName="totalAppraisalValue"
+              [placeholder]="'CUSTOMER.AVERAGE_PRICE_GOV' | translate" />
+          </mat-form-field>
+        </div>
+        <div fxFlex="49">
+          <spig-datepicker
+            [classInput]="'input-s icon border-black-40'"
+            formControlName="appraisalDate"
+            [label]="'CUSTOMER.AVERAGE_DATE'"
+            class="display-grid"></spig-datepicker>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="mode === MODE.VIEW">
+        <div fxFlex="49">
+          <div class="collateral-info title">
+            {{ 'CUSTOMER.AVERAGE_PRICE_GOV' | translate }}
+          </div>
+          <div class="collateral-info detail">
+            {{ (getControl('totalAppraisalValue')?.value | numberDecimal) || '-' }}
+          </div>
+        </div>
+        <div fxFlex="49">
+          <div class="collateral-info title">
+            {{ 'CUSTOMER.AVERAGE_DATE' | translate }}
+          </div>
+          <div class="collateral-info detail">
+            {{ getControl('appraisalDate')?.value || '-' }}
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>

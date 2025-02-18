@@ -1,0 +1,87 @@
+<app-action-bar
+  (backButtonHandler)="onBack()"
+  [backButtonText]="actionBar.backText || ''"
+  [showNavBarInformation]="true"
+  [hasCancelButton]="actionBar.hasCancel"
+  [cancelButtonText]="actionBar.cancelText || ''"
+  (cancelButtonHandler)="onCancel()"
+  [hasEditButton]="actionBar.hasEditButton || false"
+  [editButtonText]="actionBar.editButtonText || ''"
+  [editButtonIcon]="actionBar.editButtonIcon || ''"
+  (editButtonHandler)="onEdit()"
+  [hasSaveButton]="actionBar.hasSave"
+  [saveButtonText]="actionBar.saveText || 'COMMON.BUTTON_SAVE'"
+  (saveButtonHandler)="onSave()"
+  [hasPrimaryButton]="actionBar.hasPrimary"
+  [primaryButtonText]="actionBar.primaryText || ''"
+  [primaryButtonIcon]="actionBar.primaryIcon || 'icon-Selected'"
+  (primaryButtonHandler)="onSubmit()"
+  [hasRejectButton]="actionBar.hasReject"
+  [rejectButtonText]="actionBar.rejectText || ''"
+  [rejectButtonIcon]="actionBar.rejectIcon || ''"
+  (rejectButtonHandler)="onReject()"
+  [subButtonList]="subButtonList"
+  (subButtonHandler)="subButtonHandler($event)"
+  [maxSubButton]="maxSubButton">
+  <ng-container navBarInformationTemplate>
+    <div fxLayout="row" fxLayoutAlign="start center">
+      <ng-container *ngIf="mode === 'ADD'">
+        <mat-icon [svgIcon]="'icon-Arrow-Revert'" class="icon icon-xmedium default-cursor"></mat-icon>
+      </ng-container>
+      <ng-container *ngIf="isOwnerTask && !['VIEW', 'VIEW_PENDING', 'ADD'].includes(mode)">
+        <mat-icon [svgIcon]="'icon-Task-List'" class="icon icon-xmedium default-cursor"></mat-icon>
+      </ng-container>
+      <ng-container *ngIf="(!isOwnerTask && mode !== 'ADD') || ['VIEW', 'VIEW_PENDING'].includes(mode)">
+        <mat-icon [svgIcon]="'icon-Box-Bag-Circle'" class="icon icon-xmedium default-cursor"></mat-icon>
+      </ng-container>
+      <div class="ml-8 wrap-line-break">{{ title | translate }}</div>
+      <div *ngIf="!!statusName" [ngClass]="statusCode | taskStatus" class="ml-12 status-label">{{ statusName }}</div>
+    </div>
+  </ng-container>
+</app-action-bar>
+
+<ng-container *ngIf="isSteperTask; else normalTemplate">
+  <div class="content-below-action-bar-area">
+    <mat-horizontal-stepper labelPosition="bottom" #withdrawnStepper (selectionChange)="onStepChange($event)">
+      <ng-container *ngFor="let item of steps; let i = index">
+        <mat-step completed="false" [aria-labelledby]="i < withdrawnStepper.selectedIndex ? '' : 'disableclick'">
+          <ng-template matStepLabel>
+            <div class="mat-step-custom-click" (click)="onStepperClick(i); $event.stopPropagation()">
+              <span class="bold">{{ item.label }}</span>
+            </div>
+          </ng-template>
+        </mat-step>
+      </ng-container>
+    </mat-horizontal-stepper>
+    <div>
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</ng-container>
+<ng-template #normalTemplate>
+  <div class="content-below-action-bar-area">
+    <ng-container *ngIf="mode !== 'VIEW' && !isMakerAwaitingTask && isOwnerTask && messageBanner; else elseTemplateDiv">
+      <div class="m-25">
+        <app-message-banner type="black-info" [message]="messageBanner"> </app-message-banner>
+      </div>
+    </ng-container>
+    <ng-template #elseTemplateDiv>
+      <div class="m-25"></div>
+    </ng-template>
+
+    <div class="tab-content-info">
+      <nav mat-tab-nav-bar class="mr-24 ml-24 pl-0 pr-0" [tabPanel]="tabPanel">
+        <a
+          mat-tab-link
+          *ngFor="let tab of tabsInfo; let i = index"
+          (click)="onRouterLink(tab)"
+          [active]="tab.index === tabIndex"
+          >{{ tab.label | translate }}
+        </a>
+      </nav>
+      <mat-tab-nav-panel #tabPanel>
+        <router-outlet></router-outlet>
+      </mat-tab-nav-panel>
+    </div>
+  </div>
+</ng-template>

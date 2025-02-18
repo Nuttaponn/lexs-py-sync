@@ -1,0 +1,11 @@
+{
+  "EXTERNAL_DOCUMENTS": {
+    "TITLE": "ประกาศขายทอดตลาดทั้งหมด",
+    "AUC_ANNOUCEMENT_KTB_PROCESS_TAB_INFO": "ประกาศขายที่ interface จากกรมบังคับคดี",
+    "AUC_ANNOUCEMENT_KTB_NEW_TAB_INFO": "ประกาศขายที่เพิ่มจากระบบ LEXS",
+    "AUC_ANNOUCEMENT_KTB_FINISHED_TAB_INFO": "ประกาศขายทอดตลาดที่เสร็จสิ้น",
+    "NOT_FOUND_AUC_ANNOUCEMENT_KTB_PROCESS": "ไม่พบประกาศขายทอดตลาดที่รอดำเนินการ",
+    "NOT_FOUND_AUC_ANNOUCEMENT_KTB_FINISHED": "ไม่พบประกาศขายทอดตลาดที่เสร็จสิ้น",
+    "NOT_FOUND_AUC_ANNOUCEMENT_KTB_NEW": "ไม่พบประกาศขายทอดตลาด"
+  }
+}

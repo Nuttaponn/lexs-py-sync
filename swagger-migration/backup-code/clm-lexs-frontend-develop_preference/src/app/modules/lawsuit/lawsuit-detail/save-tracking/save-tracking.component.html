@@ -1,0 +1,44 @@
+<div fxFlex fxLayout="column" fxLayoutGap="40">
+  <div fxFlex>
+    <div fxFlex="25">
+      <span class="bold pr-8">{{ 'LAWSUIT.TRACKING_INFO' | translate }}</span>
+    </div>
+    <div fxFlex fxLayout="column" fxLayoutGap="16">
+      <div fxFlex fxLayoutAlign="start center">
+        <span class="sub-label-small mr-16">{{ 'LAWSUIT.SAVE_TRACKING.LITIGATION_STATUS' | translate }}:</span>
+        <div class="status-label status-normal">{{ litigationDetail.litigationStatus }}</div>
+      </div>
+      <div class="half-width">
+        <spig-dropdown
+          [config]="ddlstatus"
+          [options]="followUpStatuses"
+          [formControl]="statusControl"
+          classInput="mb-4"></spig-dropdown>
+        <spig-error-msg [control]="statusControl" [customErrorMsg]="'LAWSUIT.SAVE_TRACKING.ERROR_MSG_REQUIRED'">
+        </spig-error-msg>
+      </div>
+      <div>
+        <mat-form-field class="full-width mb-4">
+          <mat-label>{{ 'COMMON.LABEL_REMARKS' | translate }}</mat-label>
+          <textarea matInput required maxlength="200" [formControl]="remarksControl"></textarea>
+        </mat-form-field>
+        <spig-error-msg [control]="remarksControl" [customErrorMsg]="'LAWSUIT.SAVE_TRACKING.ERROR_MSG_REQUIRED'">
+        </spig-error-msg>
+      </div>
+    </div>
+  </div>
+  <mat-divider></mat-divider>
+  <div fxFlex>
+    <div fxFlex="25">
+      <span class="bold pr-8">{{ 'LAWSUIT.TRACKING_PERSON' | translate }}</span>
+    </div>
+    <div fxFlex="37">
+      <div class="sub-label-small gray mb-8">{{ 'LAWSUIT.HEAD_COLUMN_TRACKING_NAME' | translate }}</div>
+      <div class="sub-label">{{ currentUser.title }}{{ currentUser.name }} {{ currentUser.surname }}</div>
+    </div>
+    <div fxFlex="37">
+      <div class="sub-label-small gray mb-8">{{ 'LAWSUIT.HEAD_COLUMN_TRACKING_DATE' | translate }}</div>
+      <div class="sub-label">{{ followupDate | buddhistEra: 'DD/MM/yyyy' }}</div>
+    </div>
+  </div>
+</div>

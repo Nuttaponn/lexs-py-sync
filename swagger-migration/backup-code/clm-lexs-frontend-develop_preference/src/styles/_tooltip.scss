@@ -1,0 +1,46 @@
+@import './variables';
+
+.cdk-tooltip {
+  display: inline-block;
+  line-height: 0px;
+}
+
+.cdk-tooltip-content {
+  @include font-style;
+  padding: 16px;
+  color: map-get($ktb-palette-biz-black, 100);
+  max-width: 400px;
+  background: map-get($ktb-palette-precious-blue, 00);
+  box-shadow: 0px 4px 8px map-get($ktb-palette-biz-black, B016);
+  border-radius: 8px;
+  max-height: 400px;
+  overflow: scroll;
+  -ms-overflow-style: none;
+  /* Internet Explorer 10+ */
+  scrollbar-width: none;
+  /* Firefox */
+
+  .tooltip-header {
+    color: map-get($ktb-palette-precious-blue, 50);
+    margin-bottom: 1em;
+  }
+
+  .tooltip-title {
+    color: map-get($ktb-palette-biz-black, 70);
+    font-family: KrungthaiFastBold;
+  }
+
+  .tooltip-content {
+    color: map-get($ktb-palette-biz-black, 100);
+    font-family: KrungthaiFastRegular;
+  }
+}
+
+.cdk-tooltip-content::-webkit-scrollbar {
+  display: none;
+  /* Safari and Chrome */
+}
+
+.label-link {
+  @include txt-underline(map-get($ktb-palette-precious-blue, 50), pointer);
+}

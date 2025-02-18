@@ -1,0 +1,556 @@
+<div class="content-container">
+  <div class="inner-container-padding-24">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+      <div class="title-text">
+        <h5 class="mt-12 mb-12 mr-12">
+          {{ 'AUCTION_DETAIL.AUCTION_RESULT.AUCTION' | translate }}
+        </h5>
+      </div>
+      <div fxLayout="row">
+        <div class="description" (click)="isOpened = !isOpened">
+          <mat-icon
+            [svgIcon]="isOpened ? 'icon-Slide-Hide' : 'icon-Expand'"
+            class="icon icon-xmedium icon-hide-show fill-blue mr-5">
+          </mat-icon
+          >{{ isOpened ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate) }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <mat-accordion>
+    <mat-expansion-panel [expanded]="isOpened" hideToggle>
+      <mat-divider class="no-margin"></mat-divider>
+      <form action="" [formGroup]="formGroup">
+        <div class="mb-16 mt-24 mr-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+          <h6 fxLayout="column" fxFlex="15">
+            {{ 'AUCTION_DETAIL.AUCTION_RESULT.AUCTION_INFO' | translate }}
+          </h6>
+          <div fxFlex="30" fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="12px">
+            <span class="thin-letter"> {{ 'AUCTION_DETAIL.AUCTION_RESULT.CASE_TYPE' | translate }}</span>
+            <div>{{ formGroup.get('liticationType')?.value || 'แพ่ง' }}</div>
+          </div>
+          <div fxFlex="30" fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="12px">
+            <span class="thin-letter">{{ 'AUCTION_DETAIL.AUCTION_RESULT.SEQ' | translate }}</span>
+            <div>{{ formGroup.get('aucRound')?.value || '1' }}</div>
+          </div>
+          <div fxFlex="30" fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="12px">
+            <span class="thin-letter">{{ 'AUCTION_DETAIL.AUCTION_RESULT.AUCTION_DATE' | translate }}</span>
+            <div>{{ (formGroup.get('bidDate')?.value | buddhistEra: 'DD/MM/yyyy') || '-' }}</div>
+          </div>
+        </div>
+        <div class="mb-16 mt-24 mr-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+          <h6 fxLayout="column" fxFlex="15">
+            {{ 'AUCTION_DETAIL.AUCTION_RESULT.AUCTION' | translate }}
+          </h6>
+          <div *ngIf="!isViewMode" fxFlex="27" fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="12px">
+            <spig-dropdown
+              formControlName="aucResult"
+              style="width: 100%"
+              [required]="true"
+              classInput="input-normal icon"
+              [config]="resultConfig"
+              [options]="resultOptions"></spig-dropdown>
+            <ng-container *ngIf="formGroup.get('aucResult')?.hasError('auction_cannot_sold')">
+              <p class="error-msg">{{ 'AUCTION_DETAIL.AUCTION_RESULT.MSG.CAN_SOLD' | translate }}</p>
+            </ng-container>
+            <ng-container *ngIf="formGroup.get('aucResult')?.hasError('auction_cannot_unsold')">
+              <p class="error-msg">{{ 'AUCTION_DETAIL.AUCTION_RESULT.MSG.CAN_NOT_SOLD' | translate }}</p>
+            </ng-container>
+            <ng-container *ngIf="formGroup.get('aucResult')?.hasError('auction_cannot_only_cancel')">
+              <p class="error-msg">{{ 'AUCTION_DETAIL.AUCTION_RESULT.MSG.CAN_NOT_CANCEL' | translate }}</p>
+            </ng-container>
+            <spig-error-msg [control]="formGroup.get('aucResult')"></spig-error-msg>
+          </div>
+          <div *ngIf="isViewMode" fxFlex fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="12px">
+            <span class="thin-letter"> {{ 'AUCTION_DETAIL.AUCTION_RESULT.AUCTION' | translate }}</span>
+            <div>{{ getResultText(formGroup.get('aucResult')?.value) }}</div>
+          </div>
+          <div fxLayout="column" fxFlex="30"></div>
+        </div>
+
+        <!-- ประเภทผู้ซื้อ -->
+        <ng-container *ngIf="formGroup.get('aucResult')?.value === RESULT_SUBMIT_STATUS.SOLD">
+          <div class="mb-16 mt-24 mr-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+            <h6 fxLayout="column" fxFlex="15">
+              <span>
+                {{ 'AUCTION_DETAIL.AUCTION_RESULT.BUYER_TYPE' | translate }}
+                <span *ngIf="!isViewMode" class="color-red">*</span></span
+              >
+            </h6>
+            <div fxFlex fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="12px">
+              <ng-container *ngIf="!isViewMode">
+                <mat-radio-group
+                  formControlName="buyerType"
+                  fxLayout="row"
+                  fxLayoutAlign="start start"
+                  fxLayoutGap="50px">
+                  <mat-radio-button
+                    fxFlex=""
+                    type="radio"
+                    color="accent"
+                    class="radio-btn mr-20"
+                    [value]="'EXTERNAL'"
+                    [checked]="true"
+                    >{{ 'RESULT_BUYER_TYPE.EXTERNAL' | translate }}</mat-radio-button
+                  >
+                  <mat-radio-button fxFlex="" type="radio" color="accent" class="radio-btn mr-20" [value]="'KTB'">
+                    {{ 'RESULT_BUYER_TYPE.KTB' | translate }}</mat-radio-button
+                  >
+                </mat-radio-group>
+                <spig-error-msg [control]="formGroup.get('buyerType')"></spig-error-msg>
+              </ng-container>
+              <ng-container *ngIf="isViewMode">
+                <ng-container *ngIf="formGroup.get('buyerType')?.value === 'KTB'">
+                  {{ 'RESULT_BUYER_TYPE.KTB' | translate }}
+                </ng-container>
+                <ng-container *ngIf="formGroup.get('buyerType')?.value === 'EXTERNAL'">
+                  {{ 'RESULT_BUYER_TYPE.EXTERNAL' | translate }}
+                </ng-container>
+              </ng-container>
+            </div>
+          </div>
+
+          <div class="mb-16 mt-24 mr-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+            <span fxLayout="column" fxFlex="15"> &nbsp; </span>
+            <ng-container *ngIf="formGroup.get('buyerType')?.value === 'EXTERNAL'">
+              <ng-container *ngIf="!isViewMode">
+                <div fxFlex="27" fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="12px">
+                  <mat-form-field class="input-full-field" color="primary">
+                    <mat-label class="required">{{
+                      'AUCTION_DETAIL.AUCTION_RESULT.PROPERTY_BUYER' | translate
+                    }}</mat-label>
+                    <input
+                      type="text"
+                      formControlName="buyerName"
+                      matInput
+                      placeholder="{{ 'AUCTION_DETAIL.AUCTION_RESULT.PROPERTY_BUYER' | translate }}"
+                      autocomplete="off" />
+                  </mat-form-field>
+                  <spig-error-msg [control]="formGroup.get('buyerName')"></spig-error-msg>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="isViewMode">
+                <div fxFlex="27" fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="12px">
+                  <span class="thin-letter">{{ 'AUCTION_DETAIL.AUCTION_RESULT.PROPERTY_BUYER' | translate }}</span>
+                  <div>{{ formGroup.get('buyerName')?.value || '-' }}</div>
+                </div>
+              </ng-container>
+            </ng-container>
+            <ng-container *ngIf="formGroup.get('buyerType')?.value === 'EXTERNAL'; else elseTemplate">
+              <ng-container *ngIf="!isViewMode">
+                <div fxFlex="28" fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="12px">
+                  <mat-form-field class="input-full-field" color="primary">
+                    <mat-label class="required">{{
+                      'AUCTION_DETAIL.AUCTION_RESULT.PRICE_AT_PROPERTY_PURCHASED' | translate
+                    }}</mat-label>
+                    <input
+                      type="text"
+                      formControlName="soldPrice"
+                      [mask]="'separator.2'"
+                      [thousandSeparator]="','"
+                      matInput
+                      placeholder="{{ 'AUCTION_DETAIL.AUCTION_RESULT.PRICE_AT_PROPERTY_PURCHASED' | translate }}"
+                      autocomplete="off" />
+                  </mat-form-field>
+                  <spig-error-msg [control]="formGroup.get('soldPrice')"></spig-error-msg>
+                </div>
+              </ng-container>
+
+              <ng-container *ngIf="isViewMode">
+                <div class="ml-6" fxFlex="27" fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="12px">
+                  <span class="thin-letter">{{
+                    'AUCTION_DETAIL.AUCTION_RESULT.PRICE_AT_PROPERTY_PURCHASED' | translate
+                  }}</span>
+                  <div>{{ (formGroup.get('soldPrice')?.value | numberDecimal) || '-' }}</div>
+                </div>
+              </ng-container>
+            </ng-container>
+            <ng-template #elseTemplate>
+              <ng-container *ngIf="!isViewMode">
+                <div fxFlex="27" fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="12px">
+                  <mat-form-field class="input-full-field" color="primary">
+                    <mat-label class="required">{{
+                      'AUCTION_DETAIL.AUCTION_RESULT.PRICE_AT_PROPERTY_PURCHASED' | translate
+                    }}</mat-label>
+                    <input
+                      type="text"
+                      formControlName="soldPrice"
+                      [mask]="'separator.2'"
+                      [thousandSeparator]="','"
+                      matInput
+                      placeholder="{{ 'AUCTION_DETAIL.AUCTION_RESULT.PRICE_AT_PROPERTY_PURCHASED' | translate }}"
+                      autocomplete="off" />
+                  </mat-form-field>
+                  <spig-error-msg [control]="formGroup.get('soldPrice')"></spig-error-msg>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="isViewMode">
+                <div fxFlex="27" fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="12px">
+                  <span class="thin-letter">{{
+                    'AUCTION_DETAIL.AUCTION_RESULT.PRICE_AT_PROPERTY_PURCHASED' | translate
+                  }}</span>
+                  <div>{{ (formGroup.get('soldPrice')?.value | numberDecimal) || '-' }}</div>
+                </div>
+              </ng-container>
+            </ng-template>
+
+            <ng-container *ngIf="formGroup.get('buyerType')?.value === 'EXTERNAL'; else elseTemplateAdd">
+              <div fxFlex="25" fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="12px">
+                <span class="thin-letter">{{
+                  'AUCTION_DETAIL.AUCTION_RESULT.PROPERTY_PURCHASED_DATE' | translate
+                }}</span>
+                <div>{{ (formGroup.get('bidDate')?.value | buddhistEra: 'DD/MM/yyyy') || '-' }}</div>
+              </div>
+            </ng-container>
+            <ng-template #elseTemplateAdd>
+              <div class="ml-8" fxFlex="25" fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="12px">
+                <span class="thin-letter">{{
+                  'AUCTION_DETAIL.AUCTION_RESULT.PROPERTY_PURCHASED_DATE' | translate
+                }}</span>
+                <div>{{ (formGroup.get('bidDate')?.value | buddhistEra: 'DD/MM/yyyy') || '-' }}</div>
+              </div>
+            </ng-template>
+          </div>
+        </ng-container>
+
+        <!-- ประเภทผู้ซื้อ -->
+        <ng-container *ngIf="formGroup.get('aucResult')?.value === RESULT_SUBMIT_STATUS.UNSOLD">
+          <div class="mb-16 mt-24 mr-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+            <h6 fxLayout="column" fxFlex="15">
+              {{ 'AUCTION_DETAIL.AUCTION_RESULT.REASON_NO_SELL' | translate }}
+            </h6>
+            <div fxFlex fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="12px">
+              <ng-container *ngIf="!isViewMode">
+                <mat-radio-group
+                  formControlName="unsoldReasonType"
+                  fxLayout="row"
+                  fxLayoutAlign="start start"
+                  fxLayoutGap="50px">
+                  <mat-radio-button
+                    fxFlex=""
+                    type="radio"
+                    color="accent"
+                    class="radio-btn mr-20"
+                    [value]="'NO_BIDDER'"
+                    >{{ 'MAPPING_RESULT_LABEL.NO_BIDDER' | translate }}</mat-radio-button
+                  >
+                  <mat-radio-button
+                    fxFlex=""
+                    type="radio"
+                    color="accent"
+                    class="radio-btn mr-20"
+                    [value]="'OBJECTION'"
+                    >{{ 'MAPPING_RESULT_LABEL.OBJECTION' | translate }}</mat-radio-button
+                  >
+                  <mat-radio-button fxFlex="" type="radio" color="accent" class="radio-btn mr-20" [value]="'OTHER'">{{
+                    'MAPPING_RESULT_LABEL.OTHER' | translate
+                  }}</mat-radio-button>
+                </mat-radio-group>
+                <spig-error-msg [control]="formGroup.get('unsoldReasonType')"></spig-error-msg>
+              </ng-container>
+              <ng-container *ngIf="isViewMode">
+                <ng-container *ngIf="formGroup.get('unsoldReasonType')?.value === 'NO_BIDDER'">
+                  {{ 'MAPPING_RESULT_LABEL.NO_BIDDER' | translate }}
+                </ng-container>
+                <ng-container *ngIf="formGroup.get('unsoldReasonType')?.value === 'OBJECTION'">
+                  {{ 'MAPPING_RESULT_LABEL.OBJECTION' | translate }}
+                </ng-container>
+                <ng-container *ngIf="formGroup.get('unsoldReasonType')?.value === 'OTHER'">
+                  {{ 'MAPPING_RESULT_LABEL.OTHER' | translate }}
+                </ng-container>
+              </ng-container>
+            </div>
+          </div>
+          <ng-container *ngIf="formGroup.get('unsoldReasonType')?.value === 'OBJECTION'">
+            <div class="mb-16 mt-24 mr-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+              <span fxLayout="column" fxFlex="15"> &nbsp; </span>
+              <div fxFlex="30" fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="12px">
+                <ng-container *ngIf="!isViewMode">
+                  <mat-form-field class="input-full-field" color="primary">
+                    <mat-label class="required">{{
+                      'AUCTION_DETAIL.AUCTION_RESULT.PROPERTY_BUYER' | translate
+                    }}</mat-label>
+                    <input
+                      type="text"
+                      formControlName="unsoldObjectBuyer"
+                      matInput
+                      placeholder="{{ 'AUCTION_DETAIL.AUCTION_RESULT.PROPERTY_BUYER' | translate }}"
+                      autocomplete="off" />
+                  </mat-form-field>
+                  <spig-error-msg [control]="formGroup.get('unsoldObjectBuyer')"></spig-error-msg>
+                </ng-container>
+                <ng-container *ngIf="isViewMode">
+                  <span class="thin-letter">{{ 'AUCTION_DETAIL.AUCTION_RESULT.PROPERTY_BUYER' | translate }}</span>
+                  <div>{{ formGroup.get('unsoldObjectBuyer')?.value || '-' }}</div>
+                </ng-container>
+              </div>
+              <div fxFlex="30" fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="12px">
+                <ng-container *ngIf="!isViewMode">
+                  <mat-form-field class="input-full-field" color="primary">
+                    <mat-label class="required">{{
+                      'AUCTION_DETAIL.AUCTION_RESULT.HIGHEST_BIDDER' | translate
+                    }}</mat-label>
+                    <input
+                      type="text"
+                      formControlName="unsoldObjectHighestBidder"
+                      matInput
+                      placeholder="{{ 'AUCTION_DETAIL.AUCTION_RESULT.HIGHEST_BIDDER' | translate }}"
+                      autocomplete="off" />
+                  </mat-form-field>
+                  <spig-error-msg [control]="formGroup.get('unsoldObjectHighestBidder')"></spig-error-msg>
+                </ng-container>
+                <ng-container *ngIf="isViewMode">
+                  <span class="thin-letter">{{ 'AUCTION_DETAIL.AUCTION_RESULT.HIGHEST_BIDDER' | translate }}</span>
+                  <div>{{ formGroup.get('unsoldObjectHighestBidder')?.value || '-' }}</div>
+                </ng-container>
+              </div>
+            </div>
+            <div class="mb-16 mt-24 mr-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+              <span fxLayout="column" fxFlex="15"> &nbsp; </span>
+              <div fxFlex="30" fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="12px">
+                <ng-container *ngIf="!isViewMode">
+                  <mat-form-field class="input-full-field" color="primary">
+                    <mat-label class="required">{{
+                      'AUCTION_DETAIL.AUCTION_RESULT.PRICE_BAHT_UNIT' | translate
+                    }}</mat-label>
+                    <input
+                      type="text"
+                      [mask]="'separator.2'"
+                      [thousandSeparator]="','"
+                      formControlName="unsoldObjectPrice"
+                      matInput
+                      placeholder="{{ 'AUCTION_DETAIL.AUCTION_RESULT.PRICE_BAHT_UNIT' | translate }}"
+                      autocomplete="off" />
+                  </mat-form-field>
+                  <spig-error-msg [control]="formGroup.get('unsoldObjectPrice')"></spig-error-msg>
+                </ng-container>
+                <ng-container *ngIf="isViewMode">
+                  <span class="thin-letter">{{ 'AUCTION_DETAIL.AUCTION_RESULT.PRICE_BAHT_UNIT' | translate }}</span>
+                  <div>{{ (formGroup.get('unsoldObjectPrice')?.value | numberDecimal) || '-' }}</div>
+                </ng-container>
+              </div>
+              <div fxFlex="30" fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="12px">
+                <ng-container *ngIf="!isViewMode">
+                  <mat-form-field class="input-full-field" color="primary">
+                    <mat-label class="required">{{ 'AUCTION_DETAIL.AUCTION_RESULT.OBJECTION' | translate }}</mat-label>
+                    <input
+                      type="text"
+                      formControlName="unsoldObjectDissident"
+                      matInput
+                      placeholder="{{ 'AUCTION_DETAIL.AUCTION_RESULT.OBJECTION' | translate }}"
+                      autocomplete="off" />
+                  </mat-form-field>
+                  <spig-error-msg [control]="formGroup.get('unsoldObjectDissident')"></spig-error-msg>
+                </ng-container>
+                <ng-container *ngIf="isViewMode">
+                  <span class="thin-letter">{{ 'AUCTION_DETAIL.AUCTION_RESULT.OBJECTION' | translate }}</span>
+                  <div>{{ formGroup.get('unsoldObjectDissident')?.value || '-' }}</div>
+                </ng-container>
+              </div>
+            </div>
+          </ng-container>
+        </ng-container>
+        <!-- เหตุผลที่ขายไม่ได้ -->
+
+        <!-- งดขาย -->
+        <ng-container *ngIf="formGroup.get('aucResult')?.value === RESULT_SUBMIT_STATUS.CANCEL">
+          <div class="mb-16 mt-24 mr-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+            <h6 fxLayout="column" fxFlex="15">
+              <span>
+                {{ 'AUCTION_DETAIL.AUCTION_RESULT.REASON_SUSPENDING_SALES' | translate }}
+                <span *ngIf="!isViewMode" class="color-red">*</span></span
+              >
+            </h6>
+            <div fxFlex fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="12px">
+              <ng-container *ngIf="!isViewMode">
+                <mat-radio-group
+                  formControlName="cancelReasonType"
+                  fxLayout="row"
+                  fxLayoutAlign="start start"
+                  fxLayoutGap="50px">
+                  <mat-radio-button
+                    fxFlex=""
+                    type="radio"
+                    color="accent"
+                    class="radio-btn mr-20"
+                    [value]="'UNLAWFUL_NOTICE'"
+                    >{{ 'MAPPING_RESULT_LABEL.UNLAWFUL_NOTICE' | translate }}</mat-radio-button
+                  >
+                  <mat-radio-button fxFlex="" type="radio" color="accent" class="radio-btn mr-20" [value]="'OTHER'">{{
+                    'MAPPING_RESULT_LABEL.OTHER' | translate
+                  }}</mat-radio-button>
+                </mat-radio-group>
+                <spig-error-msg [control]="formGroup.get('cancelReasonType')"></spig-error-msg>
+              </ng-container>
+              <ng-container *ngIf="isViewMode">
+                <ng-container *ngIf="formGroup.get('cancelReasonType')?.value === 'UNLAWFUL_NOTICE'">
+                  {{ 'MAPPING_RESULT_LABEL.UNLAWFUL_NOTICE' | translate }}
+                </ng-container>
+                <ng-container *ngIf="formGroup.get('cancelReasonType')?.value === 'OTHER'">
+                  {{ 'MAPPING_RESULT_LABEL.OTHER' | translate }}
+                </ng-container>
+              </ng-container>
+            </div>
+          </div>
+        </ng-container>
+        <!-- งดขาย -->
+        <div
+          *ngIf="(!isViewMode && formGroup.get('aucResult')?.value) || isViewMode"
+          class="mb-16 mt-24 mr-16"
+          fxLayout="row"
+          fxLayoutAlign="start start"
+          fxLayoutGap="16px">
+          <span fxLayout="column" fxFlex="15"> &nbsp; </span>
+          <div fxFlex="60" fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="12px">
+            <ng-container *ngIf="!isViewMode && formGroup.get('aucResult')?.value">
+              <mat-form-field class="input-full-field">
+                <mat-label>{{ 'COMMON.LABEL_REMARKS' | translate }}</mat-label>
+                <textarea
+                  formControlName="remark"
+                  class="input-full-field"
+                  type="text"
+                  matInput
+                  cdkTextareaAutosize
+                  #autosize="cdkTextareaAutosize"
+                  cdkAutosizeMinRows="5"
+                  autocomplete="off"
+                  [maxlength]="500"></textarea>
+              </mat-form-field>
+              <spig-error-msg [control]="formGroup.get('remark')"></spig-error-msg>
+            </ng-container>
+            <ng-container *ngIf="isViewMode">
+              <span class="thin-letter">{{ 'COMMON.LABEL_REMARKS' | translate }}</span>
+              <div>{{ formGroup.get('remark')?.value || '-' }}</div>
+            </ng-container>
+          </div>
+          <span fxLayout="column" fxFlex="27"> &nbsp; </span>
+        </div>
+      </form>
+      <ng-container *ngIf="[RESULT_SUBMIT_STATUS.SOLD].includes(formGroup.get('aucResult')?.value)">
+        <div class="mb-16 mt-24 mr-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+          <div fxLayout="column" fxFlex="15">
+            <h6>{{ 'COMMON.LABEL_DOCUMENT_LIST' | translate }}</h6>
+          </div>
+          <div fxLayout="column" fxFlex fxLayoutGap="15px">
+            <div>
+              <ng-container *ngIf="!isView">
+                <app-message-banner
+                  type="warn-normal"
+                  [icon]="'icon-Error'"
+                  [message]="'AUCTION_DETAIL.AUCTION_RESULT.MSG_BANNER_COMPLETE_TASK'"></app-message-banner>
+              </ng-container>
+            </div>
+            <app-upload-multi-file-content
+              [uploadMultiInfo]="uploadMultiInfo"
+              [list]="documentUpload"
+              [uploadFor]="'SUBMIT_AUCTION_RESULT'"
+              [column]="documentColumns"
+              (uploadFileEvent)="uploadFileEvent($event)"
+              [readonly]="isView && !canEditResturnDocument"
+              [labelAcceptFile]="
+                isView && !canEditResturnDocument ? '' : 'UPLOAD_FILE.LABEL_HINT_DOCUMENT_PDF_JPG_JPEG'
+              ">
+            </app-upload-multi-file-content>
+          </div>
+        </div>
+      </ng-container>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>
+<ng-container *ngIf="formGroup.get('requireReturnDocument')?.value === true">
+  <div class="content-container">
+    <div class="inner-container-padding-24">
+      <div fxLayout="row" fxLayoutAlign="space-between center">
+        <div class="title-text">
+          <h5 class="mt-12 mb-12 mr-12">
+            {{ 'AUCTION_DETAIL.AUCTION_DOCUMENT_SUBMITTED.TITLE' | translate }}
+          </h5>
+        </div>
+        <div fxLayout="row">
+          <div class="description" (click)="isReturnDocumentOpened = !isReturnDocumentOpened">
+            <mat-icon
+              [svgIcon]="isReturnDocumentOpened ? 'icon-Slide-Hide' : 'icon-Expand'"
+              class="icon icon-xmedium icon-hide-show fill-blue">
+            </mat-icon
+            >{{
+              isReturnDocumentOpened
+                ? ('COMMON.ICON_EXPANSION_HIDE' | translate)
+                : ('COMMON.ICON_EXPANSION_SHOW' | translate)
+            }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <mat-accordion>
+      <mat-expansion-panel [expanded]="isReturnDocumentOpened" hideToggle>
+        <mat-divider class="mr-24"></mat-divider>
+        <form action="" [formGroup]="formGroup">
+          <div class="mb-16 mt-24 mr-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+            <span fxLayout="column" fxFlex="15">
+              <h6>{{ 'AUCTION_DETAIL.AUCTION_DOCUMENT_SUBMITTED.CHECK_COLLATERAL' | translate }}</h6>
+            </span>
+            <div fxFlex="30" fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="12px">
+              <ng-container *ngIf="canEditResturnDocument">
+                <mat-form-field class="input-full-field" color="primary">
+                  <mat-label class="required">{{
+                    'AUCTION_DETAIL.AUCTION_DOCUMENT_SUBMITTED.NUMBER' | translate
+                  }}</mat-label>
+                  <input
+                    type="text"
+                    formControlName="returnDocumentNo"
+                    matInput
+                    placeholder="{{ 'AUCTION_DETAIL.AUCTION_DOCUMENT_SUBMITTED.NUMBER' | translate }}"
+                    autocomplete="off" />
+                </mat-form-field>
+                <spig-error-msg [control]="formGroup.get('returnDocumentNo')"></spig-error-msg>
+              </ng-container>
+              <ng-container *ngIf="!canEditResturnDocument">
+                <span class="thin-letter">{{ 'AUCTION_DETAIL.AUCTION_DOCUMENT_SUBMITTED.NUMBER' | translate }}</span>
+                <div>{{ formGroup.get('returnDocumentNo')?.value || '-' }}</div>
+              </ng-container>
+            </div>
+          </div>
+          <div class="mb-16 mt-24 mr-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+            <span fxLayout="column" fxFlex="15"> &nbsp; </span>
+            <div fxFlex="60" fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="12px">
+              <ng-container *ngIf="canEditResturnDocument">
+                <mat-form-field class="input-full-field">
+                  <mat-label>{{ 'COMMON.LABEL_REMARKS' | translate }}</mat-label>
+                  <textarea
+                    formControlName="returnDocumentRemark"
+                    class="input-full-field"
+                    type="text"
+                    matInput
+                    cdkTextareaAutosize
+                    #autosize="cdkTextareaAutosize"
+                    cdkAutosizeMinRows="5"
+                    autocomplete="off"
+                    [maxlength]="500"></textarea>
+                </mat-form-field>
+                <spig-error-msg [control]="formGroup.get('returnDocumentRemark')"></spig-error-msg>
+              </ng-container>
+              <ng-container *ngIf="!canEditResturnDocument">
+                <span class="thin-letter">{{ 'COMMON.LABEL_REMARKS' | translate }}</span>
+                <div>{{ formGroup.get('returnDocumentRemark')?.value || '-' }}</div>
+              </ng-container>
+            </div>
+            <span fxLayout="column" fxFlex="27"> &nbsp; </span>
+          </div>
+          <div class="mb-16 mt-24 mr-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+            <div fxLayout="column" fxFlex="15"></div>
+            <div fxLayout="column" fxFlex="86" fxLayoutGap="15px">
+              <app-upload-multi-file-content
+                [uploadMultiInfo]="uploadMultiInfo"
+                [list]="returnDocumentUpload"
+                [column]="documentColumns"
+                (uploadFileEvent)="uploadReturnFileEvent($event)"
+                [readonly]="!canEditResturnDocument"
+                [labelAcceptFile]="isView ? '' : 'UPLOAD_FILE.LABEL_HINT_DOCUMENT_PDF_JPG_JPEG'">
+              </app-upload-multi-file-content>
+            </div>
+          </div>
+        </form>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+</ng-container>

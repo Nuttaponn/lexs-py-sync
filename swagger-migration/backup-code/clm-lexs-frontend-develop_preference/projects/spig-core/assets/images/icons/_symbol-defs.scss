@@ -1,0 +1,27 @@
+.aria-hidden {
+  position: absolute; width: 0; height: 0; overflow: hidden;
+}
+
+.fill-color1-4a4a49 {
+  fill: var(--color1, #4a4a49);
+}
+
+.fill-color2-fff {
+  fill: var(--color2, #fff);
+}
+
+.fill-color1-fff {
+  fill: var(--color2, #fff);
+}
+
+.stroke-color1-fff {
+  stroke: var(--color1, #fff);
+}
+
+.fill-color5-fa6463 {
+  fill: var(--color5, #fa6463);
+}
+
+.fill-color3-fff {
+  fill: var(--color3, #fff);
+}

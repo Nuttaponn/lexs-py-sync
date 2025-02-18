@@ -1,0 +1,62 @@
+<div class="content-container mt-0">
+  <app-message-banner
+    [type]="'black-info'"
+    [message]="returnReason ? messageReturnBaner + returnReason : messageBanner"></app-message-banner>
+</div>
+
+<div class="content-container">
+  <div
+    class="pl-24 pr-24 pt-24 pb-24 section-h-112"
+    fxLayout="row"
+    fxLayoutAlign="space-between center"
+    fxLayoutGap="gappx">
+    <div>
+      <h5>{{ 'WITHDRAWN_SEIZURE_PROPERTY.COLLATERAL.TITLE' | translate }}</h5>
+    </div>
+    <button
+      mat-flat-button
+      color="primary"
+      class="long-aw-button header-text-button"
+      (click)="navigateCorrectRoute('create-property-group')">
+      <mat-icon svgIcon="icon-Plus" class="icon icon-xmedium icon-fill-white"></mat-icon>
+      {{ 'WITHDRAWN_SEIZURE_PROPERTY.COLLATERAL.ADD_BUTTON' | translate }}
+    </button>
+  </div>
+  <div class="pl-24">
+    <ng-container
+      *ngIf="
+        withdrawnSeizurePropertyService.propertyForm &&
+        withdrawnSeizurePropertyService.propertyForm.invalid &&
+        withdrawnSeizurePropertyService.propertyForm.get('properties')?.touched
+      ">
+      <spig-error-msg
+        [control]="withdrawnSeizurePropertyService.propertyForm.get('properties')"
+        [customErrorMsg]="'กรุณา\<กดจับกลุ่มทรัพย์และผู้ติดต่อ\>'">
+      </spig-error-msg>
+    </ng-container>
+  </div>
+</div>
+<ng-container *ngIf="propertyDataSources.length > 0">
+  <ng-container *ngFor="let group of propertyDataSources">
+    <app-withdrawn-seizure-property-asset-list
+      [title]="group.groupName"
+      [collateralColumns]="collateralColumns"
+      [lgPersonColumn]="lgPersonColumn"
+      (onAddMoreProperty)="onAddMoreProperty(group, propertyDataSources)"
+      (onAddMorePropertyAsset)="onAddMorePropertyAsset(group)"
+      (onAddMoreContact)="onAddMoreContact(group)"
+      [collaterals]="group.collaterals || []"
+      [asset]="group.asset || []"
+      [assetColumns]="assetColumns"
+      (onDeletePropery)="onDeletePropertyData($event, group)"
+      (onDeleteProperyAsset)="onDeletePropertyAssetData($event, group)"
+      (onDeleteGroup)="onDeleteGroupData(group)"
+      [contactPersons]="group.contactPersons || []"
+      [config]="tableConfig"
+      [consentDocuments]="group.consentDocuments || []"
+      (onDeleteContact)="onDeleteContact($event, group)"
+      (onEditContact)="onEditContact($event, group)"
+      (onEditProperty)="onEditProperty($event, group)"
+      (onEditPropertyAsset)="onEditPropertyAsset($event, group)"></app-withdrawn-seizure-property-asset-list>
+  </ng-container>
+</ng-container>

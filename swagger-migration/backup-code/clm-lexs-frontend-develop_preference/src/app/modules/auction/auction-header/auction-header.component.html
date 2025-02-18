@@ -1,0 +1,76 @@
+<div
+  fxLayout="row"
+  fxLayoutAlign="space-between center"
+  class="expand-header app-document-header"
+  [ngClass]="classInput"
+  [class.bg-l-green]="isMainSub && ready"
+  [class.bg-l-gray]="isMainSub && !ready"
+  [class.bg]="!isMain"
+  [class.pa-8]="!isMain && !isMainSub && !forFollowAccDoc"
+  fxLayoutGap="{{ fxLayoutGap }}">
+  <div fxLayoutAlign="flex-start stretch" fxLayoutGap="{{ fxLayoutGap }}">
+    <div *ngIf="!isMain && !isMainSub && !forFollowAccDoc" class="mb-8 flex-align-self-center">
+      <mat-icon svgIcon="icon-corner" class="icon icon-hide-show icon-xmedium fill-black-30"></mat-icon>
+    </div>
+    <div fxLayoutAlign="start center" fxLayoutGap="{{ fxLayoutGap }}">
+      <div fxLayoutAlign="start center" fxLayoutGap="4" *ngIf="showIcon">
+        <h6 class="my-0">
+          <mat-icon
+            *ngIf="!isExceptionalIcons; else exceptionalIconsTemplate"
+            [svgIcon]="iconName"
+            class="icon default-cursor icon-hide-show icon-xmedium"
+            [ngClass]="iconClass"
+            [class.fill-krungthai-green]="ready"
+            [class.fill-blue]="ready === null"
+            [class.fill-gold]="ready === false">
+          </mat-icon>
+          <ng-template #exceptionalIconsTemplate>
+            <mat-icon
+              [svgIcon]="ready ? exceptionalIconNames[0] : exceptionalIconNames[1]"
+              class="icon default-cursor icon-hide-show icon-xmedium"
+              [ngClass]="iconClass">
+            </mat-icon>
+          </ng-template>
+        </h6>
+      </div>
+      <h5 *ngIf="isMain" class="mt-12 mb-12 custom-fns" [ngClass]="titleClass">{{ title }}</h5>
+      <h6 *ngIf="!isMain" class="my-0" [ngClass]="titleClass">{{ title }}</h6>
+    </div>
+
+    <div
+      *ngFor="let detail of details"
+      fxLayoutAlign="start center"
+      fxLayoutGap="{{ fxLayoutGap }}"
+      class="header-detail">
+      <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="8">
+        <label *ngIf="detail.name" class="wrap-line-break">{{ detail.name }}: </label>
+        <h6 *ngIf="!detail?.hasDecimal">{{ detail.value }}</h6>
+      </div>
+      <div class="vertical-divider"></div>
+      <div *ngIf="detail?.hasDecimal" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="8">
+        <h6>{{ detail.value | numberDecimal }}</h6>
+      </div>
+    </div>
+  </div>
+  <div class="text-end">
+    <div
+      class="expand-button"
+      (click)="expandPanel()"
+      [class.completed]="ready && !isMain"
+      [class.blue]="isMain"
+      [ngClass]="iconClass"
+      [class.incompleted]="!ready && !isMain">
+      <mat-icon
+        [svgIcon]="!!expanded ? 'icon-Slide-Hide' : 'icon-Expand'"
+        class="icon icon-hide-show icon-xmedium"
+        [ngClass]="iconClass"
+        [class.fill-blue]="isMain"
+        [class.fill-krungthai-green]="ready && !isMain"
+        [class.fill-gold]="!ready && !isMain">
+      </mat-icon>
+      <span class="ml-5">{{
+        !!expanded ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate)
+      }}</span>
+    </div>
+  </div>
+</div>

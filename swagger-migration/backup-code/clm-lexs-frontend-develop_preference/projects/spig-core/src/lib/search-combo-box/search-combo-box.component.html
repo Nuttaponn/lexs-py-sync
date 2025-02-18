@@ -1,0 +1,35 @@
+<div class="search-combo-box-container">
+  <div class="combo-box-form">
+    <div #searchbox>
+      <mat-form-field class="drop-down-box" [class.border-black-40]="searchInput && searchInput !== ''"
+        [ngClass]="{'result-invalid': _resultTouched && _resultInvalid, 'search-invalid': _touched && _invalid}">
+        <mat-label>{{labelPlaceHolder}}</mat-label>
+        <input #toggleSearch #trigger="cdkOverlayOrigin" tabindex="0" cdkOverlayOrigin matInput type="text"
+          class="input-control" [(ngModel)]="searchInput" (keyup)="searchKeyup.next($event)" autocomplete="off"
+          [placeholder]="searchPlaceHolder" (blur)="onBlur($event)">
+        <ng-container *ngIf="icon.length === 1">
+          <mat-icon class="icon-combo-box icon-sm" [svgIcon]="icon[0]" (click)="toggleOpen($event)"></mat-icon>
+        </ng-container>
+        <ng-container *ngIf="icon.length > 1">
+          <mat-icon *ngIf="!isOpen" class="icon-combo-box icon-sm" [svgIcon]="icon[0]" (click)="toggleOpen($event)">
+          </mat-icon>
+          <mat-icon *ngIf="isOpen" class="icon-combo-box icon-sm" [svgIcon]="icon[1]" (click)="toggleOpen($event)">
+          </mat-icon>
+        </ng-container>
+      </mat-form-field>
+    </div>
+    <ng-template cdkConnectedOverlay [cdkConnectedOverlayOrigin]="trigger"
+      [cdkConnectedOverlayOpen]="isOpen && filteredOptions.length > 0" (overlayOutsideClick)="this.isOpen = false">
+      <div [class.hide]="!isOpen" class="combo-box-content-viewport search-viewport" [ngStyle]="{'left.px': dropdownLeftPx}">
+        <cdk-virtual-scroll-viewport
+          [ngStyle]="{'height.px': dropdownSize, 'background-color': 'white', 'width.px': dropdownWidthSize}"
+          [itemSize]="itemViewSize" class="combo-box-list-viewport mat-elevation-e3" minBufferPx="400"
+          maxBufferPx="800">
+          <mat-option *cdkVirtualFor="let option of filteredOptions" class="combo-box-list-item"
+            (onSelectionChange)="onSelectOption($event)" [value]="option">{{ listFn(option) }}
+          </mat-option>
+        </cdk-virtual-scroll-viewport>
+      </div>
+    </ng-template>
+  </div>
+</div>

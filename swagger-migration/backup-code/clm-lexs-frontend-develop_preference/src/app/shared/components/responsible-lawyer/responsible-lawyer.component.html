@@ -1,0 +1,64 @@
+<form [formGroup]="dataForm">
+  <div class="content-container">
+    <div class="inner-container-padding-24">
+      <div fxLayout="row" fxLayoutAlign="space-between center">
+        <div class="title-text">
+          <h5 class="mt-12 mb-12 mr-12">ทนายความผู้รับผิดชอบ</h5>
+        </div>
+        <div *ngIf="hasExpand" fxLayout="row">
+          <div class="description" (click)="isOpened = !isOpened">
+            <mat-icon
+              [svgIcon]="isOpened ? 'icon-Slide-Hide' : 'icon-Expand'"
+              class="icon icon-xmedium icon-hide-show fill-blue mr-5">
+            </mat-icon
+            >{{ isOpened ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate) }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <mat-accordion>
+      <mat-expansion-panel [expanded]="isOpened" hideToggle (opened)="openExpansion()">
+        <mat-divider class="no-margin"></mat-divider>
+        <ng-container *ngIf="mode !== 'VIEW'; else viewTemplate">
+          <div class="mb-16 mt-24 mr-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+            <div fxLayout="column" fxFlex="15">
+              <h6>{{ labelLawyer }}</h6>
+            </div>
+            <div fxLayout="column" fxFlex="27" fxLayoutGap="12px">
+              <span class="thin-letter">สำนักงานทนายความ</span>
+              <div>{{ 'COMMON.MAIN_BRANCE_KTB_OFFICE_CODE_NAME' | translate }}</div>
+            </div>
+            <div fxLayout="column" fxFlex="30">
+              <spig-dropdown
+                classInput="input-s long no-ml"
+                [options]="responLawyerOptions"
+                [config]="responLawyerConfig"
+                formControlName="legalExecutionLawyerId"
+                (selectedOption)="selectLawyer()">
+              </spig-dropdown>
+              <spig-error-msg
+                [control]="dataForm.get('legalExecutionLawyerId')"
+                [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED_2'">
+              </spig-error-msg>
+            </div>
+          </div>
+        </ng-container>
+        <ng-template #viewTemplate>
+          <div class="mb-16 mt-24 mr-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+            <div fxLayout="column" fxFlex="15">
+              <h6>{{ labelLawyer }}</h6>
+            </div>
+            <div fxLayout="column" fxFlex="27" fxLayoutGap="12px">
+              <span class="thin-letter">สำนักงานทนายความ</span>
+              <div>{{ 'COMMON.MAIN_BRANCE_KTB_OFFICE_CODE_NAME' | translate }}</div>
+            </div>
+            <div fxLayout="column" fxFlex="30" fxLayoutGap="12px">
+              <span class="thin-letter">ทนายความผู้รับผิดชอบ</span>
+              <div>{{ data.legalExecutionLawyerId }} - {{ data.legalExecutionLawyerFullName }}</div>
+            </div>
+          </div>
+        </ng-template>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+</form>

@@ -1,0 +1,174 @@
+<div class="content-container">
+  <h4 class="title pl-28 pr-28">{{ 'AUCTION_LED_CARD.DEFERMENT_DEBT.DEBT_BURDEN' | translate }}</h4>
+  <div class="mb-16 ml-16 mr-16">
+    <ng-container>
+      <table mat-table [dataSource]="debtSummaryDataSource">
+        <ng-container [matColumnDef]="debtSummaryColumns[0]">
+          <th mat-header-cell *matHeaderCellDef>
+            {{ 'LAWSUIT.HEAD_COLUMN_DEBT_SUMMARY_NAME' | translate }}
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element[debtSummaryColumns[0]] | translate }}
+          </td>
+        </ng-container>
+
+        <ng-container [matColumnDef]="debtSummaryColumns[1]">
+          <th class="mat-cell-right text-right" mat-header-cell *matHeaderCellDef>
+            {{ 'LAWSUIT.HEAD_COLUMN_ACCOUNT_DEBT' | translate }}
+          </th>
+          <td class="mat-cell-right text-right" mat-cell *matCellDef="let element">
+            {{ element[debtSummaryColumns[1]] | numberDecimal }}
+          </td>
+        </ng-container>
+
+        <ng-container [matColumnDef]="debtSummaryColumns[2]">
+          <th class="mat-cell-right text-right" mat-header-cell *matHeaderCellDef>
+            {{ 'LAWSUIT.HEAD_COLUMN_BAD_DEBT' | translate }}
+          </th>
+          <td class="mat-cell-right text-right" mat-cell *matCellDef="let element">
+            {{ element[debtSummaryColumns[2]] | numberDecimal }}
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="debtSummaryColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: debtSummaryColumns"></tr>
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" [attr.colspan]="debtSummaryColumns.length">
+            <ng-container
+              [ngTemplateOutlet]="dataNotFound"
+              [ngTemplateOutletContext]="{
+                value: ('LAWSUIT.SUMMARY_DEBT_PAYLOAD' | translate),
+              }">
+            </ng-container>
+          </td>
+        </tr>
+      </table>
+    </ng-container>
+  </div>
+</div>
+
+<div class="content-container">
+  <form>
+    <h4 class="title pl-28 pr-28">{{ 'AUCTION_LED_CARD.DEFERMENT_DEBT.MORTGAGE' | translate }}</h4>
+    <div class="mr-16 ml-16" *ngFor="let collateralType of calculatedCollateralTypes; let i = index">
+      <div>
+        <h6 class="mt-8 ml-12" style="float: left">{{ collateralType }}</h6>
+      </div>
+      <div fxLayout="row" fxLayoutAlign="flex-end">
+        <div class="mr-2em mb-20" fxLayout="row">
+          <spig-dropdown
+            classInput="input-xsm long icon no-border"
+            [config]="statusDropdownConfig"
+            [options]="statusOptions"
+            (selectedOption)="onStatusSelect(collateralType, $event)"></spig-dropdown>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="center center" class="mb-20">
+          <div class="description" (click)="isOpened[i] = !isOpened[i]">
+            <mat-icon [svgIcon]="isOpened[i] ? 'icon-Slide-Hide' : 'icon-Expand'" class="icon icon-hide-show fill-blue">
+            </mat-icon
+            >{{ isOpened[i] ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate) }}
+          </div>
+        </div>
+      </div>
+      <mat-expansion-panel [expanded]="isOpened[i]" hideToggle>
+        <div class="mb-32">
+          <div class="table-scroll" table-scroll>
+            <table
+              class="collateral-table"
+              multiTemplateDataRows
+              mat-table
+              [dataSource]="filteredCollateralsByType[collateralType]">
+              <ng-container matColumnDef="no">
+                <th class="text-center" mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_NO' | translate }}</th>
+                <td class="text-center" mat-cell *matCellDef="let element; let i = dataIndex">
+                  {{ i + 1 }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="collateralId">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ 'AUCTION_LED_CARD.DEFERMENT_DEBT.COLLATERAL_NUMBER' | translate }}
+                </th>
+                <td mat-cell *matCellDef="let element">{{ element.collateralId || '-' }}</td>
+              </ng-container>
+              <ng-container matColumnDef="collateralSubTypeDesc">
+                <th mat-header-cell *matHeaderCellDef>{{ 'AUCTION_LED_CARD.DEFERMENT_DEBT.SUBTYPE' | translate }}</th>
+                <td mat-cell *matCellDef="let element">{{ element.collateralSubTypeDesc || '-' }}</td>
+              </ng-container>
+              <ng-container matColumnDef="documentNo">
+                <th mat-header-cell *matHeaderCellDef>{{ 'AUCTION_LED_CARD.DEFERMENT_DEBT.SUBTYPE' | translate }}</th>
+                <td mat-cell *matCellDef="let element">{{ element.documentNo || '-' }}</td>
+              </ng-container>
+              <ng-container matColumnDef="totalAppraisalValue">
+                <th mat-header-cell *matHeaderCellDef class="text-right">
+                  {{ 'AUCTION_LED_CARD.DEFERMENT_DEBT.APPRAISED_PRICE' | translate }}
+                </th>
+                <td mat-cell *matCellDef="let element" class="text-right">
+                  {{ element.totalAppraisalValue || '0' | numberDecimal }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="appraisalDate">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ 'AUCTION_LED_CARD.DEFERMENT_DEBT.ASSESSMENT_DATE' | translate }}
+                </th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.appraisalDate ? (element.appraisalDate | buddhistEra: 'DD/MM/yyyy') : '-' }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="ownerName">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ 'AUCTION_LED_CARD.DEFERMENT_DEBT.PROPRIETORSHIP' | translate }}
+                </th>
+                <td mat-cell *matCellDef="let element">{{ element.ownerName || '-' }}</td>
+              </ng-container>
+              <ng-container matColumnDef="insurancePolicyNumber">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ 'AUCTION_LED_CARD.DEFERMENT_DEBT.INSURANCE_POLICY_NUMBER' | translate }}
+                </th>
+                <td mat-cell *matCellDef="let element">{{ element.insurancePolicyNumber || '-' }}</td>
+              </ng-container>
+              <ng-container matColumnDef="botCode">
+                <th mat-header-cell *matHeaderCellDef class="new-line">
+                  {{ 'AUCTION_LED_CARD.DEFERMENT_DEBT.NUMBER_OF_CASE' | translate }}<br />
+                  {{ 'AUCTION_LED_CARD.DEFERMENT_DEBT.COLLATERAL_WAS_SUED' | translate }}
+                </th>
+                <td mat-cell *matCellDef="let element">{{ element.litigationId || '-' }}</td>
+              </ng-container>
+              <ng-container matColumnDef="calculatedCollateralStatus" stickyEnd>
+                <th mat-header-cell *matHeaderCellDef columnElevationRight>
+                  {{ 'AUCTION_LED_CARD.DEFERMENT_DEBT.COLLATERAL_STATUS' | translate }}
+                </th>
+                <td mat-cell *matCellDef="let element" columnElevationRight>
+                  {{
+                    element.calculatedCollateralStatus
+                      ? ('COLLATERAL_LEXS_STATUS.' + element.calculatedCollateralStatus.toUpperCase() | translate)
+                      : '-'
+                  }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="description">
+                <td mat-cell *matCellDef="let element" [attr.colspan]="CIFSubColumns.length" class="detail-row-wrapper">
+                  <div class="detail-div">
+                    <span class="sub-title">{{ 'AUCTION_LED_CARD.DEFERMENT_DEBT.PROPERTY_DETAILS' | translate }}</span
+                    ><br />
+                    <span>{{ element.description || '-' }}</span>
+                  </div>
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="CIFSubColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: CIFSubColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: ['description']" class="detail-row"></tr>
+            </table>
+          </div>
+          <ng-container
+            *ngIf="filteredCollateralsByType[collateralType].length === 0"
+            [ngTemplateOutlet]="dataNotFound">
+          </ng-container>
+        </div>
+      </mat-expansion-panel>
+    </div>
+  </form>
+</div>
+
+<ng-template let-value="value" #dataNotFound>
+  <app-message-empty message="{{ 'COMMON.LABEL_PREFIX_NOT_FOUND' | translate }}{{ value }}"></app-message-empty>
+</ng-template>

@@ -1,0 +1,15 @@
+.container {
+  min-width: 55vw;
+}
+
+.border-blue {
+  border: 1px solid #00a6e6 !important;
+}
+
+.table-scroll {
+  height: 400px;
+}
+
+.hide-icon ::ng-deep .mat-icon {
+  display: none;
+}

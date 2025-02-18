@@ -1,0 +1,458 @@
+<div class="content-container" [formGroup]="form">
+  <div class="inner-container-padding-24">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+      <div class="title-text">
+        <h5 class="mt-12 mb-12 mr-12">
+          {{ 'AUCTION_DETAIL.AUCTION_PAYMENT.TITLE' | translate }}
+        </h5>
+      </div>
+      <div fxLayout="row">
+        <div class="description" (click)="isOpened = !isOpened">
+          <mat-icon
+            [svgIcon]="isOpened ? 'icon-Slide-Hide' : 'icon-Expand'"
+            class="icon icon-xmedium icon-hide-show fill-blue mr-5">
+          </mat-icon
+          >{{ isOpened ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate) }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <mat-accordion>
+    <mat-expansion-panel [expanded]="isOpened" hideToggle>
+      <mat-divider class="no-margin"></mat-divider>
+      <div class="mb-16 mt-24 mr-16" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+        <div fxLayout="column" fxFlex="15">
+          <h6>{{ 'AUCTION_DETAIL.AUCTION_PAYMENT.RESULT' | translate }}</h6>
+        </div>
+        <div fxLayout="column" fxFlex="27" fxLayoutGap="12px">
+          <ng-container *ngIf="isViewMode">
+            <span class="thin-letter">{{ 'AUCTION_DETAIL.AUCTION_PAYMENT.RESULT' | translate }}</span>
+            <div>
+              {{
+                (form.get('paymentTrackingResult')?.value
+                  ? 'AUCTION_DETAIL.AUCTION_PAYMENT.' + form.get('paymentTrackingResult')?.value
+                  : '-'
+                ) | translate
+              }}
+            </div>
+          </ng-container>
+          <ng-container *ngIf="!isViewMode">
+            <spig-dropdown
+              classInput="input-s icon border-black-40"
+              [options]="dropDownOption"
+              [config]="ddlConfig"
+              [formControl]="getControl('paymentTrackingResult')">
+            </spig-dropdown>
+            <ng-container *ngIf="getControl('paymentTrackingResult')?.hasError('maxExtend')">
+              <p class="error-msg">
+                {{ 'AUCTION_DETAIL.AUCTION_PAYMENT.ERROR_MSG_REQ_EXTENSION_3RD_TIME' | translate }}
+              </p>
+            </ng-container>
+            <ng-container
+              *ngIf="
+                getControl('paymentTrackingResult')?.hasError &&
+                !getControl('paymentTrackingResult')?.hasError('maxExtend')
+              ">
+              <spig-error-msg
+                [control]="getControl('paymentTrackingResult')"
+                [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+              </spig-error-msg>
+            </ng-container>
+          </ng-container>
+        </div>
+      </div>
+
+      <div *ngIf="form?.get('paymentTrackingResult')?.value === TRACKING_RESULT.PAYMENT_COMPLETE">
+        <div class="mb-16 mt-24 mr-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+          <div fxLayout="column" fxFlex="15">
+            <h6>{{ 'AUCTION_DETAIL.AUCTION_PAYMENT.PAYMENT_DATE' | translate }}</h6>
+          </div>
+          <div fxLayout="column" fxFlex="27" fxLayoutGap="12px">
+            <ng-container *ngIf="isViewMode">
+              <span class="thin-letter">{{ 'COMMON.LABEL_DATE' | translate }}</span>
+              <div>
+                {{ (form.get('paymentCompleteTimestamp')?.value | buddhistEra: 'DD/MM/yyyy') || '-' }}
+              </div>
+            </ng-container>
+            <ng-container *ngIf="!isViewMode">
+              <spig-datepicker
+                [classInput]="'input-full-field'"
+                [formControl]="getControl('paymentCompleteTimestamp')"
+                [required]="true"
+                [label]="'COMMON.LABEL_DATE'"></spig-datepicker>
+              <spig-error-msg
+                [control]="getControl('paymentCompleteTimestamp')"
+                [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+              </spig-error-msg>
+            </ng-container>
+          </div>
+        </div>
+        <div class="mb-16 mt-24 mr-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+          <div fxLayout="column" fxFlex="15">
+            <h6>{{ 'AUCTION_DETAIL.AUCTION_PAYMENT.DOCUMENT_LIST' | translate }}</h6>
+          </div>
+          <div class="table-content" fxFlex="84">
+            <app-upload-multi-file-content
+              [mode]="mode"
+              [uploadMultiInfo]="uploadMultiInfo"
+              [list]="documentUpload"
+              [column]="documentColumns"
+              [readonly]="isViewMode"
+              (uploadFileEvent)="uploadFileEvent($event)"
+              [labelAcceptFile]="
+                documentTouched && documentErrors ? '' : 'UPLOAD_FILE.LABEL_HINT_DOCUMENT_PDF_JPG_JPEG_2'
+              ">
+            </app-upload-multi-file-content>
+            <spig-error-msg
+              [control]="getControl('externalPaymentTrackingDocuments')"
+              [customErrorMsg]="'กรุณาอัปโหลดเอกสารที่จำเป็น'">
+            </spig-error-msg>
+          </div>
+        </div>
+      </div>
+
+      <div
+        *ngIf="form?.get('paymentTrackingResult')?.value === TRACKING_RESULT.NOT_PAYMENT"
+        class="mb-16 mt-24 mr-16"
+        fxLayout="row"
+        fxLayoutAlign="start start"
+        fxLayoutGap="16px">
+        <div fxLayout="column" fxFlex="15">
+          <h6>
+            <span>{{ 'COMMON.LABEL_REASON' | translate }}<span *ngIf="!isViewMode" class="color-red">*</span> </span>
+          </h6>
+        </div>
+        <div *ngIf="isViewMode" fxLayout="column" fxFlex="40">
+          <div>
+            {{
+              getControl('notPayReason').value === 'NOT_PAYMENT'
+                ? ('AUCTION_DETAIL.AUCTION_PAYMENT.REASON_NOT_PAYMENT' | translate)
+                : ('AUCTION_DETAIL.AUCTION_PAYMENT.REASON_PAYMENT' | translate)
+            }}
+          </div>
+        </div>
+        <div *ngIf="!isViewMode" fxLayout="column" fxFlex="70">
+          <mat-radio-group class="full-width" formControlName="notPayReason" (change)="onRadioChang()">
+            <div fxLayout="row" class="full-width">
+              <div fxFlex="40">
+                <mat-radio-button value="NOT_PAYMENT">{{
+                  'AUCTION_DETAIL.AUCTION_PAYMENT.REASON_NOT_PAYMENT' | translate
+                }}</mat-radio-button>
+              </div>
+              <div fxFlex="30">
+                <mat-radio-button value="CANCEL">{{
+                  'AUCTION_DETAIL.AUCTION_PAYMENT.REASON_PAYMENT' | translate
+                }}</mat-radio-button>
+              </div>
+            </div>
+          </mat-radio-group>
+          <spig-error-msg [control]="getControl('notPayReason')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED_2'">
+          </spig-error-msg>
+        </div>
+      </div>
+      <div
+        *ngIf="
+          form?.get('paymentTrackingResult')?.value !== '' &&
+          form?.get('paymentTrackingResult')?.value !== TRACKING_RESULT.PAYMENT_COMPLETE &&
+          !getControl('paymentTrackingResult')?.hasError('maxExtend')
+        ">
+        <div class="mb-16 mr-16" fxLayout="row" fxLayoutAlign="start" fxLayoutGap="16px">
+          <div fxLayout="column" fxFlex="15" class="mt-16">
+            <h6>{{ 'COMMON.LABEL_REMARKS' | translate }}</h6>
+          </div>
+          <div fxLayout="column" fxFlex="60" fxLayoutGap="12px">
+            <ng-container *ngIf="isViewMode">
+              <span class="thin-letter">{{ 'COMMON.LABEL_REMARKS' | translate }}</span>
+              <div>{{ getControl('remark').value || '-' }}</div>
+            </ng-container>
+            <ng-container *ngIf="!isViewMode">
+              <mat-form-field>
+                <mat-label>{{ 'COMMON.LABEL_REMARKS' | translate }}</mat-label>
+                <textarea matInput autocomplete="off" formControlName="remark" rows="5"></textarea>
+                <spig-error-msg [control]="getControl('remark')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+                </spig-error-msg>
+              </mat-form-field>
+            </ng-container>
+          </div>
+          <div fxLayout="column" fxFlex="27"></div>
+        </div>
+      </div>
+
+      <div
+        *ngIf="
+          form?.get('paymentTrackingResult')?.value === TRACKING_RESULT.PAYMENT_EXTEND &&
+          !isViewMode &&
+          _extendTimeListView.data.length < trackingRound &&
+          !getControl('paymentTrackingResult')?.hasError('maxExtend')
+        "
+        class="mb-16 mr-16"
+        fxLayout="row"
+        fxLayoutAlign="start center"
+        fxLayoutGap="16px">
+        <div fxLayout="column" fxFlex="15">
+          <h6>{{ 'AUCTION_DETAIL.AUCTION_PAYMENT.EXTEND_TIME_INFO' | translate }}</h6>
+        </div>
+        <div fxLayout="column">
+          <button mat-flat-button color="primary" class="medium-button white-space-nm" (click)="saveExtendTime()">
+            <mat-icon svgIcon="icon-save-primary" class="icon icon-sm"></mat-icon>
+            {{ 'AUCTION_DETAIL.AUCTION_PAYMENT.SAVE_DEADLINE_FOR_REQ_EXTENSION' | translate }}
+          </button>
+        </div>
+      </div>
+
+      <div
+        *ngIf="_extendTimeListView.data && _extendTimeListView.data.length > 0"
+        class="mb-16"
+        fxLayout="row"
+        fxLayoutAlign="start center"
+        fxLayoutGap="16px">
+        <div fxLayout="column" fxFlex="15">
+          <!-- <h6>{{ 'AUCTION_DETAIL.AUCTION_PAYMENT.EXTEND_TIME_INFO' | translate }}</h6> -->
+        </div>
+        <div fxLayout="column" fxFlex="84">
+          <ng-container *ngIf="taskCode === 'R2E09-05-01-12A'; else normalTable">
+            <div class="table-scroll" table-scroll>
+              <table mat-table [dataSource]="_extendTimeListView" [trackBy]="identify">
+                <ng-container matColumnDef="index" sticky>
+                  <th class="text-center width-pct-5" mat-header-cell *matHeaderCellDef>
+                    {{ 'COMMON.LABEL_NO' | translate }}
+                  </th>
+                  <td class="text-center width-pct-5" mat-cell *matCellDef="let element; let i = index">{{ i + 1 }}</td>
+                </ng-container>
+                <ng-container matColumnDef="dulyDate">
+                  <th class="text-left" mat-header-cell *matHeaderCellDef>
+                    {{ 'AUCTION_DETAIL.AUCTION_PAYMENT.FANAL_DATE' | translate }}
+                  </th>
+                  <td class="text-left" mat-cell *matCellDef="let element">
+                    <div>{{ (element.extendExpiredTimestamp | buddhistEra: 'DD/MM/yyyy') || '-' }}</div>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="saveDate">
+                  <th class="text-left" mat-header-cell *matHeaderCellDef>
+                    {{ 'AUCTION_DETAIL.AUCTION_PAYMENT.RECORD_DATE' | translate }}
+                  </th>
+                  <td class="text-left" mat-cell *matCellDef="let element">
+                    <div>{{ (element.extendRecordTimestamp | buddhistEra: 'DD/MM/yyyy') || '-' }}</div>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="extendDoc">
+                  <th class="text-left" mat-header-cell *matHeaderCellDef>
+                    {{ 'AUCTION_DETAIL.AUCTION_PAYMENT.DOCUMENT' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let element" class="text-left">
+                    <span
+                      ><a class="label-link" target="_blank" (click)="onViewDocument(element)">
+                        {{ 'AUCTION_DETAIL.AUCTION_PAYMENT.EXTEND_SUIT' | translate }}</a
+                      ></span
+                    >
+                    <!--                    <span *ngIf="!element?.url">-</span>-->
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="action">
+                  <th mat-header-cell class="text-center" *matHeaderCellDef>
+                    {{ 'COMMON.LABEL_COMMAND' | translate }}
+                  </th>
+                  <td mat-cell class="text-center" *matCellDef="let element; let i = index">
+                    <ng-container *ngIf="i + 1 === trackingRound; else elseAction1Template">
+                      <span
+                        *ngIf="
+                          !isViewMode && form?.get('paymentTrackingResult')?.value === TRACKING_RESULT.PAYMENT_EXTEND
+                        ">
+                        <a class="label-link" target="_blank" (click)="saveExtendTime(element)">
+                          {{ 'COMMON.BUTTON_EDIT' | translate }}</a
+                        >
+                      </span>
+                    </ng-container>
+                    <ng-template #elseAction1Template>
+                      <span>-</span>
+                    </ng-template>
+                  </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="extendTimeR2E9050112AColumn"></tr>
+                <tr mat-row *matRowDef="let row; columns: extendTimeR2E9050112AColumn"></tr>
+              </table>
+              <ng-container [ngTemplateOutlet]="dataNotFound" *ngIf="_extendTimeListView.data.length === 0">
+              </ng-container>
+            </div>
+          </ng-container>
+
+          <ng-template #normalTable>
+            <div class="table-scroll" table-scroll>
+              <table mat-table [dataSource]="_extendTimeListView" [trackBy]="identify">
+                <ng-container matColumnDef="index" sticky>
+                  <th class="text-center" mat-header-cell *matHeaderCellDef>
+                    {{ 'COMMON.LABEL_NO' | translate }}
+                  </th>
+                  <td class="text-center" mat-cell *matCellDef="let element; let i = index">{{ i + 1 }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="dulyDate">
+                  <th class="text-left" mat-header-cell *matHeaderCellDef>
+                    {{ 'AUCTION_DETAIL.AUCTION_PAYMENT.FANAL_DATE' | translate }}
+                  </th>
+                  <td class="text-left" mat-cell *matCellDef="let element">
+                    <div>{{ (element.bidDate | buddhistEra: 'DD/MM/yyyy') || '-' }}</div>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="saveDate">
+                  <th class="text-left" mat-header-cell *matHeaderCellDef>
+                    {{ 'AUCTION_DETAIL.AUCTION_PAYMENT.RECORD_DATE' | translate }}
+                  </th>
+                  <td class="text-left" mat-cell *matCellDef="let element">
+                    <div>{{ (element.bidDate | buddhistEra: 'DD/MM/yyyy') || '-' }}</div>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="extendDoc">
+                  <th class="text-left" mat-header-cell *matHeaderCellDef>
+                    {{ 'AUCTION_DETAIL.AUCTION_PAYMENT.DOCUMENT' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let element" class="text-center">
+                    <span *ngIf="element?.url"
+                      ><a class="label-link" target="_blank" [href]="element.url">
+                        {{ 'AUCTION_DETAIL.AUCTION_PAYMENT.EXTEND_SUIT' | translate }}</a
+                      ></span
+                    >
+                    <span *ngIf="!element?.url">-</span>
+                  </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="extendTimeColumn"></tr>
+                <tr mat-row *matRowDef="let row; columns: extendTimeColumn"></tr>
+              </table>
+              <ng-container [ngTemplateOutlet]="dataNotFound" *ngIf="_extendTimeListView.data.length === 0">
+              </ng-container>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+      <div
+        *ngIf="
+          (!_extendTimeListView || _extendTimeListView.data.length === 0) &&
+          form?.get('paymentTrackingResult')?.value === TRACKING_RESULT.PAYMENT_EXTEND
+        "
+        class="mb-16 mr-16 ml-16"
+        fxLayout="row"
+        fxLayoutAlign="start center"
+        fxLayoutGap="16px">
+        <div fxLayout="column" fxFlex="14"></div>
+        <div fxLayout="column" fxFlex="84">
+          <ng-container *ngIf="taskCode === 'R2E09-05-01-12A'; else normalTable">
+            <div class="table-scroll" table-scroll>
+              <table mat-table [dataSource]="_extendTimeListView" [trackBy]="identify">
+                <ng-container matColumnDef="index" sticky>
+                  <th class="text-center" mat-header-cell *matHeaderCellDef>
+                    {{ 'COMMON.LABEL_NO' | translate }}
+                  </th>
+                  <td class="text-center" mat-cell *matCellDef="let element; let i = index">{{ i + 1 }}</td>
+                </ng-container>
+                <ng-container matColumnDef="dulyDate">
+                  <th class="text-left" mat-header-cell *matHeaderCellDef>
+                    {{ 'AUCTION_DETAIL.AUCTION_PAYMENT.FANAL_DATE' | translate }}
+                  </th>
+                  <td class="text-left" mat-cell *matCellDef="let element">
+                    <div>{{ (element.extendExpiredTimestamp | buddhistEra: 'DD/MM/yyyy') || '-' }}</div>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="saveDate">
+                  <th class="text-left" mat-header-cell *matHeaderCellDef>
+                    {{ 'AUCTION_DETAIL.AUCTION_PAYMENT.RECORD_DATE' | translate }}
+                  </th>
+                  <td class="text-left" mat-cell *matCellDef="let element">
+                    <div>{{ (element.extendRecordTimestamp | buddhistEra: 'DD/MM/yyyy') || '-' }}</div>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="extendDoc">
+                  <th class="text-left" mat-header-cell *matHeaderCellDef>
+                    {{ 'AUCTION_DETAIL.AUCTION_PAYMENT.DOCUMENT' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let element" class="text-center">
+                    <span
+                      ><a class="label-link" target="_blank" (click)="onViewDocument(element)">
+                        {{ 'AUCTION_DETAIL.AUCTION_PAYMENT.EXTEND_SUIT' | translate }}</a
+                      ></span
+                    >
+                    <!--                    <span *ngIf="!element?.url">-</span>-->
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="action">
+                  <th mat-header-cell class="text-center" *matHeaderCellDef>
+                    {{ 'COMMON.LABEL_COMMAND' | translate }}
+                  </th>
+                  <td mat-cell class="text-center" *matCellDef="let element; let i = index">
+                    <ng-container *ngIf="i + 1 === trackingRound; else elseAction2Template">
+                      <span
+                        *ngIf="
+                          !isViewMode && form?.get('paymentTrackingResult')?.value === TRACKING_RESULT.PAYMENT_EXTEND
+                        ">
+                        <a class="label-link" target="_blank" (click)="saveExtendTime(element)">
+                          {{ 'COMMON.BUTTON_EDIT' | translate }}</a
+                        >
+                      </span>
+                    </ng-container>
+                    <ng-template #elseAction2Template>
+                      <span>-</span>
+                    </ng-template>
+                  </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="extendTimeR2E9050112AColumn"></tr>
+                <tr mat-row *matRowDef="let row; columns: extendTimeR2E9050112AColumn" class="bg-red-50"></tr>
+              </table>
+              <ng-container [ngTemplateOutlet]="dataNotFound" *ngIf="_extendTimeListView.data.length === 0">
+              </ng-container>
+            </div>
+          </ng-container>
+
+          <ng-template #normalTable>
+            <div class="table-scroll" table-scroll>
+              <table mat-table [dataSource]="_extendTimeListView" [trackBy]="identify">
+                <ng-container matColumnDef="index" sticky>
+                  <th class="text-center" mat-header-cell *matHeaderCellDef>
+                    {{ 'COMMON.LABEL_NO' | translate }}
+                  </th>
+                  <td class="text-center" mat-cell *matCellDef="let element; let i = index">{{ i + 1 }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="dulyDate">
+                  <th class="text-left" mat-header-cell *matHeaderCellDef>
+                    {{ 'AUCTION_DETAIL.AUCTION_PAYMENT.FANAL_DATE' | translate }}
+                  </th>
+                  <td class="text-left" mat-cell *matCellDef="let element">
+                    <div>{{ (element.bidDate | buddhistEra: 'DD/MM/yyyy') || '-' }}</div>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="saveDate">
+                  <th class="text-left" mat-header-cell *matHeaderCellDef>
+                    {{ 'AUCTION_DETAIL.AUCTION_PAYMENT.RECORD_DATE' | translate }}
+                  </th>
+                  <td class="text-left" mat-cell *matCellDef="let element">
+                    <div>{{ (element.bidDate | buddhistEra: 'DD/MM/yyyy') || '-' }}</div>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="extendDoc">
+                  <th class="text-left" mat-header-cell *matHeaderCellDef>
+                    {{ 'AUCTION_DETAIL.AUCTION_PAYMENT.DOCUMENT' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let element" class="text-center">
+                    <span *ngIf="element?.url"
+                      ><a class="label-link" target="_blank" [href]="element.url">
+                        {{ 'AUCTION_DETAIL.AUCTION_PAYMENT.EXTEND_SUIT' | translate }}</a
+                      ></span
+                    >
+                    <span *ngIf="!element?.url">-</span>
+                  </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="extendTimeColumn"></tr>
+                <tr mat-row *matRowDef="let row; columns: extendTimeColumn" class="bg-red-50"></tr>
+              </table>
+              <ng-container [ngTemplateOutlet]="dataNotFound" *ngIf="_extendTimeListView.data.length === 0">
+              </ng-container>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>
+
+<ng-template #dataNotFound>
+  <app-message-empty message="ไม่พบการบันทึกขยายเวลา"></app-message-empty>
+</ng-template>

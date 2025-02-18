@@ -1,0 +1,91 @@
+<div class="dialog-content min-xl" fxLayout="column" [formGroup]="form">
+  <div fxFlex="row" *ngIf="type !== 'DOC_OVER'">
+    <div fxFlex="20">{{ 'COMMON.LABEL_REASON' | translate }}</div>
+    <div fxLayout="column" fxLayoutGap="16px" fxFlex class="reason-content">
+      <ng-container>
+        <spig-dropdown
+          formControlName="rejectedReasonId"
+          [config]="config"
+          [options]="reasonOption"
+          [required]="true"
+          (selectedOption)="onSelectedOption($event)">
+        </spig-dropdown>
+        <spig-error-msg
+          [control]="getControl('rejectedReasonId')"
+          [customErrorMsg]="'กรุณากรอกข้อมูลช่องนี้'"></spig-error-msg>
+      </ng-container>
+      <ng-container>
+        <mat-form-field class="input-full-field">
+          <mat-label>{{ 'COMMON.LABEL_REMARKS' | translate }}</mat-label>
+          <textarea
+            class="input-full-field"
+            type="text"
+            matInput
+            cdkTextareaAutosize
+            #autosize="cdkTextareaAutosize"
+            cdkAutosizeMinRows="13"
+            [placeholder]="'COMMON.LABEL_REMARKS' | translate"
+            required
+            autocomplete="off"
+            formControlName="rejectedRemarks"
+            maxlength="1000"></textarea>
+        </mat-form-field>
+        <spig-error-msg
+          [control]="getControl('rejectedRemarks')"
+          [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'"></spig-error-msg>
+      </ng-container>
+    </div>
+  </div>
+
+  <div
+    fxFlex="row"
+    *ngIf="
+      form.get('rejectedReasonId')?.value === '1' || type === 'DOC_OVER' || form.get('rejectedReasonId')?.value === '3'
+    ">
+    <div fxFlex="20">
+      <h6>เอกสารนำส่งคืน</h6>
+    </div>
+    <div fxLayout="column" fxLayoutGap="16px" fxFlex class="reason-content">
+      <ng-container>
+        <mat-form-field appearance="fill" class="input-full-field">
+          <mat-label>ชื่อเอกสาร</mat-label>
+          <input
+            type="text"
+            matInput
+            autocomplete="off"
+            placeholder="ชื่อเอกสาร"
+            required
+            formControlName="documentName" />
+        </mat-form-field>
+        <spig-error-msg [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'" [control]="getControl('documentName')">
+        </spig-error-msg>
+      </ng-container>
+      <div fxFlex="60">
+        <mat-form-field>
+          <mat-label>จำนวนแผ่นที่คืน</mat-label>
+          <input
+            type="text"
+            matInput
+            autocomplete="off"
+            placeholder="จำนวนแผ่นที่คืน"
+            required
+            appNumberOnly="integer"
+            formControlName="pageCount" />
+        </mat-form-field>
+        <spig-error-msg [control]="getControl('pageCount')" [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'">
+        </spig-error-msg>
+      </div>
+    </div>
+  </div>
+  <app-message-banner
+    class="pt-20"
+    *ngIf="
+      form.get('rejectedReasonId')?.value === '1' || type === 'DOC_OVER' || form.get('rejectedReasonId')?.value === '3'
+    "
+    [message]="bannerOption.message"
+    [subMessage]="bannerOption.subMessage"
+    [type]="bannerOption.type"
+    [icon]="bannerOption.icon">
+  </app-message-banner>
+  <br />
+</div>

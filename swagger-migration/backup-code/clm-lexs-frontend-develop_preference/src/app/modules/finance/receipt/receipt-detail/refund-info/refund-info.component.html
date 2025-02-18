@@ -1,0 +1,306 @@
+<div class="content-below-action-bar-area">
+  <div class="pt-10 pb-16" *ngIf="isFailed">
+    <app-message-banner type="black-info" [message]="textBanner"> </app-message-banner>
+  </div>
+  <div class="pt-10 pb-16" *ngIf="isDownLoad && !isViewCreditNote">
+    <app-message-banner
+      type="black-info"
+      [message]="'กรุณาดาวน์โหลด Credit Note และกดปุ่ม “เสร็จสิ้น” เพื่อดำเนินการต่อไป'">
+    </app-message-banner>
+  </div>
+  <div class="content-container" [formGroup]="refundInfoForm">
+    <mat-card appearance="outlined" class="card info-container">
+      <div class="header">
+        <div class="title pl-10 pr-10" fxLayout="row" fxLayoutAlign="space-between center">
+          <div fxLayout="row" fxLayoutGap="12px" fxLayoutAlign="start center">
+            <h2>เลขที่หนังสือรับเงิน</h2>
+            <div class="divider-vertical"></div>
+            <h2>
+              {{ getControl('receiveNo')?.value || '-' }}
+            </h2>
+            <div
+              *ngIf="
+                receiveStatus &&
+                [
+                  'COMPLETED',
+                  'PENDING_EDIT',
+                  'RECORD_NO_SUCCESS',
+                  'PENDING_NO_SUCCESS',
+                  'PENDING_APPROVE',
+                  'PENDING_DOWNLOAD',
+                  'DRAFT',
+                  'CANCEL_RECORD',
+                ].includes(receiveStatus)
+              "
+              class="status-label"
+              [ngClass]="{
+                'status-normal': receiveStatus === 'PENDING_APPROVE',
+                'status-failed':
+                  receiveStatus === 'PENDING_EDIT' ||
+                  receiveStatus === 'RECORD_NO_SUCCESS' ||
+                  receiveStatus === 'PENDING_NO_SUCCESS',
+                'status-info': receiveStatus === 'DRAFT' || receiveStatus === 'CANCEL_RECORD',
+                'status-pending': receiveStatus === 'PENDING_DOWNLOAD',
+                'status-success': receiveStatus === 'COMPLETED',
+              }">
+              {{ getControl('receiveStatusName')?.value || '-' }}
+            </div>
+          </div>
+        </div>
+        <div class="pl-10 pr-10 pb-4" *ngIf="!getControl('receiveNo')?.value">
+          <span class="fill-black-70"> ระบบจะแสดงเลขที่หนังสือหลังจากกดปุ่ม “บันทึกร่าง” หรือ “นำเสนอ” </span>
+        </div>
+      </div>
+      <mat-divider [inset]="true" class="pb-20"></mat-divider>
+      <mat-accordion class="accordion-headers-align mt-20" *ngIf="isFailed">
+        <div fxLayout="row" fxLayoutAlign="space-between center" class="title-content">
+          <h6 class="mr-24" fxFlex="15">{{ 'COMMON.LABEL_REASON_CONSIDERATION' | translate }}</h6>
+          <div fxLayout="row">
+            <div class="description" (click)="isOpened = !isOpened">
+              <mat-icon [svgIcon]="isOpened ? 'icon-Slide-Hide' : 'icon-Expand'" class="icon icon-hide-show fill-blue">
+              </mat-icon
+              >{{ isOpened ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate) }}
+            </div>
+          </div>
+        </div>
+        <mat-expansion-panel [expanded]="isOpened" hideToggle>
+          <div fxLayout="row" fxLayoutGap="24" class="mb-24">
+            <div fxFlex="15" fxLayout="column" fxLayoutGap="24"></div>
+            <div fxFlex="90" fxLayout="column" fxLayoutGap="24">
+              <span class="thin-letter">{{ 'COMMON.LABEL_REASON_REVISION' | translate }}</span>
+              <div>
+                {{ getControl('editReason')?.value || '-' }}
+              </div>
+            </div>
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+
+      <div class="sub-container mt-20" fxLayout="row">
+        <h6 class="mr-24" fxFlex="15">ข้อมูลทั่วไป</h6>
+        <div fxFlex="90">
+          <div fxLayout="row" fxLayoutGap="16px" class="mb-16">
+            <div fxFlex="49">
+              <span class="thin-letter"> หน่วยงานผู้บันทึกข้อมูล</span>
+              <div>
+                {{ currentUser?.originalOrganizationCode || '' }} - {{ currentUser?.originalOrganizationName || '' }}
+              </div>
+            </div>
+            <div fxFlex="49"></div>
+          </div>
+
+          <div fxLayout="row" fxLayoutGap="16px" class="mb-16">
+            <div fxFlex="49">
+              <!-- เลขที่อ้างอิงตามเอกสาร-->
+              <ng-container *ngIf="!isViewMode">
+                <mat-form-field class="input-full-field" color="primary">
+                  <mat-label class="required">เลขที่อ้างอิงตามเอกสาร</mat-label>
+                  <input
+                    type="text"
+                    formControlName="receiveReferenceNo"
+                    matInput
+                    placeholder="เลขที่อ้างอิงตามเอกสาร"
+                    required
+                    autocomplete="off" />
+                </mat-form-field>
+                <spig-error-msg
+                  [control]="getControl('receiveReferenceNo')"
+                  [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'"></spig-error-msg>
+              </ng-container>
+
+              <ng-container *ngIf="isViewMode">
+                <span class="thin-letter"> เลขที่อ้างอิงตามเอกสาร</span>
+                <div>
+                  {{ getControl('receiveReferenceNo')?.value || '-' }}
+                </div>
+              </ng-container>
+            </div>
+            <div fxFlex="49">
+              <!-- วันที่รับหนังสือ -->
+              <ng-container *ngIf="!isViewMode">
+                <spig-datepicker
+                  [classInput]="'input-s icon border-black-40'"
+                  label="วันที่รับหนังสือ"
+                  formControlName="receiveDate"
+                  class="display-grid">
+                </spig-datepicker>
+                <spig-error-msg
+                  [control]="getControl('receiveDate')"
+                  [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'"></spig-error-msg>
+              </ng-container>
+              <ng-container *ngIf="isViewMode">
+                <span class="thin-letter"> วันที่รับหนังสือ</span>
+                <div>
+                  {{ (getControl('receiveDate')?.value | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                </div>
+              </ng-container>
+            </div>
+          </div>
+          <div fxLayout="row" fxLayoutGap="16px" class="mb-16">
+            <div fxFlex="49">
+              <!-- ประเภทผู้จ่ายเงิน* -->
+              <ng-container *ngIf="!isViewMode">
+                <spig-dropdown
+                  class="mb-05em mr-16"
+                  [config]="payerTypeConfig"
+                  [options]="payerTypeOptions"
+                  formControlName="payerType"
+                  [required]="true"
+                  classInput="input-normal icon">
+                </spig-dropdown>
+                <spig-error-msg
+                  [control]="getControl('payerType')"
+                  [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'"></spig-error-msg>
+              </ng-container>
+              <ng-container *ngIf="isViewMode">
+                <span class="thin-letter"> ประเภทผู้จ่ายเงิน</span>
+                <div>
+                  {{ (getControl('payerType')?.value | payerTrans) || '-' }}
+                </div>
+              </ng-container>
+            </div>
+            <div fxFlex="49">
+              <!-- วิธีการรับเงิน -->
+              <ng-container *ngIf="!isViewMode || isPendingNoSuccess">
+                <spig-dropdown
+                  class="mb-05em mr-16"
+                  [config]="receiveTypeConfig"
+                  formControlName="receiveType"
+                  [options]="receiveTypeOptions"
+                  [required]="true"
+                  classInput="input-normal icon">
+                </spig-dropdown>
+                <spig-error-msg
+                  [control]="getControl('receiveType')"
+                  [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'"></spig-error-msg>
+              </ng-container>
+              <ng-container *ngIf="isViewMode && !isPendingNoSuccess">
+                <span class="thin-letter">วิธีการรับเงิน</span>
+                <div>
+                  {{ this.receiveTypeOptions.length > 0 ? getReceiveType() : '-' }}
+                </div>
+              </ng-container>
+            </div>
+          </div>
+          <div fxLayout="row" fxLayoutGap="16px" class="mb-16">
+            <div fxFlex="49">
+              <ng-container *ngIf="!isViewMode || isPendingNoSuccess">
+                <mat-form-field class="input-full-field" color="primary">
+                  <mat-label class="required">Reference No.</mat-label>
+                  <input
+                    type="text"
+                    matInput
+                    placeholder="Reference No. "
+                    appNumberOnly
+                    (blur)="onRefNoChange($event)"
+                    formControlName="referenceNo"
+                    required
+                    autocomplete="off" />
+                </mat-form-field>
+                <spig-error-msg
+                  [control]="getControl('referenceNo')"
+                  [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'"></spig-error-msg>
+              </ng-container>
+
+              <ng-container *ngIf="isViewMode && !isPendingNoSuccess">
+                <span class="thin-letter"> Reference No.</span>
+                <div>
+                  {{ getControl('referenceNo')?.value || '-' }}
+                </div>
+              </ng-container>
+            </div>
+
+            <div fxFlex="49" *ngIf="getControl('receiveType')?.value !== '16036955'">
+              <span class="thin-letter"> จำนวนเงินที่ชำระแล้ว (รวมฉบับร่าง)</span>
+              <div>{{ (getControl('paidAmount')?.value | numberDecimal) || '-' }}</div>
+            </div>
+          </div>
+          <div fxLayout="row" fxLayoutGap="16px" class="mb-16">
+            <div fxFlex="49">
+              <!-- จำนวนเงินที่นำมาชำระค่าใช้จ่ายดำเนินคดี (บาท)* -->
+              <ng-container *ngIf="!isViewMode || isPendingNoSuccess">
+                <mat-form-field class="input-full-field" color="primary">
+                  <mat-label class="required">จำนวนเงินที่นำมาชำระค่าใช้จ่ายดำเนินคดี (บาท)</mat-label>
+                  <input
+                    type="text"
+                    matInput
+                    placeholder="จำนวนเงินที่นำมาชำระค่าใช้จ่ายดำเนินคดี (บาท)"
+                    required
+                    formControlName="payAmount"
+                    autocomplete="off" />
+                </mat-form-field>
+                <spig-error-msg
+                  [control]="getControl('payAmount')"
+                  [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'"></spig-error-msg>
+              </ng-container>
+              <ng-container *ngIf="isViewMode && !isPendingNoSuccess">
+                <span class="thin-letter">จำนวนเงินที่นำมาชำระค่าใช้จ่ายดำเนินคดี (บาท)</span>
+                <div>
+                  {{ getControl('payAmount')?.value || '-' }}
+                </div>
+              </ng-container>
+            </div>
+            <div fxFlex="49"></div>
+          </div>
+          <div fxLayout="row" fxLayoutGap="16px" class="mb-16" *ngIf="receiptService?.receiveOrderError?.receiveType">
+            <div fxFlex="98">
+              <app-message-banner
+                type="fail"
+                [message]="
+                  '“เงินล้างรายการสุทธิ” รวมกับ “เงินคืนสุทธิ“ ไม่เท่ากับ “จำนวนเงินที่นำมาชำระค่าใช้จ่ายดำเนินคดี”'
+                ">
+              </app-message-banner>
+            </div>
+          </div>
+          <div fxLayout="row" fxLayoutGap="16px" class="mb-16">
+            <div fxFlex="98">
+              <ng-container *ngIf="!isViewMode">
+                <mat-form-field class="full-width">
+                  <mat-label>{{ 'COMMON.LABEL_REMARKS' | translate }}</mat-label>
+                  <textarea
+                    matInput
+                    maxlength="500"
+                    [rows]="5"
+                    [cols]="5"
+                    formControlName="remark"
+                    class="no-resize"></textarea>
+                </mat-form-field>
+              </ng-container>
+              <ng-container *ngIf="isViewMode">
+                <span class="thin-letter">{{ 'COMMON.LABEL_REMARKS' | translate }}</span>
+                <div>
+                  {{ getControl('remark')?.value || '-' }}
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- ค้นหาข้อมูลลูกหนี้ -->
+      <div class="sub-container" fxLayout="row" *ngIf="!isViewMode">
+        <h6 class="mr-24" fxFlex="15">ค้นหาข้อมูลลูกหนี้</h6>
+        <div fxFlex="90">
+          <button
+            mat-flat-button
+            color="primary"
+            id="btn-add-picking-list"
+            (click)="addList()"
+            class="small-button overflow-ellipsis ml-10">
+            <mat-icon svgIcon="icon-Plus" class="icon btn-icon"></mat-icon>
+            เพิ่มรายการ
+          </button>
+          <spig-error-msg [control]="getControl('transferOrders')" customErrorMsg="กรุณาทำการเพิ่มรายการ">
+          </spig-error-msg>
+        </div>
+      </div>
+
+      <!-- รายการโอนเงินตาม LG ID  -->
+      <app-refund-info-by-lg-id
+        *ngIf="refundInfoForm.get('transferOrders')?.value?.length > 0"
+        [isViewMode]="isViewMode"
+        [isDownLoad]="isDownLoad"
+        [refundInfoForm]="refundInfoForm"
+        [isViewCreditNote]="isViewCreditNote"></app-refund-info-by-lg-id>
+    </mat-card>
+  </div>
+</div>

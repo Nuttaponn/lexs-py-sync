@@ -1,0 +1,148 @@
+<ng-container *ngIf="isShowThisPage && (litigationNoticeDtoGroupNoList?.length ?? -1 > 0)">
+  <div class="mt-16 mb-16" *ngFor="let litigationNoticeDtoGroupNo of litigationNoticeDtoGroupNoList; let i = index">
+    <mat-accordion class="accordion-headers-align">
+      <mat-card appearance="outlined" class="bg-blue-00 mat-elevation-z0">
+        <div fxLayout="row" fxLayoutAlign="space-between center" class="title-content bg-blue-00">
+          <div fxLayout="row">
+            <mat-icon svgIcon="icon-News" class="icon icon-medium"></mat-icon>
+            <div class="title-text">
+              <h5>{{ 'LAWSUIT.NOTICE.NOTICE' | translate }} {{ litigationNoticeDtoGroupNo?.groupNo }}</h5>
+            </div>
+            <span class="divider-vertical"></span>
+            <h6 class="text-gray-900 opacity-70-percent">
+              {{ 'LAWSUIT.NOTICE.DELIVERY_DATE_TIME' | translate }}
+              {{ (litigationNoticeDtoGroupNo?.deliveryDateTime | buddhistEra: 'DD/MM/yyyy') ?? '-' }}
+            </h6>
+          </div>
+          <div fxLayout="row">
+            <div class="accordion-label-hide-show" (click)="isOpenedList[i] = !isOpenedList[i]">
+              <mat-icon
+                [svgIcon]="isOpenedList[i] ? 'icon-Slide-Hide' : 'icon-Expand'"
+                class="icon icon-xmedium icon-hide-show fill-blue mr-5">
+              </mat-icon
+              >{{
+                isOpenedList[i]
+                  ? ('COMMON.ICON_EXPANSION_HIDE' | translate)
+                  : ('COMMON.ICON_EXPANSION_SHOW' | translate)
+              }}
+            </div>
+          </div>
+        </div>
+      </mat-card>
+    </mat-accordion>
+
+    <mat-expansion-panel [expanded]="isOpenedList[i]" hideToggle>
+      <ng-container *ngIf="litigationNoticeDtoGroupNo.news?.length ?? -1 > 0">
+        <br />
+        <mat-accordion class="accordion-headers-align">
+          <mat-expansion-panel [expanded]="isOpenedList[i]" hideToggle>
+            <div fxLayout="row" fxLayoutGap="12px">
+              <div fxLayout="column" fxLayoutGap="30px" fxFlex="25">
+                <h6>{{ 'LAWSUIT.NOTICE.NEWS_LIST' | translate }}</h6>
+              </div>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+
+        <ng-container *ngFor="let groupByNewsData of litigationNoticeDtoGroupNo.news">
+          <mat-accordion *ngIf="groupByNewsData.referencePerson" class="accordion-headers-align">
+            <div fxLayout="row" class="title-content" fxLayoutGap="4">
+              <div class="title-text">
+                <h6>
+                  {{ 'LAWSUIT.NOTICE.ANNOUNCE_DEFENDANT' | translate }} {{ groupByNewsData.referencePerson.name }}
+                </h6>
+              </div>
+              <ng-container
+                *ngIf="
+                  groupByNewsData.referencePerson &&
+                  groupByNewsData.referencePerson.relationList &&
+                  groupByNewsData.referencePerson.relationList.length &&
+                  groupByNewsData.referencePerson.relationList.length > 0
+                ">
+                <ng-container *ngFor="let relation of groupByNewsData.referencePerson.relationList">
+                  <div class="status-label status-info">
+                    {{ 'LAWSUIT.MAPPING.RELATION.' + relation | translate }}
+                  </div>
+                </ng-container>
+              </ng-container>
+              <div *ngIf="groupByNewsData.referencePerson?.personStatus" class="status-label status-failed">
+                {{ 'CUSTOMER.MAPPING.PERSON_STATUS.DEATH' | translate }}
+              </div>
+              <div fxFlex></div>
+            </div>
+          </mat-accordion>
+          <br />
+
+          <app-newspaper
+            class="mt-10"
+            [dataSource]="groupByNewsData?.litigationNoticeDtos ?? []"
+            (clickDownloadNews)="onClickDownloadNews($event)"
+            (clickUploadNews)="onClickUploadNews($event)"
+            (clickDownloadDocNews)="onClickDownloadDocNews($event)">
+          </app-newspaper>
+        </ng-container>
+      </ng-container>
+
+      <ng-container *ngIf="litigationNoticeDtoGroupNo?.letter?.length ?? -1 > 0">
+        <br />
+        <mat-accordion class="accordion-headers-align">
+          <mat-expansion-panel [expanded]="isOpenedList[i]" hideToggle>
+            <div fxLayout="row" fxLayoutGap="12px">
+              <div fxLayout="column" fxLayoutGap="30px" fxFlex="25">
+                <h6>{{ 'LAWSUIT.NOTICE.LETTER_LIST' | translate }}</h6>
+              </div>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+        <ng-container *ngFor="let groupByLetterData of litigationNoticeDtoGroupNo.letter; let i = index">
+          <mat-accordion *ngIf="groupByLetterData.referencePerson" class="accordion-headers-align">
+            <div fxLayout="row" class="title-content-no-pt" fxLayoutAlign="space-between center" fxLayoutGap="4">
+              <div class="title-text">
+                <h6>
+                  {{ 'LAWSUIT.NOTICE.SEND_TO_DEFENDANT' | translate }} {{ groupByLetterData.referencePerson.name }}
+                </h6>
+              </div>
+              <ng-container
+                *ngIf="
+                  groupByLetterData.referencePerson &&
+                  groupByLetterData.referencePerson.relationList &&
+                  groupByLetterData.referencePerson.relationList.length &&
+                  groupByLetterData.referencePerson.relationList.length > 0
+                ">
+                <ng-container *ngFor="let relation of groupByLetterData.referencePerson.relationList">
+                  <div class="status-label status-info">
+                    {{ 'LAWSUIT.MAPPING.RELATION.' + relation | translate }}
+                  </div>
+                </ng-container>
+              </ng-container>
+              <div *ngIf="groupByLetterData.referencePerson?.personStatus" class="status-label status-failed">
+                {{ 'CUSTOMER.MAPPING.PERSON_STATUS.DEATH' | translate }}
+              </div>
+              <div fxFlex></div>
+            </div>
+            <hr class="mr-16 ml-16" />
+          </mat-accordion>
+          <app-letter
+            [taskId]="taskId"
+            [dataSource]="groupByLetterData?.litigationNoticeDtos ?? []"
+            (confirmBankrupt)="onConfirmBankrupt($event)"
+            (cancelBankrupt)="onCancelBankrupt($event)"
+            (clickDownloadLetter)="onClickDownloadLetter($event)"
+            (clickDeleteLetter)="onClickDeleteLetter($event)"
+            (clickAddLetter)="onClickAddLetter($event)"
+            (clickUploadLetter)="onClickUploadLetter($event)"
+            (clickDownloadDoc)="onClickDownloadDoc($event)"
+            (clickNoticeTracking)="clickNoticeTracking($event)"
+            (clickUploadConfirmLetter)="clickUploadConfirmLetter($event)"
+            (clickDownloadConfirmLetterDoc)="onClickDownloadDoc($event, true)"
+            [isDisabledDownloadBtn]="isDisabledDownloadBtnLetter">
+          </app-letter>
+          <ng-container *ngIf="litigationNoticeDtoGroupNo.letter && litigationNoticeDtoGroupNo.letter.length > i + 1">
+            <hr class="mr-16 ml-16" />
+          </ng-container>
+        </ng-container>
+      </ng-container>
+    </mat-expansion-panel>
+  </div>
+  <input type="file" #fileUpload name="fileUpload" accept="application/pdf,image/jpg,image/jpeg" class="display-none" />
+</ng-container>

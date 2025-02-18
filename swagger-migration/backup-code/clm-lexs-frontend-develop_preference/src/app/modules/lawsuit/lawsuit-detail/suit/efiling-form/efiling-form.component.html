@@ -1,0 +1,454 @@
+<!-- *ngIf="extendedKlawConfigDtos.length > 0; else searchEmpty" -->
+<ng-container *ngIf="taskCode !== 'RECORD_OF_SUPREME_COURT_ACKNOWLEDGE'" [ngTemplateOutlet]="actionSuitForm">
+</ng-container>
+
+<!-- class="content-below-action-bar-area" -->
+<div
+  *ngIf="!!dataForm"
+  [class.content-below-action-bar-area]="taskCode !== 'RECORD_OF_SUPREME_COURT_ACKNOWLEDGE'"
+  [formGroup]="dataForm">
+  <div class="content-container">
+    <div class="inner-container-padding">
+      <h5 class="mt-12 mb-12 ml-12 mr-12">
+        {{ 'LAWSUIT.SUIT_EFILING_FORM.MAIN_TITLE.' + dataAppealSide + '_' + dataCourtLevel | translate }}
+      </h5>
+      <hr class="mt-30 mb-30" />
+      <div class="pl-18 pr-18">
+        <!-- content 1 -->
+        <div class="pb-20" fxLayoutGap="20" fxFlexFill>
+          <div fxFlex="15" fxLayoutAlign="top">
+            <!-- ข้อมูลคดีความ -->
+            <h5>{{ 'LAWSUIT.SUIT_EFILING_FORM.TITLE_CONTENT_1' | translate }}</h5>
+          </div>
+          <div fxFlex="70">
+            <div fxLayout="row" fxLayoutGap="16px">
+              <div fxFlex="49" class="content-form">
+                <span class="fill-black-70">
+                  <!-- เลขที่กฎหมาย -->
+                  {{ 'COMMON.LABEL_LITIGATION_ID' | translate }}
+                </span>
+                <div class="color-biz-black-100">
+                  {{ litigationCaseDto.litigationId || '-' }}
+                </div>
+              </div>
+              <div fxFlex="49" class="content-form">
+                <span class="fill-black-70">
+                  <!-- ผู้ยื่น, ผู้แก้ -->
+                  {{ 'LAWSUIT.SUIT_EFILING_FORM.APPELLANT.' + dataAppealSide | translate }}
+                </span>
+                <div class="color-biz-black-100">
+                  <!-- บมจ. ธนาคารกรุงไทย -->
+                  {{ 'COMMON.KRUNGTHAI_BANK_PCL' | translate }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- content 2 -->
+        <div class="pb-20" fxLayoutGap="20" fxFlexFill>
+          <div fxFlex="15" fxLayoutAlign="top">
+            <!-- ข้อมูลจำเลย -->
+            <h5>{{ 'LAWSUIT.SUIT_EFILING_FORM.TITLE_CONTENT_2' | translate }}</h5>
+          </div>
+          <div fxFlex="70">
+            <div class="table-scroll" *ngIf="persons && persons.length > 0">
+              <table mat-table [dataSource]="persons">
+                <!-- formArrayName="persons" -->
+                <ng-container matColumnDef="select">
+                  <!-- [aria-label]="personCheckboxLabel()" -->
+                  <th mat-header-cell *matHeaderCellDef>
+                    <mat-checkbox
+                      (change)="$event ? masterToggle() : null"
+                      [checked]="personSelection.hasValue() && isAllpersonSelected()"
+                      [indeterminate]="personSelection.hasValue() && !isAllpersonSelected()">
+                    </mat-checkbox>
+                  </th>
+                  <!-- [aria-label]="personCheckboxLabel(row)" -->
+                  <td mat-cell *matCellDef="let row">
+                    <mat-checkbox
+                      (click)="$event.stopPropagation()"
+                      (change)="$event ? personSelection.toggle(row.personId) : null"
+                      [checked]="personSelection.isSelected(row.personId)">
+                    </mat-checkbox>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="name">
+                  <th mat-header-cell *matHeaderCellDef>
+                    {{ 'COMMON.LABEL_FULL_NAME' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+                </ng-container>
+                <ng-container matColumnDef="relation">
+                  <th mat-header-cell *matHeaderCellDef>
+                    {{ 'LAWSUIT.INDICTMENT.RELATION' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ 'CUSTOMER.MAPPING.RELATION.' + element.relation | translate }}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="identificationNo">
+                  <th mat-header-cell *matHeaderCellDef class="new-line">
+                    {{ 'LAWSUIT.INDICTMENT.NATIONAL_ID_TAX_ID' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.identificationNo || '-' }}
+                  </td>
+                </ng-container>
+                <tr
+                  mat-header-row
+                  *matHeaderRowDef="!isPersonShowSelection ? personsColumns.slice(1) : personsColumns"></tr>
+                <tr
+                  mat-row
+                  *matRowDef="let row; columns: !isPersonShowSelection ? personsColumns.slice(1) : personsColumns"></tr>
+              </table>
+            </div>
+          </div>
+        </div>
+        <!-- content 3 -->
+        <div class="pb-20" fxLayoutGap="20" fxFlexFill>
+          <div fxFlex="15" fxLayoutAlign="top">
+            <!-- การยื่น(แก้)... -->
+            <h5>
+              {{ 'LAWSUIT.SUIT_EFILING_FORM.TITLE_CONTENT_3.' + dataAppealSide + '_' + dataCourtLevel | translate }}
+            </h5>
+          </div>
+          <div fxFlex="70" fxLayout="column" fxLayoutGap="16px">
+            <div *ngIf="dataAppealSide === 'CUSTOMER'" fxLayout="row" fxLayoutGap="16px">
+              <div fxFlex="49" class="content-form">
+                <span class="fill-black-70">
+                  {{
+                    'LAWSUIT.SUIT_EFILING_FORM.SUBMIT_DATE_LABEL.' + dataAppealSide + '_' + dataCourtLevel | translate
+                  }}
+                </span>
+                <div class="color-biz-black-100">
+                  {{ (litigationCaseSubCaseDto.submitDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                </div>
+              </div>
+            </div>
+            <div *ngIf="!isViewModePart1; else viewModePart1" fxLayout="row" fxLayoutGap="16px">
+              <div fxFlex="49" class="content-form">
+                <spig-datepicker
+                  [classInput]="'input-s icon border-black-40'"
+                  formControlName="caseDate"
+                  [required]="true"
+                  [label]="'LAWSUIT.SUIT_EFILING_FORM.CASE_DATE_LABEL.' + dataAppealSide + '_' + dataCourtLevel"
+                  class="display-grid"
+                  (inputChange)="onCaseDateChange($event)"
+                  [max]="currentDate">
+                </spig-datepicker>
+                <spig-error-msg [control]="getControl('caseDate')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+                </spig-error-msg>
+              </div>
+
+              <div fxFlex="49" class="content-form">
+                <mat-form-field class="input-full-field border-black-40 min-width-pct-50">
+                  <mat-label>{{
+                    'LAWSUIT.SUIT_EFILING_FORM.CAPITAL_AMOUNT_LABEL.' + dataAppealSide + '_' + dataCourtLevel
+                      | translate
+                  }}</mat-label>
+                  <input matInput appNumberOnly="qualitative" formControlName="capitalAmount" required />
+                </mat-form-field>
+                <spig-error-msg [control]="getControl('capitalAmount')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+                </spig-error-msg>
+              </div>
+            </div>
+            <ng-template #viewModePart1>
+              <div fxLayout="row" fxLayoutGap="16px">
+                <div fxFlex="49" class="content-form">
+                  <span class="fill-black-70">
+                    {{
+                      'LAWSUIT.SUIT_EFILING_FORM.CASE_DATE_LABEL.' + dataAppealSide + '_' + dataCourtLevel | translate
+                    }}
+                  </span>
+                  <div class="color-biz-black-100">
+                    {{ (dataForm.get('caseDate')?.value | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                  </div>
+                </div>
+
+                <div fxFlex="49" class="content-form">
+                  <span class="fill-black-70">
+                    {{
+                      'LAWSUIT.SUIT_EFILING_FORM.CAPITAL_AMOUNT_LABEL.' + dataAppealSide + '_' + dataCourtLevel
+                        | translate
+                    }}
+                  </span>
+                  <div class="color-biz-black-100">
+                    {{ dataForm.get('capitalAmount')?.value | numberDecimal }}
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+        <!-- content 4 -->
+        <div *ngIf="dataAppealSide + '_' + dataCourtLevel === 'BANK_SUPREME'" class="pb-20" fxLayoutGap="20" fxFlexFill>
+          <div fxFlex="15" fxLayoutAlign="top">
+            <!-- คำร้องขออนุญาตฎีกา (ถ้ามี) -->
+            <h5>
+              {{
+                'LAWSUIT.SUIT_EFILING_FORM.TITLE_CONTENT_4.' +
+                  dataAppealSide +
+                  '_' +
+                  dataCourtLevel +
+                  (statusCode === 'AWAITING' ? '_VIEW' : '') | translate
+              }}
+            </h5>
+          </div>
+          <div fxFlex="70">
+            <ng-container *ngIf="!isViewModeContent4; else viewModeContent4">
+              <div fxLayout="row" fxLayoutGap="16px">
+                <div fxFlex="49" class="content-form">
+                  <!-- วันที่ยื่นคำร้อง* -->
+                  <spig-datepicker
+                    [classInput]="'input-s icon border-black-40'"
+                    formControlName="submitDate"
+                    [required]="true"
+                    [label]="'LAWSUIT.SUIT_EFILING_FORM.SUBMIT_DATE_LABEL.' + dataAppealSide + '_' + dataCourtLevel"
+                    class="display-grid"
+                    [max]="maxSubmitDate">
+                  </spig-datepicker>
+                  <spig-error-msg [control]="getControl('submitDate')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+                  </spig-error-msg>
+                </div>
+              </div>
+            </ng-container>
+            <ng-template #viewModeContent4>
+              <div fxLayout="row" fxLayoutGap="16px">
+                <div fxFlex="49" class="content-form">
+                  <span class="fill-black-70">
+                    <!-- วันที่ยื่นคำร้อง -->
+                    {{ 'LAWSUIT.SUIT_EFILING_FORM.SUBMIT_DATE_LABEL.BANK_SUPREME' | translate }}
+                  </span>
+                  <div class="color-biz-black-100">
+                    {{ (litigationCaseSubCaseDto.submitDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                  </div>
+                </div>
+
+                <div *ngIf="statusCode !== 'AWAITING'" fxFlex="49" class="content-form">
+                  <!-- คำสั่งศาลฎีกา -->
+                  <span class="fill-black-70">
+                    {{ 'LAWSUIT.SUIT.SUIT_EFILING.TITILE.SUPREME_COURT_ORDER' | translate }}
+                  </span>
+                  <div class="color-biz-black-100">
+                    {{ courtOrderTextContent4 }}
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+            <div *ngIf="statusCode === 'AWAITING'" fxLayout="row" fxLayoutGap="16px">
+              <div fxFlex="49" class="content-form">
+                <!-- วันที่ศาลสั่ง* -->
+                <spig-datepicker
+                  [classInput]="'input-s icon border-black-40'"
+                  formControlName="courtOrderDate"
+                  [required]="true"
+                  [label]="'LAWSUIT.SUIT_EFILING_FORM.COURT_ORDER_DATE_LABEL'"
+                  class="display-grid"
+                  [max]="currentDate">
+                </spig-datepicker>
+                <spig-error-msg [control]="getControl('courtOrderDate')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+                </spig-error-msg>
+              </div>
+
+              <div fxFlex="49" class="content-form">
+                <!-- คำสั่งศาลฎีกา -->
+                <spig-dropdown
+                  [config]="courtOrderConfig"
+                  [options]="courtOrderList"
+                  formControlName="courtOrder"
+                  [classInput]="'input-normal elevation-e1 border-black-40'">
+                </spig-dropdown>
+                <spig-error-msg [control]="getControl('courtOrder')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+                </spig-error-msg>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- content 5 -->
+        <div class="pb-20" fxLayoutGap="20" fxFlexFill>
+          <div fxFlex="15" fxLayoutAlign="top">
+            <!-- รายละเอียดคดี -->
+            <h5>{{ 'LAWSUIT.SUIT_EFILING_FORM.TITLE_CONTENT_5' | translate }}</h5>
+          </div>
+          <div fxFlex="70" fxLayout="column" fxLayoutGap="16px">
+            <!-- <div *ngIf="dataAppealSide === 'CUSTOMER'" fxLayout="row" fxLayoutGap="16px">
+            <div fxFlex="49" class="content-form">
+              <span class="fill-black-70">
+                {{ 'LAWSUIT.SUIT_EFILING_FORM.SUBMIT_DATE_LABEL.' + dataAppealSide + '_' + dataCourtLevel | translate }}
+              </span>
+              <div class="color-biz-black-100">
+                {{ (litigationCaseSubCaseDto?.submitDate | buddhistEra: 'DD/MM/yyyy') || '-'}}
+              </div>
+            </div>
+          </div> -->
+            <ng-container *ngIf="!isViewModeContent5; else viewModeContent5">
+              <div fxLayout="row" fxLayoutGap="16px">
+                <div fxFlex="49" class="content-form">
+                  <!-- ศาล -->
+                  <spig-dropdown
+                    [config]="court"
+                    [options]="courtList"
+                    formControlName="courtCode"
+                    [classInput]="'input-normal elevation-e1 border-black-40'">
+                  </spig-dropdown>
+                  <spig-error-msg [control]="getControl('courtCode')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+                  </spig-error-msg>
+                </div>
+                <div
+                  *ngIf="dataAppealSide === 'CUSTOMER' && litigationCaseSubCaseDto.requestDefer === true"
+                  fxFlex="49"
+                  class="content-form">
+                  <!-- คำสั่งศาลการทุเลาบังคับคดี -> caseSubCase.respiteCase -> อนุญาต, ไม่อนุญาติ -->
+                  <spig-dropdown
+                    [config]="suspensExecutionConfig"
+                    [options]="suspensExecutionList"
+                    formControlName="respiteCase"
+                    [classInput]="'input-normal elevation-e1 border-black-40'">
+                  </spig-dropdown>
+                  <spig-error-msg [control]="getControl('respiteCase')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+                  </spig-error-msg>
+                </div>
+              </div>
+              <div fxLayout="row" fxLayoutGap="16px">
+                <div fxFlex="100">
+                  <mat-form-field class="min-width-pct-100">
+                    <!-- หมายเหตุ -->
+                    <mat-label>{{ 'COMMON.LABEL_REMARKS' | translate }}</mat-label>
+                    <textarea
+                      matInput
+                      maxlength="4000"
+                      class="form-control no-resize"
+                      cols="5"
+                      rows="15"
+                      formControlName="reason"></textarea>
+                  </mat-form-field>
+                </div>
+              </div>
+            </ng-container>
+            <ng-template #viewModeContent5>
+              <div fxLayout="row" fxLayoutGap="16px">
+                <div fxFlex="49" class="content-form">
+                  <span class="fill-black-70">
+                    {{ 'COMMON.LABEL_COURT' | translate }}
+                  </span>
+                  <div class="color-biz-black-100">
+                    {{ courtTextContent5 }}
+                  </div>
+                </div>
+
+                <div *ngIf="dataAppealSide === 'CUSTOMER'" fxFlex="49" class="content-form">
+                  <span class="fill-black-70">
+                    {{ 'LAWSUIT.SUIT_EFILING_FORM.SUSPENS_EXECUTION_LABEL' | translate }}
+                  </span>
+                  <div class="color-biz-black-100">
+                    {{ suspensExecutionTextContent5 || '-' }}
+                  </div>
+                </div>
+              </div>
+
+              <div fxLayout="row" fxLayoutGap="16px">
+                <div fxFlex="100">
+                  <span class="fill-black-70">
+                    <!-- หมายเหตุ -->
+                    {{ 'COMMON.LABEL_REMARKS' | translate }}
+                  </span>
+                  <div class="color-biz-black-100">
+                    {{ getControl('reason')?.value || '-' }}
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+        <!-- content 6 -->
+        <div class="pb-20" fxLayoutGap="20" fxFlexFill>
+          <div fxFlex="15" fxLayoutAlign="top">
+            <!-- เอกสารแนบท้ายฟ้อง -->
+            <h5>{{ 'LAWSUIT.SUIT_EFILING_FORM.TITLE_CONTENT_6' | translate }}</h5>
+          </div>
+          <div fxFlex="70">
+            <app-upload-multi-file-content
+              [uploadMultiInfo]="uploadMultiInfo"
+              [list]="convertedDocs"
+              [column]="docColumn"
+              (uploadFileEvent)="onUploadFileEvent($event)"
+              [labelAcceptFile]="''"
+              [readonly]="isDocViewMode">
+            </app-upload-multi-file-content>
+          </div>
+        </div>
+        <!-- content 7 -->
+        <div class="pb-20" fxLayoutGap="20" fxFlexFill>
+          <div fxFlex="15" fxLayoutAlign="top">
+            <!-- ทนายความ -->
+            <h5>{{ 'LAWSUIT.SUIT_EFILING_FORM.TITLE_CONTENT_7' | translate }}</h5>
+          </div>
+          <div fxFlex="70">
+            <div fxLayout="row" fxLayoutGap="16px">
+              <div fxFlex="49" class="content-form">
+                <span class="fill-black-70">
+                  {{ 'LAWSUIT.INDICTMENT.LAWYER' | translate }}
+                </span>
+                <div class="color-biz-black-100">
+                  {{ litigationCaseDto.lawyerId + ' ' + litigationCaseDto.lawyerName }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- <div>
+  statusCode: {{ statusCode }} <br>
+  taskCode: {{ taskCode }} <br>
+  dataAppealSide: {{ dataAppealSide }} <br>
+  dataCourtLevel: {{ dataCourtLevel }} <br>
+  isViewMode: {{ isViewMode }} <br>
+</div>
+<div *ngIf="litigationCaseDto">
+  litigationCaseDto: {{ litigationCaseDto | json }}
+</div>
+<div *ngIf="litigationCaseSubCaseDto">
+  litigationCaseSubCaseDto: {{ litigationCaseSubCaseDto | json }}
+</div>
+<div *ngIf="litigationCaseSubCaseDocuments">
+  litigationCaseSubCaseDocuments: {{ litigationCaseSubCaseDocuments | json }}
+</div> -->
+
+<ng-template #actionSuitForm>
+  <app-action-bar
+    [disabledBackButton]="actionBar.disabledBackButton"
+    [hasCancelButton]="actionBar.hasCancelButton"
+    [disabledCancelButton]="actionBar.disabledCancelButton"
+    [hasPrimaryButton]="actionBar.hasPrimaryButton"
+    [primaryButtonText]="actionBar.primaryButtonText"
+    [primaryButtonIcon]="actionBar.primaryButtonIcon"
+    [hasEditButton]="actionBar.hasEditButton"
+    [editButtonText]="actionBar.editButtonText"
+    [hasDeleteButton]="actionBar.hasDeleteButton"
+    [deleteButtonText]="actionBar.deleteButtonText"
+    [deleteButtonIcon]="actionBar.deleteButtonIcon"
+    [deleteButtonPositive]="actionBar.deleteButtonPositive"
+    (backButtonHandler)="back()"
+    (primaryButtonHandler)="save()"
+    (cancelButtonHandler)="cancel()"
+    [showNavBarInformation]="actionBar.showNavBarInformation">
+    <ng-container navBarInformationTemplate>
+      <mat-icon svgIcon="icon-save-primary" class="icon icon-xmedium"></mat-icon>
+      <span class="ml-05em">
+        {{
+          'LAWSUIT.SUIT_EFILING_FORM.ACTION_TITLE.' +
+            dataAppealSide +
+            '_' +
+            dataCourtLevel +
+            (!!litigationId ? '_SUB_VIEW' : '') | translate
+        }}
+        {{ litigationId }}
+      </span>
+    </ng-container>
+  </app-action-bar>
+</ng-template>

@@ -1,0 +1,23 @@
+.execution-detail-container {
+  .content-container {
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+  }
+
+  .title-content {
+    padding: 2em;
+  }
+
+  .p-32 {
+    padding: 32px;
+  }
+
+  .other-field {
+    max-width: 246px !important;
+  }
+}
+
+.execution-detail-container.content-below-action-bar-area {
+  margin: 20px;
+}

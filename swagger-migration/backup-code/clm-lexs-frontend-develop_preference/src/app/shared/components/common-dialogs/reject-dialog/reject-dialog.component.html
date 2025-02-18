@@ -1,0 +1,129 @@
+<div *ngIf="showMsgContent" class="mb-20" fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="24px">
+  <div>
+    {{ msgContentText }}
+  </div>
+</div>
+<div *ngIf="showFieldContent" class="mb-20" fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="24px">
+  <div fxFlex="20">
+    <div
+      *ngIf="!!titleFieldContent"
+      class="mb-20 bold"
+      fxLayout="row"
+      fxLayoutAlign="space-between start"
+      fxLayoutGap="24px">
+      <div>
+        {{ titleFieldContent }}
+      </div>
+    </div>
+  </div>
+  <div fxLayout="column" fxLayoutGap="16px" fxFlex>
+    <span class="m-0 thin-letter">
+      {{ fieldContentText }}
+    </span>
+    <div>
+      {{ fieldContentValue || '-' }}
+    </div>
+  </div>
+</div>
+<div class="dialog-content min-xl" fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="24px">
+  <div fxFlex="20" class="mb-20 bold">{{ 'COMMON.LABEL_REASON' | translate }}</div>
+  <div fxLayout="column" fxLayoutGap="16px" fxFlex class="reason-content">
+    <ng-container
+      *ngIf="
+        isCancelExpClaimAutoPay ||
+        isCancelExpClaimSysPay ||
+        selectedReasonTasks.includes(taskCode) ||
+        selectedRadioTasks.includes(taskCode) ||
+        selectedReasonSubTasks.includes(expenseStatus)
+      ">
+      <ng-container
+        *ngIf="
+          isCancelExpClaimAutoPay ||
+          isCancelExpClaimSysPay ||
+          selectedReasonTasks.includes(taskCode) ||
+          selectedReasonSubTasks.includes(expenseStatus)
+        ">
+        <spig-dropdown
+          [formControl]="selectedReason"
+          [config]="configPayment"
+          [options]="optionsPayment"
+          [placeholder]="configPayment.labelPlaceHolder"
+          (selectedOption)="onSelectedOption($event)">
+        </spig-dropdown>
+        <spig-error-msg [control]="selectedReason" [customErrorMsg]="'กรุณากรอกข้อมูลช่องนี้'"></spig-error-msg>
+      </ng-container>
+      <ng-container *ngIf="selectedRadioTasks.includes(taskCode)">
+        <mat-radio-group [formControl]="selectedReason" (change)="onSelectedReason($event)">
+          <div class="mb-24">
+            <mat-radio-button color="accent" value="APPEAL_REASON_0">
+              {{ 'TASK.REJECT_DIALOG.APPROVE_APPEAL_OPTION_0' | translate }}
+            </mat-radio-button>
+          </div>
+          <div class="mb-24">
+            <mat-radio-button color="accent" value="APPEAL_REASON_1">
+              {{ 'TASK.REJECT_DIALOG.APPROVE_APPEAL_OPTION_1' | translate }}
+            </mat-radio-button>
+          </div>
+          <div class="mb-24">
+            <mat-radio-button color="accent" value="OTHER">
+              {{ 'TASK.REJECT_DIALOG.APPROVE_APPEAL_OPTION_2' | translate }}
+            </mat-radio-button>
+          </div>
+        </mat-radio-group>
+        <spig-error-msg
+          [control]="selectedReason"
+          [customErrorMsg]="'TASK.REJECT_DIALOG.ERROR_MSG_REQUIRED_SELECT_REASON'"></spig-error-msg>
+      </ng-container>
+      <ng-container
+        *ngIf="
+          selectedReason.value === 'OTHER' ||
+          (action !== 'CANCEL' && selectedReason.value === '6') ||
+          (action !== 'CANCEL' && selectedReason.value === '7') ||
+          (action === 'CANCEL' && selectedReason.value === '2') ||
+          (action === 'CANCEL' && selectedReason.value === '3')
+        ">
+        <mat-form-field class="input-full-field">
+          <mat-label [class.invalid]="reason.invalid">{{ placeholderTxtArea }}</mat-label>
+          <textarea
+            class="input-full-field"
+            type="text"
+            matInput
+            cdkTextareaAutosize
+            #autosize="cdkTextareaAutosize"
+            cdkAutosizeMinRows="13"
+            [placeholder]="placeholderTxtArea"
+            required
+            autocomplete="off"
+            [formControl]="reason"
+            [maxlength]="maxTextArea"></textarea>
+        </mat-form-field>
+        <spig-error-msg [control]="reason" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'"></spig-error-msg>
+      </ng-container>
+    </ng-container>
+    <ng-container
+      *ngIf="
+        !isCancelExpClaimAutoPay &&
+        !isCancelExpClaimSysPay &&
+        !selectedReasonTasks.includes(this.taskCode) &&
+        !selectedRadioTasks.includes(taskCode) &&
+        !selectedReasonSubTasks.includes(this.expenseStatus)
+      ">
+      <mat-form-field class="input-full-field">
+        <mat-label [class.invalid]="reason.invalid">{{ placeholderTxtArea }}</mat-label>
+        <textarea
+          class="input-full-field"
+          type="text"
+          matInput
+          cdkTextareaAutosize
+          #autosize="cdkTextareaAutosize"
+          [cdkAutosizeMinRows]="cdkAutosizeMinRows"
+          [placeholder]="placeholderTxtArea"
+          required
+          autocomplete="off"
+          [formControl]="reason"
+          [maxlength]="maxTextArea"></textarea>
+      </mat-form-field>
+      <spig-error-msg [control]="reason" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED_2'"></spig-error-msg>
+    </ng-container>
+  </div>
+</div>

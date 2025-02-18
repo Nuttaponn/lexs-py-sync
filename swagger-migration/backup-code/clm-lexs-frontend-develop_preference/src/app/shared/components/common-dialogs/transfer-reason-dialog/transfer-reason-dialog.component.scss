@@ -1,0 +1,11 @@
+@import '/src/styles/colors';
+
+.reason-content {
+  .textarea-content {
+    resize: none;
+    border: none;
+    background: map-get($ktb-palette-biz-black, 5);
+    border-radius: 8px;
+    padding: 12px;
+  }
+}

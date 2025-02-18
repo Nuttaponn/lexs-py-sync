@@ -1,0 +1,12 @@
+<ng-container *ngIf="errors && touched">
+  <mat-icon *ngIf="showIcon" svgIcon="icon-Error"></mat-icon>
+  <ng-container *ngIf="customErrorMsg">
+    <p class="error-msg">{{ customErrorMsg | translate }}</p>
+  </ng-container>
+  <ng-container *ngIf="!customErrorMsg">
+    <span *ngFor="let cond of msgOptions">
+      <p class="error-msg" *ngIf="errors[cond.errorKey]">{{ cond.useTranslate ? (cond.message | translate) :
+        cond.message }}</p>
+    </span>
+  </ng-container>
+</ng-container>

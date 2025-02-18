@@ -1,0 +1,98 @@
+@import '/src/styles/colors';
+
+.carousel-wrapper {
+  position: relative;
+}
+
+.scroll-wrapper {
+  &.scroll {
+    overflow-x: auto;
+    margin-right: -24px;
+    margin-left: -24px;
+    padding-bottom: 12px;
+  }
+}
+
+.carousel-buttons {
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: -24px;
+  right: -24px;
+  bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .carousel-btn {
+    border: 0;
+    pointer-events: auto;
+    background: $bg-almost-white;
+    &:active {
+      background: $bg-almost-white;
+    }
+    &:hover {
+      background: map_get($ktb-palette-blue, 10);
+    }
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 200;
+  }
+}
+
+.tabs {
+  position: relative;
+}
+
+.tab {
+  background-color: $white;
+  border: 1px solid map-get($ktb-palette-biz-black, 10);
+  border-radius: 8px;
+  box-shadow: 0px 2px 4px 0px $dashboard-tab-box-shadow;
+  padding: 16px;
+  position: relative;
+  cursor: pointer;
+  min-width: 16%;
+
+  .tab-header-content {
+    align-self: stretch;
+    padding-bottom: 16px;
+  }
+
+  .tab-select-content {
+    padding-top: 16px;
+    border-top: 1px solid map-get($ktb-palette-biz-black, 10);
+  }
+
+  .color-strip {
+    border-radius: 4px;
+    width: 12px;
+    min-width: 12px;
+    margin-right: 12px;
+  }
+
+  &.active {
+    background-color: map_get($ktb-palette-blue, 50);
+  }
+
+  h4 {
+    margin: 0;
+  }
+}
+
+.scroll .tab {
+  &:first-child {
+    margin-left: 24px;
+  }
+  &:nth-last-child(2) {
+    margin-right: 0 !important;
+  }
+}
+
+.end-space {
+  padding-right: 24px;
+}

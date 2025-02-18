@@ -1,0 +1,116 @@
+<div>
+  <!-- message banner -->
+  <div class="mb-1em">
+    <app-message-banner [message]="messageBanner" type="warn-normal">
+    </app-message-banner>
+  </div>
+  <!-- table -->
+  <div class="table-scroll section" table-scroll [formGroup]="form">
+    <table mat-table [dataSource]="rows.controls" formArrayName="rows">
+      <ng-container matColumnDef="index" sticky>
+        <th mat-header-cell *matHeaderCellDef>ลำดับ</th>
+        <td mat-cell *matCellDef="let element; let i = index;">
+          {{i + 1}}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="collateralGroup">
+        <th mat-header-cell *matHeaderCellDef>ชุดทรัพย์</th>
+        <td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i">
+          <mat-form-field class="no-label input-sm-icon search-input-field">
+            <mat-label>จำนวน</mat-label>
+            <input matInput type="text" appNumberOnly="qualitative" formControlName="colGroup" />
+          </mat-form-field>
+          <spig-error-msg [control]="rows.at(i).get('colGroup')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+          </spig-error-msg>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="collateralType">
+        <th mat-header-cell *matHeaderCellDef>ประเภททรัพย์</th>
+        <td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i">{{rows.at(i).get('lexsCollateralTypeDesc')?.value }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="subCollateralType">
+        <th mat-header-cell *matHeaderCellDef>ประเภทย่อย</th>
+        <td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i">{{rows.at(i).get('lexsCollateralSubTypeDesc')?.value}}</td>
+      </ng-container>
+      <ng-container matColumnDef="documentNumber">
+        <th mat-header-cell *matHeaderCellDef>เลขที่เอกสารสิทธิ์</th>
+        <td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i">{{rows.at(i).get('lexsDocumentNo')?.value}}</td>
+      </ng-container>
+      <ng-container matColumnDef="collateralDetails">
+        <th mat-header-cell *matHeaderCellDef>รายละเอียดทรัพย์</th>
+        <td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i">{{rows.at(i).get('lexsCollateralsDescription')?.value}}</td>
+      </ng-container>
+      <ng-container matColumnDef="redCase">
+        <th mat-header-cell *matHeaderCellDef>คดีหมายเลขแดง</th>
+        <td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i">{{rows.at(i).get('lexsRedCaseNo')?.value}}</td>
+      </ng-container>
+      <ng-container matColumnDef="salesMethod">
+        <th mat-header-cell *matHeaderCellDef>วิธีการขาย</th>
+        <td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i">{{rows.at(i).get('salesMethod')?.value || '-'}}</td>
+      </ng-container>
+      <ng-container matColumnDef="mortgagee">
+        <th mat-header-cell *matHeaderCellDef>ผู้รับจำนอง</th>
+        <td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i">{{rows.at(i).get('assetObligationBy')?.value}}</td>
+      </ng-container>
+      <ng-container matColumnDef="ownerName">
+        <th mat-header-cell *matHeaderCellDef>ชื่อผู้ถือกรรมสิทธิ์</th>
+        <td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i">{{rows.at(i).get('lexsOwnerFullName')?.value}}</td>
+      </ng-container>
+      <ng-container matColumnDef="accuser">
+        <th mat-header-cell *matHeaderCellDef>โจทก์</th>
+        <td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i">{{rows.at(i).get('lexsPlaintiffName')?.value}}</td>
+      </ng-container>
+      <ng-container matColumnDef="defendant">
+        <th mat-header-cell *matHeaderCellDef>จำเลย</th>
+        <td  mat-cell *matCellDef="let element; let i = index" [formGroupName]="i">
+          <ng-container *ngIf="['EDIT', 'MATCH'].includes('EDIT'); else elseDefTemplate">
+            <span>{{rows.at(i).get('lexsDefendant')?.value}}</span>
+          </ng-container>
+          <ng-template #elseDefTemplate>
+            <ng-container *ngIf="element.lexsDefendant?.length > 1; else elseDefendantTemplate">
+              <div class="wrap-tooltip">
+                <span>{{rows.at(i).get('lexsDefendant')?.value}}</span>
+                <ng-container *ngIf="element.lexsDefendant.length > 0">
+                  <app-tooltip [iconClass]="['icon-small', 'fill-blue']" [position]="'top-right'"
+                    [params]="[{ title: 'รายชื่อผู้เกี่ยวข้อง', content: element.lexsDefendant }]">
+                  </app-tooltip>
+                </ng-container>
+              </div>
+            </ng-container>
+            <ng-template #elseDefendantTemplate>
+              <span>{{rows.at(i).get('lexsDefendant')?.value}}</span>
+            </ng-template>
+          </ng-template>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="proprietaryType">
+        <th mat-header-cell *matHeaderCellDef>ประเภทกรรมสิทธิ์</th>
+        <td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i">
+          <spig-dropdown classInput="input-sm icon" formControlName="proprietaryType" [options]="occupantOptions"
+            [config]="occupantTypeConfig" (selectedOption)="onSelectedProprietaryType($event, i)">
+          </spig-dropdown>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="ledName">
+        <th mat-header-cell *matHeaderCellDef>สำนักงานบังคับคดี</th>
+        <td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i">{{rows.at(i).get('ledName')?.value}}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="remark" stickyEnd>
+        <th mat-header-cell *matHeaderCellDef>หมายเหตุ</th>
+        <td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i">
+          <div class="remark-contant mt-8 mb-8">
+            <mat-form-field class="full-width">
+              <mat-label>{{ 'COMMON.LABEL_REMARKS' | translate }}</mat-label>
+              <textarea matInput [rows]="5" [cols]="5" formControlName="remark" class="no-resize"></textarea>
+            </mat-form-field>
+          </div>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </div>
+
+</div>

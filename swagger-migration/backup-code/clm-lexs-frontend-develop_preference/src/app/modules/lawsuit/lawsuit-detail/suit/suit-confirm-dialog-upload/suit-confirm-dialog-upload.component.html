@@ -1,0 +1,61 @@
+<form>
+  <div class="content" fxlayout="column" fxLayoutGap="16px">
+    <app-upload-file-content
+      [title]="title"
+      [labelAcceptFile]="labelAcceptFile"
+      [uploadInfo]="uploadInfo"
+      [isReadDocument]="true"
+      taskCode="CONFIRM_COURT_FEES_PAYMENT"
+      [confirmationForm]="ConfirmationForm"
+      [isUpload]="isUploaded"
+      [isRequired]="isRequired"
+      [isSubmited]="isSubmited"
+      (uploadError)="onUploadError($event)"
+      (readDocumentEvent)="onUploadSuccess($event)"
+      [isShowUploadBtn]="isShowUploadBtn"
+      [isBlackTotalAmount]="isBlackTotalAmount"
+      [imageId]="imageId">
+      <!-- imageId -->
+    </app-upload-file-content>
+  </div>
+  <div class="content" fxlayout="column" fxLayoutGap="30px">
+    <div fxFlex="50" class="text-start">
+      <div class="input-full" fxLayout="column">
+        <mat-label class="label-info">{{ 'LAWSUIT.SUIT.LABEL_COURT_FEE' | translate }}</mat-label>
+        <mat-label>{{ payConfirmForm.courtFee | numberDecimal }}</mat-label>
+      </div>
+    </div>
+    <div fxFlex="50" class="text-start">
+      <div class="input-full" fxLayout="column">
+        <mat-label class="label-info">{{ 'LAWSUIT.SUIT.LABEL_PAY_PLEADING_ORDER' | translate }}</mat-label>
+        <mat-label>{{ payConfirmForm.deliveryFeeForPleadings | numberDecimal }}</mat-label>
+      </div>
+    </div>
+  </div>
+  <div class="content" fxlayout="row" fxLayoutGap="30px">
+    <div fxFlex="50" class="text-start">
+      <div class="input-full" fxLayout="column">
+        <mat-label class="label-info">{{ 'LAWSUIT.SUIT.LABEL_DOCUMENT_PREPARATION_FEE' | translate }} </mat-label>
+        <mat-label>{{ payConfirmForm.documentPreparationFee | numberDecimal }}</mat-label>
+      </div>
+    </div>
+    <div fxFlex="50" class="text-start">
+      <div class="input-full" fxLayout="column">
+        <mat-label class="label-info">{{ 'COMMON.TOTAL_SUMMARY' | translate }}</mat-label>
+        <mat-label>{{ payConfirmForm.totalAmount | numberDecimal }}</mat-label>
+      </div>
+    </div>
+  </div>
+</form>
+<ng-container *ngIf="isShowInfoMsg">
+  <br />
+  <app-message-banner [type]="'info'" [message]="uploadBussinessInfo">
+    <div *ngFor="let item of subMessageUploadBussinessInfo">{{ item }}</div>
+  </app-message-banner>
+</ng-container>
+<ng-container *ngIf="uploadBussinessErr">
+  <br />
+  <app-message-banner [message]="uploadBussinessErr">
+    <div *ngFor="let item of subMessageUploadBussinessErr">{{ item }}</div>
+  </app-message-banner>
+</ng-container>

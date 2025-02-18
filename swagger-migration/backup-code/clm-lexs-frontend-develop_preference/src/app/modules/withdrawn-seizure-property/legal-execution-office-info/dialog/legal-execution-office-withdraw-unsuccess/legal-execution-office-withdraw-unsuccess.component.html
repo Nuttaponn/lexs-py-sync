@@ -1,0 +1,32 @@
+<div class="container">
+  <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+    <div fxLayout="column" fxFlex="14">
+      <h6>{{ 'COMMON.LABEL_REASON' | translate }}</h6>
+    </div>
+    <div fxLayout="column" fxFlex="40">
+      <div fxFlex="49" fxLayout="column">
+        <spig-dropdown
+          class="full-mat-width"
+          classInput="input-xsm long"
+          [placeholder]="'WITHDRAWN_SEIZURE_PROPERTY.REASON_REQUIRE' | translate"
+          [formControl]="legalExecutionReasonFormControl"
+          [config]="legalExecutionDropdownConfig"
+          [options]="legalExecutionOptions"></spig-dropdown>
+        <spig-error-msg
+          [control]="legalExecutionReasonFormControl"
+          [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'"></spig-error-msg>
+      </div>
+    </div>
+  </div>
+  <div fxLayout="row" fxLayoutAlign="end" fxLayoutGap="16px">
+    <div *ngIf="legalExecutionReasonFormControl.value === '04'" class="mt-24" fxLayout="column">
+      <mat-form-field class="full-mat-width">
+        <mat-label>{{ 'COMMON.LABEL_REASON' | translate }}</mat-label>
+        <input matInput [formControl]="legalExecutionRemarkFormControl" [required]="true" autocomplete="off" />
+      </mat-form-field>
+      <spig-error-msg
+        [control]="legalExecutionRemarkFormControl"
+        [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'"></spig-error-msg>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,69 @@
+@import '/src/styles/colors';
+
+td.hidden {
+  visibility: hidden;
+  height: 0 !important;
+}
+
+button.medium-aw-button.full-width {
+  width: 100% !important;
+}
+
+.blue-outlined-button {
+  color: $white;
+  background-color: $krungthai-blue;
+}
+
+.numberSize {
+  color: map-get($ktb-palette-biz-gray, 900);
+  font-size: 16px;
+}
+
+.mat-column-collateralDetails {
+  white-space: pre-line;
+}
+
+.mat-column-documentNo {
+  white-space: pre-wrap;
+}
+
+.mat-column-collateralSubType {
+  white-space: pre-line;
+}
+
+.mat-column-collateralType {
+  white-space: pre-line;
+}
+
+.mat-column-ownerName {
+  white-space: pre-wrap;
+}
+
+.disable-desc {
+  display: block;
+  white-space: pre-wrap;
+}
+
+.min-width-160 {
+  min-width: 160px;
+}
+
+.min-width-192 {
+  min-width: 192px;
+}
+
+.min-width-352 {
+  min-width: 352px;
+}
+
+.fs-16 {
+  font-size: 16px;
+}
+
+.ml-1half {
+  margin-left: 1.5px;
+}
+
+::ng-deep app-seizure-list-info .mat-mdc-card-content {
+  margin-bottom: 0px !important;
+}

@@ -1,0 +1,25 @@
+{
+  "DASHBOARD": {
+    "TITLE_CUSTOMER_DOCUMENT": "ลูกหนี้รออนุมัติดำเนินคดี และสถานะเอกสาร (CIF)",
+    "TITLE_CUSTOMER_PENDING_DOCUMENT": "ลูกหนี้รออนุมัติดำเนินคดี และสถานะเอกสาร (CIF)",
+    "TITLE_CUSTOMER_LEXS": "ลูกหนี้ DPD {{ LEXS_DPD }}-{{ LITIGATION_DPD }} วัน ที่รออนุมัติดำเนินคดี",
+    "TITLE_CUSTOMER_LITIGATION": "ลูกหนี้ DPD>{{ LITIGATION_DPD }} วัน หรือลูกหนี้ที่มีการเริ่มกระบวนการดำเนินคดี",
+    "TITLE_LITIGATION_STATUS": "ลูกหนี้ตามสถานะดำเนินคดี",
+    "TITLE_LITIGATION_DEFERMENT": "ชะลอดำเนินคดีแบ่งตามขั้นตอนการดำเนินงาน",
+    "TITLE_LITIGATION_DEFERMENT_EXECUTION": "ชะลอบังคับคดีแบ่งตามขั้นตอนการดำเนินงาน",
+    "TITLE_ACCOUNT_STATUS": "ลูกหนี้แบ่งตามสถานะบัญชีรับ-จ่าย",
+    "TITLE_COLLATERAL_STATUS": "ลูกหนี้ในชั้นบังคับคดีแบ่งตามสถานะหลักประกัน",
+    "SUB_TITLE_LITIGATION_DEFERMENT": "เลขที่กฎหมายที่ชะลอดำเนินคดี",
+    "SUB_TITLE_LITIGATION_DEFERMENT_EXECUTION": "เลขที่กฎหมายที่ชะลอบังคับคดี",
+    "SUB_TITLE_COLLATERAL_STATUS": "ทรัพย์จำนอง",
+    "TITLE_FINANCE_KTBLAW": "รายการเบิกเงินของ KTBLAW",
+    "SUB_TITLE_FINANCE_KTBLAW_NORMAL": "รายการเบิกเงินแบบปกติ",
+    "SUB_TITLE_FINANCE_KTBLAW_AUTO": "รายการเบิกเงินแบบอัตโนมัติ",
+    "BTN_ALL_INFO": "ดูข้อมูลทั้งหมด",
+    "TITLE_ALL_FINANCE": "รายการเบิกเงินทั้งหมด",
+    "SELECT": "เลือกดู",
+    "FETCH_ERROR": "ไม่สามารถเรียกดูข้อมูลได้ในขณะนี้ โปรดลองใหม่อีกครั้งในภายหลัง",
+    "FETCH_EMPTY_FINANCE": "ไม่มีรายการเบิกเงิน",
+    "TITLE_ALL_LAWSUITS": "เลขที่กฎหมายทั้งหมด"
+  }
+}

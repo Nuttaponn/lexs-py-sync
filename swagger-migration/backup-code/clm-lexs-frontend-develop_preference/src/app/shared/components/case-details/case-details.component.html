@@ -1,0 +1,209 @@
+<div class="content-container">
+  <div class="inner-container-padding-24">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+      <div class="title-text">
+        <h5 class="mt-12 mb-12 mr-12">
+          {{ auctionCaseTypeCode === '0002' ? 'รายละเอียดคดีโจทก์นอก' : title | translate }}
+        </h5>
+      </div>
+      <div fxLayout="row">
+        <div class="description" (click)="isOpened = !isOpened">
+          <mat-icon
+            [svgIcon]="isOpened ? 'icon-Slide-Hide' : 'icon-Expand'"
+            class="icon icon-hide-show icon-xmedium fill-blue mr-5">
+          </mat-icon
+          >{{ isOpened ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate) }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-container *ngIf="auctionCaseTypeCode === '0002'; then plaintiffCaseDetailTemplate; else caseDetailTemplate"></ng-container>
+  <ng-template #plaintiffCaseDetailTemplate>
+    <mat-accordion>
+      <mat-expansion-panel [expanded]="isOpened" hideToggle>
+        <mat-divider class="no-margin"></mat-divider>
+        <div class="mb-24 mt-24 mr-16 ml-16 no-margin-left" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+          <div fxLayout="column" fxFlex="15">
+            <h6>{{ 'COMMON.LABEL_CASE_INFORMATION' | translate }}</h6>
+          </div>
+          <div fxLayout="column" fxFlex="28" fxLayoutGap="12px">
+            <span class="thin-letter">ชื่อโจทก์</span>
+            <div>{{ dataForm.plaintiff | coerceString }}</div>
+          </div>
+          <div fxLayout="column" fxFlex="28" fxLayoutGap="12px">
+            <span class="thin-letter">ชื่อจำเลยที่ 1</span>
+            <div>{{ dataForm.defendant | coerceString }}</div>
+          </div>
+          <div fxLayout="column" fxFlex="28" fxLayoutGap="12px">
+            <span class="thin-letter">คดีหมายเลขแดงโจทก์นอก</span>
+            <div class="fill-red">{{ dataForm.civilCourtRedCaseNo | coerceString }}</div>
+          </div>
+        </div>
+
+        <div class="mb-28 mr-16 ml-16 no-margin-left" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+          <div fxLayout="column" fxFlex="15"></div>
+          <div fxLayout="column" fxFlex="28" fxLayoutGap="12px">
+            <span class="thin-letter">ศาล</span>
+            <div>{{ dataForm.courtName | coerceString }}</div>
+          </div>
+          <div fxLayout="column" fxFlex="28" fxLayoutGap="12px">
+            <span class="thin-letter">สำนักงานบังคับคดี</span>
+            <div>{{ dataForm.ledName | coerceString }}</div>
+          </div>
+          <div fxLayout="column" fxFlex="28" fxLayoutGap="12px">
+            <span class="thin-letter">เลขที่หนังสือสั่งการ</span>
+            <div>
+              <span class="link" (click)="navigateToLitigation()">{{ dataForm.preferenceGroupNo | coerceString }}</span>
+              <ng-container *ngIf="otherPreferenceGroupNos?.length !== 0">
+                <app-tooltip [params]="otherPreferenceGroupNos" (contentEmitter)="onClickContent($event)"></app-tooltip>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-28 mr-16 ml-16 no-margin-left" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+          <div fxLayout="column" fxFlex="15"></div>
+          <div fxLayout="column" fxFlex="28" fxLayoutGap="12px">
+            <span class="thin-letter">เลขที่หมายแจ้งจากกรมบังคับคดี</span>
+            <div>{{ dataForm.executeNo | coerceString }}</div>
+          </div>
+          <div fxLayout="column" fxFlex="28" fxLayoutGap="12px">
+            <span class="thin-letter">หมายลงวันที่</span>
+            <div>{{ (dataForm.executeDate | buddhistEra: 'DD/MM/yyyy') || '-' }}</div>
+          </div>
+          <div fxLayout="column" fxFlex="28" fxLayoutGap="12px">
+            <span class="thin-letter">ผู้ถือกรรมสิทธิ</span>
+            <div fxLayout="row">
+              <div>{{ ownerFullNameMain | coerceString }}</div>
+              <ng-container *ngIf="ownerFullNames?.length !== 0">
+                <app-tooltip [params]="ownerFullNames"></app-tooltip>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </ng-template>
+  <ng-template #caseDetailTemplate>
+    <mat-accordion>
+      <mat-expansion-panel [expanded]="isOpened" hideToggle>
+        <mat-divider class="no-margin"></mat-divider>
+        <div class="mb-24 mt-24 mr-16 ml-16 no-margin-left" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+          <div fxLayout="column" fxFlex="15">
+            <h6>{{ 'COMMON.LABEL_CASE_INFORMATION' | translate }}</h6>
+          </div>
+          <div fxLayout="column" fxFlex="28" fxLayoutGap="12px">
+            <span class="thin-letter">{{ 'COMMON.LABEL_LITIGATION_ID' | translate }}</span>
+            <div
+              [class.link]="!!dataForm.litigationId && !isViewMode && !isLawsuitMenu"
+              (click)="!!dataForm.litigationId && !isViewMode && navigateToLitigation()">
+              {{ dataForm.litigationId | coerceString }}
+            </div>
+          </div>
+          <div fxLayout="column" fxFlex="28" fxLayoutGap="12px">
+            <span class="thin-letter">{{ 'COMMON.LABEL_CIF_NO' | translate }}</span>
+            <div>{{ dataForm.cifNo | coerceString }}</div>
+          </div>
+          <div fxLayout="column" fxFlex="28" fxLayoutGap="12px">
+            <span class="thin-letter">{{ 'COMMON.LABEL_RESPONSE_UNIT' | translate }}</span>
+            <div>
+              {{
+                (dataForm.responseUnitCode | coerceString: '') + ' - ' + (dataForm.responseUnitName | coerceString: '')
+              }}
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-28 mr-16 ml-16 no-margin-left" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+          <div fxLayout="column" fxFlex="15"></div>
+          <div fxLayout="column" fxFlex="28" fxLayoutGap="12px">
+            <span class="thin-letter">{{ 'COMMON.LABEL_BOOKING_COST_CENTER' | translate }}</span>
+            <div>
+              {{ (dataForm.bookingCode | coerceString: '') + ' - ' + (dataForm.bookingName | coerceString: '') }}
+            </div>
+          </div>
+          <div fxLayout="column" fxFlex="28" fxLayoutGap="12px">
+            <span class="thin-letter">{{ 'COMMON.LABEL_AMD_RESPONSE_UNIT' | translate }}</span>
+            <div>
+              {{
+                (dataForm.amdResponseUnitCode | coerceString: '') +
+                  ' - ' +
+                  (dataForm.amdResponseUnitName | coerceString: '')
+              }}
+            </div>
+          </div>
+          <div fxLayout="column" fxFlex="28" fxLayoutGap="12px">
+            <span class="thin-letter">{{ 'COMMON.LABEL_DEBT_SUMMARY_BATH' | translate }}</span>
+            <div>{{ dataForm.sumLimitAmount | numberDecimal }}</div>
+          </div>
+        </div>
+
+        <div class="mb-28 mr-16 ml-16 no-margin-left" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+          <div fxLayout="column" fxFlex="15"></div>
+          <div fxLayout="column" fxFlex="28" fxLayoutGap="12px">
+            <span class="thin-letter">{{ 'COMMON.LABEL_CIVIL_COURT_BLACK_CASE_NO' | translate }}</span>
+            <div>{{ dataForm.civilCourtBlackCaseNo | coerceString }}</div>
+          </div>
+          <div fxLayout="column" fxFlex="28" fxLayoutGap="12px">
+            <span class="thin-letter">{{ 'COMMON.LABEL_CIVIL_COURT_RED_CASE_NO' | translate }}</span>
+            <div>{{ dataForm.civilCourtRedCaseNo | coerceString }}</div>
+          </div>
+          <div fxLayout="column" fxFlex="28" fxLayoutGap="12px">
+            <span class="thin-letter">{{ 'COMMON.LABEL_CASE_DATE' | translate }}</span>
+            <div>{{ (dataForm.civilCourtCaseDate | buddhistEra: 'DD/MM/yyyy') || '-' }}</div>
+          </div>
+        </div>
+
+        <div class="mb-28 mr-16 ml-16 no-margin-left" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+          <div fxLayout="column" fxFlex="15"></div>
+          <div fxLayout="column" fxFlex="28" fxLayoutGap="12px">
+            <span class="thin-letter">{{ 'COMMON.LABEL_1ST_POSSIBLE_EXECUTION_DUE_DATE' | translate }}</span>
+            <div>
+              {{ (dataForm.firstPossibleExecutionDueDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+            </div>
+          </div>
+
+          <div fxLayout="column" fxFlex="28" fxLayoutGap="12px">
+            <span class="thin-letter">{{ 'COMMON.LABEL_BANKRUPTCY_FILING_EXP_DATE' | translate }}</span>
+            <div>{{ (dataForm.bankruptcyFilingExpiryDate | buddhistEra: 'DD/MM/yyyy') || '-' }}</div>
+          </div>
+          <div fxLayout="column" fxFlex="28" fxLayoutGap="12px">
+            <span class="thin-letter">{{ 'COMMON.LABEL_COURT_VERDICT_DATE' | translate }}</span>
+            <div>{{ (dataForm.courtVerdictDate | buddhistEra: 'DD/MM/yyyy') || '-' }}</div>
+          </div>
+        </div>
+
+        <ng-container *ngIf="!hidelawyer">
+          <div
+            class="mb-24 mt-24 mr-16 ml-16 no-margin-left"
+            fxLayout="row"
+            fxLayoutAlign="start start"
+            fxLayoutGap="16px">
+            <div fxLayout="column" fxFlex="15">
+              <h6>{{ 'COMMON.LABEL_RESPONSIBLE_LAWYER_2' | translate }}</h6>
+            </div>
+
+            <div fxLayout="column" fxFlex="28" fxLayoutGap="12px">
+              <span class="thin-letter">{{ 'COMMON.LABEL_OFFICE_LAWYER' | translate }}</span>
+              <div>{{ 'COMMON.MAIN_BRANCE_KTB_OFFICE_CODE_NAME' | translate }}</div>
+            </div>
+
+            <div fxLayout="column" fxFlex="28" fxLayoutGap="12px">
+              <span class="thin-letter">{{ 'COMMON.LABEL_RESPONSIBLE_LAWYER_2' | translate }}</span>
+              <div>
+                {{ (dataForm.legalExecutionLawyerId || '') + ' - ' + (dataForm.legalExecutionLawyerFullName || '') }}
+              </div>
+            </div>
+
+            <div fxLayout="column" fxFlex="28" fxLayoutGap="12px">
+              <!-- This row is to make widh equally for every row. ref LEX2-30764 -->
+              <div></div>
+            </div>
+          </div>
+        </ng-container>
+        <ng-content #additionalInfo></ng-content>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </ng-template>
+</div>

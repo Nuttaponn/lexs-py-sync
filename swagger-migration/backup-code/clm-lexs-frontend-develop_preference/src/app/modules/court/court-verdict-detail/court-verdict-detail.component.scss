@@ -1,0 +1,116 @@
+@import '/src/styles/colors';
+@import '/src/styles/table-alignment';
+
+.court-container {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+
+  .title-content {
+    padding: 1em;
+    border-radius: 8px;
+  }
+
+  .no-horizontal-padding {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  button.neutral {
+    color: map_get($ktb-palette-biz-gray, A400);
+    border-color: map_get($ktb-palette-biz-gray, 400);
+  }
+
+  button.green-stroked {
+    color: map_get($ktb-palette-green, 600);
+    border-color: $krungthai-green !important;
+    outline-color: $krungthai-green !important;
+  }
+
+  .m-auto {
+    margin: auto;
+  }
+}
+
+::ng-deep .court-container .mat-expansion-panel-body {
+  padding: 0 16px !important;
+}
+
+/* Decree table (fixed layout table) */
+::ng-deep .court-container table.fixed-table {
+  table-layout: fixed;
+}
+
+::ng-deep .court-container table.fixed-table .detail-row-wrapper thead {
+  visibility: hidden;
+  height: 0;
+  overflow: hidden;
+
+  tr,
+  th {
+    height: 0;
+  }
+
+  th {
+    line-height: 0;
+    border-width: 0 !important;
+  }
+}
+
+::ng-deep .court-container table.fixed-table {
+  white-space: initial !important;
+}
+
+::ng-deep .court-container table.fixed-table button.mat-mdc-unelevated-button.medium-button,
+::ng-deep .court-container table.fixed-table button.mat-mdc-outlined-button,
+::ng-deep .court-container table.fixed-table button.mat-stroked-button.medium-button {
+  width: auto !important;
+  font-size: 16px !important;
+}
+
+.court-container table.fixed-table .detail-table-div:not(.commitment) {
+  box-shadow: inset 0 4px 4px -4px map-get($ktb-palette-biz-black, 20);
+}
+
+.court-container table.fixed-table .detail-row,
+.court-container table.fixed-table .detail-row-wrapper {
+  height: 0;
+}
+
+.court-container table.fixed-table .detail-row-wrapper {
+  border-bottom: none;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.court-container table.fixed-table .detail-table tr {
+  background-color: $gray-almost-white;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.court-container table.fixed-table .visibility-hidden {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+// order, expand button
+table.fixed-table .cell-xxs {
+  @include table-width(3, 50px);
+}
+
+// normal cells
+table.fixed-table .cell-xs {
+  @include table-width(8, 100px);
+}
+
+// status/action
+table.fixed-table .cell-s {
+  @include table-width(12, 160px);
+}
+
+// defendant name
+table.fixed-table .cell-m {
+  @include table-width(16, 160px);
+}

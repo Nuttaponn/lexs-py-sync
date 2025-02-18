@@ -1,0 +1,18 @@
+<mat-tab-group
+  class="tab-group-container"
+  [(selectedIndex)]="_tabIndex"
+  mat-align-tabs="start"
+  (selectedTabChange)="onTabChanged($event)">
+  <mat-tab>
+    <ng-template mat-tab-label>{{ 'COURT.CIVIL_COURT' | translate }}</ng-template>
+    <app-court-verdict-detail [courtResults]="courtCivil" [litigationCaseDownloadMap]="litigationCaseDownloadMap"></app-court-verdict-detail>
+  </mat-tab>
+  <mat-tab>
+    <ng-template mat-tab-label>{{ 'COURT.APPEALS_COURT' | translate }}</ng-template>
+    <app-court-verdict-detail [courtResults]="courtAppeal" [litigationCaseDownloadMap]="litigationCaseDownloadMap"></app-court-verdict-detail>
+  </mat-tab>
+  <mat-tab>
+    <ng-template mat-tab-label>{{ 'COURT.SUPREME_COURT' | translate }}</ng-template>
+    <app-court-verdict-detail [courtResults]="courtSupreme" [litigationCaseDownloadMap]="litigationCaseDownloadMap"></app-court-verdict-detail>
+  </mat-tab>
+</mat-tab-group>

@@ -1,0 +1,57 @@
+<form [formGroup]="formgroup">
+  <div class="content">
+    <div fxFlex="50" class="content-form">
+      <div class="header black-100 pl-0 pb-10">{{ 'NOTI.NEWS_NUMBER' | translate }}</div>
+      <div class="detail pb-30">{{ litigationNoticeDto.noticeNo ?? '-' }}</div>
+    </div>
+    <div fxFlex="50" class="content-form">
+      <div class="header black-100 pl-0 pb-10">{{ 'NOTI.NEWS_PAPER' | translate }}</div>
+      <div class="detail pb-30">{{ litigationNoticeDto.newspaperName ?? '-' }}</div>
+    </div>
+  </div>
+  <div class="content">
+    <app-upload-file-content
+      [title]="'NOTI.NEWS_TEXT_UPLOAD'"
+      [isRequired]="true"
+      [isSubmited]="isSubmited"
+      [uploadInfo]="uploadInfo"
+      (uploadSession)="setuploadSessionId($event)">
+    </app-upload-file-content>
+  </div>
+  <div class="content" fxlayout="row" fxLayoutGap="16px">
+    <div fxlayout="column" fxFlex="50">
+      <spig-datepicker
+        [classInput]="'input-full-field'"
+        formControlName="NEWS_DATE"
+        [label]="'NOTI.NEWS_DATE'"></spig-datepicker>
+      <spig-error-msg [control]="getControl('NEWS_DATE')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+      </spig-error-msg>
+    </div>
+    <div fxlayout="column" fxFlex="50">
+      <spig-datepicker
+        [classInput]="'input-full-field'"
+        formControlName="NEWS_FRIST_DATE"
+        [label]="'NOTI.NEWS_FRIST_DATE'"></spig-datepicker>
+      <spig-error-msg [control]="getControl('NEWS_FRIST_DATE')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+      </spig-error-msg>
+    </div>
+  </div>
+  <div class="content" fxlayout="row" fxLayoutGap="16px">
+    <div fxlayout="column" fxFlex="50">
+      <spig-datepicker
+        [classInput]="'input-full-field'"
+        formControlName="NEWS_LAST_DATE"
+        [label]="'NOTI.NEWS_LAST_DATE'"></spig-datepicker>
+      <spig-error-msg [control]="getControl('NEWS_LAST_DATE')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+      </spig-error-msg>
+    </div>
+    <div fxlayout="column" fxFlex="50">
+      <spig-datepicker
+        [classInput]="'input-full-field'"
+        formControlName="NEWS_DUE_DATE"
+        [label]="'NOTI.NEWS_DUE_DATE'"></spig-datepicker>
+      <spig-error-msg [control]="getControl('NEWS_DUE_DATE')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+      </spig-error-msg>
+    </div>
+  </div>
+</form>

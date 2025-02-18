@@ -1,0 +1,157 @@
+@import '/src/styles/colors';
+
+.custom-notification-sidenav.expand {
+  box-shadow: -3px 0px 2px map-get($ktb-palette-biz-black, B016);
+  width: 560px;
+  transition: width 300ms ease-in-out;
+}
+
+.custom-notification-sidenav.side {
+  width: 0px;
+  transition: width 300ms ease-in-out;
+}
+
+.parent-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.container-sidenav {
+  box-sizing: border-box;
+  border: 1px solid map-get($bule-soft-cyan, 03);
+  border-radius: 5px;
+  background: map-get($ktb-palette-blue, 50);
+  margin-top: 15px;
+  padding: 15px;
+
+  .vertical-align-text {
+    vertical-align: text-top;
+    font-weight: bolder;
+  }
+
+  .custom-black-circle {
+    font-size: 30px;
+    vertical-align: middle;
+    color: map-get($ktb-palette-precious-blue, 50);
+    margin-right: 8px;
+  }
+
+  .notification-details {
+    .custom-noti-hyperlink {
+      color: map-get($ktb-palette-precious-blue, 50);
+      font-weight: bolder;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    .custom-noti-none-hyperlink {
+      font-weight: bolder;
+      text-decoration: underline;
+    }
+  }
+}
+
+.custom-sidenav {
+  padding: 30px;
+  height: 100%;
+  width: auto;
+  display: flex;
+  flex-direction: column;
+
+  .custom-font {
+    display: flex;
+    font-weight: bolder;
+
+    label {
+      margin: auto;
+    }
+  }
+
+  .close-notification {
+    cursor: pointer;
+  }
+
+  .custom-divider {
+    margin-top: 15px;
+    flex: none;
+    background: map-get($ktb-palette-biz-black, 10);
+    order: 0;
+    align-self: stretch;
+    flex-grow: 0;
+  }
+}
+
+.empty-inbox-message {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: map-get($ktb-palette-biz-black, 70);
+
+  .icon-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    mat-icon {
+      cursor: default;
+    }
+  }
+}
+
+.notification-read {
+  padding: 15px;
+  border: 1px solid map-get($ktb-palette-biz-black, 10);
+  border-radius: 4px;
+  background-color: map-get($ktb-palette-precious-blue, 00);
+}
+
+.custom-black-circle-read {
+  font-size: 30px;
+  vertical-align: middle;
+  color: map-get($ktb-palette-biz-black, 20);
+  margin-right: 8px;
+}
+
+.circle-checkmark {
+  display: inline-block;
+  font-size: 12px;
+  color: map-get($ktb-palette-precious-blue, disabled);
+  vertical-align: middle;
+  border: 2px solid map-get($ktb-palette-precious-blue, disabled);
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  line-height: 20px;
+  text-align: center;
+  margin-right: 10px;
+}
+
+.text-read {
+  @extend .vertical-align-text;
+  color: map-get($ktb-palette-precious-blue, disabled);
+}
+
+.notification-paginator {
+  margin-top: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.notification-detail-line {
+  display: block;
+  line-height: 1.4;
+}
+
+.divider-message {
+  margin-top: 5px;
+  flex: none;
+  background: map-get($ktb-palette-biz-black, 10);
+  order: 0;
+  align-self: stretch;
+  flex-grow: 1;
+}

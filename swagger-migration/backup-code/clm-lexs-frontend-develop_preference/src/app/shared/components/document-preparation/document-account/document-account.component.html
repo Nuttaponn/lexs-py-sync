@@ -1,0 +1,2064 @@
+<app-document-header
+  title="เอกสารบัญชี"
+  [isMain]="true"
+  (expand)="onExpansionPanelToggle('MAIN')"
+  [forDoc]="mode === MODE.VIEW_PENDING_APPROVE || mode === MODE.VIEW_PENDING"
+  [readyForLitigation]="sectionReadyForLitigation"
+  [readyForDoc]="sectionReadyForDoc"
+  [forLitigation]="mode !== MODE.VIEW_PENDING_APPROVE && mode !== MODE.VIEW_PENDING"
+  [forNoticeLetter]="mode !== MODE.VIEW_PENDING_APPROVE && mode !== MODE.VIEW_PENDING"
+  [ready]="true"
+  [readyForNotice]="sectionReadyForNotice"
+  [expanded]="showMain">
+</app-document-header>
+<mat-expansion-panel [expanded]="showMain">
+  <app-document-header
+    title="เอกสารสัญญาสินเชื่อ"
+    [isMain]="false"
+    (expand)="onExpansionPanelToggle('CONTRACT')"
+    [forLitigation]="mode !== MODE.VIEW_PENDING_APPROVE && mode !== MODE.VIEW_PENDING"
+    [forNoticeLetter]="mode !== MODE.VIEW_PENDING_APPROVE && mode !== MODE.VIEW_PENDING"
+    [forDoc]="mode === MODE.VIEW_PENDING_APPROVE || mode === MODE.VIEW_PENDING"
+    [readyForLitigation]="contracts.readyForLitigation"
+    [readyForDoc]="contracts.readyForDoc || false"
+    [ready]="true"
+    [readyForNotice]="contracts.readyForNotice"
+    [expanded]="showContract">
+  </app-document-header>
+  <mat-expansion-panel [expanded]="showContract">
+    <app-message-banner
+      class="pt-20"
+      *ngIf="remainingCommitmentCount > 0"
+      [toolTipParams]="remainingCommitmentList"
+      messageContainerClass="with-auto"
+      [message]="
+        'กรุณาจับคู่วงเงิน กับสัญญาสินเชื่อและบันทึกต่อท้ายให้ครบถ้วน ก่อนดำเนินการต่อไป &nbsp;&nbsp;&nbsp;&nbsp;วงเงินที่ยังไม่จับคู่กับสัญญาสินเชื่อ: ' +
+        remainingCommitmentCount
+      ">
+    </app-message-banner>
+    <ng-container *ngIf="mode === MODE.VIEW_PENDING && contracts.contracts!.length > 0">
+      <div fxLayoutAlign="flex-end" class="mt-20 mb-20" fxLayoutGap="24">
+        <div fxLayoutAlign="start center" fxLayoutGap="24">
+          <label>
+            {{ 'DOC_PREP.SELECT' | translate }}: {{ contracts.documentNumber }} {{ 'COMMON.LABEL_FROM' | translate }}
+            {{ contracts.totalDocuments }}
+          </label>
+        </div>
+        <div fxLayoutAlign="start center" fxLayoutGap="24">
+          <button
+            id="btn-doc-acct-sent-received-0"
+            type="button"
+            (click)="checkSentReceivedAll(contracts)"
+            mat-stroked-button
+            class="long-button mat-gray">
+            <mat-icon svgIcon="icon-Checkmark-Circle-Regular" class="icon icon-md fill-black-70"> </mat-icon>
+
+            <ng-container *ngIf="mode === MODE.VIEW_PENDING">
+              {{ 'DOC_PREP.SENT_ALL' | translate }}
+            </ng-container>
+          </button>
+        </div>
+      </div>
+    </ng-container>
+    <div class="table-scroll white-space-init" table-scroll>
+      <table mat-table [dataSource]="contracts.contracts!" class="mt-16 mb-32" multiTemplateDataRows>
+        <ng-container matColumnDef="order">
+          <th mat-header-cell *matHeaderCellDef class="text-center cell-xxs">{{ 'COMMON.LABEL_NO' | translate }}</th>
+          <td mat-cell *matCellDef="let element" class="text-center">
+            <span *ngIf="!element.optional">
+              {{ element.order }}
+            </span>
+            <span *ngIf="element.optional" fxLayoutAlign="center center">
+              <div class="elm-form">
+                <input
+                  type="checkbox"
+                  class="elm-radio-check elm-check"
+                  (change)="toggleActive(element)"
+                  [checked]="element.active"
+                  [disabled]="mode === MODE.VIEW || mode === MODE.VIEW_PENDING || mode === MODE.VIEW_PENDING_APPROVE"
+                  [class.disabled]="(mode === MODE.VIEW || mode === MODE.VIEW_PENDING) && !element.active"
+                  [class.inactive]="
+                    (mode === MODE.VIEW || mode === MODE.VIEW_PENDING || mode === MODE.VIEW_PENDING_APPROVE) &&
+                    element.active
+                  " />
+                <label></label>
+              </div>
+            </span>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="documentName">
+          <th mat-header-cell *matHeaderCellDef class="cell-l">{{ 'DOC_PREP.DOC_NAME' | translate }}</th>
+          <td mat-cell *matCellDef="let element">
+            <div fxLayoutAlign="start center" fxLayoutGap="8">
+              <span>{{ element.documentSetName }}</span>
+              <!-- Single -->
+              <mat-icon
+                svgIcon="icon-Email"
+                class="icon default-cursor icon-hide-show icon-small"
+                *ngIf="element.single && element.forNoticeLetter"
+                [class.fill-krungthai-green]="element.documents[0]?.imageId"
+                [class.fill-gold]="!element.documents[0]?.imageId">
+              </mat-icon>
+              <mat-icon
+                svgIcon="icon-Building-Court"
+                class="icon default-cursor icon-hide-show icon-small"
+                *ngIf="element.single && element.forLitigation"
+                [class.fill-krungthai-green]="element.documents[0]?.imageId && element.documents[0].hasOriginalCopy"
+                [class.fill-krungthai-red]="
+                  element.documents[0]?.imageId && element.documents[0].hasOriginalCopy === false
+                "
+                [class.fill-gold]="
+                  element.documents[0]?.hasOriginalCopy === undefined || !element.documents[0]?.imageId
+                ">
+              </mat-icon>
+              <!-- Multiple -->
+              <mat-icon
+                svgIcon="icon-Email"
+                class="icon default-cursor icon-hide-show icon-small"
+                *ngIf="!element.single && element.forNoticeLetter"
+                [class.fill-krungthai-green]="element.readyForNotice"
+                [class.fill-gold]="!element.readyForNotice">
+              </mat-icon>
+              <mat-icon
+                svgIcon="icon-Building-Court"
+                class="icon default-cursor icon-hide-show icon-small"
+                *ngIf="!element.single && element.forLitigation"
+                [class.fill-krungthai-green]="element.readyForLitigation"
+                [class.fill-krungthai-red]="element.needsCopyForLitigation"
+                [class.fill-gold]="!element.readyForLitigation && !element.needsCopyForLitigation">
+              </mat-icon>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="commitmentCount">
+          <th mat-header-cell *matHeaderCellDef class="cell-xs">จำนวนวงเงิน</th>
+          <td mat-cell *matCellDef="let element">
+            <span></span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="storeOrganization">
+          <th mat-header-cell *matHeaderCellDef class="cell-s">{{ 'DOC_PREP.STORE_ORAGANIZE_NAME_' | translate }}</th>
+          <td mat-cell *matCellDef="let element">
+            <span>
+              <span>{{ element.uploadUserId || element.storeOrganization || '-' }}</span
+              ><br />
+              <span>{{ element.storeOrganizationName || '' }}</span>
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="oweOrganization">
+          <th mat-header-cell *matHeaderCellDef class="cell-s">{{ 'DOC_PREP.OWE_ORAGANIZE_NAME_' | translate }}</th>
+          <td mat-cell *matCellDef="let element">
+            <span>
+              <span>{{ element.uploadUserId || element.storeOrganization || '-' }}</span
+              ><br />
+              <span>{{ element.storeOrganizationName || '' }}</span>
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="action" stickyEnd>
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            columnElevationRight
+            [class.cell-m]="mode === MODE.EDIT"
+            class="text-center"
+            [class.cell-s]="mode !== MODE.EDIT">
+            {{ 'DOC_PREP.COPY' | translate }}
+          </th>
+          <td mat-cell *matCellDef="let element" columnElevationRight>
+            <div [class.visibility-hidden]="element.optional && !element.active">
+              <button
+                id="btn-doc-acct-select-doc-0"
+                *ngIf="
+                  mode === MODE.EDIT &&
+                  (element.documents?.length === 0 || (element.single && !element.documents[0]?.imageId))
+                "
+                type="button"
+                mat-flat-button
+                color="primary"
+                class="medium-button"
+                cdkFocusInitial
+                (click)="element.single ? selectDoc(element.documents[0]) : selectDoc(element)">
+                <mat-icon svgIcon="icon-Search" class="icon icon-md"></mat-icon>
+                {{ element.initButtonText }}
+              </button>
+              <button
+                id="btn-doc-acct-select-doc-1"
+                *ngIf="mode === MODE.EDIT && element.documents.length !== 0 && !element.single"
+                type="button"
+                mat-stroked-button
+                color="primary"
+                class="medium-button"
+                (click)="selectDoc(element)">
+                <mat-icon svgIcon="icon-Search" class="icon icon-md"></mat-icon>
+                {{ element.editButtonText }} ({{ element.documents.length }})
+              </button>
+              <div *ngIf="element.single && element.documents[0]?.imageId">
+                <div class="link" fxLayoutAlign="space-between center" fxLayoutGap="8">
+                  <span (click)="openDoc(element.documents[0])" class="break-word"
+                    >{{ element.documents[0].imageName }}
+                  </span>
+
+                  <mat-icon
+                    *ngIf="mode === MODE.EDIT"
+                    svgIcon="icon-Search"
+                    class="icon icon-xmedium"
+                    [class.fill-gray]="mode === MODE.EDIT && element.documents[0]?.sent"
+                    (click)="mode === MODE.EDIT && element.sent ? '' : selectDoc(element.documents[0])"></mat-icon>
+                </div>
+              </div>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="hasOriginalCopy" stickyEnd>
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            class="text-center"
+            [class.cell-s]="mode === MODE.VIEW || mode === MODE.VIEW_PENDING || mode === MODE.VIEW_PENDING_APPROVE"
+            [class.cell-xs]="mode === MODE.EDIT">
+            <span *ngIf="mode === MODE.EDIT">
+              {{ 'DOC_PREP.HAS_ORIGINAL_' | translate }}
+            </span>
+            <span *ngIf="mode === MODE.VIEW">
+              {{ 'DOC_PREP.VERIFY_ORIGINAL_' | translate }}
+            </span>
+            <span *ngIf="mode === MODE.VIEW_PENDING || mode === MODE.VIEW_PENDING_APPROVE">
+              {{ 'DOC_PREP.VERIFY_DOC_ORIGINAL' | translate }}
+            </span>
+          </th>
+          <td mat-cell *matCellDef="let element" class="text-center">
+            <div *ngIf="element.single">
+              <div *ngIf="mode === MODE.VIEW || mode === MODE.VIEW_PENDING || mode === MODE.VIEW_PENDING_APPROVE">
+                <span
+                  *ngIf="element.documents[0]?.documentTemplate?.needHardCopy && element.documents[0]?.hasOriginalCopy"
+                  class="status-label status-success">
+                  <mat-icon svgIcon="icon-Mark" class="icon-xmedium fill-green"> </mat-icon>
+                  {{ 'DOC_PREP.HAS_ORIGINAL_' | translate }}
+                </span>
+                <span
+                  *ngIf="
+                    element.documents[0]?.documentTemplate?.needHardCopy &&
+                    element.documents[0]?.hasOriginalCopy === false
+                  "
+                  class="status-label status-failed">
+                  <mat-icon svgIcon="icon-Cross" class="icon-xmedium fill-red"> </mat-icon>
+                  {{ 'DOC_PREP.NO_ORIGINAL' | translate }}
+                </span>
+                <span
+                  class="status-label status-pending"
+                  *ngIf="
+                    element.documents[0]?.documentTemplate?.needHardCopy &&
+                    element.documents[0]?.hasOriginalCopy === undefined
+                  ">
+                  {{ 'DOC_PREP.PEDDING_VERIFY' | translate }}
+                </span>
+                <span *ngIf="!element.documents[0]?.documentTemplate?.needHardCopy"> - </span>
+              </div>
+              <div *ngIf="mode === MODE.EDIT">
+                <mat-radio-group
+                  [name]="element.id || element.documentTemplateId"
+                  *ngIf="!element.optional || element.active">
+                  <mat-radio-button
+                    type="radio"
+                    color="accent"
+                    [value]="element.documents[0]?.hasOriginalCopy === true"
+                    [checked]="element.documents[0]?.hasOriginalCopy === true"
+                    [disabled]="
+                      (element.documents[0]?.documentTemplate?.imageId &&
+                        element.documents[0]?.imageSource === ImageSourceEnum.Dims) ||
+                      (mode === MODE.EDIT && element.documents[0]?.sent)
+                    "
+                    (change)="element.documents[0] && onRadioChange(element.documents[0], true)">
+                  </mat-radio-button>
+                </mat-radio-group>
+              </div>
+            </div>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="hasNotOriginalCopy" stickyEnd>
+          <th mat-header-cell *matHeaderCellDef class="text-center cell-xs">
+            {{ 'DOC_PREP.HAS_NOT_ORIGINAL' | translate }}
+          </th>
+          <td mat-cell *matCellDef="let element" class="text-center">
+            <div *ngIf="element.single">
+              <mat-radio-group
+                [name]="element.id || element.documentTemplateId"
+                *ngIf="!element.optional || element.active">
+                <mat-radio-button
+                  type="radio"
+                  color="accent"
+                  [value]="element.documents[0]?.hasOriginalCopy === false"
+                  [checked]="element.documents[0]?.hasOriginalCopy === false"
+                  [disabled]="
+                    (element.documents[0]?.documentTemplate?.imageId &&
+                      element.documents[0]?.imageSource === ImageSourceEnum.Dims) ||
+                    (mode === MODE.EDIT && element.documents[0]?.sent)
+                  "
+                  (change)="element.documents[0] && onRadioChange(element.documents[0], false)">
+                </mat-radio-button>
+              </mat-radio-group>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="sent" stickyEnd>
+          <th mat-header-cell *matHeaderCellDef class="cell-xs">
+            <ng-container *ngIf="mode === MODE.VIEW_PENDING">
+              {{ 'DOC_PREP.SENT' | translate }}
+            </ng-container>
+            <ng-container *ngIf="mode === MODE.VIEW_PENDING_APPROVE">
+              {{ 'DOC_PREP.RECIEVE_ORIGINAL' | translate }}
+            </ng-container>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <ng-container *ngIf="element.single">
+              <ng-container *ngIf="element.documents?.[0]?.hardCopyState === 'OPEN'; else alreadyDone">
+                <div class="elm-form" *ngIf="mode === MODE.VIEW_PENDING">
+                  <input
+                    class="elm-radio-check elm-check"
+                    [checked]="
+                      (mode === MODE.VIEW_PENDING && element.documents?.[0].sent) ||
+                      (mode === MODE.VIEW_PENDING_APPROVE && element.documents?.[0].received)
+                    "
+                    [class.inactive]="isSentReceivedInactive(element.documents?.[0])"
+                    [disabled]="isSentReceivedDisabled(element.documents?.[0])"
+                    type="checkbox"
+                    (change)="onToggleCheckSentReceived(element.documents?.[0], contracts, $event)" />
+                  <label></label>
+                </div>
+                <div class="elm-form" *ngIf="mode === MODE.VIEW_PENDING_APPROVE">
+                  <mat-radio-group [name]="element.documents?.[0].documentId">
+                    <mat-radio-button
+                      [disabled]="isSentReceivedDisabled(element.documents?.[0])"
+                      type="checkbox"
+                      [checked]="element.documents?.[0].received"
+                      (change)="onToggleCheckSentReceived(element.documents?.[0], contracts, $event)"
+                      color="primary"
+                      [value]="true">
+                    </mat-radio-button>
+                  </mat-radio-group>
+                </div>
+              </ng-container>
+              <ng-template #alreadyDone>
+                <ng-container *ngIf="element.documents?.[0]?.active">
+                  <app-tooltip
+                    [icon]="element.documents?.[0]?.iconName"
+                    [iconClass]="element.documents?.[0]?.iconClass"
+                    [params]="[{ title: '' | translate, content: element.documents?.[0]?.tooltipMsg }]">
+                  </app-tooltip>
+                </ng-container>
+                <ng-container *ngIf="!element.documents?.[0]?.active"></ng-container>
+              </ng-template>
+            </ng-container>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="rejectOriginalReceived" stickyEnd>
+          <th mat-header-cell *matHeaderCellDef class="cell-xs">ปฏิเสธ รับเอกสารต้นฉบับแล้ว</th>
+          <td mat-cell *matCellDef="let doc" class="text-center">
+            <ng-container *ngIf="doc.single">
+              <ng-container *ngIf="doc.documents?.[0]?.hardCopyState === 'OPEN'; else rejectDoc">
+                <div class="elm-form">
+                  <mat-radio-group [name]="doc.documents?.[0].documentId">
+                    <mat-radio-button
+                      [disabled]="isSentReceivedDisabled(doc.documents?.[0])"
+                      type="checkbox"
+                      [checked]="doc.documents?.[0].received === false"
+                      (change)="rejectOriginalReceived(doc.documents?.[0], contracts, $event)"
+                      color="warn"
+                      [value]="false">
+                    </mat-radio-button>
+                  </mat-radio-group>
+                </div>
+              </ng-container>
+              <ng-template #rejectDoc>
+                <ng-container *ngIf="doc.documents?.[0]?.hardCopyState === 'REJECT'">
+                  <app-tooltip
+                    [icon]="doc.documents?.[0]?.iconName"
+                    [iconClass]="doc.documents?.[0]?.iconClass"
+                    [params]="[{ title: '' | translate, content: doc.documents?.[0]?.tooltipMsg }]">
+                  </app-tooltip>
+                </ng-container>
+              </ng-template>
+            </ng-container>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="save" stickyEnd>
+          <th mat-header-cell *matHeaderCellDef class="cell-xs">บันทึก</th>
+          <td mat-cell *matCellDef="let element" class="text-center">
+            <ng-container *ngIf="element.single">
+              <span
+                class="link"
+                *ngIf="
+                  element.documents?.[0]?.rejectReason === false ||
+                  (element.documents?.[0]?.received == false && element.documents?.[0]?.hardCopyState === 'OPEN')
+                "
+                (click)="rejectOriginalCopy(element)">
+                หมายเหตุการปฏิเสธ
+              </span>
+              <span *ngIf="element.documents?.[0]?.rejectReason">
+                {{ element.receiveDate | buddhistEra: 'DD/MM/yyyy' }}
+              </span>
+            </ng-container>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="expandedDetail">
+          <td
+            mat-cell
+            *matCellDef="let element"
+            [attr.colspan]="displayedColumnsAccount.length"
+            class="detail-row-wrapper commitment active">
+            <div
+              *ngIf="element.active && !element.single && element.documents && element.documents.length > 0"
+              class="detail-table-div commitment">
+              <table mat-table [dataSource]="element.documents" class="detail-table commitment" multiTemplateDataRows>
+                <ng-container matColumnDef="order">
+                  <th mat-header-cell *matHeaderCellDef class="detail-table-head text-center cell-xxs">
+                    {{ 'COMMON.LABEL_NO' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let doc" class="text-center">
+                    <mat-icon svgIcon="icon-corner" class="icon icon-hide-show fill-black-30"> </mat-icon>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="documentName">
+                  <th mat-header-cell *matHeaderCellDef class="detail-table-head cell-l">
+                    {{ 'DOC_PREP.DOC_NAME' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let doc">
+                    <div fxLayoutAlign="start center" fxLayoutGap="8">
+                      <span>{{
+                        element.subDocumentPrefix +
+                          ' ' +
+                          ((doc.documentDate || doc.createdDate | buddhistEra: 'DD/MM/yyyy') || '')
+                      }}</span>
+                      <mat-icon
+                        svgIcon="icon-Email"
+                        class="icon default-cursor icon-hide-show icon-small"
+                        *ngIf="doc.documentTemplate?.forNoticeLetter"
+                        [class.fill-krungthai-green]="doc.imageId"
+                        [class.fill-gold]="!doc.imageId">
+                      </mat-icon>
+                      <mat-icon
+                        svgIcon="icon-Building-Court"
+                        class="icon default-cursor icon-hide-show icon-small"
+                        *ngIf="doc.documentTemplate?.forLitigation"
+                        [class.fill-krungthai-green]="doc.imageId && doc.hasOriginalCopy"
+                        [class.fill-krungthai-red]="doc.imageId && doc.hasOriginalCopy === false"
+                        [class.fill-gold]="!doc.imageId || doc.hasOriginalCopy === undefined">
+                      </mat-icon>
+                    </div>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="commitmentCount">
+                  <th mat-header-cell *matHeaderCellDef class="cell-xs">จำนวนวงเงิน</th>
+                  <td mat-cell *matCellDef="let doc">
+                    <div *ngIf="doc.commitmentAccounts?.length > 0" fxLayoutAlign="start center" fxLayoutGap="8">
+                      <span>{{ doc.commitmentAccounts?.length }}</span>
+                      <app-tooltip [params]="doc?.tooltips" [iconClass]="'icon-small fill-blue'"></app-tooltip>
+                    </div>
+                    <div *ngIf="doc.commitmentAccounts.length === 0">
+                      <span>-</span>
+                    </div>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="storeOrganization">
+                  <th mat-header-cell *matHeaderCellDef class="detail-table-head cell-s">
+                    {{ 'DOC_PREP.STORE_ORAGANIZE_NAME_' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let doc">
+                    <span>{{ doc.uploadUserId || doc.storeOrganization || '-' }}</span
+                    ><br />
+                    <span>{{ doc.storeOrganizationName || '' }}</span>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="oweOrganization">
+                  <th mat-header-cell *matHeaderCellDef class="detail-table-head cell-s">
+                    {{ 'DOC_PREP.OWE_ORAGANIZE_NAME_' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let doc">
+                    <span>{{ doc.uploadUserId || doc.storeOrganization || '-' }}</span
+                    ><br />
+                    <span>{{ doc.storeOrganizationName || '' }}</span>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="action" class="button-cell" stickyEnd>
+                  <th
+                    mat-header-cell
+                    *matHeaderCellDef
+                    columnElevationRight
+                    class="detail-table-head text-center"
+                    [class.cell-m]="mode === MODE.EDIT"
+                    [class.cell-s]="mode !== MODE.EDIT">
+                    {{ 'DOC_PREP.COPY' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let doc" columnElevationRight>
+                    <!-- เลือกวงเงิน -->
+                    <button
+                      id="btn-doc-acct-select-commitment"
+                      *ngIf="mode === MODE.EDIT && doc.commitmentAccounts.length === 0"
+                      type="button"
+                      mat-flat-button
+                      class="medium-button fill-green"
+                      cdkFocusInitial
+                      (click)="selectCommitmentAccount(doc, element)">
+                      <mat-icon svgIcon="icon-Search" class="icon icon-md"></mat-icon>
+                      {{ element.documentEditText }}
+                    </button>
+                    <div *ngIf="doc.commitmentAccounts.length !== 0">
+                      <div class="link" fxLayoutAlign="space-between center" fxLayoutGap="8">
+                        <span (click)="openDoc(doc)" class="break-word">{{ doc.imageName }} </span>
+                        <mat-icon
+                          *ngIf="mode === MODE.EDIT"
+                          svgIcon="icon-Credit-Search"
+                          class="icon icon-xmedium"
+                          [class.fill-gray]="mode === MODE.EDIT && doc?.sent"
+                          (click)="mode === MODE.EDIT && doc.sent ? '' : selectCommitmentAccount(doc, element)">
+                        </mat-icon>
+                      </div>
+                    </div>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="hasOriginalCopy" stickyEnd>
+                  <th
+                    mat-header-cell
+                    *matHeaderCellDef
+                    class="detail-table-head text-center"
+                    [class.cell-s]="
+                      mode === MODE.VIEW || mode === MODE.VIEW_PENDING || mode === MODE.VIEW_PENDING_APPROVE
+                    "
+                    [class.cell-xs]="mode === MODE.EDIT">
+                    <span *ngIf="mode === MODE.EDIT">
+                      {{ 'DOC_PREP.HAS_ORIGINAL_' | translate }}
+                    </span>
+                    <span *ngIf="mode === MODE.VIEW">
+                      {{ 'DOC_PREP.VERIFY_ORIGINAL_' | translate }}
+                    </span>
+                    <span *ngIf="mode === MODE.VIEW_PENDING || mode === MODE.VIEW_PENDING_APPROVE">
+                      {{ 'DOC_PREP.VERIFY_DOC_ORIGINAL' | translate }}
+                    </span>
+                  </th>
+                  <td mat-cell *matCellDef="let doc" class="text-center">
+                    <div *ngIf="mode === MODE.VIEW || mode === MODE.VIEW_PENDING || mode === MODE.VIEW_PENDING_APPROVE">
+                      <span
+                        *ngIf="doc?.documentTemplate?.needHardCopy && doc.hasOriginalCopy"
+                        class="status-label status-success">
+                        <mat-icon svgIcon="icon-Mark" class="icon-xmedium fill-green"> </mat-icon>
+                        {{ 'DOC_PREP.HAS_ORIGINAL_' | translate }}
+                      </span>
+                      <span
+                        *ngIf="doc?.documentTemplate?.needHardCopy && doc.hasOriginalCopy === false"
+                        class="status-label status-failed">
+                        <mat-icon svgIcon="icon-Cross" class="icon-xmedium fill-red"> </mat-icon>
+                        {{ 'DOC_PREP.NO_ORIGINAL' | translate }}
+                      </span>
+                      <span
+                        class="status-label status-pending"
+                        *ngIf="doc?.documentTemplate?.needHardCopy && doc.hasOriginalCopy === undefined">
+                        {{ 'DOC_PREP.PEDDING_VERIFY' | translate }}
+                      </span>
+                      <span *ngIf="!doc?.documentTemplate?.needHardCopy"> - </span>
+                    </div>
+                    <div *ngIf="mode === MODE.EDIT">
+                      <mat-radio-group [name]="doc.id" *ngIf="doc.documentTemplate?.needHardCopy">
+                        <mat-radio-button
+                          type="radio"
+                          color="accent"
+                          *ngIf="!doc.optional || doc.active"
+                          [value]="doc.hasOriginalCopy === true"
+                          [checked]="doc.hasOriginalCopy === true"
+                          [disabled]="
+                            (doc.documentTemplate?.imageId && doc.imageSource === ImageSourceEnum.Dims) ||
+                            (mode === MODE.EDIT && doc.sent)
+                          "
+                          (change)="onRadioChange(doc, true)"></mat-radio-button>
+                      </mat-radio-group>
+                    </div>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="hasNotOriginalCopy" stickyEnd>
+                  <th mat-header-cell *matHeaderCellDef class="cell-xs detail-table-head text-center">
+                    {{ 'DOC_PREP.HAS_NOT_ORIGINAL' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let doc" class="text-center">
+                    <mat-radio-group [name]="doc.id" *ngIf="doc.documentTemplate?.needHardCopy">
+                      <mat-radio-button
+                        type="radio"
+                        color="accent"
+                        *ngIf="!doc.optional || doc.active"
+                        [value]="doc.hasOriginalCopy === false"
+                        [checked]="doc.hasOriginalCopy === false"
+                        [disabled]="
+                          (doc.documentTemplate?.imageId && doc.imageSource === ImageSourceEnum.Dims) ||
+                          (mode === MODE.EDIT && doc.sent)
+                        "
+                        (change)="onRadioChange(doc, false)"></mat-radio-button>
+                    </mat-radio-group>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="sent" stickyEnd>
+                  <th mat-header-cell *matHeaderCellDef class="cell-xs">
+                    <ng-container *ngIf="mode === MODE.VIEW_PENDING">
+                      {{ 'DOC_PREP.SENT' | translate }}
+                    </ng-container>
+                    <ng-container *ngIf="mode === MODE.VIEW_PENDING_APPROVE">
+                      {{ 'DOC_PREP.RECIEVE_ORIGINAL' | translate }}
+                    </ng-container>
+                  </th>
+                  <td mat-cell *matCellDef="let doc">
+                    <ng-container *ngIf="doc?.hardCopyState === 'OPEN'; else alreadyDone">
+                      <div class="elm-form" *ngIf="mode === MODE.VIEW_PENDING">
+                        <input
+                          class="elm-radio-check elm-check"
+                          [checked]="mode === MODE.VIEW_PENDING && doc.sent"
+                          [class.inactive]="isSentReceivedInactive(doc)"
+                          [disabled]="isSentReceivedDisabled(doc)"
+                          type="checkbox"
+                          (change)="onToggleCheckSentReceived(doc, contracts, $event)" />
+                        <label></label>
+                      </div>
+                      <div class="elm-form" *ngIf="mode === MODE.VIEW_PENDING_APPROVE">
+                        <mat-radio-group [name]="doc.documentId">
+                          <mat-radio-button
+                            [disabled]="isSentReceivedDisabled(doc)"
+                            type="checkbox"
+                            [checked]="mode === MODE.VIEW_PENDING_APPROVE && doc.received"
+                            (change)="onToggleCheckSentReceived(doc, contracts, $event)"
+                            color="primary"
+                            [value]="true">
+                          </mat-radio-button>
+                        </mat-radio-group>
+                      </div>
+                    </ng-container>
+                    <ng-template #alreadyDone>
+                      <ng-container *ngIf="doc?.active">
+                        <app-tooltip
+                          [icon]="doc?.iconName"
+                          [iconClass]="doc?.iconClass"
+                          [params]="[{ title: '' | translate, content: doc?.tooltipMsg }]">
+                        </app-tooltip>
+                      </ng-container>
+                      <ng-container *ngIf="!doc?.active"></ng-container>
+                    </ng-template>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="rejectOriginalReceived" stickyEnd>
+                  <th mat-header-cell *matHeaderCellDef class="cell-xs">ปฏิเสธ รับเอกสารต้นฉบับแล้ว</th>
+                  <td mat-cell *matCellDef="let doc" class="text-center">
+                    <ng-container *ngIf="doc?.hardCopyState === 'OPEN'; else rejectDoc">
+                      <mat-radio-group [name]="doc.documentId">
+                        <mat-radio-button
+                          [disabled]="isSentReceivedDisabled(doc)"
+                          type="checkbox"
+                          [checked]="doc.received === false"
+                          (change)="rejectOriginalReceived(doc, contracts, $event)"
+                          color="warn"
+                          [value]="false">
+                        </mat-radio-button>
+                      </mat-radio-group>
+                    </ng-container>
+
+                    <ng-template #rejectDoc>
+                      <ng-container *ngIf="doc?.hardCopyState === 'REJECT'">
+                        <app-tooltip
+                          [icon]="doc?.iconName"
+                          [iconClass]="doc?.iconClass"
+                          [params]="[{ title: '' | translate, content: doc?.tooltipMsg }]">
+                        </app-tooltip>
+                      </ng-container>
+                    </ng-template>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="save" stickyEnd>
+                  <th mat-header-cell *matHeaderCellDef class="cell-xs">บันทึก</th>
+                  <td mat-cell *matCellDef="let element" class="text-center">
+                    <ng-container>
+                      <span
+                        class="link"
+                        *ngIf="
+                          element.rejectReason === false ||
+                          (element.received == false && element.hardCopyState === 'OPEN')
+                        "
+                        (click)="rejectOriginalCopy(element)">
+                        หมายเหตุการปฏิเสธ
+                      </span>
+                      <span *ngIf="element.rejectReason">
+                        {{ element.receiveDate | buddhistEra: 'DD/MM/yyyy' }}
+                      </span>
+                    </ng-container>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="reasons">
+                  <td
+                    mat-cell
+                    *matCellDef="let element"
+                    [attr.colspan]="displayedColumnsContracts.length"
+                    class="detail-row-wrapper"
+                    [class.active]="element.rejectedReasons?.length > 0">
+                    <div
+                      *ngFor="let item of element.rejectedReasons; let i = index"
+                      fxLayout="row"
+                      class="reasons"
+                      fxLayoutAlign="space-between ">
+                      <div *ngIf="expandedReason || i === 0">
+                        <span class="thin-letter">
+                          ระบุโดย
+                          <span *ngIf="item?.rejectedUserId === 'System'; else notsystem"> ระบบ LEXS </span>
+                          <ng-template #notsystem>
+                            {{ item?.rejectedUserRole || '' }}-{{ item?.rejectedUserSubRole || '' }} ({{
+                              item?.rejectedUserId || ''
+                            }}
+                            - {{ item?.rejectedUserName }})
+                          </ng-template>
+                          :
+                          {{ item?.rejectedDate | buddhistEra: 'DD/MM/yyyy HH:mm' }}</span
+                        >
+                        <div>
+                          หมายเหตุปฏิเสธรับเอกสารต้นฉบับ ครั้งที่ {{ item?.rejectedReasonId || '' }}:
+                          {{ item?.rejectedReasonName || '' }}
+                          {{ item?.rejectedRemarks || '' }}
+                        </div>
+                      </div>
+                      <div *ngIf="element.rejectedReasons.length > 1 && i === 0">
+                        แสดงประวัติการปฏิเสธ
+                        <button
+                          id="btn-doc-borw-expand-panel"
+                          mat-icon-button
+                          aria-label="expand row"
+                          (click)="expandReason()"
+                          *ngIf="element.rejectedReasons.length > 1">
+                          <mat-icon
+                            *ngIf="!expandedReason"
+                            svgIcon="icon-Direction-Down"
+                            class="icon-xxs fill-black-70"></mat-icon>
+                          <mat-icon
+                            *ngIf="expandedReason"
+                            svgIcon="icon-Direction-UP"
+                            class="icon-xxs fill-black-70"></mat-icon>
+                        </button>
+                      </div>
+                    </div>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumnsContracts"></tr>
+                <tr
+                  mat-row
+                  *matRowDef="let row; columns: displayedColumnsContracts; let doc"
+                  [ngClass]="{ 'bg-red-50': doc.received === false, 'bg-green-50': doc.received === true }"></tr>
+                <tr mat-row *matRowDef="let row; columns: ['reasons']" class="detail-row bg-red-50"></tr>
+              </table>
+            </div>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="reasons">
+          <td
+            mat-cell
+            *matCellDef="let element"
+            [attr.colspan]="displayedColumnsContracts.length"
+            class="detail-row-wrapper"
+            [class.active]="element.rejectedReasons?.length > 0">
+            <div
+              *ngFor="let item of element.rejectedReasons; let i = index"
+              fxLayout="row"
+              class="reasons"
+              fxLayoutAlign="space-between ">
+              <div *ngIf="expandedReason || i === 0">
+                <span class="thin-letter">
+                  ระบุโดย
+                  <span *ngIf="item?.rejectedUserId === 'System'; else notsystem"> ระบบ LEXS </span>
+                  <ng-template #notsystem>
+                    {{ item?.rejectedUserRole || '' }}-{{ item?.rejectedUserSubRole || '' }} ({{
+                      item?.rejectedUserId || ''
+                    }}
+                    - {{ item?.rejectedUserName }})
+                  </ng-template>
+                  :
+                  {{ item?.rejectedDate | buddhistEra: 'DD/MM/yyyy HH:mm' }}</span
+                >
+                <div>
+                  หมายเหตุปฏิเสธรับเอกสารต้นฉบับ ครั้งที่ {{ item?.rejectedReasonId || '' }}:
+                  {{ item?.rejectedReasonName || '' }}
+                  {{ item?.rejectedRemarks || '' }}
+                </div>
+              </div>
+              <div *ngIf="element.rejectedReasons.length > 1 && i === 0">
+                แสดงประวัติการปฏิเสธ
+                <button
+                  id="btn-doc-borw-expand-panel"
+                  mat-icon-button
+                  aria-label="expand row"
+                  (click)="expandReason()"
+                  *ngIf="element.rejectedReasons.length > 1">
+                  <mat-icon
+                    *ngIf="!expandedReason"
+                    svgIcon="icon-Direction-Down"
+                    class="icon-xxs fill-black-70"></mat-icon>
+                  <mat-icon
+                    *ngIf="expandedReason"
+                    svgIcon="icon-Direction-UP"
+                    class="icon-xxs fill-black-70"></mat-icon>
+                </button>
+              </div>
+            </div>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumnsContracts"></tr>
+        <tr
+          mat-row
+          *matRowDef="let row; columns: displayedColumnsContracts; let element"
+          [ngClass]="{ 'bg-red-50': element.received === false, 'bg-green-50': element.received === true }"
+          class="element-row"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-row"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['reasons']" class="detail-row bg-red-50"></tr>
+      </table>
+      <ng-container
+        *ngIf="!!!contracts.contracts || contracts.contracts.length === 0"
+        [ngTemplateOutlet]="dataNotFound">
+      </ng-container>
+    </div>
+  </mat-expansion-panel>
+  <app-document-header
+    title="เอกสารบัญชี"
+    [isMain]="false"
+    [showDropdown]="true"
+    [forLitigation]="mode !== MODE.VIEW_PENDING_APPROVE && mode !== MODE.VIEW_PENDING"
+    [forNoticeLetter]="mode !== MODE.VIEW_PENDING_APPROVE && mode !== MODE.VIEW_PENDING"
+    [ready]="true"
+    [forDoc]="mode === MODE.VIEW_PENDING_APPROVE || mode === MODE.VIEW_PENDING"
+    [dropdownOptions]="accountDropdownOptions"
+    (dropdownSelect)="onDropdownSelected($event)"
+    (expand)="onExpansionPanelToggle('MAIN_ACCOUNT')"
+    [readyForDoc]="accountsSet.readyForDoc || false"
+    [readyForLitigation]="accountsSet.readyForLitigation || false"
+    [readyForNotice]="accountsSet.readyForNotice || false"
+    [expanded]="showMainAccount"></app-document-header>
+  <mat-expansion-panel [expanded]="showMainAccount">
+    <div *ngFor="let account of accountsSet!.accountsSet?.[currentDropdownValue]?.commitments; let i = index">
+      <app-document-header
+        [title]="'เอกสารบัญชี ' + (i + 1 + itemsPerPage * currentDropdownValue)"
+        [isMain]="false"
+        [forLitigation]="mode !== MODE.VIEW_PENDING_APPROVE && mode !== MODE.VIEW_PENDING"
+        [forNoticeLetter]="mode !== MODE.VIEW_PENDING_APPROVE && mode !== MODE.VIEW_PENDING"
+        [forDoc]="mode === MODE.VIEW_PENDING_APPROVE || mode === MODE.VIEW_PENDING"
+        [nestLevel]="1"
+        [details]="account.details || []"
+        (expand)="onExpansionPanelToggle('ACCOUNT', i)"
+        [ready]="true"
+        [readyForLitigation]="account.readyForLitigation || false"
+        [readyForDoc]="account.readyForDoc || false"
+        [readyForNotice]="account.readyForNotice || false"
+        [expanded]="showAccounts[currentDropdownValue][i]">
+      </app-document-header>
+      <mat-expansion-panel [expanded]="showAccounts[currentDropdownValue][i]">
+        <ng-container *ngIf="mode === MODE.VIEW_PENDING && account.documentsAndBills!.length > 0">
+          <div fxLayoutAlign="flex-end" class="mt-20 mb-20" fxLayoutGap="24">
+            <div fxLayoutAlign="start center" fxLayoutGap="24">
+              <label>
+                {{ 'DOC_PREP.SELECT' | translate }}: {{ account?.documentNumber }} {{ 'COMMON.LABEL_FROM' | translate }}
+                {{ account.totalDocuments }}
+              </label>
+            </div>
+            <div fxLayoutAlign="start center" fxLayoutGap="24">
+              <button
+                id="btn-doc-acct-sent-received-1"
+                type="button"
+                (click)="checkSentReceivedAll(account)"
+                mat-stroked-button
+                class="long-button mat-gray">
+                <mat-icon svgIcon="icon-Checkmark-Circle-Regular" class="icon icon-md fill-black-70"> </mat-icon>
+
+                <ng-container *ngIf="mode === MODE.VIEW_PENDING">
+                  {{ 'DOC_PREP.SENT_ALL' | translate }}
+                </ng-container>
+              </button>
+            </div>
+          </div>
+        </ng-container>
+        <div class="table-scroll white-space-init" table-scroll>
+          <table mat-table [dataSource]="account.documentsAndBills!" class="mt-16 mb-16" multiTemplateDataRows>
+            <ng-container matColumnDef="order">
+              <th mat-header-cell *matHeaderCellDef class="cell-xxs text-center">
+                {{ 'COMMON.LABEL_NO' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element" class="text-center">
+                <span *ngIf="!element.documentTemplate?.optional || element.optional === false">
+                  {{ element.order }}
+                </span>
+                <span
+                  *ngIf="element.documentTemplate?.optional || element.optional === true"
+                  fxLayoutAlign="center center">
+                  <div class="elm-form">
+                    <input
+                      type="checkbox"
+                      class="elm-radio-check elm-check"
+                      (change)="toggleActive(element)"
+                      [checked]="element.active"
+                      [disabled]="
+                        mode === MODE.VIEW || mode === MODE.VIEW_PENDING || mode === MODE.VIEW_PENDING_APPROVE
+                      "
+                      [class.disabled]="(mode === MODE.VIEW || mode === MODE.VIEW_PENDING) && !element.active"
+                      [class.inactive]="
+                        (mode === MODE.VIEW || mode === MODE.VIEW_PENDING || mode === MODE.VIEW_PENDING_APPROVE) &&
+                        element.active
+                      " />
+                    <label></label>
+                  </div>
+                </span>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="documentName">
+              <th mat-header-cell *matHeaderCellDef class="cell-l">{{ 'DOC_PREP.DOC_NAME' | translate }}</th>
+              <td mat-cell *matCellDef="let element">
+                <div fxLayoutAlign="start center" fxLayoutGap="8">
+                  <span *ngIf="element.documentTemplate">
+                    {{ element.documentTemplate?.documentName }} <br />
+                    {{ element.attributes?.['set'] ? 'ชุดที่ ' + element.attributes?.['set'] : '' }}
+                  </span>
+                  <span *ngIf="!element.documentTemplate && element.billNo">
+                    <!-- group data by commitmentAccountNo -->
+                    <!-- Bill no. value from AccountDto.billNo && !AccountDto.subAccount ( DocumentAccountService.initAccounts() ) -->
+                    Bill no. <span class="bold">
+                       {{ element.billNo }}
+                      <span *ngIf="SUNDRY_TYPES.includes(account.accountType!) && !element.linkage">(Sundry)</span>
+                      <span *ngIf="element.linkage">(Closed)</span>
+                    </span>
+                    <span *ngIf="account.accountType !== 'PN' && !element.linkage">
+                      | DPD: <span class="bold">{{ element.dpd | number }}</span></span
+                    >
+                  </span>
+                  <span *ngIf="!element.documentTemplate && element.accountNumber">
+                    <!-- group data by commitmentAccountNo -->
+                    <!-- Sub Account: value from AccountDto.billNo && AccountDto.subAccount ( DocumentAccountService.initAccounts() ) -->
+                    Sub Account: <span class="bold">{{ element.accountNumber }}</span>
+                  </span>
+                  <!-- documents -->
+                  <mat-icon
+                    svgIcon="icon-Email"
+                    class="icon default-cursor icon-hide-show icon-small"
+                    *ngIf="element.documentTemplate?.forNoticeLetter"
+                    [class.fill-krungthai-green]="element.imageId"
+                    [class.fill-gold]="!element.imageId">
+                  </mat-icon>
+                  <mat-icon
+                    svgIcon="icon-Building-Court"
+                    class="icon default-cursor icon-hide-show icon-small"
+                    *ngIf="element.documentTemplate?.forLitigation"
+                    [class.fill-krungthai-red]="element.imageId && element.hasOriginalCopy === false"
+                    [class.fill-krungthai-green]="
+                      element.imageId && (element.hasOriginalCopy || !element?.needsCopyForLitigation)
+                    "
+                    [class.fill-gold]="
+                      !element.imageId || (element.hasOriginalCopy === undefined && element?.needsCopyForLitigation)
+                    ">
+                  </mat-icon>
+                  <!-- bills and subaccounts -->
+                  <mat-icon
+                    svgIcon="icon-Email"
+                    class="icon default-cursor icon-hide-show icon-small"
+                    *ngIf="element.forNoticeLetter"
+                    [class.fill-krungthai-green]="element.readyForNotice"
+                    [class.fill-gold]="!element.readyForNotice">
+                  </mat-icon>
+                  <mat-icon
+                    svgIcon="icon-Building-Court"
+                    class="icon default-cursor icon-hide-show icon-small"
+                    *ngIf="element.forLitigation"
+                    [class.fill-krungthai-green]="element.readyForLitigation"
+                    [class.fill-krungthai-red]="element.needsCopyForLitigation"
+                    [class.fill-gold]="!element.readyForLitigation && !element.needsCopyForLitigation">
+                  </mat-icon>
+                </div>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="storeOrganization">
+              <th mat-header-cell *matHeaderCellDef class="cell-s">
+                {{ 'DOC_PREP.STORE_ORAGANIZE_NAME_' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element">
+                <span>{{
+                  element.documentTemplate ? element.uploadUserId || element.storeOrganization || '-' : ''
+                }}</span
+                ><br />
+                <span>{{ element.storeOrganizationName || '' }}</span>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="oweOrganization">
+              <th mat-header-cell *matHeaderCellDef class="cell-s">{{ 'DOC_PREP.OWE_ORAGANIZE_NAME_' | translate }}</th>
+              <td mat-cell *matCellDef="let element">
+                <span>{{
+                  element.documentTemplate ? element.uploadUserId || element.storeOrganization || '-' : ''
+                }}</span
+                ><br />
+                <span>{{ element.storeOrganizationName || '' }}</span>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="action" stickyEnd>
+              <th mat-header-cell *matHeaderCellDef columnElevationRight class="cell-m text-center">
+                {{ 'DOC_PREP.COPY' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element" columnElevationRight>
+                <div [class.visibility-hidden]="!element.documentTemplate || !element.active">
+                  <button
+                    id="btn-doc-acct-select-doc-2"
+                    *ngIf="mode === MODE.EDIT && element.active && !element.imageId"
+                    type="button"
+                    mat-flat-button
+                    color="primary"
+                    class="medium-button"
+                    cdkFocusInitial
+                    (click)="selectDoc(element)">
+                    <mat-icon svgIcon="icon-Search" class="icon icon-md"></mat-icon>
+                    เลือกเอกสาร
+                  </button>
+                  <div *ngIf="element.active && element.imageId">
+                    <div class="link" fxLayoutAlign="space-between center" fxLayoutGap="8">
+                      <span (click)="openDoc(element)" class="break-word">{{ element.imageName }}</span>
+                      <mat-icon
+                        *ngIf="mode === MODE.EDIT"
+                        svgIcon="icon-Search"
+                        class="icon icon-xmedium"
+                        [class.fill-gray]="mode === MODE.EDIT && element?.sent"
+                        (click)="mode === MODE.EDIT && element.sent ? '' : selectDoc(element)"></mat-icon>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="hasOriginalCopy" stickyEnd>
+              <th
+                mat-header-cell
+                *matHeaderCellDef
+                class="text-center"
+                [class.cell-s]="mode === MODE.VIEW || mode === MODE.VIEW_PENDING || mode === MODE.VIEW_PENDING_APPROVE"
+                [class.cell-xs]="mode === MODE.EDIT">
+                <span *ngIf="mode === MODE.EDIT">
+                  {{ 'DOC_PREP.HAS_ORIGINAL_' | translate }}
+                </span>
+                <span *ngIf="mode === MODE.VIEW">
+                  {{ 'DOC_PREP.VERIFY_ORIGINAL_' | translate }}
+                </span>
+                <span *ngIf="mode === MODE.VIEW_PENDING || mode === MODE.VIEW_PENDING_APPROVE">
+                  {{ 'DOC_PREP.VERIFY_DOC_ORIGINAL' | translate }}
+                </span>
+              </th>
+              <td mat-cell *matCellDef="let element" class="text-center">
+                <div
+                  *ngIf="
+                    element.documentTemplate &&
+                    (mode === MODE.VIEW || mode === MODE.VIEW_PENDING || mode === MODE.VIEW_PENDING_APPROVE)
+                  ">
+                  <span
+                    *ngIf="element?.documentTemplate?.needHardCopy && element.hasOriginalCopy"
+                    class="status-label status-success">
+                    <mat-icon svgIcon="icon-Mark" class="icon-xmedium fill-green"> </mat-icon>
+                    {{ 'DOC_PREP.HAS_ORIGINAL_' | translate }}
+                  </span>
+                  <span
+                    *ngIf="element?.documentTemplate?.needHardCopy && element.hasOriginalCopy === false"
+                    class="status-label status-failed">
+                    <mat-icon svgIcon="icon-Cross" class="icon-xmedium fill-red"> </mat-icon>
+                    {{ 'DOC_PREP.NO_ORIGINAL' | translate }}
+                  </span>
+                  <span
+                    class="status-label status-pending"
+                    *ngIf="element?.documentTemplate?.needHardCopy && element.hasOriginalCopy === undefined">
+                    {{ 'DOC_PREP.PEDDING_VERIFY' | translate }}
+                  </span>
+                  <span *ngIf="!element?.documentTemplate?.needHardCopy"> - </span>
+                </div>
+                <div *ngIf="mode === MODE.EDIT">
+                  <mat-radio-group [name]="element.id" *ngIf="element.documentTemplate?.needHardCopy">
+                    <mat-radio-button
+                      type="radio"
+                      color="accent"
+                      *ngIf="element.documentTemplate?.optional === false || element.active"
+                      [value]="element.hasOriginalCopy === true"
+                      [checked]="element.hasOriginalCopy === true"
+                      [disabled]="
+                        (element.documentTemplate?.imageId && element.imageSource === ImageSourceEnum.Dims) ||
+                        (mode === MODE.EDIT && element.sent)
+                      "
+                      (change)="onRadioChange(element, true)"></mat-radio-button>
+                  </mat-radio-group>
+                </div>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="hasNotOriginalCopy" stickyEnd>
+              <th mat-header-cell *matHeaderCellDef class="cell-xs text-center">
+                {{ 'DOC_PREP.HAS_NOT_ORIGINAL' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element" class="text-center">
+                <mat-radio-group [name]="element.id" *ngIf="element.documentTemplate?.needHardCopy">
+                  <mat-radio-button
+                    type="radio"
+                    color="accent"
+                    *ngIf="element.documentTemplate?.optional === false || element.active"
+                    [disabled]="
+                      (element.documentTemplate?.imageId && element.imageSource === ImageSourceEnum.Dims) ||
+                      (mode === MODE.EDIT && element.sent)
+                    "
+                    [value]="element.hasOriginalCopy === false"
+                    [checked]="element.hasOriginalCopy === false"
+                    (change)="onRadioChange(element, false)"></mat-radio-button>
+                </mat-radio-group>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="sent" stickyEnd>
+              <th mat-header-cell *matHeaderCellDef class="cell-xs">
+                <ng-container *ngIf="mode === MODE.VIEW_PENDING">
+                  {{ 'DOC_PREP.SENT' | translate }}
+                </ng-container>
+                <ng-container *ngIf="mode === MODE.VIEW_PENDING_APPROVE">
+                  {{ 'DOC_PREP.RECIEVE_ORIGINAL' | translate }}
+                </ng-container>
+              </th>
+              <td mat-cell *matCellDef="let element">
+                <ng-container *ngIf="!element.documents">
+                  <ng-container *ngIf="element?.hardCopyState === 'OPEN'; else alreadyDone">
+                    <div class="elm-form" *ngIf="mode === MODE.VIEW_PENDING">
+                      <input
+                        class="elm-radio-check elm-check"
+                        [checked]="
+                          (mode === MODE.VIEW_PENDING && element.sent) ||
+                          (mode === MODE.VIEW_PENDING_APPROVE && element.received)
+                        "
+                        [class.inactive]="isSentReceivedInactive(element)"
+                        [disabled]="isSentReceivedDisabled(element)"
+                        type="checkbox"
+                        (change)="onToggleCheckSentReceived(element, account, $event)" />
+                      <label></label>
+                    </div>
+
+                    <div class="elm-form" *ngIf="mode === MODE.VIEW_PENDING_APPROVE">
+                      <mat-radio-group [name]="element.id">
+                        <mat-radio-button
+                          [disabled]="isSentReceivedDisabled(element)"
+                          type="checkbox"
+                          [checked]="element.received"
+                          (change)="onToggleCheckSentReceived(element, contracts, $event)"
+                          color="primary"
+                          [value]="true">
+                        </mat-radio-button>
+                      </mat-radio-group>
+                    </div>
+                  </ng-container>
+                  <ng-template #alreadyDone>
+                    <ng-container *ngIf="element?.active">
+                      <app-tooltip
+                        [icon]="element?.iconName"
+                        [iconClass]="element?.iconClass"
+                        [params]="[{ title: '' | translate, content: element?.tooltipMsg }]">
+                      </app-tooltip>
+                    </ng-container>
+                    <ng-container *ngIf="!element?.active"></ng-container>
+                  </ng-template>
+                </ng-container>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="rejectOriginalReceived" stickyEnd>
+              <th mat-header-cell *matHeaderCellDef class="cell-xs">ปฏิเสธ รับเอกสารต้นฉบับแล้ว</th>
+              <td mat-cell *matCellDef="let doc" class="text-center">
+                <ng-container *ngIf="doc?.hardCopyState === 'OPEN'; else rejectDoc">
+                  <ng-container>
+                    <mat-radio-group [name]="doc.id">
+                      <mat-radio-button
+                        [disabled]="isSentReceivedDisabled(doc)"
+                        type="checkbox"
+                        [checked]="doc.received === false"
+                        (change)="rejectOriginalReceived(doc, contracts, $event)"
+                        color="warn"
+                        [value]="false">
+                      </mat-radio-button>
+                    </mat-radio-group>
+                  </ng-container>
+                </ng-container>
+                <ng-template #rejectDoc>
+                  <ng-container *ngIf="doc?.hardCopyState === 'REJECT'">
+                    <app-tooltip
+                      [icon]="doc?.iconName"
+                      [iconClass]="doc?.iconClass"
+                      [params]="[{ title: '' | translate, content: doc?.tooltipMsg }]">
+                    </app-tooltip>
+                  </ng-container>
+                </ng-template>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="save" stickyEnd>
+              <th mat-header-cell *matHeaderCellDef class="cell-xs">บันทึก</th>
+              <td mat-cell *matCellDef="let element" class="text-center">
+                <span
+                  class="link"
+                  *ngIf="
+                    element.rejectReason === false || (element.received == false && element.hardCopyState === 'OPEN')
+                  "
+                  (click)="rejectOriginalCopy(element)">
+                  หมายเหตุการปฏิเสธ
+                </span>
+                <span *ngIf="element.rejectReason">
+                  {{ element.receiveDate | buddhistEra: 'DD/MM/yyyy' }}
+                </span>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="expand" stickyEnd>
+              <th mat-header-cell *matHeaderCellDef aria-label="row actions" class="cell-xxs">&nbsp;</th>
+              <td mat-cell *matCellDef="let element">
+                <button
+                  id="btn-doc-acct-expand-toggle"
+                  mat-icon-button
+                  aria-label="expand row"
+                  (click)="onElementExpandToggle(element)"
+                  *ngIf="element.documents?.length > 0">
+                  <mat-icon
+                    *ngIf="
+                      element.billNo
+                        ? !expandedElements[element.billNo + 'bill' + (element.linkage ? 'linkage' : '')]
+                        : !expandedElements[element.accountNumber + 'sub']
+                    "
+                    svgIcon="icon-Direction-Down"
+                    class="icon icon-hide-show fill-blue"></mat-icon>
+                  <mat-icon
+                    *ngIf="
+                      element.billNo
+                        ? expandedElements[element.billNo + 'bill' + (element.linkage ? 'linkage' : '')]
+                        : expandedElements[element.accountNumber + 'sub']
+                    "
+                    svgIcon="icon-Direction-UP"
+                    class="icon icon-hide-show fill-blue"></mat-icon>
+                </button>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="reasons" stickyEnd>
+              <th mat-header-cell *matHeaderCellDef aria-label="row actions" class="cell-xxs">&nbsp;</th>
+              <td
+                mat-cell
+                *matCellDef="let element"
+                [attr.colspan]="displayedColumnsAccount.length"
+                class="detail-row-wrapper"
+                [class.active]="element.rejectedReasons?.length > 0">
+                <div
+                  *ngFor="let item of element.rejectedReasons; let i = index"
+                  fxLayout="row"
+                  class="m-20"
+                  fxLayoutAlign="space-between ">
+                  <div *ngIf="expandedReason || i === 0">
+                    <span class="thin-letter">
+                      ระบุโดย
+                      <span *ngIf="item?.rejectedUserId === 'System'; else notsystem"> ระบบ LEXS </span>
+                      <ng-template #notsystem>
+                        {{ item?.rejectedUserRole || '' }}-{{ item?.rejectedUserSubRole || '' }} ({{
+                          item?.rejectedUserId || ''
+                        }}
+                        - {{ item?.rejectedUserName }})
+                      </ng-template>
+                      :
+                      {{ item?.rejectedDate | buddhistEra: 'DD/MM/yyyy HH:mm' }}</span
+                    >
+                    <div>
+                      หมายเหตุปฏิเสธรับเอกสารต้นฉบับ ครั้งที่ {{ item?.rejectedReasonId || '' }}:
+                      {{ item?.rejectedReasonName || '' }}
+                      {{ item?.rejectedRemarks || '' }}
+                    </div>
+                  </div>
+                  <div *ngIf="element.rejectedReasons.length > 1 && i === 0">
+                    แสดงประวัติการปฏิเสธ
+                    <button
+                      id="btn-doc-borw-expand-panel"
+                      mat-icon-button
+                      aria-label="expand row"
+                      (click)="expandReason()"
+                      *ngIf="element.rejectedReasons.length > 1">
+                      <mat-icon
+                        *ngIf="!expandedReason"
+                        svgIcon="icon-Direction-Down"
+                        class="icon-xxs fill-black-70"></mat-icon>
+                      <mat-icon
+                        *ngIf="expandedReason"
+                        svgIcon="icon-Direction-UP"
+                        class="icon-xxs fill-black-70"></mat-icon>
+                    </button>
+                  </div>
+                </div>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="expandedDetail">
+              <td
+                mat-cell
+                *matCellDef="let element"
+                [attr.colspan]="displayedColumnsAccount.length"
+                class="detail-row-wrapper"
+                [class.active]="expandedElements[element.billNo]">
+                <div
+                  *ngIf="
+                    element.billNo
+                      ? expandedElements[element.billNo + 'bill' + (element.linkage ? 'linkage' : '')]
+                      : expandedElements[element.accountNumber + 'sub']
+                  "
+                  class="detail-table-div">
+                  <table mat-table [dataSource]="element.documents" class="detail-table" multiTemplateDataRows>
+                    <ng-container matColumnDef="order">
+                      <th mat-header-cell *matHeaderCellDef class="detail-table-head cell-xxs">
+                        {{ 'COMMON.LABEL_NO' | translate }}
+                      </th>
+                      <td mat-cell *matCellDef="let doc">
+                        <mat-icon svgIcon="icon-corner" class="icon icon-hide-show fill-black-30"> </mat-icon>
+                      </td>
+                    </ng-container>
+                    <ng-container matColumnDef="documentName">
+                      <th mat-header-cell *matHeaderCellDef class="cell-l detail-table-head">
+                        {{ 'DOC_PREP.DOC_NAME' | translate }}
+                      </th>
+                      <td mat-cell *matCellDef="let doc">
+                        <div fxLayoutAlign="start center" fxLayoutGap="8">
+                          <span
+                            >{{ doc.documentTemplate?.documentName }} <br />
+
+                            {{ doc.attributes?.['set'] ? 'ชุดที่ ' + doc.attributes?.['set'] : '' }}</span
+                          >
+                          <mat-icon
+                            svgIcon="icon-Email"
+                            class="icon default-cursor icon-hide-show icon-small"
+                            *ngIf="doc.documentTemplate?.forNoticeLetter"
+                            [class.fill-krungthai-green]="doc.imageId"
+                            [class.fill-gold]="!doc.imageId">
+                          </mat-icon>
+                          <mat-icon
+                            svgIcon="icon-Building-Court"
+                            class="icon default-cursor icon-hide-show icon-small"
+                            *ngIf="doc.documentTemplate?.forLitigation"
+                            [class.fill-krungthai-green]="doc.imageId && doc.hasOriginalCopy"
+                            [class.fill-krungthai-red]="doc.imageId && doc.hasOriginalCopy === false"
+                            [class.fill-gold]="!doc.imageId || doc.hasOriginalCopy === undefined">
+                          </mat-icon>
+                        </div>
+                      </td>
+                    </ng-container>
+                    <ng-container matColumnDef="storeOrganization">
+                      <th mat-header-cell *matHeaderCellDef class="cell-s detail-table-head">
+                        {{ 'DOC_PREP.STORE_ORAGANIZE_NAME_' | translate }}
+                      </th>
+                      <td mat-cell *matCellDef="let doc">
+                        <span>{{ doc.uploadUserId || doc.storeOrganization || '-' }}</span
+                        ><br />
+                        <span>{{ doc.storeOrganizationName || '' }}</span>
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="oweOrganization">
+                      <th mat-header-cell *matHeaderCellDef class="cell-s detail-table-head">
+                        {{ 'DOC_PREP.OWE_ORAGANIZE_NAME_' | translate }}
+                      </th>
+                      <td mat-cell *matCellDef="let doc">
+                        <span>{{ doc.uploadUserId || doc.storeOrganization || '-' }}</span
+                        ><br />
+                        <span>{{ doc.storeOrganizationName || '' }}</span>
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="action" stickyEnd>
+                      <th
+                        mat-header-cell
+                        *matHeaderCellDef
+                        columnElevationRight
+                        class="cell-m detail-table-head text-center">
+                        {{ 'DOC_PREP.COPY' | translate }}
+                      </th>
+                      <td mat-cell *matCellDef="let doc" columnElevationRight>
+                        <button
+                          id="btn-doc-acct-select-doc-3"
+                          *ngIf="mode === MODE.EDIT && doc.active && !doc.imageId"
+                          type="button"
+                          mat-flat-button
+                          color="primary"
+                          class="medium-button"
+                          cdkFocusInitial
+                          (click)="selectDoc(doc)">
+                          <mat-icon svgIcon="icon-Search" class="icon icon-md"></mat-icon>
+                          เลือกเอกสาร
+                        </button>
+                        <div *ngIf="doc.active && doc.imageId">
+                          <div class="link" fxLayoutAlign="space-between center" fxLayoutGap="8">
+                            <span (click)="openDoc(doc)" class="break-word">{{ doc.imageName }}</span>
+                            <mat-icon
+                              *ngIf="mode === MODE.EDIT"
+                              svgIcon="icon-Search"
+                              class="icon icon-xmedium"
+                              [class.fill-gray]="mode === MODE.EDIT && doc?.sent"
+                              (click)="mode === MODE.EDIT && doc.sent ? '' : selectDoc(doc)">
+                            </mat-icon>
+                          </div>
+                        </div>
+                      </td>
+                    </ng-container>
+                    <ng-container matColumnDef="hasOriginalCopy" stickyEnd>
+                      <th
+                        mat-header-cell
+                        *matHeaderCellDef
+                        class="detail-table-head text-center"
+                        [class.cell-s]="
+                          mode === MODE.VIEW || mode === MODE.VIEW_PENDING || mode === MODE.VIEW_PENDING_APPROVE
+                        "
+                        [class.cell-xs]="mode === MODE.EDIT">
+                        <span *ngIf="mode === MODE.EDIT">
+                          {{ 'DOC_PREP.HAS_ORIGINAL_' | translate }}
+                        </span>
+                        <span *ngIf="mode === MODE.VIEW">
+                          {{ 'DOC_PREP.VERIFY_ORIGINAL_' | translate }}
+                        </span>
+                        <span *ngIf="mode === MODE.VIEW_PENDING || mode === MODE.VIEW_PENDING_APPROVE">
+                          {{ 'DOC_PREP.VERIFY_DOC_ORIGINAL' | translate }}
+                        </span>
+                      </th>
+                      <td mat-cell *matCellDef="let doc" class="text-center">
+                        <div
+                          *ngIf="
+                            mode === MODE.VIEW || mode === MODE.VIEW_PENDING || mode === MODE.VIEW_PENDING_APPROVE
+                          ">
+                          <span
+                            *ngIf="doc?.documentTemplate?.needHardCopy && doc.hasOriginalCopy"
+                            class="status-label status-success">
+                            <mat-icon svgIcon="icon-Mark" class="icon-xmedium fill-green"> </mat-icon>
+                            {{ 'DOC_PREP.HAS_ORIGINAL_' | translate }}
+                          </span>
+                          <span
+                            *ngIf="doc?.documentTemplate?.needHardCopy && doc.hasOriginalCopy === false"
+                            class="status-label status-failed">
+                            <mat-icon svgIcon="icon-Cross" class="icon-xmedium fill-red"> </mat-icon>
+                            {{ 'DOC_PREP.NO_ORIGINAL' | translate }}
+                          </span>
+                          <span
+                            class="status-label status-pending"
+                            *ngIf="doc?.documentTemplate?.needHardCopy && doc.hasOriginalCopy === undefined">
+                            {{ 'DOC_PREP.PEDDING_VERIFY' | translate }}
+                          </span>
+                          <span *ngIf="!doc?.documentTemplate?.needHardCopy"> - </span>
+                        </div>
+                        <div *ngIf="mode === MODE.EDIT">
+                          <mat-radio-group [name]="doc.id" *ngIf="doc.documentTemplate?.needHardCopy">
+                            <mat-radio-button
+                              type="radio"
+                              color="accent"
+                              *ngIf="doc.active && doc.documentTemplate?.optional === false"
+                              [value]="doc.hasOriginalCopy === true"
+                              [checked]="doc.hasOriginalCopy === true"
+                              [disabled]="
+                                (doc.documentTemplate?.imageId && doc.imageSource === ImageSourceEnum.Dims) ||
+                                (mode === MODE.EDIT && doc.sent)
+                              "
+                              (change)="onRadioChange(doc, true)"></mat-radio-button>
+                          </mat-radio-group>
+                        </div>
+                      </td>
+                    </ng-container>
+                    <ng-container matColumnDef="hasNotOriginalCopy" stickyEnd>
+                      <th mat-header-cell *matHeaderCellDef class="cell-xs detail-table-head text-center">
+                        {{ 'DOC_PREP.HAS_NOT_ORIGINAL' | translate }}
+                      </th>
+
+                      <td mat-cell *matCellDef="let doc" class="text-center">
+                        <mat-radio-group [name]="doc.id" *ngIf="doc.documentTemplate?.needHardCopy">
+                          <mat-radio-button
+                            type="radio"
+                            color="accent"
+                            *ngIf="doc.active && doc.documentTemplate?.optional === false"
+                            [value]="doc.hasOriginalCopy === false"
+                            [checked]="doc.hasOriginalCopy === false"
+                            [disabled]="
+                              (doc.documentTemplate?.imageId && doc.imageSource === ImageSourceEnum.Dims) ||
+                              (mode === MODE.EDIT && doc.sent)
+                            "
+                            (change)="onRadioChange(doc, false)"></mat-radio-button>
+                        </mat-radio-group>
+                      </td>
+                    </ng-container>
+                    <ng-container matColumnDef="sent" stickyEnd>
+                      <th mat-header-cell *matHeaderCellDef class="cell-xs">
+                        <ng-container *ngIf="mode === MODE.VIEW_PENDING">
+                          {{ 'DOC_PREP.SENT' | translate }}
+                        </ng-container>
+                        <ng-container *ngIf="mode === MODE.VIEW_PENDING_APPROVE">
+                          {{ 'DOC_PREP.RECIEVE_ORIGINAL' | translate }}
+                        </ng-container>
+                      </th>
+                      <td mat-cell *matCellDef="let doc">
+                        <ng-container *ngIf="doc?.hardCopyState === 'OPEN'; else alreadyDone">
+                          <div class="elm-form" *ngIf="mode === MODE.VIEW_PENDING">
+                            <input
+                              class="elm-radio-check elm-check"
+                              [checked]="
+                                (mode === MODE.VIEW_PENDING && doc.sent) ||
+                                (mode === MODE.VIEW_PENDING_APPROVE && doc.received)
+                              "
+                              [class.inactive]="isSentReceivedInactive(doc)"
+                              [disabled]="isSentReceivedDisabled(doc)"
+                              type="checkbox"
+                              (change)="onToggleCheckSentReceived(doc, account, $event)" />
+                            <label></label>
+                          </div>
+
+                          <div class="elm-form" *ngIf="mode === MODE.VIEW_PENDING_APPROVE">
+                            <mat-radio-group [name]="doc.documentId">
+                              <mat-radio-button
+                                [disabled]="isSentReceivedDisabled(doc)"
+                                type="checkbox"
+                                [checked]="mode === MODE.VIEW_PENDING_APPROVE && doc.received"
+                                (change)="onToggleCheckSentReceived(doc, contracts, $event)"
+                                color="primary"
+                                [value]="true">
+                              </mat-radio-button>
+                            </mat-radio-group>
+                          </div>
+                        </ng-container>
+                        <ng-template #alreadyDone>
+                          <ng-container *ngIf="doc?.active">
+                            <app-tooltip
+                              [icon]="doc?.iconName"
+                              [iconClass]="doc?.iconClass"
+                              [params]="[{ title: '' | translate, content: doc?.tooltipMsg }]">
+                            </app-tooltip>
+                          </ng-container>
+                          <ng-container *ngIf="!doc?.active"></ng-container>
+                        </ng-template>
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="rejectOriginalReceived" stickyEnd>
+                      <th mat-header-cell *matHeaderCellDef class="cell-xs">ปฏิเสธ รับเอกสารต้นฉบับแล้ว</th>
+                      <td mat-cell *matCellDef="let doc" class="text-center">
+                        <ng-container *ngIf="doc?.hardCopyState === 'OPEN'; else rejectDoc">
+                          <mat-radio-group [name]="doc.documentId">
+                            <mat-radio-button
+                              [disabled]="isSentReceivedDisabled(doc)"
+                              type="checkbox"
+                              [checked]="doc.received === false"
+                              (change)="rejectOriginalReceived(doc, contracts, $event)"
+                              color="warn"
+                              [value]="false">
+                            </mat-radio-button>
+                          </mat-radio-group>
+                        </ng-container>
+                        <ng-template #rejectDoc>
+                          <ng-container *ngIf="doc?.hardCopyState === 'REJECT'">
+                            <app-tooltip
+                              [icon]="doc?.iconName"
+                              [iconClass]="doc?.iconClass"
+                              [params]="[{ title: '' | translate, content: doc?.tooltipMsg }]">
+                            </app-tooltip>
+                          </ng-container>
+                        </ng-template>
+                      </td>
+                    </ng-container>
+                    <ng-container matColumnDef="save" stickyEnd>
+                      <th mat-header-cell *matHeaderCellDef class="text-center cell-xs">บันทึก</th>
+                      <td mat-cell *matCellDef="let element" class="text-center">
+                        <ng-container>
+                          <span
+                            class="link"
+                            *ngIf="
+                              element.rejectReason === false ||
+                              (element.received == false && element.hardCopyState === 'OPEN')
+                            "
+                            (click)="rejectOriginalCopy(element)">
+                            หมายเหตุการปฏิเสธ
+                          </span>
+                          <span *ngIf="element.rejectReason">
+                            {{ element.receiveDate | buddhistEra: 'DD/MM/yyyy' }}
+                          </span>
+                        </ng-container>
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="expand" stickyEnd>
+                      <th mat-header-cell *matHeaderCellDef class="cell-xxs detail-table-head"></th>
+                      <td mat-cell *matCellDef="let doc"></td>
+                    </ng-container>
+                    <ng-container matColumnDef="reasons" stickyEnd>
+                      <th mat-header-cell *matHeaderCellDef class="cell-xxs detail-table-head"></th>
+                      <td
+                        mat-cell
+                        *matCellDef="let element"
+                        [attr.colspan]="displayedColumnsAccount.length"
+                        class="detail-row-wrapper"
+                        [class.active]="element.rejectedReasons?.length > 0">
+                        <div
+                          *ngFor="let item of element.rejectedReasons; let i = index"
+                          fxLayout="row"
+                          class="reasons"
+                          fxLayoutAlign="space-between ">
+                          <div *ngIf="expandedReason || i === 0">
+                            <span class="thin-letter">
+                              ระบุโดย
+                              <span *ngIf="item?.rejectedUserId === 'System'; else notsystem"> ระบบ LEXS </span>
+                              <ng-template #notsystem>
+                                {{ item?.rejectedUserRole || '' }}-{{ item?.rejectedUserSubRole || '' }} ({{
+                                  item?.rejectedUserId || ''
+                                }}
+                                - {{ item?.rejectedUserName }})
+                              </ng-template>
+                              :
+                              {{ item?.rejectedDate | buddhistEra: 'DD/MM/yyyy HH:mm' }}</span
+                            >
+                            <div>
+                              หมายเหตุปฏิเสธรับเอกสารต้นฉบับ ครั้งที่ {{ item?.rejectedReasonId || '' }}:
+                              {{ item?.rejectedReasonName || '' }}
+                              {{ item?.rejectedRemarks || '' }}
+                            </div>
+                          </div>
+                          <div *ngIf="element.rejectedReasons.length > 1 && i === 0">
+                            แสดงประวัติการปฏิเสธ
+                            <button
+                              id="btn-doc-borw-expand-panel"
+                              mat-icon-button
+                              aria-label="expand row"
+                              (click)="expandReason()"
+                              *ngIf="element.rejectedReasons.length > 1">
+                              <mat-icon
+                                *ngIf="!expandedReason"
+                                svgIcon="icon-Direction-Down"
+                                class="icon-xxs fill-black-70"></mat-icon>
+                              <mat-icon
+                                *ngIf="expandedReason"
+                                svgIcon="icon-Direction-UP"
+                                class="icon-xxs fill-black-70"></mat-icon>
+                            </button>
+                          </div>
+                        </div>
+                      </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="displayedColumnsAccount"></tr>
+                    <tr
+                      mat-row
+                      *matRowDef="let row; columns: displayedColumnsAccount; let doc"
+                      [ngClass]="{ 'bg-red-50': doc.received === false, 'bg-green-50': doc.received === true }"></tr>
+                    <tr mat-row *matRowDef="let row; columns: ['reasons']" class="bg-red-50 detail-row"></tr>
+                  </table>
+                </div>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumnsAccount"></tr>
+            <tr
+              mat-row
+              *matRowDef="let row; columns: displayedColumnsAccount; let element"
+              class="element-row"
+              [ngClass]="{ 'bg-red-50': element.received === false, 'bg-green-50': element.received === true }"></tr>
+            <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-row"></tr>
+            <tr mat-row *matRowDef="let row; columns: ['reasons']" class="detail-row bg-red-50"></tr>
+          </table>
+          <ng-container
+            *ngIf="!!!account.documentsAndBills || account.documentsAndBills.length === 0"
+            [ngTemplateOutlet]="dataNotFound">
+          </ng-container>
+        </div>
+      </mat-expansion-panel>
+    </div>
+    <ng-container
+      *ngIf="
+        !!!accountsSet!.accountsSet?.[currentDropdownValue]?.commitments ||
+        accountsSet!.accountsSet?.[currentDropdownValue]?.commitments?.length === 0
+      "
+      [ngTemplateOutlet]="dataNotFound">
+    </ng-container>
+  </mat-expansion-panel>
+
+  <app-document-header
+    title="เอกสารอื่น ๆ"
+    [isMain]="false"
+    (expand)="onExpansionPanelToggle('OTHER')"
+    [forDoc]="mode === MODE.VIEW_PENDING_APPROVE || mode === MODE.VIEW_PENDING"
+    [ready]="true"
+    [readyForLitigation]="other.readyForLitigation"
+    [readyForNotice]="other.readyForNotice"
+    [forLitigation]="
+      (mode === MODE.VIEW_PENDING_APPROVE || mode === MODE.VIEW_PENDING ? false : other.forLitigation) || false
+    "
+    [forNoticeLetter]="
+      (mode === MODE.VIEW_PENDING_APPROVE || mode === MODE.VIEW_PENDING ? false : other.forNoticeLetter) || false
+    "
+    [readyForDoc]="other.readyForDoc || false"
+    [expanded]="showOther">
+  </app-document-header>
+  <mat-expansion-panel [expanded]="showOther">
+    <ng-container *ngIf="mode === MODE.VIEW_PENDING && other.documents!.length > 0">
+      <div fxLayoutAlign="flex-end" class="mt-20 mb-20" fxLayoutGap="24">
+        <div fxLayoutAlign="start center" fxLayoutGap="24">
+          <label>
+            {{ 'DOC_PREP.SELECT' | translate }}: {{ other.documentNumber }} {{ 'COMMON.LABEL_FROM' | translate }}
+            {{ other.totalDocuments }}
+          </label>
+        </div>
+        <div fxLayoutAlign="start center" fxLayoutGap="24" *ngIf="mode === MODE.VIEW_PENDING">
+          <button
+            id="btn-doc-acct-sent-received-2"
+            type="button"
+            (click)="checkSentReceivedAll(other)"
+            mat-stroked-button
+            class="long-button mat-gray">
+            <mat-icon svgIcon="icon-Checkmark-Circle-Regular" class="icon icon-md fill-black-70"> </mat-icon>
+            <ng-container *ngIf="mode === MODE.VIEW_PENDING">
+              {{ 'DOC_PREP.SENT_ALL' | translate }}
+            </ng-container>
+          </button>
+        </div>
+      </div>
+    </ng-container>
+    <div class="table-scroll white-space-init" table-scroll>
+      <table mat-table [dataSource]="other.documents!" class="mt-16 mb-32" multiTemplateDataRows>
+        <ng-container matColumnDef="order">
+          <th mat-header-cell *matHeaderCellDef class="cell-xxs text-center">{{ 'COMMON.LABEL_NO' | translate }}</th>
+          <td mat-cell *matCellDef="let element" class="text-center">
+            <span *ngIf="!element.documentTemplate.optional">
+              {{ element.order }}
+            </span>
+            <span *ngIf="element.documentTemplate.optional" fxLayoutAlign="center center">
+              <div class="elm-form">
+                <input
+                  type="checkbox"
+                  class="elm-radio-check elm-check"
+                  (change)="toggleActive(element)"
+                  [checked]="element.active"
+                  [disabled]="mode === MODE.VIEW || mode === MODE.VIEW_PENDING || mode === MODE.VIEW_PENDING_APPROVE"
+                  [class.disabled]="(mode === MODE.VIEW || mode === MODE.VIEW_PENDING) && !element.active"
+                  [class.inactive]="
+                    (mode === MODE.VIEW || mode === MODE.VIEW_PENDING || mode === MODE.VIEW_PENDING_APPROVE) &&
+                    element.active
+                  " />
+                <label></label>
+              </div>
+            </span>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="documentName">
+          <th mat-header-cell *matHeaderCellDef class="cell-l">{{ 'DOC_PREP.DOC_NAME' | translate }}</th>
+          <td mat-cell *matCellDef="let element">
+            <div fxLayoutAlign="start center" fxLayoutGap="8">
+              <span
+                >{{ element.documentTemplate?.documentName }} <br />
+                {{ element.attributes?.['set'] ? 'ชุดที่ ' + element.attributes?.['set'] : '' }}</span
+              >
+              <mat-icon
+                svgIcon="icon-Email"
+                class="icon default-cursor icon-hide-show icon-small"
+                *ngIf="element.documentTemplate.forNoticeLetter"
+                [class.fill-krungthai-green]="element.imageId"
+                [class.fill-gold]="!element.imageId">
+              </mat-icon>
+              <mat-icon
+                svgIcon="icon-Building-Court"
+                class="icon default-cursor icon-hide-show icon-small"
+                *ngIf="element.documentTemplate.forLitigation"
+                [class.fill-krungthai-green]="element.imageId && element.hasOriginalCopy"
+                [class.fill-krungthai-red]="element.imageId && element.hasOriginalCopy === false"
+                [class.fill-gold]="!element.imageId || element.hasOriginalCopy === undefined">
+              </mat-icon>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="storeOrganization">
+          <th mat-header-cell *matHeaderCellDef class="cell-s">{{ 'DOC_PREP.STORE_ORAGANIZE_NAME_' | translate }}</th>
+          <td mat-cell *matCellDef="let element">
+            <span>{{ element.uploadUserId || element.storeOrganization || '-' }}</span
+            ><br />
+            <span>{{ element.storeOrganizationName || '' }}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="oweOrganization">
+          <th mat-header-cell *matHeaderCellDef class="cell-s">{{ 'DOC_PREP.OWE_ORAGANIZE_NAME_' | translate }}</th>
+          <td mat-cell *matCellDef="let element">
+            <span>{{ element.uploadUserId || element.storeOrganization || '-' }}</span
+            ><br />
+            <span>{{ element.storeOrganizationName || '' }}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="action" stickyEnd>
+          <th mat-header-cell *matHeaderCellDef columnElevationRight class="cell-m text-center">
+            {{ 'DOC_PREP.COPY' | translate }}
+          </th>
+          <td mat-cell *matCellDef="let element" columnElevationRight>
+            <div [class.visibility-hidden]="element.documentTemplate.optional && !element.active">
+              <button
+                id="btn-doc-acct-select-doc-4"
+                *ngIf="mode === MODE.EDIT && !element.imageId"
+                type="button"
+                mat-flat-button
+                color="primary"
+                class="medium-button"
+                cdkFocusInitial
+                (click)="selectDoc(element)">
+                <mat-icon svgIcon="icon-Search" class="icon icon-md"></mat-icon>
+                เลือกเอกสาร
+              </button>
+              <div *ngIf="element.imageId">
+                <div class="link" fxLayoutAlign="space-between center" fxLayoutGap="8">
+                  <span (click)="openDoc(element)" class="break-word">{{ element.imageName }} </span>
+                  <mat-icon
+                    *ngIf="mode === MODE.EDIT"
+                    svgIcon="icon-Search"
+                    class="icon icon-xmedium"
+                    [class.fill-gray]="mode === MODE.EDIT && element?.sent"
+                    (click)="mode === MODE.EDIT && element.sent ? '' : selectDoc(element)"></mat-icon>
+                </div>
+              </div>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="hasOriginalCopy" stickyEnd>
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            class="text-center"
+            [class.cell-s]="mode === MODE.VIEW || mode === MODE.VIEW_PENDING || mode === MODE.VIEW_PENDING_APPROVE"
+            [class.cell-xs]="mode === MODE.EDIT">
+            <span *ngIf="mode === MODE.EDIT">
+              {{ 'DOC_PREP.HAS_ORIGINAL_' | translate }}
+            </span>
+            <span *ngIf="mode === MODE.VIEW">
+              {{ 'DOC_PREP.VERIFY_ORIGINAL_' | translate }}
+            </span>
+            <span *ngIf="mode === MODE.VIEW_PENDING || mode === MODE.VIEW_PENDING_APPROVE">
+              {{ 'DOC_PREP.VERIFY_DOC_ORIGINAL' | translate }}
+            </span>
+          </th>
+          <td mat-cell *matCellDef="let element" class="text-center">
+            <div *ngIf="mode === MODE.VIEW || mode === MODE.VIEW_PENDING || mode === MODE.VIEW_PENDING_APPROVE">
+              <span
+                *ngIf="element?.documentTemplate?.needHardCopy && element.hasOriginalCopy"
+                class="status-label status-success">
+                <mat-icon svgIcon="icon-Mark" class="icon-xmedium fill-green"> </mat-icon>
+                {{ 'DOC_PREP.HAS_ORIGINAL_' | translate }}
+              </span>
+              <span
+                *ngIf="element?.documentTemplate?.needHardCopy && element.hasOriginalCopy === false"
+                class="status-label status-failed">
+                <mat-icon svgIcon="icon-Cross" class="icon-xmedium fill-red"> </mat-icon>
+                {{ 'DOC_PREP.NO_ORIGINAL' | translate }}
+              </span>
+              <span
+                class="status-label status-pending"
+                *ngIf="element?.documentTemplate?.needHardCopy && element.hasOriginalCopy === undefined">
+                {{ 'DOC_PREP.PEDDING_VERIFY' | translate }}
+              </span>
+              <span *ngIf="!element?.documentTemplate?.needHardCopy"> - </span>
+            </div>
+            <div *ngIf="mode === MODE.EDIT">
+              <mat-radio-group [name]="element.id" *ngIf="element.documentTemplate.needHardCopy">
+                <mat-radio-button
+                  type="radio"
+                  color="accent"
+                  *ngIf="!element.documentTemplate.optional || element.active"
+                  [value]="element.hasOriginalCopy === true"
+                  [checked]="element.hasOriginalCopy === true"
+                  [disabled]="
+                    (element.documentTemplate?.imageId && element.imageSource === ImageSourceEnum.Dims) ||
+                    (mode === MODE.EDIT && element.sent)
+                  "
+                  (change)="onRadioChange(element, true)"></mat-radio-button>
+              </mat-radio-group>
+            </div>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="hasNotOriginalCopy" stickyEnd>
+          <th mat-header-cell *matHeaderCellDef class="cell-xs text-center">
+            {{ 'DOC_PREP.HAS_NOT_ORIGINAL' | translate }}
+          </th>
+          <td mat-cell *matCellDef="let element" class="text-center">
+            <mat-radio-group [name]="element.id" *ngIf="element.documentTemplate.needHardCopy">
+              <mat-radio-button
+                type="radio"
+                color="accent"
+                *ngIf="!element.documentTemplate.optional || element.active"
+                [value]="element.hasOriginalCopy === false"
+                [checked]="element.hasOriginalCopy === false"
+                [disabled]="
+                  (element.documentTemplate?.imageId && element.imageSource === ImageSourceEnum.Dims) ||
+                  (mode === MODE.EDIT && element.sent)
+                "
+                (change)="onRadioChange(element, false)">
+              </mat-radio-button>
+            </mat-radio-group>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="sent" stickyEnd>
+          <th mat-header-cell *matHeaderCellDef class="cell-xs">
+            <ng-container *ngIf="mode === MODE.VIEW_PENDING">
+              {{ 'DOC_PREP.SENT' | translate }}
+            </ng-container>
+            <ng-container *ngIf="mode === MODE.VIEW_PENDING_APPROVE">
+              {{ 'DOC_PREP.RECIEVE_ORIGINAL' | translate }}
+            </ng-container>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <ng-container *ngIf="element?.hardCopyState === 'OPEN'; else alreadyDone">
+              <div class="elm-form" *ngIf="mode === MODE.VIEW_PENDING">
+                <input
+                  class="elm-radio-check elm-check"
+                  [checked]="
+                    (mode === MODE.VIEW_PENDING && element.sent) ||
+                    (mode === MODE.VIEW_PENDING_APPROVE && element.received)
+                  "
+                  [class.inactive]="isSentReceivedInactive(element)"
+                  [disabled]="isSentReceivedDisabled(element)"
+                  type="checkbox"
+                  (change)="onToggleCheckSentReceived(element, other, $event)" />
+                <label></label>
+              </div>
+              <div class="elm-form" *ngIf="mode === MODE.VIEW_PENDING_APPROVE">
+                <mat-radio-group [name]="element.documentId">
+                  <mat-radio-button
+                    [disabled]="isSentReceivedDisabled(element)"
+                    type="checkbox"
+                    [checked]="
+                      (mode === MODE.VIEW_PENDING && element.sent) ||
+                      (mode === MODE.VIEW_PENDING_APPROVE && element.received)
+                    "
+                    (change)="onToggleCheckSentReceived(element, contracts, $event)"
+                    color="primary"
+                    [value]="true">
+                  </mat-radio-button>
+                </mat-radio-group>
+              </div>
+            </ng-container>
+            <ng-template #alreadyDone>
+              <ng-container *ngIf="element?.active">
+                <app-tooltip
+                  [icon]="element?.iconName"
+                  [iconClass]="element?.iconClass"
+                  [params]="[{ title: '' | translate, content: element?.tooltipMsg }]">
+                </app-tooltip>
+              </ng-container>
+              <ng-container *ngIf="!element?.active"></ng-container>
+            </ng-template>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="rejectOriginalReceived" stickyEnd>
+          <th mat-header-cell *matHeaderCellDef class="cell-xs">ปฏิเสธ รับเอกสารต้นฉบับแล้ว</th>
+          <td mat-cell *matCellDef="let doc" class="text-center">
+            <ng-container *ngIf="doc?.hardCopyState === 'OPEN'">
+              <mat-radio-group [name]="doc.documentId">
+                <mat-radio-button
+                  [disabled]="isSentReceivedDisabled(doc)"
+                  type="checkbox"
+                  [checked]="doc.received === false"
+                  (change)="rejectOriginalReceived(doc, contracts, $event)"
+                  color="warn"
+                  [value]="false">
+                </mat-radio-button>
+              </mat-radio-group>
+            </ng-container>
+            <ng-template #rejectDoc>
+              <ng-container *ngIf="doc?.hardCopyState === 'REJECT'">
+                <app-tooltip
+                  [icon]="doc?.iconName"
+                  [iconClass]="doc?.iconClass"
+                  [params]="[{ title: '' | translate, content: doc?.tooltipMsg }]">
+                </app-tooltip>
+              </ng-container>
+            </ng-template>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="save" stickyEnd>
+          <th mat-header-cell *matHeaderCellDef class="cell-xs">บันทึก</th>
+          <td mat-cell *matCellDef="let element" class="text-center">
+            <ng-container>
+              <span
+                class="link"
+                *ngIf="
+                  element.rejectReason === false || (element.received == false && element.hardCopyState === 'OPEN')
+                "
+                (click)="
+                  rejectOriginalCopy(element) || (element.received == false && element.hardCopyState === 'OPEN')
+                ">
+                หมายเหตุการปฏิเสธ
+              </span>
+              <span *ngIf="element.rejectReason">
+                {{ element.receiveDate | buddhistEra: 'DD/MM/yyyy' }}
+              </span>
+            </ng-container>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="reasons">
+          <td
+            mat-cell
+            *matCellDef="let element"
+            [attr.colspan]="displayedColumnsOther.length"
+            class="detail-row-wrapper"
+            [class.active]="element.rejectedReasons?.length > 0">
+            <div
+              *ngFor="let item of element.rejectedReasons; let i = index"
+              fxLayout="row"
+              class="reasons"
+              fxLayoutAlign="space-between ">
+              <div *ngIf="expandedReason || i === 0">
+                <span class="thin-letter">
+                  ระบุโดย
+                  <span *ngIf="item?.rejectedUserId === 'System'; else notsystem"> ระบบ LEXS </span>
+                  <ng-template #notsystem>
+                    {{ item?.rejectedUserRole || '' }}-{{ item?.rejectedUserSubRole || '' }} ({{
+                      item?.rejectedUserId || ''
+                    }}
+                    - {{ item?.rejectedUserName }})
+                  </ng-template>
+                  :
+                  {{ item?.rejectedDate | buddhistEra: 'DD/MM/yyyy HH:mm' }}</span
+                >
+                <div>
+                  หมายเหตุปฏิเสธรับเอกสารต้นฉบับ ครั้งที่ {{ item?.rejectedReasonId || '' }}:
+                  {{ item?.rejectedReasonName || '' }}
+                  {{ item?.rejectedRemarks || '' }}
+                </div>
+              </div>
+              <div *ngIf="element.rejectedReasons.length > 1 && i === 0">
+                แสดงประวัติการปฏิเสธ
+                <button
+                  id="btn-doc-borw-expand-panel"
+                  mat-icon-button
+                  aria-label="expand row"
+                  (click)="expandReason()"
+                  *ngIf="element.rejectedReasons.length > 1">
+                  <mat-icon
+                    *ngIf="!expandedReason"
+                    svgIcon="icon-Direction-Down"
+                    class="icon-xxs fill-black-70"></mat-icon>
+                  <mat-icon
+                    *ngIf="expandedReason"
+                    svgIcon="icon-Direction-UP"
+                    class="icon-xxs fill-black-70"></mat-icon>
+                </button>
+              </div>
+            </div>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumnsOther"></tr>
+        <tr
+          mat-row
+          *matRowDef="let row; columns: displayedColumnsOther; let element"
+          [ngClass]="{ 'bg-red-50': element.received === false, 'bg-green-50': element.received === true }"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['reasons']" class="bg-red-50 detail-row"></tr>
+      </table>
+      <ng-container *ngIf="!!!other.documents || other.documents.length === 0" [ngTemplateOutlet]="dataNotFound">
+      </ng-container>
+    </div>
+  </mat-expansion-panel>
+</mat-expansion-panel>
+
+<ng-template #dataNotFound>
+  <app-message-empty [message]="'DOC_PREP.NOT_FOUND_DOC'"></app-message-empty>
+</ng-template>

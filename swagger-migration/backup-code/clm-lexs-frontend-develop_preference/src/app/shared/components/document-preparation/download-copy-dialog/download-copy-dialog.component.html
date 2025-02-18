@@ -1,0 +1,35 @@
+<div class="dialog-content min-xl">
+  <p>กรุณาดาวน์โหลดใบปะหน้าเอกสารที่ส่งคืน DIMS</p>
+
+  <div class="table-scroll" id="table">
+    <table mat-table [dataSource]="data">
+      <ng-container matColumnDef="no">
+        <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_NO' | translate }}</th>
+        <td mat-cell *matCellDef="let row; let index = index">
+          {{ index + 1 }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="documentName">
+        <th mat-header-cell *matHeaderCellDef class="text-left">{{ 'DOC_PREP.DOC_NAME' | translate }}</th>
+        <td mat-cell *matCellDef="let element" class="text-left">
+          <span class="link" (click)="downloadReturnOriginalCover()">
+            {{ element.documentName }}
+          </span>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayColumns"></tr>
+    </table>
+    <br />
+    <app-message-banner
+      *ngIf="showWarning"
+      type="fail"
+      message="กรุณาดาวน์โหลดใบปะหน้าเอกสารที่ส่งคืน DIMS ก่อนกดปุ่ม “รับทราบ”"></app-message-banner>
+    <ng-container *ngIf="displayColumns.length === 0" [ngTemplateOutlet]="dataNotFound"></ng-container>
+  </div>
+</div>
+
+<ng-template #dataNotFound>
+  <app-message-empty [message]="'COMMON.LABEL_PREFIX_NOT_FOUND'"></app-message-empty>
+</ng-template>

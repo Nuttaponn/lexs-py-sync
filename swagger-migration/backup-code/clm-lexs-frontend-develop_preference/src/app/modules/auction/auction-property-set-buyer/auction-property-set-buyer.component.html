@@ -1,0 +1,168 @@
+<div class="content-container">
+  <div class="inner-container-padding-24">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+      <div class="title-text">
+        <h5 class="mt-12 mb-12 mr-12">{{ 'PROPERTY_SET_BUYER.TITLE_PROPERTY_GROUPS' | translate }}</h5>
+      </div>
+      <div fxLayout="row">
+        <div class="description" (click)="isOpened = !isOpened">
+          <mat-icon
+            [svgIcon]="isOpened ? 'icon-Slide-Hide' : 'icon-Expand'"
+            class="icon icon-xmedium icon-hide-show fill-blue mr-5">
+          </mat-icon
+          >{{ isOpened ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate) }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <mat-accordion>
+    <mat-expansion-panel [expanded]="isOpened" hideToggle>
+      <mat-divider class="no-margin"></mat-divider>
+      <div class="mt-12">
+        <div class="search-section pb-16" fxLayout="row" fxLayoutAlign="center start" fxLayoutGap="12px">
+          <div fxFlex>
+            <spig-dropdown
+              classInput="input-xsm icon"
+              [formControl]="typeFilterControl"
+              [config]="dropdownFilterGroupConfig"
+              [options]="collateralGroupOption"
+              (selectedOption)="applyFilter($event, TABLE_FILTER_KEY.GROUP)">
+            </spig-dropdown>
+          </div>
+          <div fxFlex>
+            <spig-dropdown
+              classInput="input-xsm icon"
+              [formControl]="statusFilterControl"
+              [config]="dropdownFilterDocumentConfig"
+              [options]="deedNoFilterOption"
+              (selectedOption)="applyFilter($event, TABLE_FILTER_KEY.DEEDNO)"></spig-dropdown>
+          </div>
+          <div fxFlex>
+            <spig-dropdown
+              classInput="input-xsm icon"
+              [formControl]="assetFilterControl"
+              [config]="dropdownSellTypeConfig"
+              [options]="sellTypeFilterOption"
+              (selectedOption)="applyFilter($event, TABLE_FILTER_KEY.RESULT)"></spig-dropdown>
+          </div>
+        </div>
+        <div class="mb-12" fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="12px">
+          <div>
+            <div class="elm-form check-box-input" style="font-size: 16px !important">
+              <mat-checkbox (change)="filterToggle($event.checked)">{{
+                'PROPERTY_SET_BUYER.CHECKBOX_NOT_COMPLETE_ONLY' | translate
+              }}</mat-checkbox>
+            </div>
+          </div>
+          <div fxLayout="row" fxLayoutAlign="end center" style="font-size: 16px !important">
+            <span
+              >{{ 'PROPERTY_SET_BUYER.LABEL_RESULT_SUCCESS' | translate }}:
+              <span class="bold">{{ dataSusses }}</span></span
+            >
+            <div class="divider-vertical"></div>
+            <span
+              >{{ 'PROPERTY_SET_BUYER.LABEL_RESULT_PENDING_PROCESS' | translate }}:
+              <span class="bold">{{ dataNotSusses }}</span></span
+            >
+          </div>
+        </div>
+        <div class="table-scroll section" table-scroll>
+          <table mat-table [dataSource]="collateralsSource.filteredData">
+            <ng-container matColumnDef="INDEX">
+              <th class="text-center ordernumber-first" mat-header-cell *matHeaderCellDef>
+                {{ 'COMMON.LABEL_NO' | translate }}
+              </th>
+              <td class="text-center" mat-cell *matCellDef="let row; let i = index">
+                {{ startIndex + i }}
+              </td>
+              <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
+            <ng-container matColumnDef="PROPERTY_SET_NUMBER">
+              <th class="text-left" mat-header-cell *matHeaderCellDef>
+                {{ 'PROPERTY_SET_BUYER.FSUBBID' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let row">
+                <div class="link" (click)="onClickItem(row)">
+                  {{ 'PROPERTY_SET_BUYER.FSUBBID_NO' | translate }} {{ row.fsubbidnum || '-' }}
+                </div>
+              </td>
+              <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
+            <ng-container matColumnDef="BUYER_TYPE">
+              <th class="text-left" mat-header-cell *matHeaderCellDef>
+                {{ 'PROPERTY_SET_BUYER.BUYER_TYPE' | translate }}
+              </th>
+              <td class="text-left" mat-cell *matCellDef="let row">
+                {{ typeBuyer.get(row.buyerType) || '-' }}
+              </td>
+              <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
+            <ng-container matColumnDef="BUYER">
+              <th class="text-left" mat-header-cell *matHeaderCellDef>
+                {{ 'PROPERTY_SET_BUYER.BUYER' | translate }}
+              </th>
+              <td class="text-left" mat-cell *matCellDef="let row">
+                {{ row.buyerName || '-' }}
+              </td>
+              <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
+            <ng-container matColumnDef="PRICE">
+              <th class="text-right new-line preserve-breaks" mat-header-cell *matHeaderCellDef>
+                {{ 'PROPERTY_SET_BUYER.PRICE' | translate }}
+              </th>
+              <td class="text-right" mat-cell *matCellDef="let row">
+                {{ row.soldPrice | numberDecimal }}
+              </td>
+              <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
+            <ng-container matColumnDef="ACTION">
+              <th class="text-center action-first" mat-header-cell *matHeaderCellDef>
+                {{ 'COMMON.LABEL_COMMAND' | translate }}
+              </th>
+              <td class="text-center" mat-cell *matCellDef="let row">
+                <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10px">
+                  <button
+                    type="button"
+                    mat-stroked-button
+                    *ngIf="isViewMode || row.paymentTrackingResult"
+                    class="action-btn"
+                    (click)="onViewDetailItem(row)">
+                    <mat-icon svgIcon="icon-view-detail" class="icon icon-xmedium"></mat-icon>
+                    {{ 'COMMON.BUTTON_VIEW_DETAIL' | translate }}
+                  </button>
+                  <button
+                    *ngIf="!isViewMode && !row.paymentTrackingResult"
+                    mat-flat-button
+                    color="primary"
+                    class="action-btn"
+                    (click)="onEditDetailItem(row)">
+                    <mat-icon svgIcon="icon-save-primary" class="icon icon-xmedium"></mat-icon>
+                    {{ 'TASK_CODE_BUTTON.SAVE_RESULT' | translate }}
+                  </button>
+                </div>
+              </td>
+              <td mat-footer-cell *matFooterCellDef></td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+          </table>
+        </div>
+
+        <!-- Empty row handler -->
+        <app-message-empty
+          *ngIf="collateralsSource.filteredData.length === 0"
+          [message]="'AUCTION.MSG_ERROR_SEARCH_NOT_FOUND'">
+        </app-message-empty>
+
+        <!-- Paginator -->
+        <app-paginator
+          *ngIf="allCurrentData.length > 0"
+          #paginator
+          [pageSize]="pageSize"
+          [length]="allCurrentData.length"
+          (page)="onPaging($event)"></app-paginator>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

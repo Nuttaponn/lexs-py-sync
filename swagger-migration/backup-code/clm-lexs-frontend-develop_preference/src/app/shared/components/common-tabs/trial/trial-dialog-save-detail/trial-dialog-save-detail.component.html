@@ -1,0 +1,162 @@
+<div class="content" [formGroup]="dataForm">
+  <!-- วันที่นัดพิจารณา -->
+  <div class="sub-container" fxLayout="row">
+    <h6 class="mr-24 ml-15" fxFlex="15">{{ 'LAWSUIT.TRIAL.HEARING' | translate }}</h6>
+    <div fxFlex="85">
+      <div *ngIf="!isViewMode" fxLayout="row" fxLayoutGap="16px" class="mb-16">
+        <div fxFlex="49">
+          <spig-datepicker
+            [required]="true"
+            [classInput]="'input-full-field border-black-40'"
+            formControlName="appointmentDate"
+            [label]="'LAWSUIT.TRIAL.HEARING_DATE_INPUT'"></spig-datepicker>
+        </div>
+        <div fxFlex="49">
+          <mat-form-field fxFlex class="ex-min-height border-black-40">
+            <mat-label>{{ 'LAWSUIT.TRIAL.HEARING_TIME' | translate }}</mat-label>
+            <input
+              matInput
+              type="text"
+              mask="Hh:m0"
+              [leadZeroDateTime]="true"
+              [(ngModel)]="appointmentTime"
+              [ngModelOptions]="{ standalone: true }"
+              (change)="onChangeAppointmentTime(appointmentTime)" />
+          </mat-form-field>
+        </div>
+      </div>
+      <div *ngIf="isViewMode" fxLayout="row" fxLayoutGap="16px" class="mb-16">
+        <div fxFlex="49">
+          <span class="thin-letter">{{ 'LAWSUIT.TRIAL.HEARING_DATE_INPUT' | translate }}</span>
+          <div>{{ dataForm.get('appointmentDate')?.value | buddhistEra: 'DD/MM/yyyy' || '-' }}</div>
+        </div>
+        <div fxFlex="49">
+          <span class="thin-letter">{{ 'LAWSUIT.TRIAL.HEARING_TIME' | translate }}</span>
+          <div>{{ appointmentTime ? appointmentTime.toString().slice(0, 5) : '-' }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ข้อมูลวันนัดพิจารณา -->
+  <div class="sub-container mt-45" fxLayout="row">
+    <h6 class="mr-24 ml-15" fxFlex="15">ข้อมูลวันนัดพิจารณาคดี</h6>
+    <div *ngIf="!isViewMode" fxFlex="85">
+      <div *ngIf="courtLevel === CourtTrialDto.CourtLevelEnum.Civil">
+        <div fxLayout="row" fxLayoutGap="16px" class="mb-16">
+          <div fxFlex="49">
+            <div class="elm-form">
+              <input class="elm-radio-check elm-check mr-1em" formControlName="checkboxInvestigate" type="checkbox" />
+              <label class="elm-check-label"> {{ 'LAWSUIT.TRIAL.INVESTIGATE_WITNESS' | translate }}</label>
+            </div>
+          </div>
+          <div fxFlex="49">
+            <div class="elm-form">
+              <input class="elm-radio-check elm-check mr-1em" formControlName="checkboxSettlement" type="checkbox" />
+              <label class="elm-check-label">{{ 'LAWSUIT.TRIAL.SETTLEMENT' | translate }}</label>
+            </div>
+          </div>
+        </div>
+        <div fxLayout="row" fxLayoutGap="16px" class="mb-16">
+          <div fxFlex="49">
+            <div class="elm-form">
+              <input class="elm-radio-check elm-check mr-1em" formControlName="checkboxPretrial" type="checkbox" />
+              <label class="elm-check-label"> {{ 'LAWSUIT.TRIAL.PRETRIAL' | translate }}</label>
+            </div>
+          </div>
+          <div fxFlex="49">
+            <div class="elm-form">
+              <input class="elm-radio-check elm-check mr-1em" formControlName="checkboxVerdict" type="checkbox" />
+              <label class="elm-check-label"> {{ 'LAWSUIT.TRIAL.VERDICT' | translate }}</label>
+            </div>
+          </div>
+        </div>
+        <div fxLayout="row" fxLayoutGap="16px" class="mb-16">
+          <div fxFlex="49">
+            <div class="elm-form">
+              <input class="elm-radio-check elm-check mr-1em" formControlName="checkboxOther" type="checkbox" />
+              <label class="elm-check-label">{{ 'LAWSUIT.TRIAL.OTHER' | translate }}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- ศาลอุทธรณ์/ฎีกา) (View) -->
+      <div
+        *ngIf="
+          courtLevel === CourtTrialDto.CourtLevelEnum.Appeal || courtLevel === CourtTrialDto.CourtLevelEnum.Supreme
+        ">
+        <div fxLayout="row" fxLayoutGap="16px" class="mb-16">
+          <div fxFlex="49">
+            <div class="elm-form">
+              <input class="elm-radio-check elm-check mr-1em" formControlName="checkboxSettlement" type="checkbox" />
+              <label class="elm-check-label">{{ 'LAWSUIT.TRIAL.SETTLEMENT' | translate }}</label>
+            </div>
+          </div>
+          <div fxFlex="49">
+            <div class="elm-form">
+              <input class="elm-radio-check elm-check mr-1em" formControlName="checkboxVerdict" type="checkbox" />
+              <label class="elm-check-label"> {{ 'LAWSUIT.TRIAL.VERDICT' | translate }}</label>
+            </div>
+          </div>
+        </div>
+        <div fxLayout="row" fxLayoutGap="16px" class="mb-16">
+          <div fxFlex="49">
+            <div class="elm-form">
+              <input class="elm-radio-check elm-check mr-1em" formControlName="checkboxOther" type="checkbox" />
+              <label class="elm-check-label">{{ 'LAWSUIT.TRIAL.OTHER' | translate }}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        *ngIf="
+          !!!dataForm.get('checkboxInvestigate')?.value &&
+          !!!dataForm.get('checkboxSettlement')?.value &&
+          !!!dataForm.get('checkboxPretrial')?.value &&
+          !!!dataForm.get('checkboxVerdict')?.value &&
+          !!!dataForm.get('checkboxOther')?.value
+        "
+        class="fill-red mb-15">
+        {{ 'LAWSUIT.TRIAL.WARNING_APPOINTMENT_TYPE' | translate }}
+      </div>
+      <div fxLayout="row" fxLayoutGap="16px" class="mb-16">
+        <mat-form-field fxFlex class="mb-16">
+          <mat-label>{{ 'LAWSUIT.TRIAL.HEARING_INFO' | translate }}</mat-label>
+          <textarea
+            matInput
+            class="form-control no-resize"
+            cols="10"
+            rows="8"
+            formControlName="remark"
+            maxlength="500"></textarea>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div *ngIf="isViewMode">
+      <div class="mb-16">
+        <span class="thin-letter">{{ 'LAWSUIT.TRIAL.HEARING_TYPE' | translate }}</span>
+        <div>{{ dataForm.get('appointment')?.value[0] || '-' }}</div>
+      </div>
+      <div class="mb-16">
+        <span class="thin-letter">{{ 'LAWSUIT.TRIAL.HEARING_INFO' | translate }}</span>
+        <div>{{ dataForm.get('remark')?.value || '-' }}</div>
+      </div>
+    </div>
+  </div>
+  <!-- เอกสารเพิ่มเติม -->
+  <div class="sub-container" fxLayout="row">
+    <h6 class="mr-24 ml-15" fxFlex="15">{{ 'LAWSUIT.TRIAL.DOCUMENT' | translate }}</h6>
+    <div fxFlex="85">
+      <app-upload-multi-file-content
+        [readonly]="isViewMode"
+        [uploadMultiInfo]="uploadMultiInfo"
+        [list]="documentUpload"
+        [column]="documentColumns"
+        (uploadFileEvent)="uploadFileEvent($event)"
+        [acceptFile]="['application/pdf']"
+        [uploadFor]="'COURT_TRIAL'">
+      </app-upload-multi-file-content>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,832 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "KTB Backend for Frontend APIs.",
+    "description": "Microservice: asset-investigation",
+    "contact": {
+      "name": "Krungthai Bank Public Company Limited",
+      "url": "https://krungthai.com",
+      "email": ""
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://lexsdev.krungthai/ktb/rest/lexs",
+      "description": "Generated server url"
+    }
+  ],
+  "paths": {
+    "/v1/asset-investigation/{litigationCaseId}/save": {
+      "post": {
+        "tags": [
+          "asset-investigation-controller"
+        ],
+        "operationId": "postAssetInvestigationSave",
+        "parameters": [
+          {
+            "name": "litigationCaseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "assetInvestigationId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssetInvestigationSaveRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssetInvestigationSaveResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/asset-investigation/{assetInvestigationId}/submit": {
+      "post": {
+        "tags": [
+          "asset-investigation-controller"
+        ],
+        "operationId": "postAssetInvestigationSubmit",
+        "parameters": [
+          {
+            "name": "assetInvestigationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/asset-investigation/{assetInvestigationId}/cancel": {
+      "post": {
+        "tags": [
+          "asset-investigation-controller"
+        ],
+        "operationId": "postAssetInvestigationCancel",
+        "parameters": [
+          {
+            "name": "assetInvestigationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/asset-investigation/rls/callback": {
+      "post": {
+        "tags": [
+          "asset-investigation-controller"
+        ],
+        "operationId": "postRLSCallback",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RLSCallbackRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RLSCallbackResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/asset-investigation/{assetInvestigationId}/info": {
+      "get": {
+        "tags": [
+          "asset-investigation-controller"
+        ],
+        "operationId": "getAssetInvestigationLitigationInfo",
+        "parameters": [
+          {
+            "name": "assetInvestigationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssetInvestigationLitigationInfoResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/asset-investigation/litigation/{litigationId}/litigation-cases": {
+      "get": {
+        "tags": [
+          "asset-investigation-controller"
+        ],
+        "operationId": "getAssetInvestigationLitigationCases",
+        "parameters": [
+          {
+            "name": "litigationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssetInvestigationLitigationCasesResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/asset-investigation/litigation-case/{litigationCaseId}/create-info": {
+      "get": {
+        "tags": [
+          "asset-investigation-controller"
+        ],
+        "operationId": "getAssetInvestigationLitigationCreateInfo",
+        "parameters": [
+          {
+            "name": "litigationCaseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssetInvestigationLitigationCaseCreateInfoResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AssetInvestigationPersonDocumentUpload": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "documentTemplateId": {
+            "type": "string"
+          },
+          "documentGroup": {
+            "type": "string"
+          },
+          "uploadSessionId": {
+            "type": "string"
+          }
+        }
+      },
+      "AssetInvestigationPersonUpdate": {
+        "type": "object",
+        "properties": {
+          "personId": {
+            "type": "string"
+          },
+          "activeFlag": {
+            "type": "boolean"
+          },
+          "personDocumentUpload": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AssetInvestigationPersonDocumentUpload"
+            }
+          }
+        }
+      },
+      "AssetInvestigationSaveRequest": {
+        "required": [
+          "action",
+          "litigationDocumentUpload",
+          "personUpdate",
+          "reasonCode"
+        ],
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "SUBMIT",
+              "APPROVE",
+              "REJECT",
+              "CANCEL",
+              "DELETE",
+              "UPDATE",
+              "SUBMIT1",
+              "SUBMIT2",
+              "SAVE"
+            ]
+          },
+          "reasonCode": {
+            "type": "string"
+          },
+          "remark": {
+            "type": "string"
+          },
+          "litigationDocumentUpload": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AssetInvestigationPersonDocumentUpload"
+            }
+          },
+          "personUpdate": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AssetInvestigationPersonUpdate"
+            }
+          }
+        }
+      },
+      "AssetInvestigationSaveResponse": {
+        "type": "object",
+        "properties": {
+          "assetInvestigationId": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "RLSCallbackRequest": {
+        "type": "object",
+        "properties": {
+          "referenceNo": {
+            "type": "string"
+          },
+          "assetInspectionStatus": {
+            "type": "string"
+          },
+          "assetInspectionResultDate": {
+            "type": "string"
+          }
+        }
+      },
+      "RLSCallbackResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "AssetInvestigationAssetDocuments": {
+        "type": "object",
+        "properties": {
+          "docRefId": {
+            "type": "string"
+          },
+          "docType": {
+            "type": "string"
+          },
+          "docTypeName": {
+            "type": "string"
+          },
+          "scanVersion": {
+            "type": "string"
+          },
+          "docName": {
+            "type": "string"
+          },
+          "docDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "documentTemplate": {
+            "$ref": "#/components/schemas/DocumentTemplateDto"
+          }
+        }
+      },
+      "AssetInvestigationAssetOwners": {
+        "type": "object",
+        "properties": {
+          "cifNo": {
+            "type": "string"
+          },
+          "identificationNo": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "firstname": {
+            "type": "string"
+          },
+          "lastname": {
+            "type": "string"
+          },
+          "custTypeConst": {
+            "type": "string"
+          }
+        }
+      },
+      "AssetInvestigationDocument": {
+        "type": "object",
+        "properties": {
+          "originalDocument": {
+            "type": "boolean"
+          },
+          "documentSeqNo": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "documentTemplate": {
+            "$ref": "#/components/schemas/DocumentTemplateDto"
+          },
+          "documentId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "imageSource": {
+            "type": "string",
+            "enum": [
+              "LEXS",
+              "IMP",
+              "DIMS",
+              "LG",
+              "PN",
+              "FCS",
+              "TFS",
+              "LCS",
+              "RLS"
+            ]
+          },
+          "imageId": {
+            "type": "string"
+          },
+          "imageName": {
+            "type": "string"
+          },
+          "uploadTimestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "AssetInvestigationInspectionAssets": {
+        "type": "object",
+        "properties": {
+          "assetId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "assetStatus": {
+            "type": "string"
+          },
+          "collTypeCode": {
+            "type": "string"
+          },
+          "collTypeDesc": {
+            "type": "string"
+          },
+          "collSubTypeCode": {
+            "type": "string"
+          },
+          "collSubTypeDesc": {
+            "type": "string"
+          },
+          "registrationNumber": {
+            "type": "string"
+          },
+          "totalLoAppraisalValue": {
+            "type": "string"
+          },
+          "obligationStatus": {
+            "type": "string"
+          },
+          "documentNo": {
+            "type": "string"
+          },
+          "assetDesc": {
+            "type": "string"
+          },
+          "assetOwners": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AssetInvestigationAssetOwners"
+            }
+          },
+          "assetDocuments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AssetInvestigationAssetDocuments"
+            }
+          }
+        }
+      },
+      "AssetInvestigationInspectionDetails": {
+        "type": "object",
+        "properties": {
+          "inspectionAssets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AssetInvestigationInspectionAssets"
+            }
+          },
+          "inspectionPersonDocuments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AssetInvestigationInspectionPersonDocuments"
+            }
+          }
+        }
+      },
+      "AssetInvestigationInspectionPersonDocuments": {
+        "type": "object",
+        "properties": {
+          "personId": {
+            "type": "string"
+          },
+          "cifNo": {
+            "type": "string"
+          },
+          "identificationNo": {
+            "type": "string"
+          },
+          "documents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AssetInvestigationAssetDocuments"
+            }
+          }
+        }
+      },
+      "AssetInvestigationLitigationInfoResponse": {
+        "type": "object",
+        "properties": {
+          "assetInvestigationId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "assetInvestigationRound": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "reasonCode": {
+            "type": "string"
+          },
+          "reasonDesc": {
+            "type": "string"
+          },
+          "remark": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "statusName": {
+            "type": "string"
+          },
+          "litigationCaseId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "litigationDocuments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AssetInvestigationDocument"
+            }
+          },
+          "persons": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AssetInvestigationPersons"
+            }
+          },
+          "inspectionDetails": {
+            "$ref": "#/components/schemas/AssetInvestigationInspectionDetails"
+          }
+        }
+      },
+      "AssetInvestigationPersons": {
+        "type": "object",
+        "properties": {
+          "personSeqNo": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "personId": {
+            "type": "string"
+          },
+          "activeFlag": {
+            "type": "boolean"
+          },
+          "personStatus": {
+            "type": "string"
+          },
+          "orderedRecentlyFlag": {
+            "type": "boolean"
+          },
+          "relatedLitigations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AssetInvestigationRelatedLitigations"
+            }
+          },
+          "cifNo": {
+            "type": "string"
+          },
+          "taxNo": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "relation": {
+            "type": "string"
+          },
+          "personDocuments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AssetInvestigationDocument"
+            }
+          }
+        }
+      },
+      "AssetInvestigationRelatedLitigations": {
+        "type": "object",
+        "properties": {
+          "litigationId": {
+            "type": "string"
+          }
+        }
+      },
+      "DocumentTemplateDto": {
+        "type": "object",
+        "properties": {
+          "documentTemplateId": {
+            "type": "string"
+          },
+          "documentName": {
+            "type": "string"
+          },
+          "searchType": {
+            "type": "string",
+            "enum": [
+              "LEXS",
+              "IMP",
+              "DIMS",
+              "LG",
+              "PN",
+              "FCS",
+              "TFS",
+              "LCS",
+              "RLS"
+            ]
+          },
+          "documentGroup": {
+            "type": "string",
+            "enum": [
+              "LITIGATION",
+              "NOTICE",
+              "EFILING",
+              "COURT_FEE",
+              "PERSON",
+              "PERSON_LCS",
+              "COLLATERAL_CONTRACT",
+              "COLLATERAL",
+              "COLLATERAL_APPRAISAL",
+              "COLLATERAL_TCG_SUNDRY",
+              "COLLATERAL_INS_SUNDRY",
+              "COLLATERAL_INS_POLICY",
+              "COLLATERAL_OTHER",
+              "ACCOUNT_BILL",
+              "ACCOUNT_OTHER",
+              "ACCOUNT_CONTRACT",
+              "ACCOUNT_TFS",
+              "ACCOUNT_COMMITMENT",
+              "LINKAGE",
+              "DEFERMENT",
+              "CESSATION",
+              "APPEAL",
+              "SUPREME",
+              "DISPUTE_APPEAL",
+              "LEGAL_EXECUTION",
+              "SEIZURE",
+              "WITHDRAW_SEIZURE",
+              "AUCTION",
+              "ACCOUNT_DEBT_CALCULATION",
+              "AUCREFRESULT",
+              "AUCDEEDGROUPRESULT",
+              "AUCDEEDGROUPRETURN",
+              "AUCBIDRESULT",
+              "DEBT_SETTLEMENT",
+              "ASSET"
+            ]
+          },
+          "needHardCopy": {
+            "type": "boolean"
+          },
+          "optional": {
+            "type": "boolean"
+          },
+          "forNoticeLetter": {
+            "type": "boolean"
+          },
+          "forLitigation": {
+            "type": "boolean"
+          },
+          "requiredDocumentDate": {
+            "type": "boolean"
+          },
+          "autoMatchType": {
+            "type": "string"
+          },
+          "contentType": {
+            "type": "string"
+          },
+          "generatedBySystem": {
+            "type": "boolean"
+          },
+          "multipleUpload": {
+            "type": "boolean"
+          }
+        }
+      },
+      "AssetInvestigationDto": {
+        "type": "object",
+        "properties": {
+          "assetInvestigationId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "assetInvestigationRound": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "submittedTimestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "resultTimestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "reasonCode": {
+            "type": "string"
+          },
+          "reasonDesc": {
+            "type": "string"
+          },
+          "totalPersons": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalAssets": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status": {
+            "type": "string"
+          },
+          "statusName": {
+            "type": "string"
+          }
+        }
+      },
+      "AssetInvestigationLitigationCase": {
+        "type": "object",
+        "properties": {
+          "litigationCaseId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "litigationCaseSeqNo": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "blackCaseNo": {
+            "type": "string"
+          },
+          "redCaseNo": {
+            "type": "string"
+          },
+          "assetInvestigations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AssetInvestigationDto"
+            }
+          }
+        }
+      },
+      "AssetInvestigationLitigationCasesResponse": {
+        "type": "object",
+        "properties": {
+          "litigationCases": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AssetInvestigationLitigationCase"
+            }
+          },
+          "viewMode": {
+            "type": "boolean"
+          }
+        }
+      },
+      "AssetInvestigationLitigationCaseCreateInfoResponse": {
+        "type": "object",
+        "properties": {
+          "litigationCaseId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "litigationDocuments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AssetInvestigationDocument"
+            }
+          },
+          "persons": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AssetInvestigationPersons"
+            }
+          }
+        }
+      }
+    }
+  }
+}

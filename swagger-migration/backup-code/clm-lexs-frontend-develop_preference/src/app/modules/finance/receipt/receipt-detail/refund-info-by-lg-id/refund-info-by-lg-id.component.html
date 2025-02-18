@@ -1,0 +1,449 @@
+<div class="container pt-20" [formGroup]="refundInfoForm">
+  <ng-container formArrayName="transferOrders">
+    <mat-card
+      appearance="outlined"
+      class="card info-container mt-20"
+      *ngFor="let da of transferOrders.controls; index as index"
+      [formGroupName]="index">
+      <mat-accordion class="accordion-headers-align">
+        <div fxLayout="row" fxLayoutAlign="space-between center" class="title-content">
+          <div fxLayout="row" fxLayoutAlign="center">
+            <mat-icon svgIcon="icon-Window" class="icon icon-medium"></mat-icon>
+            <div class="title-text" fxLayout="row" fxLayoutAlign="start center">
+              <h6>รายการโอนเงินตาม</h6>
+              &nbsp;&nbsp;
+              <h6 class="link" (click)="onClickLg(getControl('litigationId', index)?.value || '')">
+                {{ getControl('litigationId', index)?.value || '-' }}
+              </h6>
+              <div class="divider-vertical mt-7"></div>
+              <h6 *ngIf="getControl('blackCaseNo', index)?.value">
+                คดีหมายเลขดำ {{ getControl('blackCaseNo', index)?.value || '-' }}
+              </h6>
+              &nbsp;&nbsp;
+              <h6 class="fill-red" *ngIf="getControl('redCaseNo', index)?.value">
+                คดีหมายเลขแดง {{ getControl('redCaseNo', index)?.value || '-' }}
+              </h6>
+            </div>
+          </div>
+          <div fxLayout="row">
+            <div class="mr-28 description" *ngIf="!isViewMode && !isDownLoad" (click)="deleleLg(index)">
+              <mat-icon svgIcon="icon-Bin" class="icon-md btn-icon fill-red"></mat-icon>
+              <span class="fill-red bold">{{ 'COMMON.BUTTON_DELETE' | translate }}</span>
+            </div>
+            <div class="description" (click)="da.get('isExpand')?.setValue(!da.get('isExpand')?.value)">
+              <mat-icon
+                [svgIcon]="da?.get('isExpand')?.value ? 'icon-Slide-Hide' : 'icon-Expand'"
+                class="icon-md icon-hide-show fill-blue mr-2">
+              </mat-icon>
+              <span class="bold">
+                {{
+                  da.get('isExpand')?.value
+                    ? ('COMMON.ICON_EXPANSION_HIDE' | translate)
+                    : ('COMMON.ICON_EXPANSION_SHOW' | translate)
+                }}
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="padded-container" fxLayout="row">
+          <div fxLayout="row" fxLayoutGap="16" fxLayoutAlign="start center">
+            <div class="fill-black-70">สถานะดำเนินคดีปัจจุบัน:</div>
+            <div class="status-label status-normal">{{ getControl('litigationStatusName', index)?.value || '-' }}</div>
+          </div>
+        </div>
+        <mat-expansion-panel [expanded]="da.get('isExpand')?.value" hideToggle>
+          <div class="data-table-content">
+            <div class="table-scroll" table-scroll>
+              <table mat-table [dataSource]="getControl('mainBorrowers', index)?.value || []" id="ref-table">
+                <ng-container matColumnDef="mainBorrowerPersonName" sticky>
+                  <th mat-header-cell *matHeaderCellDef>ผู้กู้หลัก</th>
+                  <td mat-cell *matCellDef="let element; let i = index">
+                    {{ element?.mainBorrowerPersonName || '-' }}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="courtName" sticky>
+                  <th mat-header-cell *matHeaderCellDef>ศาล</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element?.courtName }}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="responseUnit">
+                  <th mat-header-cell *matHeaderCellDef>Response Unit</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element?.responseUnitCode }} - {{ element?.responseUnitName }}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="branch">
+                  <th mat-header-cell *matHeaderCellDef>สาขา</th>
+                  <td mat-cell *matCellDef="let element">{{ element?.branchCode }} - {{ element?.branchName }}</td>
+                </ng-container>
+                <ng-container matColumnDef="total" stickyEnd>
+                  <th mat-header-cell *matHeaderCellDef columnElevationRight class="text-right">
+                    จำนวนเงินที่ศาลสั่งคืน<br />(บาท)
+                  </th>
+                  <td mat-cell *matCellDef="let element" columnElevationRight class="text-right">
+                    {{ (element?.courtRefundAmount | numberDecimal) || '-' }}
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="mainBorrowerColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: mainBorrowerColumns"></tr>
+                <div *ngIf="getControl('mainBorrowers', index)?.value?.length === 0">
+                  <ng-container *ngTemplateOutlet="searchEmptyTemp"></ng-container>
+                </div>
+              </table>
+            </div>
+          </div>
+
+          <div fxLayout="row" fxLayoutGap="24" class="mb-24 mt-20">
+            <div fxFlex="33" fxLayout="column" fxLayoutGap="24"></div>
+            <div fxFlex="66" fxLayout="column" fxLayoutGap="24">
+              <app-message-banner
+                type="fail"
+                *ngIf="getControl('hasErrorClearingAmount', index)?.value === false"
+                [message]="'จำนวนเงินล้างรายการ” รวมกับ “จำนวนเงินคืน” ไม่เท่ากับ “จำนวนเงินที่ศาลสั่งคืน'">
+              </app-message-banner>
+            </div>
+          </div>
+          <!-- รายการรับเงินต่อ LGID  -->
+          <div fxLayout="row" class="pt-32 pb-20 padded-container" fxLayoutAlign=" center">
+            <div matBadge="1" matBadgeOverlap="false" matBadgeSize="medium" class="demo-section"></div>
+            <div class="title-text pl-35" fxLayout="row">
+              <h6>รายการรับเงินต่อ LGID</h6>
+            </div>
+          </div>
+          <div class="data-table-content">
+            <div class="table-scroll" table-scroll>
+              <div formArrayName="receiveTransactions">
+                <table mat-table [dataSource]="getArray(da, 'receiveTransactions')?.controls" id="ref-table">
+                  <ng-container matColumnDef="no" sticky>
+                    <th mat-header-cell *matHeaderCellDef class="text-center">
+                      {{ 'COMMON.LABEL_NO' | translate }}
+                    </th>
+                    <td mat-cell *matCellDef="let element; let i = index" class="text-center">
+                      {{ i + 1 }}
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef="let element"></td>
+                  </ng-container>
+                  <ng-container matColumnDef="advancePaymentAccountNo" sticky>
+                    <th mat-header-cell *matHeaderCellDef columnElevationLeft>เลขที่บัญชีเงิน<br />ทดรองจ่าย</th>
+                    <td
+                      mat-cell
+                      *matCellDef="let element; let rowIndex = index"
+                      [formGroupName]="rowIndex"
+                      columnElevationLeft>
+                      {{ getArray(element, 'advancePaymentAccountNo')?.value || '-' }}
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef="let element"></td>
+                  </ng-container>
+                  <ng-container matColumnDef="expenseType">
+                    <th mat-header-cell *matHeaderCellDef>รายการ/<br />รายการย่อย</th>
+                    <td mat-cell *matCellDef="let element">
+                      {{ getArray(element, 'expenseTypeCode')?.value || '-' }}
+                      {{ getArray(element, 'expenseTypeName')?.value || '-' }}
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef="let element"></td>
+                  </ng-container>
+                  <ng-container matColumnDef="totalAmount">
+                    <th mat-header-cell *matHeaderCellDef class="text-right">จำนวนเงิน<br />(บาท)</th>
+                    <td
+                      mat-cell
+                      *matCellDef="let element; let rowIndex = index"
+                      [formGroupName]="rowIndex"
+                      class="text-right">
+                      {{ (getArray(element, 'totalAmount')?.value | numberDecimal) || '-' }}
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef="let element"></td>
+                  </ng-container>
+                  <ng-container matColumnDef="remainingAmount">
+                    <th mat-header-cell *matHeaderCellDef class="text-right">จำนวนเงินคงเหลือ (บาท)</th>
+                    <td
+                      mat-cell
+                      *matCellDef="let element; let rowIndex = index"
+                      [formGroupName]="rowIndex"
+                      class="text-right">
+                      {{ (getArray(element, 'remainingAmount')?.value | numberDecimal) || '-' }}
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef="let element"></td>
+                  </ng-container>
+                  <ng-container matColumnDef="advancePaymentDate">
+                    <th mat-header-cell *matHeaderCellDef>วันที่ทำรายการ</th>
+                    <td mat-cell *matCellDef="let element; let rowIndex = index" [formGroupName]="rowIndex">
+                      {{ (getArray(element, 'advancePaymentDate')?.value | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef="let element"></td>
+                  </ng-container>
+                  <ng-container matColumnDef="receiveTypeCode" stickyEnd>
+                    <th mat-header-cell *matHeaderCellDef columnElevationRight>ประเภทรายรับ</th>
+                    <td
+                      mat-cell
+                      *matCellDef="let element; let rowIndex = index"
+                      [formGroupName]="rowIndex"
+                      columnElevationRight>
+                      <ng-container
+                        *ngIf="
+                          receiveStatus === 'PENDING_NO_SUCCESS'
+                            ? getArray(element, 'processStatus')?.value !== 'COMPLETED'
+                            : !isViewMode
+                        ">
+                        <spig-dropdown
+                          classInput="input-xsm icon"
+                          formcon
+                          [config]="expenseReceiveConfig"
+                          (selectedOption)="onChaneReceiveType(element)"
+                          formControlName="receiveTypeCode"
+                          [options]="getArray(element, 'receiveTypeOption')?.value">
+                        </spig-dropdown>
+                        <spig-error-msg
+                          [control]="getArray(element, 'receiveTypeCode')"
+                          [customErrorMsg]="'COMMON.ERROR_MSG_CHOOSE_REQUIRED_2'"></spig-error-msg>
+                      </ng-container>
+
+                      <ng-container
+                        *ngIf="
+                          receiveStatus === 'PENDING_NO_SUCCESS'
+                            ? getArray(element, 'processStatus')?.value === 'COMPLETED'
+                            : isViewMode
+                        ">
+                        <div>
+                          {{ getArray(element, 'receiveTypeCode')?.value || '-' }}
+                          {{ getArray(element, 'receiveTypeName')?.value || '-' }}
+                        </div>
+                      </ng-container>
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef="let element" class="text-right">รวม (บาท)</td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="clearingAmount" stickyEnd>
+                    <th mat-header-cell *matHeaderCellDef class="text-right">จำนวนเงินล้าง<br />รายการ (บาท)</th>
+                    <td
+                      mat-cell
+                      *matCellDef="let element; let rowIndex = index"
+                      [formGroupName]="rowIndex"
+                      class="text-right">
+                      <ng-container
+                        *ngIf="
+                          receiveStatus === 'PENDING_NO_SUCCESS'
+                            ? getArray(element, 'processStatus')?.value !== 'COMPLETED'
+                            : !isViewMode
+                        ">
+                        <mat-form-field class="no-label input-sm-icon search-input-field">
+                          <input
+                            matInput
+                            appNumberOnly="qualitative"
+                            type="text"
+                            formControlName="clearingAmount"
+                            (change)="onClearingChange(element)"
+                            placeholder="จำนวน"
+                            class="text-right" />
+                        </mat-form-field>
+                      </ng-container>
+
+                      <ng-container
+                        *ngIf="
+                          receiveStatus === 'PENDING_NO_SUCCESS'
+                            ? getArray(element, 'processStatus')?.value === 'COMPLETED'
+                            : isViewMode
+                        ">
+                        <div>
+                          {{ (getArray(element, 'clearingAmount')?.value | numberDecimal) || '-' }}
+                        </div>
+                      </ng-container>
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef="let element" class="text-right">
+                      {{ numberSum !== 0 ? (numberSum | numberDecimal) : '-' }}
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="status" stickyEnd>
+                    <th mat-header-cell *matHeaderCellDef class="text-center">
+                      สถานะการ<br />
+                      ทำรายการ
+                    </th>
+                    <td
+                      mat-cell
+                      *matCellDef="let element; let rowIndex = index"
+                      [formGroupName]="rowIndex"
+                      class="text-center">
+                      <div
+                        class="status-label"
+                        [ngClass]="{
+                          'status-success': getArray(element, 'processStatus')?.value === 'COMPLETED',
+                          'status-failed': getArray(element, 'processStatus')?.value === 'NOT_COMPLETE',
+                        }">
+                        <span *ngIf="getArray(element, 'processStatus')?.value; else nullData">
+                          {{ getArray(element, 'processStatus')?.value === 'NOT_COMPLETE' ? 'ไม่สำเร็จ' : 'สำเร็จ' }}
+                        </span>
+                        <ng-template #nullData> - </ng-template>
+                      </div>
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef="let element"></td>
+                  </ng-container>
+                  <ng-container matColumnDef="remark" stickyEnd>
+                    <th mat-header-cell *matHeaderCellDef>
+                      {{ 'COMMON.LABEL_REMARKS' | translate }}
+                    </th>
+                    <td mat-cell *matCellDef="let element; let rowIndex = index" [formGroupName]="rowIndex">
+                      <span class="link" (click)="onClickRemark(element)">{{
+                        'COMMON.LABEL_REMARKS' | translate
+                      }}</span>
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef="let element"></td>
+                  </ng-container>
+                  <tr mat-header-row *matHeaderRowDef="receiveTransactionsColumns"></tr>
+                  <tr mat-row *matRowDef="let row; columns: receiveTransactionsColumns"></tr>
+                  <!-- รวม footer column -->
+                  <tr
+                    mat-footer-row
+                    *matFooterRowDef="receiveTransactionsColumns"
+                    [hidden]="getArray(da, 'receiveTransactions')?.value?.length === 0"></tr>
+                  <div *ngIf="getArray(da, 'receiveTransactions')?.value?.length === 0">
+                    <ng-container *ngTemplateOutlet="searchEmptyTemp"></ng-container>
+                  </div>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- รายการรับเงินต่อ LGID จาก -->
+          <div fxLayout="row" class="pt-32 pb-20 padded-container" fxLayoutAlign="start center">
+            <div matBadge="2" matBadgeOverlap="false" matBadgeSize="medium" class="demo-section"></div>
+            <div class="title-text pl-35" fxLayout="row" fxLayoutAlign="start center">
+              <h6>รายการรับเงินต่อ LGID</h6>
+              <div class="divider-vertical mt-7"></div>
+              <h6>
+                จาก {{ getControl('orgCode', index)?.value || '' }}-{{ getControl('orgName', index)?.value || '' }}
+              </h6>
+            </div>
+          </div>
+          <div class="data-table-content">
+            <div class="table-scroll" table-scroll>
+              <div formArrayName="transferTransactions">
+                <table mat-table [dataSource]="getArray(da, 'transferTransactions')?.controls" id="ref-table">
+                  <ng-container matColumnDef="creditNoteReceiverOrgCode" sticky>
+                    <th mat-header-cell *matHeaderCellDef>หน่วยงานที่รับ Credit Note</th>
+                    <td mat-cell *matCellDef="let element; let rowIndex = index" [formGroupName]="rowIndex">
+                      <ng-container *ngIf="!isViewMode && !isDownLoad">
+                        <spig-dropdown
+                          classInput="input-xsm icon"
+                          formControlName="creditNoteReceiverOrgCode"
+                          [config]="ktbOrgConfig"
+                          [options]="ktbOrgOptions">
+                        </spig-dropdown>
+                        <spig-error-msg customErrorMsg=" หน่วยงานที่รับ CREDIT NOTE ของแต่ละ LG ID ไม่ตรงกัน">
+                        </spig-error-msg>
+                      </ng-container>
+                      <ng-container *ngIf="isViewMode || isDownLoad">
+                        {{ getArray(element, 'creditNoteReceiverOrgName')?.value || '-' }}
+                      </ng-container>
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="sendAmount">
+                    <th mat-header-cell *matHeaderCellDef class="text-right">จำนวนเงินที่คืน (บาท)</th>
+                    <td
+                      mat-cell
+                      *matCellDef="let element; let rowIndex = index"
+                      [formGroupName]="rowIndex"
+                      class="text-right">
+                      <ng-container *ngIf="!isViewMode && !isDownLoad">
+                        <mat-form-field class="no-label input-sm-icon search-input-field">
+                          <input
+                            type="text"
+                            matInput
+                            autocomplete="off"
+                            placeholder="จำนวน"
+                            formControlName="sendAmount"
+                            class="text-right"
+                            (change)="onChangeSendAmount(element)"
+                            appNumberOnly />
+                        </mat-form-field>
+                      </ng-container>
+                      <ng-container *ngIf="isViewMode || isDownLoad">
+                        {{ (getArray(element, 'sendAmount')?.value | numberDecimal) || '-' }}
+                      </ng-container>
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="creditNoteDescription">
+                    <th mat-header-cell *matHeaderCellDef>รายละเอียดใน Credit Note</th>
+                    <td mat-cell *matCellDef="let element; let rowIndex = index" [formGroupName]="rowIndex">
+                      <ng-container *ngIf="!isViewMode && !isDownLoad">
+                        <mat-form-field class="no-label input-full-field">
+                          <textarea
+                            maxlength="1000"
+                            matInput
+                            formControlName="creditNoteDescription"
+                            class="form-control no-resize"
+                            placeholder="รายละเอียด"></textarea>
+                        </mat-form-field>
+                      </ng-container>
+                      <spig-error-msg
+                        [control]="getArray(element, 'creditNoteDescription')"
+                        [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+                      </spig-error-msg>
+                      <ng-container *ngIf="isViewMode || isDownLoad">
+                        {{ getArray(element, 'creditNoteDescription')?.value || '-' }}
+                      </ng-container>
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="creditNote">
+                    <th mat-header-cell *matHeaderCellDef>Credit Note</th>
+                    <td mat-cell *matCellDef="let element">
+                      <button
+                        *ngIf="!this.receiptService.isDownLoadList[index] && !isViewCreditNote"
+                        (click)="onDownLoad(index, element)"
+                        type="button"
+                        class="small-button overflow-ellipsis"
+                        mat-flat-button
+                        color="primary">
+                        {{ 'COMMON.BUTTON_DOWNLOAD' | translate }}
+                      </button>
+                      <button
+                        *ngIf="this.receiptService.isDownLoadList[index] && !isViewCreditNote"
+                        (click)="onDownLoad(index, element)"
+                        mat-stroked-button
+                        type="button"
+                        class="medium-aw-button neutral">
+                        {{ 'COMMON.BUTTON_DOWNLOAD' | translate }}
+                      </button>
+                      <div *ngIf="isViewCreditNote" (click)="onDownLoad(index, element)" class="link">
+                        {{ 'COMMON.BUTTON_DOWNLOAD' | translate }}
+                      </div>
+                    </td>
+                  </ng-container>
+                  <tr mat-header-row *matHeaderRowDef="isDownLoad ? creditNoteDownloadColums : creditNoteColums"></tr>
+                  <tr
+                    mat-row
+                    *matRowDef="let row; columns: isDownLoad ? creditNoteDownloadColums : creditNoteColums"></tr>
+                </table>
+                <app-message-banner
+                  *ngIf="!receiptService.isDownLoadList[index] && isDownLoad && !isViewCreditNote"
+                  [type]="'fail'"
+                  [message]="'กรุณาดาวน์โหลด Credit Note'">
+                </app-message-banner>
+                <div *ngIf="getArray(da, 'transferTransactions')?.value?.length === 0">
+                  <ng-container *ngTemplateOutlet="searchEmptyTemp"></ng-container>
+                </div>
+              </div>
+            </div>
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </mat-card>
+    <br />
+  </ng-container>
+  <!-- รวมสุทธิเงินล้างรายการ (บาท) -->
+  <div
+    *ngIf="transferOrders?.value && transferOrders?.value?.length > 0"
+    fxLayout="row"
+    class="pt-32 pb-16"
+    fxLayoutAlign=" center">
+    <div class="title-text" fxLayout="row">
+      <h6>รวมสุทธิเงินล้างรายการ (บาท)</h6>
+      &nbsp;&nbsp;
+      <h6>{{ (refundInfoForm.value | receiptAmount: 'TOTAL' | numberDecimal) || '-' }}</h6>
+    </div>
+  </div>
+</div>
+
+<ng-template #searchEmptyTemp>
+  <app-message-empty [message]="'COMMON.SEARCH_EMPTY'"></app-message-empty>
+</ng-template>

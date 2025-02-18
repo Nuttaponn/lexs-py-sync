@@ -1,0 +1,145 @@
+<ng-container [formGroup]="paymentOrderFormGroup">
+  <div class="mt-24" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+    <!-- รายละเอียดเจ้าพนักงานบังคับคดีสั่งการ -->
+    <div fxLayout="column" fxFlex="15">
+      <h6>{{ 'ADVANCE_PAYMENT.TITLE_WARRANT_DETAILS' | translate }}</h6>
+    </div>
+    <div fxLayout="row" fxFlex fxLayoutGap="16px">
+      <div fxLayout="column" fxFlex="33">
+        <ng-container *ngIf="canEditValue; else elseTemplate">
+          <spig-datepicker
+            class="date-picker-block"
+            [classInput]="'input-s icon no-border'"
+            [label]="'ADVANCE_PAYMENT.LABEL_COMMAND_DATE'"
+            [required]="true"
+            [min]="minDate"
+            [max]="currentDate"
+            formControlName="commandTimestamp"></spig-datepicker>
+          <spig-error-msg [control]="getControl('commandTimestamp')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+          </spig-error-msg>
+        </ng-container>
+        <ng-template #elseTemplate>
+          <mat-label class="view-mode-label">{{ 'ADVANCE_PAYMENT.LABEL_COMMAND_DATE' | translate }}</mat-label>
+          <div class="mt-8 label-normal">
+            <span>{{ (dataViewMode?.commandTimestamp | buddhistEra: 'DD/MM/yyyy') || '-' }}</span>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-24" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+    <!-- รายการเอกสาร -->
+    <div fxLayout="column" fxFlex="15">
+      <h6>{{ 'COMMON.LABEL_DOCUMENT_LIST' | translate }}</h6>
+    </div>
+    <div fxLayout="column" fxFlex="85">
+      <app-upload-multi-file-content
+        [uploadMultiInfo]="uploadMultiInfo"
+        [readonly]="isViewMode || !canEditValue"
+        [list]="documentUpload"
+        [column]="documentColumns"
+        [labelAcceptFile]="
+          mode === 'VIEW' || !canEditValue
+            ? ''
+            : isRequireUploadDocument
+              ? ''
+              : 'UPLOAD_FILE.LABEL_HINT_DOCUMENT_PDF_JPG_JPEG'
+        "
+        (uploadFileEvent)="onUploadFileContent($event)"></app-upload-multi-file-content>
+    </div>
+  </div>
+
+  <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+    <div fxLayout="column" fxFlex="15">
+      <h6 class="mt-12 mb-12 ml-12 mr-12">&nbsp;</h6>
+    </div>
+    <div fxLayout="column" fxFlex="85">
+      <div *ngIf="isRequireUploadDocument">
+        <span class="error-msg">{{ 'UPLOAD_FILE.ERROR_FILE_UPLOAD_REQUIRED' | translate }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-24" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+    <!-- หมายเหตุในการเบิก -->
+    <div fxLayout="column" fxFlex="15">
+      <h6>{{ 'ADVANCE_PAYMENT.LABEL_REMARKS_WITHDRAWAL' | translate }}</h6>
+    </div>
+    <div fxLayout="column" fxFlex="51">
+      <ng-container *ngIf="canEditValue; else elseTemplate">
+        <mat-form-field>
+          <mat-label>{{ 'COMMON.LABEL_REMARKS' | translate }}</mat-label>
+          <textarea matInput maxlength="500" formControlName="reason"></textarea>
+        </mat-form-field>
+      </ng-container>
+      <ng-template #elseTemplate>
+        <mat-label class="view-mode-label">{{ 'COMMON.LABEL_REMARKS' | translate }}</mat-label>
+        <div class="mt-8 label-normal">
+          <span>{{ dataViewMode?.reason || '-' }}</span>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+
+  <div
+    *ngIf="mode === 'VIEW' || (mode === 'EDIT' && viewType === 'R2E09-02-3B_PAYMENT_COMPLETE_PENDING_SAVE')"
+    class="mt-24"
+    fxLayout="row"
+    fxLayoutAlign="start start"
+    fxLayoutGap="16px">
+    <!-- รายละเอียดหมาย -->
+    <div fxLayout="column" fxFlex="15">
+      <h6>{{ 'ADVANCE_PAYMENT.LABEL_AUCTION_SALES_DEPARTMENT' | translate }}</h6>
+    </div>
+    <div fxLayout="row" fxFlex fxLayoutGap="16px">
+      <div fxLayout="column" fxFlex="30">
+        <mat-label class="view-mode-label">{{ 'ADVANCE_PAYMENT.LABEL_OFFICE_LAWYER' | translate }}</mat-label>
+        <div class="mt-8 label-normal">
+          <span>{{ 'COMMON.MAIN_BRANCE_KTB_OFFICE_CODE_NAME' | translate }}</span>
+        </div>
+      </div>
+      <div fxLayout="column" fxFlex="30">
+        <mat-label class="view-mode-label">{{ 'ADVANCE_PAYMENT.LABEL_LAWYER_NAME' | translate }}</mat-label>
+        <div class="mt-8 label-normal">
+          <span>{{ dataViewMode?.fullName }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-24" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+    <!-- รายละเอียดการชำระเงิน -->
+    <div fxLayout="column" fxFlex="15">
+      <h6>{{ 'ADVANCE_PAYMENT.TITLE_PAYMENT_DETAILS' | translate }}</h6>
+    </div>
+    <div fxFlex="30" fxLayout="column" class="mt-8">
+      {{ 'ADVANCE_PAYMENT.LABEL_FEE_PAID_DATE' | translate }}
+      {{ (dataViewMode?.feePaidTimestamp | buddhistEra: 'DD/MM/yyyy') || '-' }}
+    </div>
+  </div>
+
+  <div *ngIf="mode !== 'VIEW'" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+    <div fxLayout="column" fxFlex="15"></div>
+    <div fxLayout="column" fxFlex="86">
+      &nbsp;
+      <app-message-banner type="warn-normal" [message]="warningMessage"></app-message-banner>
+    </div>
+  </div>
+
+  <div class="mt-8" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+    <div fxLayout="column" fxFlex="15"></div>
+    <div fxLayout="column" fxFlex="86">
+      <app-upload-multi-file-content
+        [readonly]="mode === 'VIEW'"
+        [auctionExpenseId]="auctionExpenseId"
+        [uploadMultiInfo]="uploadMultiDetailInfo"
+        [uploadFor]="'ADVANCE_PAYMENT_EFILING'"
+        [list]="documentDetailUpload"
+        [column]="documentDetailColumns"
+        [labelAcceptFile]="''"
+        (validatePaymentForm)="validDatePaymentForm()"
+        (uploadFileEvent)="onUploadFileDetailContent($event)"></app-upload-multi-file-content>
+    </div>
+  </div>
+</ng-container>

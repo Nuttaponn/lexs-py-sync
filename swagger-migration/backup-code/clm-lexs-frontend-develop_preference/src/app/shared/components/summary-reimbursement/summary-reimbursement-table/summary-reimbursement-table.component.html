@@ -1,0 +1,405 @@
+<div>
+  <div fxLayout="row" fxLayoutAlign="end center">
+    <div fxFlex class="mx-width-pct-25 mr-16">
+      <spig-dropdown
+        classInput="input-xsm icon"
+        [config]="showConfig"
+        [options]="dataType === DataType.litigation ? showOptions : showCustomerOptions"
+        [(ngModel)]="selectedShow"></spig-dropdown>
+    </div>
+
+    <ng-container [ngTemplateOutlet]="!isExpandedAllRows ? expandAllRowsBtn : hideAllRowsBtn"></ng-container>
+    <ng-template #expandAllRowsBtn>
+      <div
+        class="status-label size-xl status-normal cur-pointer h-56"
+        fxLayout="row"
+        fxLayoutAlign="space-between center"
+        fxLayoutGap="5px"
+        (click)="manageAllRows(true)">
+        <mat-icon svgIcon="icon-View" class="icon icon-medium icon-fill-white"></mat-icon>
+        <span class="bold">
+          {{ 'SUMMARY_RIEMBURSEMENT.SHOW_DETAIL' | translate }}
+        </span>
+      </div>
+    </ng-template>
+    <ng-template #hideAllRowsBtn>
+      <div
+        class="status-label size-xl status-normal cur-pointer h-56"
+        fxLayout="row"
+        fxLayoutAlign="space-between center"
+        fxLayoutGap="5px"
+        (click)="manageAllRows(false)">
+        <mat-icon svgIcon="icon-hide" class="icon icon-medium icon-fill-white"></mat-icon>
+        <span class="bold">
+          {{ 'SUMMARY_RIEMBURSEMENT.HIDE_DETAIL' | translate }}
+        </span>
+      </div>
+    </ng-template>
+  </div>
+  <ng-container
+    *ngIf="dataType === DataType.litigation; then dataLayoutByLitigationId; else dataLayoutByCustomerId"></ng-container>
+</div>
+
+<ng-template #dataLayoutByLitigationId>
+  <ng-container *ngIf="selectedShow === 'each'">
+    <ng-container *ngFor="let financialLitigationSummary of financialLitigationSummaryDetailList">
+      <div fxLayout="row">
+        <mat-icon svgIcon="icon-Window" class="icon icon-xmedium pr-12"></mat-icon>
+        <h6>{{ financialLitigationSummary.caseTypeName }}</h6>
+        <div class="divider-vertical"></div>
+        <h6>
+          <!-- คดีหมายเลขดำ -->
+          {{ 'COMMON.LABEL_BLACK_CASE_NO' | translate }}
+          {{ (financialLitigationSummary?.blackCaseNo | emptyFormat) || '-' }}
+        </h6>
+        &nbsp;&nbsp;
+        <div class="fill-red">
+          <h6>
+            <!-- คดีหมายเลขแดง -->
+            {{ 'COMMON.LABEL_RED_CASE_NO_2' | translate }}
+            {{ (financialLitigationSummary?.redCaseNo | emptyFormat) || '-' }}
+          </h6>
+        </div>
+      </div>
+      <ng-container
+        [ngTemplateOutlet]="summaryTable"
+        [ngTemplateOutletContext]="{
+          list: financialLitigationSummary?.litigationCaseTransactionDashboard?.financialSummaryTransactionList || [],
+          litigationCaseTransactionDashboard: financialLitigationSummary?.litigationCaseTransactionDashboard || {},
+        }">
+      </ng-container>
+      <br />
+    </ng-container>
+  </ng-container>
+
+  <ng-container>
+    <div fxLayout="row">
+      <mat-icon svgIcon="icon-Window" class="icon icon-xmedium pr-12"></mat-icon>
+      <h6>{{ 'SUMMARY_RIEMBURSEMENT.ALL_LG' | translate }}</h6>
+    </div>
+    <ng-container
+      [ngTemplateOutlet]="summaryTable"
+      [ngTemplateOutletContext]="{
+        list: sumLitigationTransactionDashboard.financialSummaryTransactionList || [],
+        litigationCaseTransactionDashboard: sumLitigationTransactionDashboard,
+      }">
+    </ng-container>
+  </ng-container>
+</ng-template>
+
+<ng-template #dataLayoutByCustomerId>
+  <ng-container *ngIf="selectedShow === 'each'">
+    <ng-container *ngFor="let financialCustomerSummary of financialCustomerSummaryDetailList">
+      <div fxLayout="row">
+        <mat-icon svgIcon="icon-Window" class="icon icon-xmedium pr-12"></mat-icon>
+        <h6>{{ 'LG ID ' }} {{ financialCustomerSummary.litigationId }}</h6>
+      </div>
+      <ng-container
+        [ngTemplateOutlet]="summaryTable"
+        [ngTemplateOutletContext]="{
+          list: financialCustomerSummary?.litigationTransactionDashboard?.financialSummaryTransactionList || [],
+          litigationCaseTransactionDashboard: financialCustomerSummary?.litigationTransactionDashboard || {},
+        }">
+      </ng-container>
+      <br />
+    </ng-container>
+  </ng-container>
+
+  <ng-container>
+    <div fxLayout="row">
+      <mat-icon svgIcon="icon-Window" class="icon icon-xmedium pr-12"></mat-icon>
+      <h6>{{ 'SUMMARY_RIEMBURSEMENT.ALL_CUSTOMER_LG' | translate }}</h6>
+    </div>
+    <ng-container
+      [ngTemplateOutlet]="summaryTable"
+      [ngTemplateOutletContext]="{
+        list: sumLitigationTransactionDashboard.financialSummaryTransactionList || [],
+        litigationCaseTransactionDashboard: sumLitigationTransactionDashboard,
+      }">
+    </ng-container>
+  </ng-container>
+</ng-template>
+
+<ng-template #summaryTable let-dataSource="list" let-lgCaseTransactionDashboard="litigationCaseTransactionDashboard">
+  <div class="table-scroll" table-scroll>
+    <table mat-table multiTemplateDataRows [dataSource]="dataSource">
+      <ng-container matColumnDef="sequence">
+        <th class="text-center" mat-header-cell *matHeaderCellDef>
+          {{ 'COMMON.LABEL_NO' | translate }}
+        </th>
+        <td class="text-center" mat-cell *matCellDef="let row">
+          {{ row.seq }}
+        </td>
+        <td mat-footer-cell *matFooterCellDef></td>
+      </ng-container>
+      <ng-container matColumnDef="item">
+        <th class="text-left preserve-breaks" mat-header-cell *matHeaderCellDef>
+          {{ 'SUMMARY_RIEMBURSEMENT.LG_TABLE.ITEM' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let row; let i = index">
+          <div class="link" (click)="onClickItem(row, i)">{{ row.typeCode + '/' }}<br />{{ row.typeName }}</div>
+        </td>
+        <td mat-footer-cell *matFooterCellDef></td>
+      </ng-container>
+      <ng-container matColumnDef="accountCode">
+        <th class="text-left" mat-header-cell *matHeaderCellDef>
+          {{ 'SUMMARY_RIEMBURSEMENT.LG_TABLE.ACCOUNT_CODE' | translate }}
+        </th>
+        <td class="text-left" mat-cell *matCellDef="let row">
+          {{ row.accountCode || '-' }}
+        </td>
+        <td mat-footer-cell *matFooterCellDef></td>
+      </ng-container>
+      <ng-container matColumnDef="transactionDate">
+        <th class="text-left" mat-header-cell *matHeaderCellDef>
+          {{ 'SUMMARY_RIEMBURSEMENT.LG_TABLE.TRANSACTION_DATE' | translate }}
+        </th>
+        <td class="text-left" mat-cell *matCellDef="let row">
+          {{ (row.invoiceDate | buddhistEra: 'DD/MM/yyyy') || '-' }} <br />
+          {{ (row.invoiceDate | buddhistEra: 'HH:mm:ss') || '-' }}
+        </td>
+        <td mat-footer-cell *matFooterCellDef></td>
+      </ng-container>
+      <ng-container matColumnDef="pettyCashAccountNumber">
+        <th class="text-left preserve-breaks" mat-header-cell *matHeaderCellDef>
+          {{ 'SUMMARY_RIEMBURSEMENT.LG_TABLE.PETTY_CASH_ACCOUNT_NUMBER' | translate }}
+        </th>
+        <td class="text-left" mat-cell *matCellDef="let row">
+          {{ row.accountId || '-' }}
+        </td>
+        <td mat-footer-cell *matFooterCellDef></td>
+      </ng-container>
+      <ng-container matColumnDef="recordingAgency" sticky>
+        <th class="text-left preserve-breaks" mat-header-cell *matHeaderCellDef columnElevationLeft>
+          {{ 'SUMMARY_RIEMBURSEMENT.LG_TABLE.RECORDING_AGENCY' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let row" columnElevationLeft>
+          <div fxLayout="row" fxLayoutGap="5">
+            <div>
+              <app-tooltip
+                [params]="[
+                  {
+                    title: 'FINANCE.RECEIPT_KCORP_WASH_ACCOUNT_NAME' | translate,
+                    content: row.organizationName || '-',
+                    contentClasses: 'bold',
+                  },
+                ]">
+              </app-tooltip>
+            </div>
+            <div>
+              {{ row.organizationCode || '-' }}<br />
+              {{ row.interfaceName || '-' }}
+            </div>
+          </div>
+        </td>
+        <td mat-footer-cell *matFooterCellDef columnElevationLeft>
+          {{ 'COURT.TOTAL' | translate }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="amount">
+        <th class="text-right" mat-header-cell *matHeaderCellDef>
+          {{ 'SUMMARY_RIEMBURSEMENT.LG_TABLE.AMOUNT' | translate }}
+        </th>
+        <td class="text-right" mat-cell *matCellDef="let row">
+          {{ (row.amount | numberDecimal) || '-' }}
+        </td>
+        <td class="text-right bold" mat-footer-cell *matFooterCellDef>
+          <!-- {{ (lgCaseTransactionDashboard.sumAmount | numberDecimal) || '-' }} -->
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="outstanding">
+        <th class="text-right" mat-header-cell *matHeaderCellDef>
+          {{ 'SUMMARY_RIEMBURSEMENT.LG_TABLE.OUTSTANDING' | translate }}
+        </th>
+        <td class="text-right" mat-cell *matCellDef="let row">
+          {{ (row.outstandingBalanceAmount | numberDecimal) || '-' }}
+        </td>
+        <td class="text-right bold" mat-footer-cell *matFooterCellDef></td>
+      </ng-container>
+      <ng-container matColumnDef="expense">
+        <th class="text-right" mat-header-cell *matHeaderCellDef>
+          {{ 'SUMMARY_RIEMBURSEMENT.LG_TABLE.EXPENSE' | translate }}
+        </th>
+        <td class="text-right" mat-cell *matCellDef="let row">
+          {{ (row.expenseAmount | numberDecimal) || '-' }}
+        </td>
+        <td class="text-right bold" mat-footer-cell *matFooterCellDef>
+          {{ (lgCaseTransactionDashboard.sumExpenseAmount | numberDecimal) || '-' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="revenue">
+        <th class="text-right" mat-header-cell *matHeaderCellDef>
+          {{ 'SUMMARY_RIEMBURSEMENT.LG_TABLE.REVENUE' | translate }}
+        </th>
+        <td class="text-right" mat-cell *matCellDef="let row">
+          {{ (row.receiveAmount | numberDecimal) || '-' }}
+        </td>
+        <td class="text-right bold" mat-footer-cell *matFooterCellDef>
+          {{ (lgCaseTransactionDashboard.sumReceiveAmount | numberDecimal) || '-' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="cancelPayment">
+        <th class="text-right" mat-header-cell *matHeaderCellDef>
+          {{ 'SUMMARY_RIEMBURSEMENT.LG_TABLE.CANCEL_PAYMENT' | translate }}
+        </th>
+        <td class="text-right" mat-cell *matCellDef="let row">
+          {{ (row.cancelAmount | numberDecimal) || '-' }}
+        </td>
+        <td class="text-right bold" mat-footer-cell *matFooterCellDef>
+          {{ (lgCaseTransactionDashboard.sumCancelAmount | numberDecimal) || '-' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="adjustAmount">
+        <th class="text-center" mat-header-cell *matHeaderCellDef>
+          {{ 'SUMMARY_RIEMBURSEMENT.LG_TABLE.ADJUST_AMOUNT' | translate }}
+        </th>
+        <td class="text-right" mat-cell *matCellDef="let row">
+          {{ (row.adjustAmount | numberDecimal) || '-' }}
+        </td>
+        <td class="text-right bold" mat-footer-cell *matFooterCellDef>
+          {{ (lgCaseTransactionDashboard.sumAdjustAmount | numberDecimal) || '-' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="folded">
+        <th class="text-right" mat-header-cell *matHeaderCellDef>
+          {{ 'SUMMARY_RIEMBURSEMENT.LG_TABLE.FOLDED' | translate }}
+        </th>
+        <td class="text-right" mat-cell *matCellDef="let row">
+          {{ (row.g12AdvanceAmount | numberDecimal) || '-' }}
+        </td>
+        <td class="text-right bold" mat-footer-cell *matFooterCellDef>
+          {{ (lgCaseTransactionDashboard.sumG12AdvanceAmount | numberDecimal) || '-' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="reduceExempt">
+        <th class="text-right" mat-header-cell *matHeaderCellDef>
+          {{ 'SUMMARY_RIEMBURSEMENT.LG_TABLE.REDUCE_EXEMPT' | translate }}
+        </th>
+        <td class="text-right" mat-cell *matCellDef="let row">
+          {{ (row.g13AdvanceAmount | numberDecimal) || '-' }}
+        </td>
+        <td class="text-right bold" mat-footer-cell *matFooterCellDef>
+          {{ (lgCaseTransactionDashboard.sumG13AdvanceAmount | numberDecimal) || '-' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="ceaseAccordingTo">
+        <th class="text-right" mat-header-cell *matHeaderCellDef>
+          {{ 'SUMMARY_RIEMBURSEMENT.LG_TABLE.CEASE_ACCORDING_TO' | translate }}
+        </th>
+        <td class="text-right" mat-cell *matCellDef="let row">
+          {{ (row.g14AdvanceAmount | numberDecimal) || '-' }}
+        </td>
+        <td class="text-right bold" mat-footer-cell *matFooterCellDef>
+          {{ (lgCaseTransactionDashboard.sumG14AdvanceAmount | numberDecimal) || '-' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="followUp">
+        <th class="text-right" mat-header-cell *matHeaderCellDef>
+          {{ 'SUMMARY_RIEMBURSEMENT.LG_TABLE.FOLLOW_UP' | translate }}
+        </th>
+        <td class="text-right" mat-cell *matCellDef="let row">
+          {{ (row.g15AdvanceAmount | numberDecimal) || '-' }}
+        </td>
+        <td class="text-right bold" mat-footer-cell *matFooterCellDef>
+          {{ (lgCaseTransactionDashboard.sumG15AdvanceAmount | numberDecimal) || '-' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="remark" stickyEnd>
+        <th class="text-center" columnElevationRight mat-header-cell *matHeaderCellDef>
+          {{ 'COMMON.LABEL_REMARKS' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let row" class="text-center" columnElevationRight>
+          <button
+            *ngIf="!row.expanded; else hideBtn"
+            mat-stroked-button
+            type="button"
+            class="medium-aw-button mat-primary border-blue"
+            (click)="toggleRow(row)">
+            <span>
+              <!-- ดูหมายเหตุ -->
+              {{ 'SUMMARY_RIEMBURSEMENT.SHOW_DETAIL_BTN' | translate }}
+            </span>
+            <mat-icon svgIcon="icon-Direction-Down" class="icon icon-hide-show fill-blue icon-xmedium"></mat-icon>
+          </button>
+          <ng-template #hideBtn>
+            <button
+              mat-stroked-button
+              type="button"
+              class="medium-aw-button mat-primary border-blue remark-style"
+              (click)="toggleRow(row)">
+              <span>
+                <!-- ซ่อนหมายเหตุ -->
+                {{ 'SUMMARY_RIEMBURSEMENT.HIDE_DETAIL_BTN' | translate }}
+              </span>
+              <mat-icon svgIcon="icon-Direction-Up" class="icon icon-hide-show fill-blue icon-xmedium"></mat-icon>
+            </button>
+          </ng-template>
+        </td>
+        <td mat-footer-cell *matFooterCellDef columnElevationRight></td>
+      </ng-container>
+
+      <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+      <ng-container matColumnDef="expandedDetail">
+        <td class="example-detail-td" mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
+          <div fxLayout="column" [fxLayoutGap]="element.expanded ? '2px' : '0px'">
+            <ng-container *ngFor="let memo of element?.financialMemoTransaction?.memoList || []">
+              <div class="example-element-detail" [@detailExpand]="element.expanded ? 'expanded' : 'collapsed'">
+                <div class="content-form">
+                  <div class="header">
+                    <ng-container *ngIf="(memo.createdBy | uppercase) === 'SYSTEM'; else userCreated">
+                      {{ 'SUMMARY_RIEMBURSEMENT.SPECIFIED_BY_SYSTEM' | translate }} :
+                      {{ (memo.createdDate | buddhistEra: 'DD/MM/yyyy HH:mm') || '-' }}
+                    </ng-container>
+                    <ng-template #userCreated>
+                      {{ 'SUMMARY_RIEMBURSEMENT.SPECIFIED_BY' | translate }}
+                      {{
+                        memo.roleName +
+                          '-' +
+                          memo.subRoleName +
+                          ' (' +
+                          memo.createdByName +
+                          ' : ' +
+                          memo.createdBy +
+                          ') : ' +
+                          ((memo.createdDate | buddhistEra: 'DD/MM/yyyy HH:mm') || '-')
+                      }}
+                    </ng-template>
+                  </div>
+                  <div class="detail">
+                    {{ memo.note }}
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <ng-container *ngIf="dataSource?.length > 0">
+        <tr
+          class="example-element-row"
+          mat-row
+          *matRowDef="let row; columns: displayedColumns"
+          [class.example-expanded-row]="row.expanded"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+        <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+      </ng-container>
+    </table>
+    <ng-container *ngIf="(dataSource.length || 0) === 0" [ngTemplateOutlet]="searchEmpty"></ng-container>
+  </div>
+</ng-template>
+
+<ng-template #searchEmpty>
+  <div>
+    <app-message-empty [message]="'COMMON.SEARCH_EMPTY'"></app-message-empty>
+  </div>
+</ng-template>

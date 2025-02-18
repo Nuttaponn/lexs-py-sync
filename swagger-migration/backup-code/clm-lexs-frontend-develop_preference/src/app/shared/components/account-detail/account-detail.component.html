@@ -1,0 +1,166 @@
+<app-action-bar
+  [disabledBackButton]="actionBar.disabledBackButton"
+  [hasCancelButton]="actionBar.hasCancelButton"
+  [disabledCancelButton]="actionBar.disabledCancelButton"
+  [cancelButtonText]="actionBar.cancelButtonText"
+  [hasPrimaryButton]="actionBar.hasPrimaryButton"
+  [primaryButtonText]="actionBar.primaryButtonText"
+  [primaryButtonIcon]="actionBar.primaryButtonIcon"
+  [hasEditButton]="actionBar.hasEditButton"
+  [editButtonText]="actionBar.editButtonText"
+  [hasDeleteButton]="actionBar.hasDeleteButton"
+  [deleteButtonText]="actionBar.deleteButtonText"
+  (backButtonHandler)="back()"
+  [showNavBarInformation]="actionBar.showNavBarInformation">
+  <ng-container navBarInformationTemplate>
+    <mat-icon svgIcon="icon-Notebook" class="icon icon-xmedium"></mat-icon>
+    <span class="ml-05em"> {{ 'LAWSUIT.ACC_DETAIL.DETAIL_ACCOUNT' | translate }}</span>
+  </ng-container>
+</app-action-bar>
+
+<div class="content-below-action-bar-area">
+  <div class="container content-container">
+    <h5 class="text-grey mt-20">
+      {{ 'LAWSUIT.ACC_DETAIL.CBS_AT' | translate }}
+      {{ (account.lastUpdate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+    </h5>
+    <hr class="mt-30 mb-30" />
+    <div class="pb-40" fxLayoutGap="20" fxFlexFill>
+      <div fxFlex="20">
+        <h5>
+          {{ 'LAWSUIT.ACC_DETAIL.' + sectionTitles[0] | translate }}
+        </h5>
+      </div>
+      <div fxFlex>
+        <div fxLayout="row wrap" fxLayoutAlign=" center" fxLayoutGap="12">
+          <span fxFlex="29" *ngFor="let firstSectionLabel of firstSectionLabels; let i = index">
+            <div class="header">
+              {{ 'LAWSUIT.ACC_DETAIL.' + firstSectionLabel | translate }}
+            </div>
+            <div class="detail" *ngIf="i === 0">
+              {{ account.accountNo ?? '' }}
+            </div>
+            <div class="detail" *ngIf="i === 1">
+              {{ account.billNo ?? '' }}
+            </div>
+            <div class="detail" *ngIf="i === 2">
+              {{ (account.marketCode ?? '') + '-' + (account.marketDescription ?? '') }}
+            </div>
+            <div class="detail" *ngIf="i === 3">
+              {{ (account.limitAmount | numberDecimal) ?? '' }}
+            </div>
+            <div class="detail" *ngIf="i === 4">
+              {{ (account.contractDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+            </div>
+            <div class="detail" *ngIf="i === 5">
+              {{ (account.expiryDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+            </div>
+            <div class="detail" *ngIf="i === 6">
+              {{ (account.lastTransactionDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+            </div>
+            <div class="detail" *ngIf="i === 7">
+              {{ (account.prescriptionDate | buddhistEra: 'DD/MM/yyyy') ?? '' }}
+            </div>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="pb-40" fxLayoutGap="20" fxFlexFill>
+      <div fxFlex="20">
+        <h5>
+          {{ 'LAWSUIT.ACC_DETAIL.' + sectionTitles[1] | translate }}
+        </h5>
+      </div>
+      <div fxFlex>
+        <div fxLayout="row wrap" fxLayoutAlign=" center" fxLayoutGap="12">
+          <span fxFlex="29" *ngFor="let secondSectionLabel of secondSectionLabels; let i = index">
+            <div class="header">
+              {{ 'LAWSUIT.ACC_DETAIL.' + secondSectionLabel | translate }}
+            </div>
+            <div class="detail" *ngIf="i === 0">
+              {{ (account.outstandingBalance | numberDecimal) ?? '' }}
+            </div>
+            <div class="detail" *ngIf="i === 1">
+              {{ (account.outstandingAccruedInterest | numberDecimal) ?? '' }}
+            </div>
+            <div class="detail" *ngIf="i === 2">
+              {{ (account.interestNonBook | numberDecimal) ?? '' }}
+            </div>
+            <div class="detail" *ngIf="i === 3">
+              {{ (account.lateChargeAmount | numberDecimal) ?? '' }}
+            </div>
+            <div class="detail" *ngIf="i === 4">
+              {{ account.cfinal ?? '' }}
+            </div>
+            <div class="detail" *ngIf="i === 5">
+              {{ account.stageFinal ?? '' }}
+            </div>
+            <div class="detail" *ngIf="i === 6">
+              {{ (account.lastUpdate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+            </div>
+            <div class="detail" *ngIf="i === 7">
+              {{ (account.writeDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+            </div>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="pb-40" fxLayoutGap="20" fxFlexFill>
+      <div fxFlex="20">
+        <h5>
+          {{ 'LAWSUIT.ACC_DETAIL.' + sectionTitles[2] | translate }}
+        </h5>
+      </div>
+      <div fxFlex>
+        <div fxLayout="row wrap" fxLayoutAlign=" center" fxLayoutGap="12">
+          <span fxFlex="29" *ngFor="let thirdSectionLabel of thirdSectionLabels; let i = index">
+            <div class="header">
+              {{ 'LAWSUIT.ACC_DETAIL.' + thirdSectionLabel | translate }}
+            </div>
+            <!-- TODO: verify with BE -->
+            <div class="detail" *ngIf="i === 0">
+              {{ account.accountStatus ?? '' }}
+            </div>
+            <div class="detail" *ngIf="i === 1">
+              {{ 'DWH' }}
+            </div>
+            <div class="detail" *ngIf="i === 2">
+              {{ account.accountStatus ?? '-' }}
+            </div>
+            <div class="detail" *ngIf="i === 3">
+              {{ (account.closeDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+            </div>
+            <div class="detail" *ngIf="i === 4">
+              {{ account.partialWriteOffStatus || '-' }}
+            </div>
+            <div class="detail" *ngIf="i === 5">
+              {{ account.tdrTrackingResult ?? '-' }}
+            </div>
+            <div class="detail" *ngIf="i === 6">
+              {{ (account.lastUpdate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+            </div>
+            <div class="detail" *ngIf="i === 7">
+              <!-- story -> DataDate? -->
+              {{ (account.lastUpdate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+            </div>
+            <div class="detail" *ngIf="i === 8">
+              {{ (account.dpd | number) ?? '-' }}
+            </div>
+            <div class="detail" *ngIf="i === 9">
+              {{ account.userName || '-' }}
+            </div>
+            <div class="detail" *ngIf="i === 10">
+              {{ (litigationDetailDto.litigationDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+            </div>
+            <div class="detail" *ngIf="i === 11">
+              {{ account.litigationStatus ?? '-' }}
+            </div>
+            <div class="detail" *ngIf="i === 12">
+              {{ account.tdrTrackingResult ?? '' }}
+            </div>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

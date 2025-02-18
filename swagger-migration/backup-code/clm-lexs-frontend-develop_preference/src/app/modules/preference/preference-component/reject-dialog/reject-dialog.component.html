@@ -1,0 +1,37 @@
+<div class="dialog-content min-xl" fxLayoutGap=" 24px">
+    <div fxLayout="row" class="mb-35">
+        <div fxFlex="20">
+        <h6 class="mt-5">{{ 'AUCTION_DETAIL.SEND_BACK_EDIT_DIALOG.TASK_SEND_BACK_TO' | translate }}</h6>
+        </div>
+        <div fxFlex="80" fxLayout="column">
+            <span class="thin-letter">{{ 'AUCTION_DETAIL.SEND_BACK_EDIT_DIALOG.MAKER' | translate }}</span>
+            <div>{{ rejectTo }}</div>
+        </div>
+    </div>
+    <div fxLayout="row">
+        <div fxFlex="20">
+        <h6 class="mt-10">{{ 'COMMON.LABEL_REASON' | translate }}</h6>
+        </div>
+        <div fxFlex="80">
+        <mat-form-field class="input-full-field">
+            <mat-label [class.invalid]="reason.invalid">{{
+            'AUCTION_DETAIL.SEND_BACK_EDIT_DIALOG.REMARKS_FOR_CONSIDERATION' | translate
+            }}</mat-label>
+            <textarea
+            class="input-full-field"
+            type="text"
+            matInput
+            cdkTextareaAutosize
+            #autosize="cdkTextareaAutosize"
+            cdkAutosizeMinRows="10"
+            autocomplete="off"
+            [formControl]="reason"
+            required
+            [maxlength]="maxlength"
+            [placeholder]="'AUCTION_DETAIL.SEND_BACK_EDIT_DIALOG.REMARKS_FOR_CONSIDERATION' | translate"></textarea>
+        </mat-form-field>
+        <spig-error-msg [control]="reason" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED_2'"></spig-error-msg>
+        </div>
+    </div>
+</div>
+  

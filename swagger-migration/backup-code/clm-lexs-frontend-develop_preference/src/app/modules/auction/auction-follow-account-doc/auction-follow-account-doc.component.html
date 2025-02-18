@@ -1,0 +1,886 @@
+<div *ngIf="accountDocFollowups && accountDocFollowups.length > 0" class="content-container">
+  <div class="inner-container-padding-24">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+      <div class="title-text">
+        <h5 class="mt-12 mb-12 mr-12">
+          <!-- รายละเอียดการติดตามเอกสารและตรวจรับรองบัญชีรับจ่าย -->
+          {{ 'AUCTION_DETAIL.ACCOUNT_DOCUMENT.FOLLOWUP_AND_ACCOUNT_DOC_VERIFICATION_DETAILS' | translate }}
+        </h5>
+      </div>
+      <div fxLayout="row">
+        <div class="description" (click)="isOpened = !isOpened">
+          <mat-icon
+            [svgIcon]="isOpened ? 'icon-Slide-Hide' : 'icon-Expand'"
+            class="icon icon-hide-show icon-xmedium fill-blue"></mat-icon>
+          {{ isOpened ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate) }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <mat-accordion>
+    <mat-divider *ngIf="isOpened" class="mr-24 mb-24"></mat-divider>
+    <ng-container *ngFor="let accountDocFollowup of accountDocFollowups">
+      <ng-container
+        [ngTemplateOutlet]="accountDocFollowupExpansion"
+        [ngTemplateOutletContext]="{
+          accountDocFollowup,
+        }">
+      </ng-container>
+    </ng-container>
+  </mat-accordion>
+</div>
+
+<ng-template #accountDocFollowupExpansion let-accountDocFollowup="accountDocFollowup">
+  <mat-expansion-panel *ngIf="accountDocFollowup.auctionHeaderConfig" [expanded]="isOpened" hideToggle>
+    <!-- <ng-template #contentForm let-formlabel="formlabel"> -->
+    <app-auction-header
+      [isMainSub]="accountDocFollowup.auctionHeaderConfig.isMainSub"
+      [title]="accountDocFollowup.auctionHeaderConfig.title"
+      [isMain]="accountDocFollowup.auctionHeaderConfig.isMain"
+      [details]="accountDocFollowup.auctionHeaderConfig.details"
+      [expanded]="accountDocFollowup.auctionHeaderConfig.isOpened"
+      (expand)="accountDocFollowup.auctionHeaderConfig.isOpened = !accountDocFollowup.auctionHeaderConfig.isOpened"
+      [ready]="accountDocFollowup.auctionHeaderConfig.ready"
+      [showIcon]="accountDocFollowup.auctionHeaderConfig.showIcon"
+      [isExceptionalIcons]="accountDocFollowup.auctionHeaderConfig.isExceptionalIcons"
+      [titleClass]="'bold text-gray-700'"
+      [forFollowAccDoc]="accountDocFollowup.auctionHeaderConfig.forFollowAccDoc">
+    </app-auction-header>
+    <!-- </ng-template>  -->
+    <mat-accordion>
+      <mat-expansion-panel class="remove-padding" [expanded]="accountDocFollowup.auctionHeaderConfig.isOpened">
+        <ng-container *ngTemplateOutlet="formLayout"></ng-container>
+        <ng-template #formLayout>
+          <ng-container>
+            <div
+              *ngIf="!!accountDocFollowup.formGroup"
+              [formGroup]="accountDocFollowup.formGroup"
+              class="mt-24"
+              fxLayoutGap="16px">
+              <div
+                *ngIf="
+                  accountDocFollowup?.latestReviewInfo &&
+                  accountDocFollowup?.latestReviewInfo?.reviewResult !== 'APPROVE' &&
+                  accountDocFollowup.latestReviewInfo?.rejectReason
+                "
+                fxLayout="row"
+                class="disabled-elm-form mb-35">
+                <div fxFlex="15">
+                  <!-- เหตุผลการพิจารณา -->
+                  <h6>{{ 'AUCTION_DETAIL.ACCOUNT_DOCUMENT.REASON_FOR_CONSIDERATION' | translate }}</h6>
+                </div>
+                <div fxFlex="70">
+                  <div class="content-form">
+                    <!-- เหตุผลส่งกลับแก้ไข -->
+                    <span class="thin-letter fill-black-70">{{
+                      'AUCTION_DETAIL.ACCOUNT_DOCUMENT.REASON_FOR_REVISION' | translate
+                    }}</span>
+                    <div class="color-biz-black-100">
+                      {{ accountDocFollowup.latestReviewInfo?.rejectReason || '-' }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div fxLayout="row" class="disabled-elm-form mb-35" fxLayoutGap="16px">
+                <div fxFlex="15">
+                  <!-- สถานะหมายตรวจรับรองบัญชี -->
+                  <ng-container
+                    *ngTemplateOutlet="
+                      h6RequiredLabelTemplate;
+                      context: {
+                        labelText: 'AUCTION_DETAIL.ACCOUNT_DOCUMENT.CERTIFY_ACCOUNT_WARRANT_STATUS',
+                        isReadOnlyMode: isDisableCertifyAccountWarrantStatus,
+                      }
+                    ">
+                  </ng-container>
+                </div>
+                <div
+                  *ngIf="
+                    isEditMode &&
+                      accountDocFollowup.activeFlag &&
+                      !accountDocFollowup.displayOnRequest &&
+                      !isDisableCertifyAccountWarrantStatus;
+                    else certifyAccountWarrantStatusReadOnlyTemplate
+                  "
+                  fxFlex="30">
+                  <mat-radio-group class="full-width" formControlName="certifyAccountWarrantStatus">
+                    <div fxLayout="row" class="full-width">
+                      <div fxFlex="49">
+                        <!-- ยังไม่ได้รับ -->
+                        <mat-radio-button [value]="CertifyAccountWarrantStatus.NotReceive">{{
+                          'AUCTION_DETAIL.ACCOUNT_DOCUMENT.VALUE.NOT_RECEIVE' | translate
+                        }}</mat-radio-button>
+                      </div>
+                      <div fxFlex>
+                        <!-- ได้รับแล้ว -->
+                        <mat-radio-button [value]="CertifyAccountWarrantStatus.Receive">{{
+                          'AUCTION_DETAIL.ACCOUNT_DOCUMENT.VALUE.RECEIVE' | translate
+                        }}</mat-radio-button>
+                      </div>
+                    </div>
+                  </mat-radio-group>
+                  <spig-error-msg
+                    *ngIf="isShowErrorMsg"
+                    [control]="accountDocFollowup.formGroup.get('certifyAccountWarrantStatus')"
+                    [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'">
+                  </spig-error-msg>
+                </div>
+                <ng-template #certifyAccountWarrantStatusReadOnlyTemplate>
+                  <div fxFlex="70">
+                    <ng-container
+                      [ngTemplateOutlet]="contentForm"
+                      [ngTemplateOutletContext]="{
+                        formlabel: 'AUCTION_DETAIL.ACCOUNT_DOCUMENT.STATUS',
+                        contentText: accountDocFollowup.certifyAccountWarrantStatus
+                          ? ('AUCTION_DETAIL.ACCOUNT_DOCUMENT.VALUE.' + accountDocFollowup.certifyAccountWarrantStatus
+                            | translate)
+                          : '-',
+                      }">
+                    </ng-container>
+                  </div>
+                </ng-template>
+              </div>
+
+              <ng-container *ngIf="!!accountDocFollowup.formGroup.get('certifyAccountWarrantStatus')?.value">
+                <ng-container
+                  *ngIf="
+                    accountDocFollowup.formGroup.get('certifyAccountWarrantStatus')?.value ===
+                      CertifyAccountWarrantStatus.Receive;
+                    else reasonDocTemplate
+                  ">
+                  <div fxLayout="row" class="disabled-elm-form mb-35" fxLayoutGap="16px">
+                    <div fxFlex="15">
+                      <!-- ประเภทของหมายที่ได้รับ -->
+                      <ng-container
+                        *ngTemplateOutlet="
+                          h6RequiredLabelTemplate;
+                          context: {
+                            labelText: 'AUCTION_DETAIL.ACCOUNT_DOCUMENT.CERTIFY_ACCOUNT_WARRANT_TYPE',
+                            isReadOnlyMode: certifyAccountWarrantTypeReadOnlyTemplate,
+                          }
+                        "></ng-container>
+                    </div>
+                    <div
+                      *ngIf="
+                        isEditMode && accountDocFollowup.activeFlag && !isDisableCertifyAccountWarrantType;
+                        else certifyAccountWarrantTypeReadOnlyTemplate
+                      "
+                      fxFlex="30">
+                      <mat-radio-group class="full-width" formControlName="certifyAccountWarrantType">
+                        <div fxLayout="row" class="full-width">
+                          <div fxFlex="49">
+                            <!-- หมายชอบ -->
+                            <mat-radio-button [value]="CertifyAccountWarrantType.ValidWarrant">{{
+                              'AUCTION_DETAIL.ACCOUNT_DOCUMENT.VALUE.VALID_WARRANT' | translate
+                            }}</mat-radio-button>
+                          </div>
+                          <div fxFlex>
+                            <!-- หมายไม่ชอบ -->
+                            <mat-radio-button [value]="CertifyAccountWarrantType.InvalidWarrant">{{
+                              'AUCTION_DETAIL.ACCOUNT_DOCUMENT.VALUE.INVALID_WARRANT' | translate
+                            }}</mat-radio-button>
+                          </div>
+                        </div>
+                      </mat-radio-group>
+                      <spig-error-msg
+                        *ngIf="isShowErrorMsg"
+                        [control]="accountDocFollowup.formGroup.get('certifyAccountWarrantType')"
+                        [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'">
+                      </spig-error-msg>
+                    </div>
+                    <ng-template #certifyAccountWarrantTypeReadOnlyTemplate>
+                      <div fxFlex="30">
+                        <ng-container
+                          [ngTemplateOutlet]="contentForm"
+                          [ngTemplateOutletContext]="{
+                            formlabel: 'AUCTION_DETAIL.ACCOUNT_DOCUMENT.TYPE',
+                            contentText: accountDocFollowup.certifyAccountWarrantType
+                              ? ('AUCTION_DETAIL.ACCOUNT_DOCUMENT.VALUE.' + accountDocFollowup.certifyAccountWarrantType
+                                | translate)
+                              : '-',
+                          }">
+                        </ng-container>
+                      </div>
+                    </ng-template>
+                  </div>
+
+                  <ng-container *ngIf="!!accountDocFollowup.formGroup.get('certifyAccountWarrantType')?.value">
+                    <ng-container *ngTemplateOutlet="certifyAccountWarrantTypeSubLayout1"></ng-container>
+
+                    <ng-container
+                      *ngIf="
+                        accountDocFollowup.formGroup.get('certifyAccountWarrantType')?.value ===
+                        CertifyAccountWarrantType.ValidWarrant
+                      ">
+                      <div fxLayout="row" class="disabled-elm-form mb-35" fxLayoutGap="16px">
+                        <div fxFlex="15">
+                          <!-- สถานะการตรวจสอบบัญชีรับจ่าย -->
+                          <ng-container
+                            *ngTemplateOutlet="
+                              h6RequiredLabelTemplate;
+                              context: {
+                                labelText: 'AUCTION_DETAIL.ACCOUNT_DOCUMENT.ACCOUNT_DOC_VERIFY_STATUS',
+                                isReadOnlyMode: isDisableAccountDocVerifyStatus,
+                              }
+                            "></ng-container>
+                        </div>
+                        <div
+                          *ngIf="
+                            isEditMode && accountDocFollowup.activeFlag && !isDisableAccountDocVerifyStatus;
+                            else accountDocVerifyStatusReadOnlyTemplate
+                          "
+                          fxFlex="30">
+                          <mat-radio-group
+                            class="full-width"
+                            formControlName="accountDocVerifyStatus"
+                            (ngModelChange)="onRadioChange($event)">
+                            <div fxLayout="row" class="full-width">
+                              <div fxFlex="49">
+                                <!-- กำลังตรวจสอบ -->
+                                <mat-radio-button [value]="AccountDocVerifyStatus.InProcess">{{
+                                  'AUCTION_DETAIL.ACCOUNT_DOCUMENT.VALUE.IN_PROCESS' | translate
+                                }}</mat-radio-button>
+                              </div>
+                              <div fxFlex>
+                                <!-- ตรวจสอบเสร็จแล้ว -->
+                                <mat-radio-button [value]="AccountDocVerifyStatus.Verified">{{
+                                  'AUCTION_DETAIL.ACCOUNT_DOCUMENT.VALUE.VERIFIED' | translate
+                                }}</mat-radio-button>
+                              </div>
+                            </div>
+                          </mat-radio-group>
+                          <spig-error-msg
+                            *ngIf="isShowErrorMsg"
+                            [control]="accountDocFollowup.formGroup.get('accountDocVerifyStatus')"
+                            [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'">
+                          </spig-error-msg>
+                        </div>
+                        <ng-template #accountDocVerifyStatusReadOnlyTemplate>
+                          <div fxFlex="30">
+                            <ng-container
+                              [ngTemplateOutlet]="contentForm"
+                              [ngTemplateOutletContext]="{
+                                formlabel: 'AUCTION_DETAIL.ACCOUNT_DOCUMENT.STATUS',
+                                contentText: accountDocFollowup.accountDocVerifyStatus
+                                  ? ('AUCTION_DETAIL.ACCOUNT_DOCUMENT.VALUE.' +
+                                      accountDocFollowup.accountDocVerifyStatus | translate)
+                                  : '-',
+                              }">
+                            </ng-container>
+                          </div>
+                        </ng-template>
+                      </div>
+
+                      <ng-container
+                        *ngIf="
+                          accountDocFollowup.formGroup.get('accountDocVerifyStatus')?.value ===
+                          AccountDocVerifyStatus.Verified
+                        ">
+                        <div fxLayout="row" class="disabled-elm-form mb-35" fxLayoutGap="16px">
+                          <div fxFlex="15">
+                            <!-- ผลการตรวจสอบบัญชีรับจ่าย -->
+                            <ng-container
+                              *ngTemplateOutlet="
+                                h6RequiredLabelTemplate;
+                                context: {
+                                  labelText: 'AUCTION_DETAIL.ACCOUNT_DOCUMENT.ACCOUNT_DOC_VERIFY_RESULT',
+                                  isReadOnlyMode: isDisableAccountDocVerifyResult,
+                                }
+                              "></ng-container>
+                          </div>
+                          <div
+                            *ngIf="
+                              isEditMode && accountDocFollowup.activeFlag && !isDisableAccountDocVerifyResult;
+                              else accountDocVerifyResultReadOnlyTemplate
+                            "
+                            fxFlex="30">
+                            <mat-radio-group class="full-width" formControlName="accountDocVerifyResult">
+                              <div fxLayout="row" class="full-width">
+                                <div fxFlex="49">
+                                  <!-- ข้อมูลถูกต้อง -->
+                                  <mat-radio-button [value]="AccountDocVerifyResult.ValidData">{{
+                                    'AUCTION_DETAIL.ACCOUNT_DOCUMENT.VALUE.VALID_DATA' | translate
+                                  }}</mat-radio-button>
+                                </div>
+                                <div fxFlex>
+                                  <!-- ข้อมูลไม่ถูกต้อง -->
+                                  <mat-radio-button [value]="AccountDocVerifyResult.InvalidData">{{
+                                    'AUCTION_DETAIL.ACCOUNT_DOCUMENT.VALUE.INVALID_DATA' | translate
+                                  }}</mat-radio-button>
+                                </div>
+                              </div>
+                            </mat-radio-group>
+                            <spig-error-msg
+                              *ngIf="isShowErrorMsg"
+                              [control]="accountDocFollowup.formGroup.get('accountDocVerifyResult')"
+                              [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'">
+                            </spig-error-msg>
+                          </div>
+                          <ng-template #accountDocVerifyResultReadOnlyTemplate>
+                            <div fxFlex="30">
+                              <ng-container
+                                [ngTemplateOutlet]="contentForm"
+                                [ngTemplateOutletContext]="{
+                                  formlabel: 'AUCTION_DETAIL.ACCOUNT_DOCUMENT.VERIFICATION_RESULT',
+                                  contentText: accountDocFollowup.accountDocVerifyResult
+                                    ? ('AUCTION_DETAIL.ACCOUNT_DOCUMENT.VALUE.' +
+                                        accountDocFollowup.accountDocVerifyResult | translate)
+                                    : '-',
+                                }">
+                              </ng-container>
+                            </div>
+                          </ng-template>
+                        </div>
+
+                        <ng-container
+                          *ngIf="
+                            accountDocFollowup.formGroup.get('accountDocVerifyResult')?.value ===
+                            AccountDocVerifyResult.ValidData
+                          ">
+                          <div fxLayout="row" class="disabled-elm-form mb-35 mr-0" fxLayoutGap="16px">
+                            <div fxFlex="15">
+                              <!-- รายการชุดทรัพย์ที่เกี่ยวข้อง -->
+                              <ng-container
+                                *ngTemplateOutlet="
+                                  h6RequiredLabelTemplate;
+                                  context: { labelText: 'AUCTION_DETAIL.ACCOUNT_DOCUMENT.ACCOUNT_DOC_DEED_GROUPS' }
+                                "></ng-container>
+                            </div>
+                            <div *ngIf="isEditMode && accountDocFollowup.activeFlag" fxFlex="28">
+                              <spig-dropdown
+                                classInput="input-normal icon"
+                                [config]="accountDocDeedGroupConfig"
+                                [options]="accountDocDeedGroupOptions"
+                                formControlName="accountDocDeedGroups"
+                                (selectedOption)="onSelectedDeedGroups($event)"></spig-dropdown>
+                              <spig-error-msg
+                                *ngIf="isShowErrorMsg"
+                                [control]="getControl('accountDocDeedGroups')"
+                                [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'"></spig-error-msg>
+                            </div>
+                            <div *ngIf="!isEditMode || !accountDocFollowup.activeFlag" fxFlex="28">
+                              <ng-container
+                                [ngTemplateOutlet]="contentForm"
+                                [ngTemplateOutletContext]="{
+                                  formlabel: 'AUCTION_DETAIL.ACCOUNT_DOCUMENT.RELATED_DEED_GROUPS',
+                                  contentText: accountDocFollowup.accountDocDeedGroups,
+                                  linkFunction: onClickLink,
+                                  param1: accountDocFollowup.accountDocDeedGroups,
+                                  param2: 'deedGroups',
+                                }">
+                              </ng-container>
+                            </div>
+                            <div fxFlex="28"></div>
+                            <div fxFlex="28"></div>
+                          </div>
+
+                          <div fxLayout="row" class="disabled-elm-form mb-35 mr-0" fxLayoutGap="16px">
+                            <div fxFlex="15">
+                              <!-- เงินจ่ายชำระหนี้ตามบัญชี แสดงรายการรับจ่ายเงิน -->
+                              <ng-container
+                                *ngTemplateOutlet="
+                                  h6RequiredLabelTemplate;
+                                  context: { labelText: 'AUCTION_DETAIL.ACCOUNT_DOCUMENT.DEBT_SETTLEMENT_AMOUNT' }
+                                "></ng-container>
+                            </div>
+                            <div *ngIf="isEditMode && accountDocFollowup.activeFlag" fxFlex="28">
+                              <mat-form-field class="input-full-field border-black-40 min-width-pct-50">
+                                <mat-label>{{ 'AUCTION_DETAIL.ACCOUNT_DOCUMENT.AMOUNT_IN_THB' | translate }}</mat-label>
+                                <input matInput appNumberOnly="qualitative" formControlName="debtSettlementAmount" />
+                              </mat-form-field>
+                              <spig-error-msg
+                                *ngIf="isShowErrorMsg"
+                                [control]="getControl('debtSettlementAmount')"
+                                [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+                              </spig-error-msg>
+                            </div>
+                            <div *ngIf="!isEditMode || !accountDocFollowup.activeFlag" fxFlex="28">
+                              <ng-container
+                                [ngTemplateOutlet]="contentForm"
+                                [ngTemplateOutletContext]="{
+                                  formlabel: 'AUCTION_DETAIL.ACCOUNT_DOCUMENT.AMOUNT_IN_THB',
+                                  contentText: (accountDocFollowup.debtSettlementAmount | numberDecimal) || '-',
+                                }">
+                              </ng-container>
+                            </div>
+                            <div fxFlex="28"></div>
+                            <div fxFlex="28"></div>
+                          </div>
+
+                          <div fxLayout="row" class="disabled-elm-form mb-35" fxLayoutGap="16px">
+                            <div fxFlex="15">
+                              <!-- จำนวนเงินวางเพิ่มเติม -->
+                              <h6>{{ 'AUCTION_DETAIL.ACCOUNT_DOCUMENT.ADDITIONAL_PAYMENT_AMOUNT_THB' | translate }}</h6>
+                            </div>
+                            <div fxFlex="28">
+                              <ng-container
+                                [ngTemplateOutlet]="contentForm"
+                                [ngTemplateOutletContext]="{
+                                  formlabel: 'AUCTION_DETAIL.ACCOUNT_DOCUMENT.AMOUNT_IN_THB',
+                                  contentText: (accountDocFollowup.additionalPaymentAmount | numberDecimal) || '-',
+                                }">
+                              </ng-container>
+                            </div>
+                          </div>
+
+                          <ng-container
+                            *ngIf="(accountDocFollowup.formGroup.get('debtSettlementAmount')?.value || 0) > 0">
+                            <div fxLayout="row" class="disabled-elm-form mr-0 mb-12" fxLayoutGap="16px">
+                              <div fxFlex="15">
+                                <!-- รายการแคชเชียร์เช็ค -->
+                                <ng-container
+                                  *ngTemplateOutlet="
+                                    h6RequiredLabelTemplate;
+                                    context: { labelText: 'AUCTION_DETAIL.ACCOUNT_DOCUMENT.CASHIER_CHEQUE_ITEMS_TH' }
+                                  "></ng-container>
+                              </div>
+                              <!-- <div fxFlex="80" fxLayoutGap="5px">
+                                <div fxLayout="row" fxLayoutGap="5px"> -->
+                              <div fxFlex="28">
+                                <ng-container *ngIf="isEditMode && accountDocFollowup.activeFlag">
+                                  <mat-form-field class="input-full-field border-black-40 min-width-pct-50">
+                                    <!-- เช็คเลขที่ -->
+                                    <mat-label>{{ 'AUCTION_DETAIL.ACCOUNT_DOCUMENT.CHEQUE_NO' | translate }}</mat-label>
+                                    <input matInput appNumberOnly="number" formControlName="chequeNo" />
+                                  </mat-form-field>
+                                  <spig-error-msg
+                                    *ngIf="isShowErrorMsg"
+                                    [control]="getControl('chequeNo')"
+                                    [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+                                  </spig-error-msg>
+                                </ng-container>
+                                <ng-container
+                                  *ngIf="!isEditMode || !accountDocFollowup.activeFlag"
+                                  [ngTemplateOutlet]="contentForm"
+                                  [ngTemplateOutletContext]="{
+                                    formlabel: 'AUCTION_DETAIL.ACCOUNT_DOCUMENT.CHEQUE_NO',
+                                    contentText: accountDocFollowup.cashierChequeInfo?.chequeNo,
+                                  }">
+                                </ng-container>
+                              </div>
+
+                              <div fxFlex="28">
+                                <ng-container *ngIf="isEditMode && accountDocFollowup.activeFlag">
+                                  <mat-form-field class="input-full-field border-black-40 min-width-pct-50">
+                                    <!-- จำนวนเงินตามเช็ค (บาท) -->
+                                    <mat-label>{{
+                                      'AUCTION_DETAIL.ACCOUNT_DOCUMENT.AMOUNT_ON_CHEQUE' | translate
+                                    }}</mat-label>
+                                    <input matInput appNumberOnly="qualitative" formControlName="amount" />
+                                  </mat-form-field>
+                                  <spig-error-msg
+                                    *ngIf="isShowErrorMsg"
+                                    [control]="getControl('amount')"
+                                    [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+                                  </spig-error-msg>
+                                </ng-container>
+                                <ng-container
+                                  *ngIf="!isEditMode || !accountDocFollowup.activeFlag"
+                                  [ngTemplateOutlet]="contentForm"
+                                  [ngTemplateOutletContext]="{
+                                    formlabel: 'AUCTION_DETAIL.ACCOUNT_DOCUMENT.AMOUNT_ON_CHEQUE',
+                                    contentText: (accountDocFollowup.cashierChequeInfo?.amount | numberDecimal) || '-',
+                                  }">
+                                </ng-container>
+                              </div>
+                              <div fxFlex="28">
+                                <ng-container *ngIf="isEditMode && accountDocFollowup.activeFlag">
+                                  <!-- วันที่รับเงิน/ เช็คลงวันที่ -->
+                                  <spig-datepicker
+                                    formControlName="chequeDate"
+                                    class="date-picker-block"
+                                    [classInput]="'input-s icon border-black-40 mb-4'"
+                                    [label]="'AUCTION_DETAIL.ACCOUNT_DOCUMENT.DATE_RECEIVED_OR_CHEQUE_DATE'"
+                                    [placeholder]="
+                                      'AUCTION_DETAIL.ACCOUNT_DOCUMENT.DATE_RECEIVED_OR_CHEQUE_DATE' | translate
+                                    ">
+                                  </spig-datepicker>
+                                  <spig-error-msg
+                                    *ngIf="isShowErrorMsg"
+                                    [control]="getControl('chequeDate')"
+                                    [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED_2'">
+                                  </spig-error-msg>
+                                </ng-container>
+                                <ng-container
+                                  *ngIf="!isEditMode || !accountDocFollowup.activeFlag"
+                                  [ngTemplateOutlet]="contentForm"
+                                  [ngTemplateOutletContext]="{
+                                    formlabel: 'AUCTION_DETAIL.ACCOUNT_DOCUMENT.DATE_RECEIVED_OR_CHEQUE_DATE',
+                                    contentText:
+                                      accountDocFollowup.cashierChequeInfo?.chequeDate | buddhistEra: 'DD/MM/yyyy',
+                                  }">
+                                </ng-container>
+                              </div>
+                            </div>
+
+                            <div fxLayout="row" class="disabled-elm-form mb-35 mr-0" fxLayoutGap="16px">
+                              <div fxFlex="15">
+                                <!-- รายการแคชเชียร์เช็ค -->
+                              </div>
+                              <div fxFlex="28">
+                                <ng-container *ngIf="isEditMode && accountDocFollowup.activeFlag">
+                                  <spig-dropdown
+                                    classInput="input-normal icon"
+                                    [config]="bankDDConfig"
+                                    [options]="chequeBankOptions"
+                                    formControlName="chequeBankCode"></spig-dropdown>
+                                  <spig-error-msg
+                                    *ngIf="isShowErrorMsg"
+                                    [control]="getControl('chequeBankCode')"
+                                    [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'"></spig-error-msg>
+                                </ng-container>
+                                <ng-container
+                                  *ngIf="!isEditMode || !accountDocFollowup.activeFlag"
+                                  [ngTemplateOutlet]="contentForm"
+                                  [ngTemplateOutletContext]="{
+                                    formlabel: 'AUCTION_DETAIL.ACCOUNT_DOCUMENT.BANK',
+                                    contentText: accountDocFollowup.cashierChequeInfo?.chequeBankName,
+                                  }">
+                                </ng-container>
+                              </div>
+                              <div fxFlex="28">
+                                <ng-container *ngIf="isEditMode && accountDocFollowup.activeFlag">
+                                  <mat-form-field class="input-full-field" color="primary">
+                                    <!-- สาขา -->
+                                    <mat-label class="required">{{
+                                      'AUCTION_DETAIL.ACCOUNT_DOCUMENT.BRANCH' | translate
+                                    }}</mat-label>
+                                    <input
+                                      type="text"
+                                      matInput
+                                      [placeholder]="'AUCTION_DETAIL.ACCOUNT_DOCUMENT.BRANCH' | translate"
+                                      autocomplete="off"
+                                      formControlName="chequeBranch" />
+                                  </mat-form-field>
+                                  <spig-error-msg
+                                    *ngIf="isShowErrorMsg"
+                                    [control]="getControl('chequeBranch')"
+                                    [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'"></spig-error-msg>
+                                </ng-container>
+                                <ng-container
+                                  *ngIf="!isEditMode || !accountDocFollowup.activeFlag"
+                                  [ngTemplateOutlet]="contentForm"
+                                  [ngTemplateOutletContext]="{
+                                    formlabel: 'AUCTION_DETAIL.ACCOUNT_DOCUMENT.BRANCH',
+                                    contentText: accountDocFollowup.cashierChequeInfo?.chequeBranch,
+                                  }">
+                                </ng-container>
+                              </div>
+                              <div fxFlex="28"></div>
+                            </div>
+                            <!-- </div>
+                            </div> -->
+
+                            <div fxLayout="row" class="disabled-elm-form mb-35 mr-0" fxLayoutGap="16px">
+                              <div fxFlex="15">
+                                <!-- รายละเอียดตาม Credit Note -->
+                                <ng-container
+                                  *ngTemplateOutlet="
+                                    h6RequiredLabelTemplate;
+                                    context: { labelText: 'AUCTION_DETAIL.ACCOUNT_DOCUMENT.CREDIT_NOTE_DETAILS' }
+                                  "></ng-container>
+                              </div>
+                              <!-- <div fxFlex="80">
+                                <div fxLayout="row" fxLayoutGap="5px"> -->
+                              <div fxFlex="28">
+                                <ng-container *ngIf="isEditMode && accountDocFollowup.activeFlag">
+                                  <mat-form-field class="input-full-field" color="primary">
+                                    <!-- Reference No. -->
+                                    <mat-label class="required">{{
+                                      'AUCTION_DETAIL.ACCOUNT_DOCUMENT.REFERENCE_NO' | translate
+                                    }}</mat-label>
+                                    <input
+                                      type="text"
+                                      formControlName="refNo"
+                                      matInput
+                                      [placeholder]="'AUCTION_DETAIL.ACCOUNT_DOCUMENT.REFERENCE_NO' | translate"
+                                      autocomplete="off"
+                                      appRefNoInput />
+                                  </mat-form-field>
+                                  <spig-error-msg
+                                    *ngIf="isShowErrorMsg"
+                                    [control]="getControl('refNo')"
+                                    [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'"></spig-error-msg>
+                                </ng-container>
+                                <ng-container
+                                  *ngIf="!isEditMode || !accountDocFollowup.activeFlag"
+                                  [ngTemplateOutlet]="contentForm"
+                                  [ngTemplateOutletContext]="{
+                                    formlabel: 'AUCTION_DETAIL.ACCOUNT_DOCUMENT.REFERENCE_NO' | translate,
+                                    contentText: accountDocFollowup.creditNoteInfo?.refNo,
+                                  }">
+                                </ng-container>
+                              </div>
+                              <div fxFlex="28">
+                                <!-- <ng-container *ngIf="isEditMode && accountDocFollowup.activeFlag">
+                                      <spig-dropdown [required]="true" classInput="input-normal icon"
+                                        [config]="creditNoteUnitDDConfig" [options]="lawyerOptions"
+                                        formControlName="creditNoteUnit"></spig-dropdown>
+                                      <spig-error-msg *ngIf="isShowErrorMsg" [control]="getControl('creditNoteUnit')"
+                                        [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'"></spig-error-msg>
+                                    </ng-container> -->
+                                <!-- *ngIf="!isEditMode || !accountDocFollowup.activeFlag" -->
+                                <!-- หน่วยงานที่รับ Credit Note -->
+                                <ng-container
+                                  [ngTemplateOutlet]="contentForm"
+                                  [ngTemplateOutletContext]="{
+                                    formlabel: 'AUCTION_DETAIL.ACCOUNT_DOCUMENT.RECIPIENT_DEPARTMENT' | translate,
+                                    contentText:
+                                      (accountDocFollowup.creditNoteInfo?.recipientDeptCode || '') +
+                                      '-' +
+                                      (accountDocFollowup.creditNoteInfo?.recipientDeptName || ''),
+                                  }">
+                                </ng-container>
+                              </div>
+                              <div fxFlex="28"></div>
+                              <!-- </div>
+                              </div> -->
+                            </div>
+                          </ng-container>
+
+                          <ng-container *ngTemplateOutlet="reasonDocTemplate"></ng-container>
+                        </ng-container>
+                        <ng-container
+                          *ngIf="
+                            accountDocFollowup.formGroup.get('accountDocVerifyResult')?.value ===
+                            AccountDocVerifyResult.InvalidData
+                          ">
+                          <ng-container *ngTemplateOutlet="reasonDocTemplate"></ng-container>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container
+                        *ngIf="
+                          accountDocFollowup.formGroup.get('accountDocVerifyStatus')?.value ===
+                          AccountDocVerifyStatus.InProcess
+                        ">
+                        <ng-container *ngTemplateOutlet="reasonTemplate"></ng-container>
+                      </ng-container>
+                    </ng-container>
+
+                    <ng-container
+                      *ngIf="
+                        accountDocFollowup.formGroup.get('certifyAccountWarrantType')?.value ===
+                        CertifyAccountWarrantType.InvalidWarrant
+                      ">
+                      <ng-container *ngTemplateOutlet="reasonDocTemplate"></ng-container>
+                    </ng-container>
+                  </ng-container>
+                </ng-container>
+              </ng-container>
+
+              <!-- template LEVEL 1 -->
+              <ng-template #certifyAccountWarrantDateTemplate>
+                <div fxLayout="row" class="disabled-elm-form mb-35" fxLayoutGap="16px">
+                  <div fxFlex="15">
+                    <!-- วันที่ได้รับหมาย -->
+                    <ng-container
+                      *ngTemplateOutlet="
+                        h6RequiredLabelTemplate;
+                        context: {
+                          labelText: 'AUCTION_DETAIL.ACCOUNT_DOCUMENT.DATE_RECEIVED_WARRANT',
+                          isReadOnlyMode: isDisableCertifyAccountWarrantDate,
+                        }
+                      "></ng-container>
+                  </div>
+                  <div
+                    *ngIf="
+                      isEditMode && accountDocFollowup.activeFlag && !isDisableCertifyAccountWarrantDate;
+                      else certifyAccountWarrantDateReadOnlyTemplate
+                    "
+                    fxFlex="28">
+                    <spig-datepicker
+                      formControlName="certifyAccountWarrantDate"
+                      class="date-picker-block"
+                      [classInput]="'input-s icon border-black-40 mb-4'"
+                      [label]="'COMMON.LABEL_DATE'"
+                      [placeholder]="'COMMON.LABEL_DATE' | translate">
+                    </spig-datepicker>
+                    <spig-error-msg
+                      *ngIf="isShowErrorMsg"
+                      [control]="getControl('certifyAccountWarrantDate')"
+                      [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED_2'">
+                    </spig-error-msg>
+                  </div>
+                  <ng-template #certifyAccountWarrantDateReadOnlyTemplate>
+                    <div fxFlex="28">
+                      <ng-container
+                        [ngTemplateOutlet]="contentForm"
+                        [ngTemplateOutletContext]="{
+                          formlabel: 'COMMON.LABEL_DATE' | translate,
+                          contentText: accountDocFollowup.certifyAccountWarrantDate | buddhistEra: 'DD/MM/yyyy',
+                        }">
+                      </ng-container>
+                    </div>
+                  </ng-template>
+                </div>
+              </ng-template>
+              <ng-template #accountPaymentDocumentStatusMessageMockTemplate>
+                <div fxLayout="row" class="disabled-elm-form mb-35" fxLayoutGap="16px">
+                  <div fxFlex="15">
+                    <!-- สถานะเอกสารบัญชีรับจ่าย -->
+                    <h6>{{ 'AUCTION_DETAIL.ACCOUNT_DOCUMENT.ACCOUNT_DOC_RECEIVE_STATUS' | translate }}</h6>
+                  </div>
+                  <div
+                    *ngIf="
+                      isEditMode &&
+                        accountDocFollowup.activeFlag &&
+                        !accountDocFollowup.displayOnRequest &&
+                        !isDisableAccountDocReceiveStatus;
+                      else accountDocReceiveStatusReadOnlyTemplate
+                    "
+                    fxFlex="30">
+                    <mat-radio-group class="full-width" formControlName="accountDocReceiveStatus">
+                      <div fxLayout="row" class="full-width">
+                        <div fxFlex="49">
+                          <!-- ยังไม่ได้รับ -->
+                          <mat-radio-button [value]="AccountDocReceiveStatus.NotReceive">{{
+                            'AUCTION_DETAIL.ACCOUNT_DOCUMENT.VALUE.NOT_RECEIVE' | translate
+                          }}</mat-radio-button>
+                        </div>
+                        <div fxFlex>
+                          <!-- ได้รับแล้ว -->
+                          <mat-radio-button [value]="AccountDocReceiveStatus.Receive">{{
+                            'AUCTION_DETAIL.ACCOUNT_DOCUMENT.VALUE.RECEIVE' | translate
+                          }}</mat-radio-button>
+                        </div>
+                      </div>
+                    </mat-radio-group>
+                    <!-- <spig-error-msg *ngIf="isShowErrorMsg"
+                      [control]="accountDocFollowup.formGroup.get('accountDocReceiveStatus')"
+                      [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'">
+                    </spig-error-msg> -->
+                  </div>
+                  <ng-template #accountDocReceiveStatusReadOnlyTemplate>
+                    <div fxFlex="70">
+                      <ng-container
+                        [ngTemplateOutlet]="contentForm"
+                        [ngTemplateOutletContext]="{
+                          formlabel: 'AUCTION_DETAIL.ACCOUNT_DOCUMENT.STATUS',
+                          contentText: accountDocFollowup.accountDocReceiveStatus
+                            ? ('AUCTION_DETAIL.ACCOUNT_DOCUMENT.VALUE.' + accountDocFollowup.accountDocReceiveStatus
+                              | translate)
+                            : '-',
+                        }">
+                      </ng-container>
+                    </div>
+                  </ng-template>
+                </div>
+              </ng-template>
+              <ng-template #reasonTemplate>
+                <div fxLayout="row" class="disabled-elm-form mb-35" fxLayoutGap="16px">
+                  <div fxFlex="15">
+                    <h6>
+                      <!-- หมายเหตุ -->
+                      {{ 'COMMON.LABEL_REMARKS' | translate }}
+                    </h6>
+                  </div>
+                  <!-- <div fxFlex="80">
+                    <div fxLayout="row" fxLayoutGap="5px"> -->
+                  <div fxFlex="56">
+                    <ng-container *ngIf="isEditMode && accountDocFollowup.activeFlag">
+                      <mat-form-field class="input-full-field">
+                        <mat-label>{{ 'COMMON.LABEL_REMARKS' | translate }}</mat-label>
+                        <textarea
+                          class="input-full-field"
+                          type="text"
+                          matInput
+                          cdkTextareaAutosize
+                          #autosize="cdkTextareaAutosize"
+                          cdkAutosizeMinRows="3"
+                          autocomplete="off"
+                          formControlName="remark"
+                          [maxlength]="500"></textarea>
+                      </mat-form-field>
+                    </ng-container>
+                    <ng-container
+                      *ngIf="!isEditMode || !accountDocFollowup.activeFlag"
+                      [ngTemplateOutlet]="contentForm"
+                      [ngTemplateOutletContext]="{
+                        formlabel: 'COMMON.LABEL_REMARKS' | translate,
+                        contentText: accountDocFollowup.remark,
+                      }">
+                    </ng-container>
+                  </div>
+                  <!-- </div> -->
+                  <!-- <spig-error-msg *ngIf="isShowErrorMsg" [control]="reason" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'"></spig-error-msg> -->
+                  <!-- </div> -->
+                </div>
+              </ng-template>
+              <ng-template #documentTemplate>
+                <div fxLayout="row" class="disabled-elm-form mb-35" fxLayoutGap="16px">
+                  <div fxFlex="15">
+                    <!-- รายการเอกสาร -->
+                    <h6>
+                      {{ 'AUCTION_DETAIL.ACCOUNT_DOCUMENT.DOCUMENT_LIST' | translate }}
+                    </h6>
+                  </div>
+                  <div fxFlex="85">
+                    <app-upload-multi-file-content
+                      [uploadMultiInfo]="uploadMultiInfo"
+                      [list]="accountDocFollowup.convertedDocs || []"
+                      [column]="docColumn"
+                      (uploadFileEvent)="onUploadFileEvent($event)"
+                      [labelAcceptFile]="''"
+                      [readonly]="!(isEditMode && !!accountDocFollowup?.activeFlag)">
+                    </app-upload-multi-file-content>
+                    <!-- รองรับไฟล์ PDF, JPG และ JPEG ขนาดไม่เกิน 30MB -->
+                    <div *ngIf="isEditMode && accountDocFollowup?.activeFlag" class="label mt-8">
+                      {{ 'UPLOAD_FILE.LABEL_HINT_DOCUMENT_PDF_JPG_JPEG' | translate }}
+                    </div>
+                    <p class="error-msg mt-10" *ngIf="isShowErrorMsg && !getControl('isFilesValid')?.value">
+                      {{ 'UPLOAD_FILE.ERROR_FILE_UPLOAD_REQUIRED' | translate }}
+                    </p>
+                  </div>
+                </div>
+              </ng-template>
+              <!-- End of template LEVEL 1 -->
+              <!-- template LEVEL 2 -->
+              <ng-template #reasonDocTemplate>
+                <ng-container *ngTemplateOutlet="reasonTemplate"></ng-container>
+                <ng-container *ngTemplateOutlet="documentTemplate"></ng-container>
+              </ng-template>
+              <ng-template #certifyAccountWarrantTypeSubLayout1>
+                <ng-container *ngTemplateOutlet="certifyAccountWarrantDateTemplate"></ng-container>
+                <ng-container *ngTemplateOutlet="accountPaymentDocumentStatusMessageMockTemplate"></ng-container>
+              </ng-template>
+              <!-- End of template LEVEL 2 -->
+              <!-- div end of accountDocFollowup.formGroup -->
+            </div>
+          </ng-container>
+        </ng-template>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </mat-expansion-panel>
+
+  <ng-template #h6RequiredLabelTemplate let-labelText="labelText" let-isReadOnlyMode="isReadOnlyMode">
+    <h6>
+      {{ labelText | translate }}
+      <label *ngIf="isEditMode && accountDocFollowup.activeFlag && !isReadOnlyMode" class="color-red">*</label>
+    </h6>
+  </ng-template>
+</ng-template>
+
+<ng-template
+  #contentForm
+  let-formlabel="formlabel"
+  let-contentText="contentText"
+  let-linkFunction="linkFunction"
+  let-param1="param1"
+  let-param2="param2">
+  <div class="content-form">
+    <span class="fill-black-70">{{ formlabel | translate }}</span>
+    <ng-container *ngIf="linkFunction; else defaultContentText">
+      <ng-container *ngIf="param2 === 'deedGroups'">
+        <ng-container *ngFor="let param1_sub of param1">
+          <div class="link" (click)="onClickLink(param1_sub)">
+            {{ 'AUCTION_DETAIL.ACCOUNT_DOCUMENT.ASSET_GROUPS' | translate }} {{ param1_sub.fsubbidnum || '-' }}
+          </div>
+        </ng-container>
+      </ng-container>
+    </ng-container>
+    <ng-template #defaultContentText>
+      <div class="color-biz-black-100 mt-10">{{ contentText || '-' }}</div>
+    </ng-template>
+  </div>
+</ng-template>

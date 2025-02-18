@@ -1,0 +1,23 @@
+@import '/src/styles/colors';
+@import '/src/styles/typography';
+
+.panel-blue {
+  background: map-get($ktb-palette-blue, 50);
+  padding-left: 10px;
+  height: 78px;
+  padding-top: 25px;
+}
+
+.sub-header {
+  font-weight: 400;
+  font-size: $font-description;
+  color: map-get($ktb-palette-biz-black, 60);
+}
+
+.btn-detail {
+  border-color: map-get($ktb-palette-blue, 200) !important;
+}
+
+button.mat-mdc-outlined-button.mat-primary[disabled] {
+  color: #00000042 !important;
+}

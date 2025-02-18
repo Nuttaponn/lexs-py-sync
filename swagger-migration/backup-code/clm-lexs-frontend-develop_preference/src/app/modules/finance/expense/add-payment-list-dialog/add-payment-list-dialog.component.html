@@ -1,0 +1,135 @@
+<div class="container">
+  <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px" class="mt-15">
+    <div fxLayout="column" fxFlex="55">
+      <mat-form-field
+        class="no-label input-sm-icon search-input-field"
+        [ngClass]="{ 'mat-form-field-invalid': !isSearch && isContinueClicked }">
+        <input
+          type="text"
+          matInput
+          [placeholder]="placeholder | translate"
+          autocomplete="off"
+          (keyup.enter)="onSearch()"
+          (focus)="placeholder = ''"
+          (blur)="placeholder = 'SEARCH_CONTROL.PLACEHOLDER_ADDITIONAL'"
+          [formControl]="searchString" />
+        <mat-icon matSuffix class="icon icon-small-xm black-100 no-validate" svgIcon="icon-Search" (click)="onSearch()">
+        </mat-icon>
+      </mat-form-field>
+      <p *ngIf="!isSearch && isContinueClicked" class="error-msg">
+        {{ 'FINANCE.ADD_PAYMENT_LIST_DIALOG.SEARCH_REQUIRE' | translate }}
+      </p>
+    </div>
+  </div>
+  <div *ngIf="isSearch" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px" class="mt-15">
+    <div fxLayout="column" fxFlex="100">
+      <ng-container *ngTemplateOutlet="table; context: { list: tableList }"> </ng-container>
+      <spig-paginator
+        *ngIf="tableList.length > 0 && tablePageResultConfig && tablePageActionConfig"
+        [result]="tablePageResultConfig"
+        [action]="tablePageActionConfig"
+        (pageEvent)="pageEvent($event)">
+      </spig-paginator>
+    </div>
+  </div>
+  <ng-container *ngIf="selected?.touched && selected?.errors && isSearch && isContinueClicked">
+    <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px" class="mt-15">
+      <div fxLayout="column" fxFlex="100">
+        <app-message-banner
+          type="fail"
+          [message]="'FINANCE.ADD_PAYMENT_LIST_DIALOG.SELECT_LIST_REQUIRE'"></app-message-banner>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="selected?.touched && isSearch && isContinueClicked && islgClosedNotSame">
+    <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px" class="mt-15">
+      <div fxLayout="column" fxFlex="100">
+        <app-message-banner
+          type="fail"
+          [message]="'FINANCE.ADD_PAYMENT_LIST_DIALOG.BANNER_ALERT_SELECT_LITIGATION'"></app-message-banner>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #table let-dataSource="list">
+  <div class="table-scroll" id="table">
+    <table mat-table [dataSource]="dataSource">
+      <!-- radio button Column -->
+      <ng-container matColumnDef="selected">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let row">
+          <mat-radio-group name="selected" [formControl]="selected" (change)="onSelectLitigation()">
+            <mat-radio-button [value]="row"></mat-radio-button>
+          </mat-radio-group>
+        </td>
+      </ng-container>
+      <!-- LG ID Column -->
+      <ng-container matColumnDef="litigationId">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'COMMON.LABEL_LG_ID' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div>
+            {{ element?.litigationId || '-' }}
+          </div>
+        </td>
+      </ng-container>
+      <!-- คดีหมายเลขดำ/แดง Column -->
+      <ng-container matColumnDef="blackCaseNo">
+        <th mat-header-cell *matHeaderCellDef class="new-line">
+          <p>{{ 'COMMON.LABEL_BLACK_CASE_NO_RED_CASE_NO_2' | translate }}</p>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div class="fill-black-70">
+            {{ element?.blackCaseNo || '-' }}
+          </div>
+          <div class="fill-red">
+            {{ element?.redCaseNo || '-' }}
+          </div>
+        </td>
+      </ng-container>
+      <!-- CIF Number Column -->
+      <ng-container matColumnDef="customerId">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'COMMON.LABEL_CIF_NUMBER' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div>
+            {{ element?.customerId || '-' }}
+          </div>
+        </td>
+      </ng-container>
+      <!-- ชื่อ-นามสกุลลูกหนี้ Column -->
+      <ng-container matColumnDef="customerName">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'FINANCE.DEBTOR_NAME' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div>
+            {{ element?.customerName || '-' }}
+          </div>
+        </td>
+      </ng-container>
+      <!-- สถานะลูกหนี้ Column -->
+      <ng-container matColumnDef="customerStatusName">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'SEARCH_CONTROL.LABEL_ALL_CUSTOMER_STATUS' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div>
+            {{ element?.customerStatusName || '-' }}
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="tableColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: tableColumns"></tr>
+    </table>
+    <ng-container *ngIf="tableList.length === 0" [ngTemplateOutlet]="dataNotFound"></ng-container>
+  </div>
+</ng-template>
+
+<ng-template #dataNotFound>
+  <app-message-empty [message]="'COMMON.LABEL_PREFIX_NOT_FOUND'"></app-message-empty>
+</ng-template>

@@ -1,0 +1,108 @@
+@import '/src/styles/colors';
+
+.accordion-headers-align .mat-expansion-panel-header-description {
+  justify-content: end;
+}
+
+.icon-hide-show {
+  width: 20px;
+  height: 17.5px;
+  color: $krungthai-blue;
+}
+
+.description {
+  display: flex;
+  align-items: center;
+  color: $krungthai-blue;
+  font-size: $font-description; // change after ui defect https://ktbinnovation.atlassian.net/browse/LEX2-34836
+}
+
+.mat-expansion-panel {
+  overflow: initial !important;
+}
+
+.mat-expansion-panel:not([class*='mat-elevation-z']) {
+  box-shadow: none !important;
+}
+
+mat-accordion .header {
+  color: map_get($ktb-palette-biz-gray, 900);
+  @include font-style(sub-content, KrungthaiFastRegular, 700, normal);
+  padding: 1em;
+}
+
+.expansion-info .mat-expansion-panel-body {
+  padding: 0;
+}
+
+.mat-expansion-panel-header.mat-expanded {
+  height: 80px;
+}
+
+.mat-expansion-panel-header {
+  padding: 0px;
+}
+
+.sub-expansion:not(:last-child) {
+  box-shadow: none !important;
+  border-bottom: 1px solid map-get($ktb-palette-biz-black, 10);
+}
+
+.sub-expansion:last-child {
+  box-shadow: none !important;
+  border-bottom: none;
+  border-radius: 0px !important;
+}
+
+.expansion-panel {
+  &.expansion-body {
+    padding-left: 16px;
+  }
+}
+
+.sub-expansion {
+  &.no-pad-buttom {
+    .mat-expansion-panel-body {
+      padding-bottom: 0px !important;
+    }
+  }
+
+  .mat-expansion-panel-body {
+    padding: 16px 0px !important;
+  }
+
+  .mat-expansion-panel-header {
+    padding: 0px;
+  }
+}
+
+.expand-button {
+  display: flex;
+  font-size: $font-description;
+
+  &.completed {
+    color: $krungthai-green;
+  }
+
+  &.incompleted {
+    color: map-get($ktb-palette-golden-yellow, 600);
+  }
+
+  &.black {
+    color: black;
+  }
+
+  &.blue {
+    color: $krungthai-blue;
+  }
+}
+
+.expand-header {
+  &.bg-l-gray {
+    width: 100%;
+    height: 72px;
+    background: map_get($ktb-palette-biz-gray, 50);
+    border-radius: 8px;
+    padding: 10px;
+  }
+}

@@ -1,0 +1,8 @@
+<div class="loader-overlay" *ngIf="!!isLoading">
+    <div>
+        <h4 id="text-loader-msg">{{loadingMessage || 'กำลังดำเนินการ\nกรุณารอสักครู่'}}</h4>
+        <div class="spinner-box">
+            <mat-spinner id="spinner" diameter=50 color="primary" strokeWidth=8></mat-spinner>
+        </div>
+    </div>
+</div>

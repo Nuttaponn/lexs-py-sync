@@ -1,0 +1,169 @@
+<div class="content-container" [formGroup]="dataForm">
+  <div class="inner-container-padding">
+    <section fxLayout="row wrap" fxLayoutGap="" fxLayoutAlign="start start">
+      <mat-icon class="icon icon-sm pr-16" svgIcon="icon-User"></mat-icon>
+      <h5>{{ 'USER.ALL_USERS' | translate }}</h5>
+    </section>
+    <section>
+      <div
+        fxLayout="row wrap"
+        fxLayout.lt-md="column"
+        fxLayoutGap="15"
+        fxLayoutAlign="start start"
+        fxLayoutAlign.lt-md="start"
+        class="mt-1em">
+        <div fxFlex="21">
+          <spig-dropdown
+            classInput="input-xsm icon"
+            formControlName="role"
+            [config]="roleConfig"
+            (selectedOption)="selectRole($event)"
+            [options]="roleOptions">
+          </spig-dropdown>
+        </div>
+        <div fxFlex="21">
+          <spig-dropdown
+            classInput="input-xsm icon"
+            formControlName="subRole"
+            [config]="subRoleConfig"
+            (selectedOption)="selectSubRole($event)"
+            [options]="subRoleOptions"></spig-dropdown>
+        </div>
+        <div fxFlex="21">
+          <spig-dropdown
+            classInput="input-xsm icon"
+            formControlName="dataScope"
+            [config]="levelConfig"
+            [options]="levelOptions"
+            (selectedOption)="onSelectLevel($event)"></spig-dropdown>
+        </div>
+        <div fxLayout="column" fxFlex>
+          <mat-form-field fxFlex appearance="fill" class="no-label input-sm-icon search-user-field">
+            <input
+              type="text"
+              matInput
+              formControlName="filterKeyword"
+              (keyup)="onKeyup($event)"
+              (focus)="placeholder = ''"
+              (blur)="placeholder = 'USER.PLACEHOLDER_SEARCH_USER'"
+              [placeholder]="placeholder | translate" />
+            <mat-icon matSuffix class="icon icon-sm" svgIcon="icon-Search" (click)="onSearchText()"> </mat-icon>
+          </mat-form-field>
+          <spig-error-msg
+            *ngIf="dataForm.get('filterKeyword')?.value"
+            [control]="dataForm.get('filterKeyword')"
+            [customErrorMsg]="'SEARCH_CONTROL.ERROR_SEARCH_CONDITION'"></spig-error-msg>
+        </div>
+      </div>
+      <div
+        fxLayout="row wrap"
+        fxLayout.lt-md="column"
+        fxLayoutGap="15"
+        fxLayoutAlign="start start"
+        fxLayoutAlign.lt-md="start"
+        class="mt-1em">
+        <button
+          id="btn-user-new"
+          class="xsmall-aw-button overflow-ellipsis"
+          *ngIf="currentUser.roleCode !== 'ADMIN'"
+          mat-raised-button
+          color="primary"
+          (click)="addBtn()">
+          <mat-icon class="icon icon-sm" svgIcon="icon-user-add"></mat-icon>
+          {{ 'USER.BTN_NEW_USER' | translate }}
+        </button>
+        <button
+          id="btn-user-save-file"
+          mat-stroked-button
+          class="xsmall-aw-button overflow-ellipsis mat-advance-search"
+          (click)="onSaveExcel()">
+          <mat-icon svgIcon="icon-Download" class="icon icon-sm btn-icon"></mat-icon
+          >{{ 'COMMON.BUTTON_SAVE_EXCEL_FILE' | translate }}
+        </button>
+        <button
+          id="btn-user-save-file"
+          mat-stroked-button
+          class="xsmall-aw-button overflow-ellipsis mat-advance-search"
+          (click)="onSaveExcelPermission()">
+          <mat-icon svgIcon="icon-Download" class="icon icon-sm btn-icon"></mat-icon>
+          {{ 'USER.BTN_SAVE_PERMISSION_FILE' | translate }}
+        </button>
+      </div>
+    </section>
+
+    <section class="data-table-content">
+      <div class="table-scroll">
+        <table mat-table [dataSource]="dataSource">
+          <ng-container matColumnDef="userId">
+            <th mat-header-cell *matHeaderCellDef>{{ 'USER.HEADER_COLUMN_USER_ID' | translate }}</th>
+            <td mat-cell *matCellDef="let element" class="fil-blue">
+              <u class="cur-pointer" (click)="viewBtn(element.userId)">{{ element.userId }}</u>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="fullName">
+            <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_FULL_NAME' | translate }}</th>
+            <td mat-cell *matCellDef="let element">{{ element.title }} {{ element.name }} {{ element.surname }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="email">
+            <th mat-header-cell *matHeaderCellDef>{{ 'USER.HEADER_COLUMN_EMAIL' | translate }}</th>
+            <td mat-cell *matCellDef="let element">{{ element.email }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="phone">
+            <th mat-header-cell *matHeaderCellDef>{{ 'USER.HEADER_COLUMN_PHONE' | translate }}</th>
+            <td mat-cell *matCellDef="let element">{{ element.mobileNumber }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="lexsRole">
+            <th mat-header-cell *matHeaderCellDef>{{ 'USER.HEADER_COLUMN_LEXS_ROLE' | translate }}</th>
+            <td mat-cell *matCellDef="let element">{{ element.roleName }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="lexsSubRole">
+            <th mat-header-cell *matHeaderCellDef>{{ 'USER.HEADER_COLUMN_LEXS_SUB_ROLE' | translate }}</th>
+            <td mat-cell *matCellDef="let element">{{ element.subRoleName }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="lastLogin">
+            <th mat-header-cell *matHeaderCellDef>{{ 'USER.HEADER_COLUMN_LATEST_LOGIN' | translate }}</th>
+            <td mat-cell *matCellDef="let element">{{ element.lastLogin | buddhistEra: 'DD/MM/yyyy hh:mm a' }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="command">
+            <th mat-header-cell *matHeaderCellDef class="text-center">{{ 'COMMON.LABEL_COMMAND' | translate }}</th>
+            <td mat-cell *matCellDef="let element" class="fil-blue">
+              <div fxLayout fxLayoutAlign="center" fxLayoutGap="16" *ngIf="currentUser.roleCode !== 'ADMIN'">
+                <u
+                  class="cur-pointer"
+                  [ngClass]="{ 'fill-red': element.disable }"
+                  *ngIf="currentUser.userId !== element.userId"
+                  (click)="onClickDelete(element)">
+                  {{
+                    element.disable ? ('COMMON.BUTTON_ENABLE' | translate) : ('COMMON.BUTTON_DISABLE' | translate)
+                  }}</u
+                >
+                <u
+                  class="cur-pointer"
+                  *ngIf="currentUser.userId !== element.userId"
+                  (click)="edit('/main/user/edit', element.userId)"
+                  >{{ 'COMMON.BUTTON_EDIT' | translate }}</u
+                >
+              </div>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+      </div>
+      <spig-paginator
+        *ngIf="pageResultConfig && pageActionConfig"
+        [result]="pageResultConfig"
+        [action]="pageActionConfig"
+        (pageEvent)="pageEvent($event)">
+      </spig-paginator>
+    </section>
+  </div>
+</div>

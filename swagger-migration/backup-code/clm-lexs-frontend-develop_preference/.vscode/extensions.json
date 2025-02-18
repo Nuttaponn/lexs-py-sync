@@ -1,0 +1,12 @@
+{
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=827846
+  "recommendations": [
+    "angular.ng-template",
+    "editorconfig.editorconfig",
+    "cyrilletuzi.angular-schematics",
+    "sibiraj-s.vscode-scss-formatter",
+    "gruntfuggly.todo-tree",
+    "wayou.vscode-todo-highlight",
+    "DevEscalus.svg-sprites-viewer"
+  ]
+}

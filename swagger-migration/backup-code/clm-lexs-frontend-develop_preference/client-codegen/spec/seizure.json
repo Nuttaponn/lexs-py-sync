@@ -1,0 +1,3438 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "KTB Backend for Frontend APIs.",
+    "description": "Microservice: seizure",
+    "contact": {
+      "name": "Krungthai Bank Public Company Limited",
+      "url": "https://krungthai.com",
+      "email": ""
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://lexsdev.krungthai/ktb/rest/lexs",
+      "description": "Generated server url"
+    }
+  ],
+  "paths": {
+    "/v1/seizure/{seizureId}/document/excess-documents/refId/{refId}": {
+      "put": {
+        "tags": [
+          "seizure-controller"
+        ],
+        "operationId": "updateSeizureExcessDocs",
+        "parameters": [
+          {
+            "name": "seizureId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "refId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PutExcessDocumentRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PutExcessDocumentResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "seizure-controller"
+        ],
+        "operationId": "deleteExcessDoc",
+        "parameters": [
+          {
+            "name": "seizureId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "refId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/seizure/{seizureId}/submit": {
+      "post": {
+        "tags": [
+          "seizure-controller"
+        ],
+        "operationId": "submitSeizure",
+        "parameters": [
+          {
+            "name": "seizureId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/seizure/{seizureId}/leds/{ledId}/collaterals": {
+      "post": {
+        "tags": [
+          "seizure-controller"
+        ],
+        "operationId": "saveSeizureLedsCollaterals",
+        "parameters": [
+          {
+            "name": "seizureId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ledId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SeizureCollateralsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/seizure/{seizureId}/leds/move": {
+      "post": {
+        "tags": [
+          "seizure-controller"
+        ],
+        "operationId": "moveSeizureLeds",
+        "parameters": [
+          {
+            "name": "seizureId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SeizureMoveRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/seizure/{seizureId}/execution/lawyer/submit": {
+      "post": {
+        "tags": [
+          "seizure-controller"
+        ],
+        "operationId": "postExecutionLawyerSubmit",
+        "parameters": [
+          {
+            "name": "seizureId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostExecutionLawyerSubmitRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/seizure/{seizureId}/documents/title-deed/document-approval/submit": {
+      "post": {
+        "tags": [
+          "seizure-controller"
+        ],
+        "operationId": "submitTitleDeedDocumentApproval",
+        "parameters": [
+          {
+            "name": "seizureId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitTitleDeedDocumentApprovalRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/seizure/{seizureId}/documents/title-deed/document-approval/completed": {
+      "post": {
+        "tags": [
+          "seizure-controller"
+        ],
+        "operationId": "completedTitleDeedDocumentApproval",
+        "parameters": [
+          {
+            "name": "seizureId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompletedTitleDeedDocumentApprovalRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/seizure/{seizureId}/documents/title-deed/amd-resubmit": {
+      "post": {
+        "tags": [
+          "seizure-controller"
+        ],
+        "operationId": "amdResubmit",
+        "parameters": [
+          {
+            "name": "seizureId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DocumentAmdReSubmitRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/seizure/{seizureId}/documents/reject/cover-page/generate": {
+      "post": {
+        "tags": [
+          "seizure-controller"
+        ],
+        "operationId": "rejectCoverPageGenerate",
+        "parameters": [
+          {
+            "name": "seizureId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RejectCoverPageGenerateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/zip": {
+                "schema": {
+                  "type": "string",
+                  "format": "byte"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/seizure/{seizureId}/document/excess-documents": {
+      "get": {
+        "tags": [
+          "seizure-controller"
+        ],
+        "operationId": "getExcessDocuments",
+        "parameters": [
+          {
+            "name": "seizureId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExcessDocumentResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "seizure-controller"
+        ],
+        "operationId": "addNewExcessDocuments",
+        "parameters": [
+          {
+            "name": "seizureId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostExcessDocumentRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostExcessDocumentResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/seizure/{seizureId}/document-validation/submit": {
+      "post": {
+        "tags": [
+          "seizure-controller"
+        ],
+        "operationId": "seizureDocumentValidationSubmit",
+        "parameters": [
+          {
+            "name": "seizureId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostSubmitDocumentValidationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/seizure/{seizureId}/amd-resubmit/cover-page/generate": {
+      "post": {
+        "tags": [
+          "seizure-controller"
+        ],
+        "operationId": "generateSeizureAmdCoverPage",
+        "parameters": [
+          {
+            "name": "seizureId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SeizureAmdCoverPageRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/vnd.openxmlformats-officedocument.wordprocessingml.document": {
+                "schema": {
+                  "type": "string",
+                  "format": "byte"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/seizure/validate": {
+      "post": {
+        "tags": [
+          "seizure-controller"
+        ],
+        "operationId": "validate",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ValidateRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/seizure/seizureLeds/{seizureLedId}/info": {
+      "post": {
+        "tags": [
+          "seizure-controller"
+        ],
+        "operationId": "saveSeizureLedsInfo",
+        "parameters": [
+          {
+            "name": "seizureLedId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostSeizureInfoRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/seizure/seizureLeds/{seizureLedId}/documents/upload": {
+      "post": {
+        "tags": [
+          "seizure-controller"
+        ],
+        "operationId": "uploadSeizureLedsDocument",
+        "parameters": [
+          {
+            "name": "seizureLedId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "documentTemplateId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "amount",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "file"
+                ],
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeizureUploadDocumentResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/seizure/seizureLeds/{seizureLedId}/documents/req-original/channel": {
+      "post": {
+        "tags": [
+          "seizure-controller"
+        ],
+        "operationId": "updateDocumentReqOriginalChannel",
+        "parameters": [
+          {
+            "name": "seizureLedId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DocumentReqOriginalChannelRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/seizure/seizureLeds/{seizureLedId}/collaterals/result": {
+      "post": {
+        "tags": [
+          "seizure-controller"
+        ],
+        "operationId": "saveSeizureLedsCollateralsResult",
+        "parameters": [
+          {
+            "name": "seizureLedId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SeizureCollateralResultRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/seizure/litigation-case/{caseId}/seizure/submit": {
+      "post": {
+        "tags": [
+          "seizure-litigation-case-controller"
+        ],
+        "operationId": "postTaskSubmit",
+        "parameters": [
+          {
+            "name": "caseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostTaskSubmitRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/seizure/litigation-case/{caseId}/seizure/non-pledge-properties/submit": {
+      "post": {
+        "tags": [
+          "seizure-litigation-case-controller"
+        ],
+        "operationId": "nonPledgePropSubmit",
+        "parameters": [
+          {
+            "name": "caseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NonPledgePropSubmitRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/seizure/litigation-case/{caseId}/seizure-prep/cover-page/generate": {
+      "post": {
+        "tags": [
+          "seizure-litigation-case-controller"
+        ],
+        "operationId": "postGenerateCoverPage",
+        "parameters": [
+          {
+            "name": "caseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateCoverPageRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/vnd.openxmlformats-officedocument.wordprocessingml.document": {
+                "schema": {
+                  "type": "string",
+                  "format": "byte"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/seizure/initial": {
+      "post": {
+        "tags": [
+          "seizure-controller"
+        ],
+        "operationId": "initSeizureService",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostInitSeizureRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/seizure/collaterals/postpone": {
+      "post": {
+        "tags": [
+          "seizure-controller"
+        ],
+        "operationId": "collateralsPostpone",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SeizureCollateralsPostponeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeizureCollateralsPostponeResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/seizure/{seizureId}/non-pledge-properties/Info": {
+      "get": {
+        "tags": [
+          "seizure-controller"
+        ],
+        "operationId": "getSeizureNonPledgePropertiesInfo",
+        "parameters": [
+          {
+            "name": "seizureId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NonPledgePropertiesInfoResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/seizure/{seizureId}/litigation-case-leds": {
+      "get": {
+        "tags": [
+          "seizure-controller"
+        ],
+        "operationId": "getLitigationCaseLedsBySeizureId",
+        "parameters": [
+          {
+            "name": "seizureId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LitigationCaseLedsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/seizure/{seizureId}/documents/title-deed": {
+      "get": {
+        "tags": [
+          "seizure-controller"
+        ],
+        "operationId": "getSeizureDocumentsTitleDeed",
+        "parameters": [
+          {
+            "name": "seizureId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeizureDocumentsTitleDeedResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/seizure/{seizureId}/documents/title-deed/document-approval/draft": {
+      "get": {
+        "tags": [
+          "seizure-controller"
+        ],
+        "operationId": "getDocumentsApprovalDraft",
+        "parameters": [
+          {
+            "name": "seizureId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeizureDocumentApprovalDraftResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/seizure/{seizureId}/documents/reject/dims-cover-page/download": {
+      "get": {
+        "tags": [
+          "seizure-controller"
+        ],
+        "operationId": "downloadKtbLogisticDoc",
+        "parameters": [
+          {
+            "name": "seizureId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReturnDimsCoverResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/seizure/{seizureId}/documents/collateral-appraisal": {
+      "get": {
+        "tags": [
+          "seizure-controller"
+        ],
+        "operationId": "getCollateralAppraisal",
+        "parameters": [
+          {
+            "name": "seizureId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CollateralAppraisalDocumentDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/seizure/{seizureId}/collaterals-leds/info": {
+      "get": {
+        "tags": [
+          "seizure-controller"
+        ],
+        "operationId": "getSeizureCollateralsLedsInfoBySeizureId",
+        "parameters": [
+          {
+            "name": "seizureId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeizureLedsInfoResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/seizure/seizureLeds/{seizureLedId}/collaterals-leds/info": {
+      "get": {
+        "tags": [
+          "seizure-controller"
+        ],
+        "operationId": "getSeizureLedsCollateralsLedsInfoBySeizureLedId",
+        "parameters": [
+          {
+            "name": "seizureLedId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeizureLedsInfo"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/seizure/litigation/{litigationId}/legal-executions/seizure/execution": {
+      "get": {
+        "tags": [
+          "seizure-litigation-controller"
+        ],
+        "operationId": "getSeizureExecution",
+        "parameters": [
+          {
+            "name": "litigationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeizureExecutionResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/seizure/litigation/{litigationId}/legal-executions/seizure/command": {
+      "get": {
+        "tags": [
+          "seizure-litigation-controller"
+        ],
+        "operationId": "getSeizureCommand",
+        "parameters": [
+          {
+            "name": "litigationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeizureCommandResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/seizure/litigation-case/{caseId}/non-pledge-properties/Info": {
+      "get": {
+        "tags": [
+          "seizure-litigation-case-controller"
+        ],
+        "operationId": "getNonPledgePropertiesInfo",
+        "parameters": [
+          {
+            "name": "caseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NonPledgePropertiesInfoResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/seizure/litigation-case/{caseId}/documents/seizure-prep/title-deed": {
+      "get": {
+        "tags": [
+          "seizure-litigation-case-controller"
+        ],
+        "operationId": "getSeizurePrepTitleDeed",
+        "parameters": [
+          {
+            "name": "caseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetSeizurePrepTitleDeedResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/seizure/litigation-case/{caseId}/documents/seizure-prep/title-deed/draft": {
+      "get": {
+        "tags": [
+          "seizure-litigation-case-controller"
+        ],
+        "operationId": "getSeizurePrepTitleDeedDraft",
+        "parameters": [
+          {
+            "name": "caseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetSeizurePrepTitleDeedDraftResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/seizure/litigation-case/{caseId}/documents/seizure-prep/person": {
+      "get": {
+        "tags": [
+          "seizure-litigation-case-controller"
+        ],
+        "operationId": "getSeizurePrepPerson",
+        "parameters": [
+          {
+            "name": "caseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeizurePerpPersonResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/seizure/litigation-case/{caseId}/documents/seizure-prep/collateral-appraisal": {
+      "get": {
+        "tags": [
+          "seizure-litigation-case-controller"
+        ],
+        "operationId": "getCollateralAppraisal_1",
+        "parameters": [
+          {
+            "name": "caseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CollateralAppraisalDocumentDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/seizure/litigation-case/{caseId}/collaterals": {
+      "get": {
+        "tags": [
+          "seizure-litigation-case-controller"
+        ],
+        "operationId": "getLitigationCaseCollaterals",
+        "parameters": [
+          {
+            "name": "caseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollateralsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/seizure/litigation-case/{caseId}/collaterals/seizure-prep/draft": {
+      "get": {
+        "tags": [
+          "seizure-litigation-case-controller"
+        ],
+        "operationId": "getLitigationCaseCollateralsSeizurePrepDraft",
+        "parameters": [
+          {
+            "name": "caseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollateralsPrepDraftResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/seizure/{seizureId}/seizureLeds/{seizureLedId}": {
+      "delete": {
+        "tags": [
+          "seizure-controller"
+        ],
+        "operationId": "deleteSeizureLedsBySeizureIdAndSeizureLedId",
+        "parameters": [
+          {
+            "name": "seizureId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "seizureLedId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/seizure/seizureLeds/{seizureLedId}/documents/{documentTemplateId}": {
+      "delete": {
+        "tags": [
+          "seizure-controller"
+        ],
+        "operationId": "deleteSeizureLedsDocument",
+        "parameters": [
+          {
+            "name": "seizureLedId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "documentTemplateId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/seizure/seizureLeds/{seizureLedId}/collateral/{collateralOrAssetId}": {
+      "delete": {
+        "tags": [
+          "seizure-controller"
+        ],
+        "operationId": "deleteSeizureLedsCollateral",
+        "parameters": [
+          {
+            "name": "collateralOrAssetId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "seizureLedId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "PutExcessDocumentRequest": {
+        "required": [
+          "name",
+          "number"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "number": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "PutExcessDocumentResponse": {
+        "type": "object",
+        "properties": {
+          "refId": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "CollateralId": {
+        "type": "object",
+        "properties": {
+          "collateralId": {
+            "type": "string"
+          },
+          "assetId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "collateralDetails": {
+            "type": "string"
+          },
+          "paymentMethod": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "SeizureCollateralsRequest": {
+        "type": "object",
+        "properties": {
+          "collaterals": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CollateralId"
+            }
+          }
+        }
+      },
+      "SeizureMoveRequest": {
+        "type": "object",
+        "properties": {
+          "seizureLedId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "newLedId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "collateralId": {
+            "type": "string"
+          },
+          "assetId": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "PostExecutionLawyerSubmitRequest": {
+        "type": "object",
+        "properties": {
+          "headerFlag": {
+            "type": "string"
+          },
+          "lawyerId": {
+            "type": "string"
+          }
+        }
+      },
+      "SeizureTitleDeedDocument": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "approve": {
+            "type": "boolean"
+          },
+          "sendMethod": {
+            "type": "string"
+          },
+          "rejectedReason": {
+            "$ref": "#/components/schemas/SeizureTitleDeedRejectedReason"
+          }
+        }
+      },
+      "SeizureTitleDeedRejectedReason": {
+        "type": "object",
+        "properties": {
+          "rejectedReason": {
+            "type": "string"
+          },
+          "rejectedRemarks": {
+            "type": "string"
+          },
+          "documentName": {
+            "type": "string"
+          },
+          "pageCount": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "SubmitTitleDeedDocumentApprovalRequest": {
+        "required": [
+          "headerFlag"
+        ],
+        "type": "object",
+        "properties": {
+          "headerFlag": {
+            "type": "string",
+            "description": "Header Flag // DRAFT,SUBMIT",
+            "example": "DRAFT",
+            "enum": [
+              "DRAFT",
+              "SUBMIT",
+              "APPROVE",
+              "REJECT",
+              "CANCEL",
+              "DELETE",
+              "UPDATE",
+              "SUBMIT1",
+              "SUBMIT2",
+              "SAVE"
+            ]
+          },
+          "documents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SeizureTitleDeedDocument"
+            }
+          }
+        }
+      },
+      "CompletedTitleDeedDocumentApprovalRequest": {
+        "type": "object",
+        "properties": {
+          "documents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SeizureTitleDeedDocument"
+            }
+          }
+        }
+      },
+      "AmdDocument": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "documentTemplate": {
+            "$ref": "#/components/schemas/SeizureDocumentTemplate"
+          },
+          "relatedCollateral": {
+            "$ref": "#/components/schemas/RelatedCollateral"
+          },
+          "sendMethod": {
+            "type": "string"
+          },
+          "sendStatus": {
+            "type": "boolean"
+          },
+          "approvedStatus": {
+            "type": "boolean"
+          }
+        }
+      },
+      "DocumentAmdReSubmitRequest": {
+        "required": [
+          "headerFlag"
+        ],
+        "type": "object",
+        "properties": {
+          "headerFlag": {
+            "type": "string",
+            "description": "Header Flag // DRAFT,SUBMIT",
+            "example": "DRAFT",
+            "enum": [
+              "DRAFT",
+              "SUBMIT",
+              "APPROVE",
+              "REJECT",
+              "CANCEL",
+              "DELETE",
+              "UPDATE",
+              "SUBMIT1",
+              "SUBMIT2",
+              "SAVE"
+            ]
+          },
+          "documents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AmdDocument"
+            }
+          }
+        }
+      },
+      "RelatedCollateral": {
+        "type": "object",
+        "properties": {
+          "collateralId": {
+            "type": "string"
+          },
+          "collateralDetails": {
+            "type": "string"
+          }
+        }
+      },
+      "SeizureDocumentTemplate": {
+        "type": "object",
+        "properties": {
+          "documentTemplateId": {
+            "type": "string"
+          },
+          "documentName": {
+            "type": "string"
+          },
+          "optional": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Documents": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "approve": {
+            "type": "boolean"
+          },
+          "rejectReason": {
+            "$ref": "#/components/schemas/RejectReason"
+          },
+          "returningDocumentInfo": {
+            "$ref": "#/components/schemas/ReturningDocumentInfo"
+          }
+        }
+      },
+      "RejectCoverPageGenerateRequest": {
+        "type": "object",
+        "properties": {
+          "documents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Documents"
+            }
+          }
+        }
+      },
+      "RejectReason": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string"
+          },
+          "remarks": {
+            "type": "string"
+          }
+        }
+      },
+      "ReturningDocumentInfo": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "docCount": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "PostExcessDocumentRequest": {
+        "required": [
+          "name",
+          "number"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "number": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "PostExcessDocumentResponse": {
+        "type": "object",
+        "properties": {
+          "refId": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "PostSubmitDocumentValidationRequest": {
+        "type": "object",
+        "properties": {
+          "recommendLawyerId": {
+            "type": "string"
+          }
+        }
+      },
+      "SeizureAmdCoverPageRequest": {
+        "required": [
+          "documentIdList"
+        ],
+        "type": "object",
+        "properties": {
+          "documentIdList": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        }
+      },
+      "ValidateRequestDto": {
+        "type": "object",
+        "properties": {
+          "actorId": {
+            "type": "string"
+          },
+          "litigationCaseId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "seizureType": {
+            "pattern": "COL|NCOL",
+            "type": "string"
+          },
+          "initType": {
+            "pattern": "S|M",
+            "type": "string"
+          }
+        }
+      },
+      "PostSeizureInfoRequest": {
+        "required": [
+          "newLedId"
+        ],
+        "type": "object",
+        "properties": {
+          "newLedId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "ledRefNo": {
+            "pattern": "^[\\d/]*$",
+            "type": "string"
+          },
+          "ledRefNoDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "onsiteLawyerId": {
+            "type": "string"
+          },
+          "seizureTimestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "SeizureUploadDocumentResponse": {
+        "type": "object",
+        "properties": {
+          "uploadSessionId": {
+            "type": "string"
+          },
+          "slaTrackingId": {
+            "type": "string",
+            "writeOnly": true
+          },
+          "currentUserId": {
+            "type": "string",
+            "writeOnly": true
+          }
+        }
+      },
+      "DocumentReqOriginalChannelRequest": {
+        "required": [
+          "channel"
+        ],
+        "type": "object",
+        "properties": {
+          "channel": {
+            "type": "string",
+            "description": "SELF, POST",
+            "example": "SELF",
+            "enum": [
+              "SELF",
+              "POST"
+            ]
+          }
+        }
+      },
+      "SeizureCollateralResultRequest": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "type": "string"
+          },
+          "applyToAll": {
+            "type": "boolean"
+          },
+          "reasonId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "remarks": {
+            "type": "string"
+          },
+          "collateralIdList": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "assetIdList": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        }
+      },
+      "PostTaskSubmitRequest": {
+        "required": [
+          "collateralIdList",
+          "documents",
+          "header"
+        ],
+        "type": "object",
+        "properties": {
+          "header": {
+            "type": "string"
+          },
+          "collateralIdList": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "documents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SelectedDocument"
+            }
+          }
+        }
+      },
+      "SelectedDocument": {
+        "required": [
+          "documentId",
+          "sendMethod"
+        ],
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "documentTemplate": {
+            "$ref": "#/components/schemas/SeizureDocumentTemplate"
+          },
+          "sendMethod": {
+            "type": "string"
+          }
+        }
+      },
+      "NonPledgePropSubmitRequest": {
+        "required": [
+          "headerFlag"
+        ],
+        "type": "object",
+        "properties": {
+          "headerFlag": {
+            "type": "string",
+            "description": "Header Flag // DRAFT,SUBMIT",
+            "example": "DRAFT",
+            "enum": [
+              "DRAFT",
+              "SUBMIT",
+              "APPROVE",
+              "REJECT",
+              "CANCEL",
+              "DELETE",
+              "UPDATE",
+              "SUBMIT1",
+              "SUBMIT2",
+              "SAVE"
+            ]
+          },
+          "assetIdList": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          "taskId": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "GenerateCoverPageRequest": {
+        "required": [
+          "collateralIdList"
+        ],
+        "type": "object",
+        "properties": {
+          "collateralIdList": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "PostInitSeizureRequest": {
+        "required": [
+          "initType",
+          "litigationCaseId",
+          "litigationId",
+          "seizureType"
+        ],
+        "type": "object",
+        "properties": {
+          "litigationId": {
+            "type": "string"
+          },
+          "litigationCaseId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "seizureType": {
+            "type": "string"
+          },
+          "initType": {
+            "type": "string"
+          }
+        }
+      },
+      "SeizureCollateralsPostponeRequest": {
+        "type": "object",
+        "properties": {
+          "collateralIdList": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "RemoveSeizureLedPostpone": {
+        "type": "object",
+        "properties": {
+          "seizureId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "seizureLedId": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "SeizureCollateralsPostpone": {
+        "type": "object",
+        "properties": {
+          "seizureId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "seizureLedId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "collateralId": {
+            "type": "string"
+          }
+        }
+      },
+      "SeizureCollateralsPostponeResponse": {
+        "type": "object",
+        "properties": {
+          "successfullyUnmappedCollaterals": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SeizureCollateralsPostpone"
+            }
+          },
+          "failedUnmapCollateralIdList": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "removedSeizureLedIdList": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RemoveSeizureLedPostpone"
+            }
+          }
+        }
+      },
+      "NonPledgePropertiesAsset": {
+        "type": "object",
+        "properties": {
+          "assetId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "assetType": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "assetSubType": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "assetTypeDesc": {
+            "type": "string"
+          },
+          "assetSubTypeDesc": {
+            "type": "string"
+          },
+          "documentNo": {
+            "type": "string"
+          },
+          "collateralDetails": {
+            "type": "string"
+          },
+          "ownerFullName": {
+            "type": "string"
+          },
+          "totalAppraisalValue": {
+            "type": "number"
+          },
+          "collateralCaseLexStatus": {
+            "type": "string",
+            "enum": [
+              "PLEDGE",
+              "SEIZURED",
+              "ON_SALE",
+              "PENDING_SALE",
+              "SOLD",
+              "NOT_APPLICABLE"
+            ]
+          },
+          "assentRlsStatus": {
+            "type": "string"
+          },
+          "obligationStatus": {
+            "type": "string"
+          },
+          "isSelected": {
+            "type": "boolean"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "seizureStatus": {
+            "type": "string"
+          },
+          "seizuredByLitigationId": {
+            "type": "string"
+          },
+          "seizuredByCaseId": {
+            "type": "string"
+          },
+          "seizuredBySeizureId": {
+            "type": "string"
+          },
+          "seizuredByParty": {
+            "type": "string"
+          },
+          "assetDocuments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NonPledgePropertiesAssetDoc"
+            }
+          }
+        }
+      },
+      "NonPledgePropertiesAssetDoc": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "documentTemplate": {
+            "$ref": "#/components/schemas/NonPledgePropertiesAssetDocTemplate"
+          },
+          "imageSource": {
+            "type": "string",
+            "enum": [
+              "LEXS",
+              "IMP",
+              "DIMS",
+              "LG",
+              "PN",
+              "FCS",
+              "TFS",
+              "LCS",
+              "RLS"
+            ]
+          },
+          "imageId": {
+            "type": "string"
+          },
+          "imageName": {
+            "type": "string"
+          },
+          "uploadTimestamp": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
+      "NonPledgePropertiesAssetDocTemplate": {
+        "type": "object",
+        "properties": {
+          "documentTemplateId": {
+            "type": "string"
+          },
+          "documentName": {
+            "type": "string"
+          }
+        }
+      },
+      "NonPledgePropertiesInfoProcessingDoc": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "documentTemplate": {
+            "$ref": "#/components/schemas/NonPledgePropertiesAssetDocTemplate"
+          },
+          "imageSource": {
+            "type": "string",
+            "enum": [
+              "LEXS",
+              "IMP",
+              "DIMS",
+              "LG",
+              "PN",
+              "FCS",
+              "TFS",
+              "LCS",
+              "RLS"
+            ]
+          },
+          "imageId": {
+            "type": "string"
+          },
+          "imageName": {
+            "type": "string"
+          },
+          "uploadTimestamp": {
+            "type": "string",
+            "format": "date"
+          },
+          "documentType": {
+            "type": "string"
+          },
+          "cifNo": {
+            "type": "string"
+          },
+          "taxId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "relation": {
+            "type": "string",
+            "enum": [
+              "MAIN_BORROWER",
+              "CO_BORROWER",
+              "GUARANTOR",
+              "COLLATERAL_OWNER",
+              "MAIN_BORROWER_TRUSTEE",
+              "CO_BORROWER_TRUSTEE",
+              "GUARANTOR_TRUSTEE",
+              "MAIN_BORROWER_HEIR",
+              "CO_BORROWER_HEIR",
+              "GUARANTOR_HEIR",
+              "STAND_IN_PAYER",
+              "DEBT_ACCEPTOR",
+              "DEBT_ACCEPT_SIGNER",
+              "CO_DEFENDANT"
+            ]
+          }
+        }
+      },
+      "NonPledgePropertiesInfoResponse": {
+        "type": "object",
+        "properties": {
+          "seizureId": {
+            "type": "string"
+          },
+          "seizureStatus": {
+            "type": "string"
+          },
+          "lawyerId": {
+            "type": "string"
+          },
+          "lawyerName": {
+            "type": "string"
+          },
+          "isFirstTimeSeizureFlag": {
+            "type": "boolean"
+          },
+          "recommendLawyerId": {
+            "type": "string"
+          },
+          "selectedAppraisalValue": {
+            "type": "number"
+          },
+          "assets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NonPledgePropertiesAsset"
+            }
+          },
+          "processingDocument": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NonPledgePropertiesInfoProcessingDoc"
+            }
+          }
+        }
+      },
+      "LitigationCaseLedsDto": {
+        "type": "object",
+        "properties": {
+          "ledName": {
+            "type": "string"
+          },
+          "ledRefNo": {
+            "type": "string"
+          },
+          "ledRefNoDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "ledId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "ledRefNoEditable": {
+            "type": "boolean"
+          },
+          "publicAuctionLawyerId": {
+            "type": "string"
+          },
+          "lawyerName": {
+            "type": "string"
+          }
+        }
+      },
+      "LitigationCaseLedsResponse": {
+        "type": "object",
+        "properties": {
+          "litigationCaseLeds": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LitigationCaseLedsDto"
+            }
+          }
+        }
+      },
+      "DimDetail": {
+        "type": "object",
+        "properties": {
+          "dimDocStatus": {
+            "type": "string"
+          },
+          "dimHolderCostCenter": {
+            "type": "string"
+          },
+          "dimHardCopyStatus": {
+            "type": "string"
+          }
+        }
+      },
+      "RejectedReason": {
+        "type": "object",
+        "properties": {
+          "rejectedReason": {
+            "type": "string"
+          },
+          "rejectedRemarks": {
+            "type": "string"
+          },
+          "rejectedDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "rejectedUserId": {
+            "type": "string"
+          },
+          "rejectedUserName": {
+            "type": "string"
+          },
+          "rejectedUserRole": {
+            "type": "string"
+          },
+          "rejectedUserSubRole": {
+            "type": "string"
+          },
+          "documentName": {
+            "type": "string"
+          },
+          "pageCount": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "SeizureDocumentTitleDeed": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "documentTemplate": {
+            "$ref": "#/components/schemas/SeizureDocumentTemplate"
+          },
+          "documentNo": {
+            "type": "string"
+          },
+          "imageSource": {
+            "type": "string",
+            "enum": [
+              "LEXS",
+              "IMP",
+              "DIMS",
+              "LG",
+              "PN",
+              "FCS",
+              "TFS",
+              "LCS",
+              "RLS"
+            ]
+          },
+          "imageId": {
+            "type": "string"
+          },
+          "imageName": {
+            "type": "string"
+          },
+          "relatedCollateral": {
+            "$ref": "#/components/schemas/RelatedCollateral"
+          },
+          "dimDetails": {
+            "$ref": "#/components/schemas/DimDetail"
+          },
+          "sendMethod": {
+            "type": "string"
+          },
+          "sendStatus": {
+            "type": "boolean"
+          },
+          "approvedStatus": {
+            "type": "boolean"
+          },
+          "approvedDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "rejectedReasons": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RejectedReason"
+            }
+          }
+        }
+      },
+      "SeizureDocumentsTitleDeedResponse": {
+        "type": "object",
+        "properties": {
+          "isDimCoverPageDownload": {
+            "type": "boolean"
+          },
+          "titleDeedDocuments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SeizureDocumentTitleDeed"
+            }
+          }
+        }
+      },
+      "SeizureDocumentApprovalDraftResponse": {
+        "type": "object",
+        "properties": {
+          "documents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Documents"
+            }
+          }
+        }
+      },
+      "ReturnDimsCoverResponse": {
+        "type": "object",
+        "properties": {
+          "fileContent": {
+            "type": "string",
+            "format": "byte"
+          }
+        }
+      },
+      "CollateralAppraisalDocumentDto": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "documentTemplate": {
+            "$ref": "#/components/schemas/DocumentTemplateDto"
+          },
+          "documentNo": {
+            "type": "string"
+          },
+          "imageSource": {
+            "type": "string",
+            "enum": [
+              "LEXS",
+              "IMP",
+              "DIMS",
+              "LG",
+              "PN",
+              "FCS",
+              "TFS",
+              "LCS",
+              "RLS"
+            ]
+          },
+          "imageId": {
+            "type": "string"
+          },
+          "imageName": {
+            "type": "string"
+          },
+          "appraisalDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "relatedCollateral": {
+            "$ref": "#/components/schemas/RelatedCollateral"
+          }
+        }
+      },
+      "DocumentTemplateDto": {
+        "type": "object",
+        "properties": {
+          "documentTemplateId": {
+            "type": "string"
+          },
+          "documentName": {
+            "type": "string"
+          },
+          "searchType": {
+            "type": "string",
+            "enum": [
+              "LEXS",
+              "IMP",
+              "DIMS",
+              "LG",
+              "PN",
+              "FCS",
+              "TFS",
+              "LCS",
+              "RLS"
+            ]
+          },
+          "documentGroup": {
+            "type": "string",
+            "enum": [
+              "LITIGATION",
+              "NOTICE",
+              "EFILING",
+              "COURT_FEE",
+              "PERSON",
+              "PERSON_LCS",
+              "COLLATERAL_CONTRACT",
+              "COLLATERAL",
+              "COLLATERAL_APPRAISAL",
+              "COLLATERAL_TCG_SUNDRY",
+              "COLLATERAL_INS_SUNDRY",
+              "COLLATERAL_INS_POLICY",
+              "COLLATERAL_OTHER",
+              "ACCOUNT_BILL",
+              "ACCOUNT_OTHER",
+              "ACCOUNT_CONTRACT",
+              "ACCOUNT_TFS",
+              "ACCOUNT_COMMITMENT",
+              "LINKAGE",
+              "DEFERMENT",
+              "CESSATION",
+              "APPEAL",
+              "SUPREME",
+              "DISPUTE_APPEAL",
+              "LEGAL_EXECUTION",
+              "SEIZURE",
+              "WITHDRAW_SEIZURE",
+              "AUCTION",
+              "ACCOUNT_DEBT_CALCULATION",
+              "AUCREFRESULT",
+              "AUCDEEDGROUPRESULT",
+              "AUCDEEDGROUPRETURN",
+              "AUCBIDRESULT",
+              "DEBT_SETTLEMENT",
+              "ASSET"
+            ]
+          },
+          "needHardCopy": {
+            "type": "boolean"
+          },
+          "optional": {
+            "type": "boolean"
+          },
+          "forNoticeLetter": {
+            "type": "boolean"
+          },
+          "forLitigation": {
+            "type": "boolean"
+          },
+          "requiredDocumentDate": {
+            "type": "boolean"
+          },
+          "autoMatchType": {
+            "type": "string"
+          },
+          "contentType": {
+            "type": "string"
+          },
+          "generatedBySystem": {
+            "type": "boolean"
+          },
+          "multipleUpload": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ExcessDocument": {
+        "type": "object",
+        "properties": {
+          "refId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "number": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "submittedTimestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ExcessDocumentResponse": {
+        "type": "object",
+        "properties": {
+          "excessDocuments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExcessDocument"
+            }
+          }
+        }
+      },
+      "SeizureCollateralInfo": {
+        "type": "object",
+        "properties": {
+          "collateralId": {
+            "type": "string"
+          },
+          "collateralType": {
+            "type": "string"
+          },
+          "collateralSubType": {
+            "type": "string"
+          },
+          "collateralTypeDesc": {
+            "type": "string"
+          },
+          "collateralSubTypeDesc": {
+            "type": "string"
+          },
+          "documentNo": {
+            "type": "string"
+          },
+          "ownerFullName": {
+            "type": "string"
+          },
+          "totalAppraisalValue": {
+            "type": "number"
+          },
+          "collateralCmsStatus": {
+            "type": "string"
+          },
+          "collateralCaseLexStatus": {
+            "type": "string"
+          },
+          "collateralDetails": {
+            "type": "string"
+          },
+          "seizureStatus": {
+            "type": "string",
+            "enum": [
+              "PENDING_PAYMENT",
+              "PENDING",
+              "COMPLETED"
+            ]
+          },
+          "seizureResultFlag": {
+            "type": "boolean"
+          },
+          "seizureFailedReason": {
+            "type": "string"
+          },
+          "seizureFailedRemarks": {
+            "type": "string"
+          },
+          "assetId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "assetType": {
+            "type": "string"
+          },
+          "assetSubType": {
+            "type": "string"
+          },
+          "assetTypeDesc": {
+            "type": "string"
+          },
+          "assetSubTypeDesc": {
+            "type": "string"
+          },
+          "assentRlsStatus": {
+            "type": "string"
+          },
+          "obligationStatus": {
+            "type": "string"
+          },
+          "paymentType": {
+            "type": "string"
+          },
+          "assetDocuments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NonPledgePropertiesAssetDoc"
+            }
+          }
+        }
+      },
+      "SeizureDocument": {
+        "type": "object",
+        "properties": {
+          "imageSource": {
+            "type": "string",
+            "enum": [
+              "LEXS",
+              "IMP",
+              "DIMS",
+              "LG",
+              "PN",
+              "FCS",
+              "TFS",
+              "LCS",
+              "RLS"
+            ]
+          },
+          "imageId": {
+            "type": "string"
+          },
+          "imageName": {
+            "type": "string"
+          },
+          "documentDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "reuploadable": {
+            "type": "boolean"
+          },
+          "uploadType": {
+            "type": "string"
+          },
+          "documentTemplate": {
+            "$ref": "#/components/schemas/SeizureDocumentTemplate"
+          },
+          "sendChannel": {
+            "type": "string"
+          },
+          "defaultSendChannelFlag": {
+            "type": "boolean"
+          }
+        }
+      },
+      "SeizureLedsInfo": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "seizureId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "ledId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "ledName": {
+            "type": "string"
+          },
+          "ledRefNo": {
+            "type": "string"
+          },
+          "ledRefNoDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "ledRefNoEditable": {
+            "type": "boolean"
+          },
+          "onsiteLawyerId": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "createdTimestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "completedTimestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "seizureLedType": {
+            "type": "string"
+          },
+          "isDocumentsRequired": {
+            "type": "boolean"
+          },
+          "isFeePaid": {
+            "type": "boolean"
+          },
+          "isEligibleToRecordSeizureResult": {
+            "type": "boolean"
+          },
+          "civilCourtNo": {
+            "type": "string"
+          },
+          "civilCourtName": {
+            "type": "string"
+          },
+          "documents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SeizureDocument"
+            }
+          },
+          "collaterals": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SeizureCollateralInfo"
+            }
+          },
+          "feePaidTimestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "daysSla": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "daysSpent": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "paymentMethod": {
+            "type": "string"
+          },
+          "seizureTimestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "SeizureLedsInfoResponse": {
+        "type": "object",
+        "properties": {
+          "civilCourtNo": {
+            "type": "string"
+          },
+          "civilCourtName": {
+            "type": "string"
+          },
+          "unMappedCollaterals": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SeizureCollateralInfo"
+            }
+          },
+          "seizureLedsInfoList": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SeizureLedsInfo"
+            }
+          }
+        }
+      },
+      "AppraisalDocument": {
+        "type": "object",
+        "properties": {
+          "documentNo": {
+            "type": "string"
+          },
+          "imageSource": {
+            "type": "string",
+            "enum": [
+              "LEXS",
+              "IMP",
+              "DIMS",
+              "LG",
+              "PN",
+              "FCS",
+              "TFS",
+              "LCS",
+              "RLS"
+            ]
+          },
+          "imageId": {
+            "type": "string"
+          },
+          "imageName": {
+            "type": "string"
+          },
+          "documentTemplate": {
+            "$ref": "#/components/schemas/SeizureDocumentTemplate"
+          },
+          "appraisalDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "relatedCollateral": {
+            "$ref": "#/components/schemas/CollateralId"
+          }
+        }
+      },
+      "DeedDocument": {
+        "type": "object",
+        "properties": {
+          "documentNo": {
+            "type": "string"
+          },
+          "imageSource": {
+            "type": "string",
+            "enum": [
+              "LEXS",
+              "IMP",
+              "DIMS",
+              "LG",
+              "PN",
+              "FCS",
+              "TFS",
+              "LCS",
+              "RLS"
+            ]
+          },
+          "imageId": {
+            "type": "string"
+          },
+          "imageName": {
+            "type": "string"
+          },
+          "documentTemplate": {
+            "$ref": "#/components/schemas/SeizureDocumentTemplate"
+          },
+          "dimHardCopyStatus": {
+            "type": "string"
+          },
+          "sendStatus": {
+            "type": "boolean"
+          },
+          "approveStatus": {
+            "type": "boolean"
+          },
+          "approveDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "relatedCollateral": {
+            "$ref": "#/components/schemas/RelatedCollateral"
+          },
+          "rejectedReasons": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RejectedReason"
+            }
+          }
+        }
+      },
+      "LitigationCaseInfo": {
+        "type": "object",
+        "properties": {
+          "litigationCaseId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "courtBlackCaseNo": {
+            "type": "string"
+          },
+          "courtRedCaseNo": {
+            "type": "string"
+          },
+          "litigationCaseCollateralsCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "litigationCaseAssetsCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "processingDocument": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NonPledgePropertiesInfoProcessingDoc"
+            }
+          },
+          "seizures": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SeizureInfo"
+            }
+          }
+        }
+      },
+      "SeizureExecutionResponse": {
+        "type": "object",
+        "properties": {
+          "litigationId": {
+            "type": "string"
+          },
+          "litigationCases": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LitigationCaseInfo"
+            }
+          }
+        }
+      },
+      "SeizureInfo": {
+        "type": "object",
+        "properties": {
+          "seizureId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "createdTimestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "seizureType": {
+            "type": "string",
+            "enum": [
+              "COL",
+              "NCOL"
+            ]
+          },
+          "lawyerId": {
+            "type": "string"
+          },
+          "lawyerName": {
+            "type": "string"
+          },
+          "recommendLawyerId": {
+            "type": "string"
+          },
+          "seizureCollaterals": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SeizureCollateralInfo"
+            }
+          },
+          "deedDocuments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DeedDocument"
+            }
+          },
+          "appraisalDocuments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AppraisalDocument"
+            }
+          },
+          "seizureLeds": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SeizureLedsInfo"
+            }
+          },
+          "unMappedCollaterals": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SeizureCollateralInfo"
+            }
+          }
+        }
+      },
+      "SeizureCommandResponse": {
+        "type": "object",
+        "properties": {
+          "litigationId": {
+            "type": "string"
+          },
+          "litigationCases": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LitigationCaseInfo"
+            }
+          }
+        }
+      },
+      "GetSeizurePrepTitleDeedResponse": {
+        "type": "object",
+        "properties": {
+          "titleDeedDocuments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TitleDeedDocument"
+            }
+          }
+        }
+      },
+      "TitleDeedDocument": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "documentTemplate": {
+            "$ref": "#/components/schemas/SeizureDocumentTemplate"
+          },
+          "documentNo": {
+            "type": "string"
+          },
+          "imageSource": {
+            "type": "string",
+            "enum": [
+              "LEXS",
+              "IMP",
+              "DIMS",
+              "LG",
+              "PN",
+              "FCS",
+              "TFS",
+              "LCS",
+              "RLS"
+            ]
+          },
+          "imageId": {
+            "type": "string"
+          },
+          "imageName": {
+            "type": "string"
+          },
+          "relatedCollateral": {
+            "$ref": "#/components/schemas/RelatedCollateral"
+          },
+          "dimDetails": {
+            "$ref": "#/components/schemas/DimDetail"
+          },
+          "sendMethod": {
+            "type": "string"
+          }
+        }
+      },
+      "GetSeizurePrepTitleDeedDraftResponse": {
+        "type": "object",
+        "properties": {
+          "litigationCaseId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "selectedDocumentIdList": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "SeizurePerpPerson": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "objectType": {
+            "type": "string",
+            "enum": [
+              "PERSON",
+              "CONTRACT",
+              "COLLATERAL",
+              "BILL_NO",
+              "ACCOUNT_NO",
+              "LINKAGE",
+              "SUNDRY",
+              "SUB_ACCOUNT",
+              "DEFERMENT",
+              "CESSATION",
+              "APPEAL",
+              "SUPREME",
+              "DISPUTE_APPEAL",
+              "DISPUTE_SUPREME",
+              "EXPENSE",
+              "CONDITION_APPEAL",
+              "CONDITION_SUPREME",
+              "SEIZURE_LED",
+              "WITHDRAW_SEIZURE_LED",
+              "DEFERMENT_EXEC",
+              "AUCTION_EXPENSE",
+              "AUCTION",
+              "EXTERNAL_PAYMENT_TRACKING_DEED_GROUP",
+              "CASHIER_CHEQUE",
+              "CHEQUE_ADDITIONAL_PAYMENT",
+              "CASHIER_CHEQUE_TRANSFER_OWNERSHIP",
+              "DEED_GROUP_ID",
+              "CONV_DOC_UPLOAD_ID",
+              "CONVY_ACC_DOC_FOLLOWUP_ID",
+              "AUC_BIDDING_ID",
+              "AUC_BIDDING_DEED_GROUP_ID",
+              "WITHDRAW_SEIZURES_COLLATERALS_CONSENT_DOCUMENT",
+              "DEBT_SETTLEMENT_DOCUMENT",
+              "ACCOUNT",
+              "ASSET",
+              "ASSET_INVESTIGATION",
+              "AUCTION_CASHIER_CHEQUE_TRANSFER_OWNERSHIP",
+              "DEBT_SETTLEMENT_ACCOUNT",
+              "PREFERENCE"
+            ]
+          },
+          "objectId": {
+            "type": "string"
+          },
+          "documentTemplate": {
+            "$ref": "#/components/schemas/SeizureDocumentTemplate"
+          },
+          "documentTemplateId": {
+            "type": "string"
+          },
+          "imageSource": {
+            "type": "string",
+            "enum": [
+              "LEXS",
+              "IMP",
+              "DIMS",
+              "LG",
+              "PN",
+              "FCS",
+              "TFS",
+              "LCS",
+              "RLS"
+            ]
+          },
+          "imageId": {
+            "type": "string"
+          },
+          "imageName": {
+            "type": "string"
+          },
+          "storeOrganization": {
+            "type": "string"
+          },
+          "storeOrganizationName": {
+            "type": "string"
+          },
+          "documentDate": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "SeizurePerpPersonResponse": {
+        "type": "object",
+        "properties": {
+          "documents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SeizurePerpPerson"
+            }
+          }
+        }
+      },
+      "CollateralsResponse": {
+        "type": "object",
+        "properties": {
+          "collaterals": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LitigationCaseCollaterals"
+            }
+          },
+          "selectedAppraisalValue": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "LitigationCaseCollaterals": {
+        "type": "object",
+        "properties": {
+          "collateralId": {
+            "type": "string"
+          },
+          "collateralType": {
+            "type": "string"
+          },
+          "collateralSubType": {
+            "type": "string"
+          },
+          "collateralTypeDesc": {
+            "type": "string"
+          },
+          "collateralSubTypeDesc": {
+            "type": "string"
+          },
+          "documentNo": {
+            "type": "string"
+          },
+          "collateralDetails": {
+            "type": "string"
+          },
+          "ownerFullName": {
+            "type": "string"
+          },
+          "totalAppraisalValue": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "collateralCaseLexStatus": {
+            "type": "string"
+          },
+          "collateralCmsStatus": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "disabledDesc": {
+            "type": "string"
+          },
+          "seizureStatus": {
+            "type": "string"
+          },
+          "seizuredByLitigationId": {
+            "type": "string"
+          },
+          "seizuredByCaseId": {
+            "type": "string"
+          },
+          "seizuredBySeizureId": {
+            "type": "string"
+          },
+          "seizuredByParty": {
+            "type": "string"
+          },
+          "preferentialRightSubmitted": {
+            "type": "boolean"
+          }
+        }
+      },
+      "CollateralsPrepDraftResponse": {
+        "type": "object",
+        "properties": {
+          "litigationCaseId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "collateralIdList": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

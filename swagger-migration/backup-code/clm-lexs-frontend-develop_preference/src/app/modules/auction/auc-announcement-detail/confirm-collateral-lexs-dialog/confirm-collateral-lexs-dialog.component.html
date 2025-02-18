@@ -1,0 +1,129 @@
+<div>
+  <!-- message banner -->
+  <div class="mb-1em">
+    <app-message-banner [message]="messageBanner" type="warn-normal">
+    </app-message-banner>
+  </div>
+  <!-- table -->
+  <div class="table-scroll section" table-scroll [formGroup]="form">
+    <table mat-table [dataSource]="rows.controls" formArrayName="rows">
+      <ng-container matColumnDef="index">
+        <th mat-header-cell *matHeaderCellDef>ลำดับ</th>
+        <td mat-cell *matCellDef="let element; let i = index;">
+          {{i + 1}}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="collateralGroup">
+        <th mat-header-cell *matHeaderCellDef>ชุดทรัพย์</th>
+        <td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i">{{rows.at(i).get('colGroup')?.value}}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="numberOfCollateral">
+        <th mat-header-cell *matHeaderCellDef>จำนวนทรัพย์<br>(รายการ)</th>
+        <td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i">
+          {{rows.at(i).get('numberOfCollateral')?.value}}</td>
+      </ng-container>
+      <ng-container matColumnDef="salesMethod">
+        <th mat-header-cell *matHeaderCellDef>วิธีการขาย</th>
+        <td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i">
+          <ng-container *ngIf="rows.at(i).get('isView')?.value === 'EDIT'">
+            <spig-dropdown [config]="saleTypeDescConfig" [options]="saleTypeDescOptions" formControlName="saleTypeDesc"
+              [classInput]="'input-normal elevation-e1 border-black-40'">
+            </spig-dropdown>
+            <spig-error-msg [control]="rows.at(i).get('saleTypeDesc')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+            </spig-error-msg>
+          </ng-container>
+          <ng-container *ngIf="rows.at(i).get('isView')?.value === 'VIEW'">
+            {{rows.at(i).get('saleTypeDesc')?.value}}
+          </ng-container>
+        </td>
+        <td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i">
+          {{rows.at(i).get('numberOfCollateral')?.value}}</td>
+      </ng-container>
+      <ng-container matColumnDef="outsiderCollateralPrice">
+        <th mat-header-cell *matHeaderCellDef>ราคาวางหลักประกัน<br>บุคคลภายนอก (บาท)</th>
+        <td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i">
+          <ng-container *ngIf="rows.at(i).get('isView')?.value === 'EDIT'">
+            <mat-form-field class="no-label input-sm-icon search-input-field">
+              <input matInput type="text" formControlName="reserveFund" placeholder="ระบุ" />
+        <td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i">
+          {{rows.at(i).get('reserveFund')?.value}}</td>
+        </mat-form-field>
+      </ng-container>
+      <ng-container *ngIf="rows.at(i).get('isView')?.value === 'VIEW'">
+        {{rows.at(i).get('reserveFund')?.value}}
+      </ng-container>
+      </td>
+      </ng-container>
+      <ng-container matColumnDef="substituteCollateralPrice">
+        <th mat-header-cell *matHeaderCellDef>ราคาวางหลักประกัน<br>ส่วนได้ใช้แทน (บาท)</th>
+        <td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i">
+          <ng-container *ngIf="rows.at(i).get('isView')?.value === 'EDIT'">
+            <mat-form-field class="no-label input-sm-icon search-input-field">
+              <input matInput type="text" formControlName="reserveFund1" placeholder="ระบุ" />
+            </mat-form-field>
+            <spig-error-msg [control]="rows.at(i).get('reserveFund1')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+            </spig-error-msg>
+          </ng-container>
+          <ng-container *ngIf="rows.at(i).get('isView')?.value === 'VIEW'">
+            {{rows.at(i).get('reserveFund1')?.value}}
+          </ng-container>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="specialistCollateralPrice">
+        <th mat-header-cell *matHeaderCellDef>ราคาประเมินของ<br>ผู้เชี่ยวชาญ (บาท)</th>
+        <td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i">
+          <ng-container *ngIf="rows.at(i).get('isView')?.value === 'EDIT'">
+            <mat-form-field class="no-label input-sm-icon search-input-field">
+              <input matInput type="text" formControlName="assetPrice2" placeholder="ระบุ" />
+            </mat-form-field>
+          </ng-container>
+          <ng-container *ngIf="rows.at(i).get('isView')?.value === 'VIEW'">
+            {{rows.at(i).get('assetPrice2')?.value}}
+          </ng-container>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="officerExCollateralPrice">
+        <th mat-header-cell *matHeaderCellDef>ราคาประเมินของ<br>เจ้าพนักงานบังคับคดี<br>(บาท)</th>
+        <td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i">
+          <ng-container *ngIf="rows.at(i).get('isView')?.value === 'EDIT'">
+            <mat-form-field class="no-label input-sm-icon search-input-field">
+              <input matInput type="text" formControlName="assetPrice3" placeholder="ระบุ" />
+            </mat-form-field>
+          </ng-container>
+          <ng-container *ngIf="rows.at(i).get('isView')?.value === 'VIEW'">
+            {{rows.at(i).get('assetPrice3')?.value}}
+          </ng-container>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="officerCtCollateralPrice">
+        <th mat-header-cell *matHeaderCellDef>ราคาที่กำหนดโดย<br>คณะกรรมการกำหนด<br>ราคาทรัพย์ (บาท)</th>
+        <td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i">
+          <ng-container *ngIf="rows.at(i).get('isView')?.value === 'EDIT'">
+            <mat-form-field class="no-label input-sm-icon search-input-field">
+              <input matInput type="text" formControlName="assetPrice4" placeholder="ระบุ" />
+            </mat-form-field>
+          </ng-container>
+          <ng-container *ngIf="rows.at(i).get('isView')?.value === 'VIEW'">
+            {{rows.at(i).get('assetPrice4')?.value}}
+          </ng-container>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="officerEsCollateralPrice">
+        <th mat-header-cell *matHeaderCellDef>ราคาประเมินของ<br>เจ้าพนักงานประเมิน<br>ราคาทรัพย์ (บาท)</th>
+        <td mat-cell *matCellDef="let element; let i = index" [formGroupName]="i">
+          <ng-container *ngIf="rows.at(i).get('isView')?.value === 'EDIT'">
+            <mat-form-field class="no-label input-sm-icon search-input-field">
+              <input matInput type="text" formControlName="assetPrice5" placeholder="ระบุ" />
+            </mat-form-field>
+          </ng-container>
+          <ng-container *ngIf="rows.at(i).get('isView')?.value === 'VIEW'">
+            {{rows.at(i).get('assetPrice5')?.value}}
+          </ng-container>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </div>
+</div>

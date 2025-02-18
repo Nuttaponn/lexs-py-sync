@@ -1,0 +1,469 @@
+<div class="content-container" *ngIf="cashierCheque && cashierCheque.length > 0">
+  <div class="inner-container-padding-24">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+      <div class="title-text">
+        <h5 class="mt-12 mb-12 mr-12">
+          {{ title | translate }}
+        </h5>
+      </div>
+      <div fxLayout="row">
+        <div class="description" (click)="isOpened = !isOpened">
+          <mat-icon
+            [svgIcon]="isOpened ? 'icon-Slide-Hide' : 'icon-Expand'"
+            class="icon icon-xmedium icon-hide-show fill-blue"></mat-icon>
+          {{ isOpened ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate) }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <mat-accordion>
+    <mat-expansion-panel [expanded]="isOpened" hideToggle>
+      <mat-divider class="ml-0 mr-0"></mat-divider>
+      <ng-container [formGroup]="formGroup">
+        <div formArrayName="cashierCheque">
+          <div class="mt-16 mb-16" *ngFor="let data of cashierCheque?.controls; let i = index" [formGroupName]="i">
+            <div
+              [ngClass]="
+                statusGreenColor.includes(data.get('status')?.value | cashierChequeStatus)
+                  ? 'bg-green-50'
+                  : 'bg-gray-900'
+              "
+              class="title-content pt-20 pb-20 pl-12 pr-12 bd-8">
+              <div fxLayout="row" fxLayoutAlign="space-between center">
+                <div fxLayout="row">
+                  <mat-icon
+                    class="icon icon-xmedium"
+                    [svgIcon]="
+                      statusGreenColor.includes(data.get('status')?.value | cashierChequeStatus)
+                        ? 'icon-Info-Green'
+                        : 'icon-Info-Orange'
+                    "></mat-icon>
+                  <div class="title-text">
+                    <h6 *ngIf="sectionName === 'COLLATERAL'" class="text-gray-700 d-inline-block mr-16">
+                      {{
+                        'AUCTION_DETAIL.CASHIER_CHEQUE_COLLATERAL.MEETING_RESOLUTION_COMMITTEE_PROPERTY_TRADING'
+                          | translate
+                      }}
+                      {{ 'AUCTION_DETAIL.CASHIER_CHEQUE_COLLATERAL.MEETING_NO' | translate }}
+                      {{ data.get('meetingNo')?.value }}
+                      {{ 'COMMON.LABEL_DATE' | translate }}
+                      {{ (data.get('meetingDate')?.value | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                    </h6>
+                    <h6 *ngIf="sectionName === 'STAMP'" class="text-gray-700 d-inline-block mr-16">
+                      {{ 'AUCTION_DETAIL.CASHIER_CHEQUE_STAMP_DUTY.SOLD_DATE' | translate }}
+                      {{ (data.get('soldDate')?.value | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                    </h6>
+                    <ng-container *ngIf="!isOnRequest">
+                      <span class="fs-14"
+                        >{{ 'AUCTION_DETAIL.CASHIER_CHEQUE_COLLATERAL.TOTAL_DEED_GROUP' | translate }}:
+                        <h6 class="d-inline-block ml-2">{{ data.get('totalDeedGroup')?.value }}</h6>
+                      </span>
+                    </ng-container>
+                    <ng-container *ngIf="isOnRequest">
+                      <span class="bold text-gray-700">ครั้งที่ {{ data.get('orderNo')?.value }}</span>
+                    </ng-container>
+                    <span class="divider-vertical"></span>
+                    <span class="fs-14"
+                      >{{ 'AUCTION_DETAIL.CASHIER_CHEQUE_COLLATERAL.STATUS' | translate }}:
+                      <h6 class="d-inline-block ml-2">
+                        {{
+                          statusGreenColor.includes(data.get('status')?.value | cashierChequeStatus)
+                            ? 'สำเร็จแล้ว'
+                            : 'กำลังดำเนินการ'
+                        }}
+                      </h6>
+                    </span>
+                  </div>
+                </div>
+                <div fxLayout="row">
+                  <div
+                    [ngClass]="
+                      statusGreenColor.includes(data.get('status')?.value | cashierChequeStatus)
+                        ? 'fill-krungthai-green'
+                        : 'fill-orange'
+                    "
+                    class="description"
+                    (click)="isOpenedList[i] = !isOpenedList[i]">
+                    <mat-icon
+                      [svgIcon]="isOpenedList[i] ? 'icon-Slide-Hide' : 'icon-Expand'"
+                      [ngClass]="
+                        statusGreenColor.includes(data.get('status')?.value | cashierChequeStatus)
+                          ? 'fill-krungthai-green'
+                          : 'fill-orange'
+                      "
+                      class="icon icon-xmedium icon-hide-show"></mat-icon>
+                    {{
+                      isOpenedList[i]
+                        ? ('COMMON.ICON_EXPANSION_HIDE' | translate)
+                        : ('COMMON.ICON_EXPANSION_SHOW' | translate)
+                    }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <mat-accordion>
+              <mat-expansion-panel class="expansion-inside" [expanded]="isOpenedList[i]" hideToggle>
+                <div class="mt-24" fxLayoutGap="16px">
+                  <div
+                    fxLayout="row"
+                    fxLayoutGap="16"
+                    fxLayoutAlign="start start"
+                    class="elm-form mb-35"
+                    *ngIf="
+                      isOnRequest &&
+                      data.get('rejectReason')?.value &&
+                      !statusGreenColor.includes(data.get('status')?.value | cashierChequeStatus)
+                    ">
+                    <div fxLayout="column" fxFlex="15">
+                      <h6>{{ 'COMMON.LABEL_REASON_CONSIDERATION' | translate }}</h6>
+                    </div>
+                    <div fxLayout="column" fxFlex="70" fxLayoutGap="12px">
+                      <span class="thin-letter">{{ 'COMMON.LABEL_REASON_REVISION' | translate }}</span>
+                      <div>{{ data.get('rejectReason')?.value || '-' }}</div>
+                    </div>
+                  </div>
+                  <div
+                    fxLayout="row"
+                    fxLayoutGap="16"
+                    fxLayoutAlign="start start"
+                    class="elm-form mb-35"
+                    *ngIf="isOnRequest">
+                    <div fxLayout="column" fxFlex="15">
+                      <h6>จำนวนเงินที่ต้องวางเงินเพิ่ม</h6>
+                    </div>
+                    <div fxLayout="column" fxFlex="30" fxLayoutGap="12px">
+                      <div *ngIf="hasEditMode && data.get('actionFlag')?.value">
+                        <mat-form-field class="input-full-field" appearance="fill" color="primary">
+                          <mat-label class="required">จำนวน (บาท)</mat-label>
+                          <input
+                            type="text"
+                            matInput
+                            required
+                            placeholder="จำนวน (บาท)"
+                            appNumberOnly="qualitative"
+                            formControlName="amount"
+                            autocomplete="off" />
+                        </mat-form-field>
+                        <spig-error-msg
+                          [control]="data.get('amount')"
+                          [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'"></spig-error-msg>
+                      </div>
+                      <div *ngIf="!hasEditMode || !data.get('actionFlag')?.value">
+                        <span class="thin-letter">จำนวน (บาท)</span>
+                        <div>
+                          {{ (data.get('amount')?.value | numberDecimal) || '-' }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    fxLayout="row"
+                    fxLayoutGap="16"
+                    fxLayoutAlign="start start"
+                    class="elm-form mb-35"
+                    *ngIf="isOnRequest">
+                    <div fxLayout="column" fxFlex="15">
+                      <h6>เหตุผลการวางเงินเพิ่ม</h6>
+                    </div>
+                    <div fxLayout="column" fxFlex="60" fxLayoutGap="12px">
+                      <ng-container *ngIf="hasEditMode && data.get('actionFlag')?.value">
+                        <mat-form-field class="full-width">
+                          <mat-label>{{ 'COMMON.LABEL_REMARKS' | translate }}</mat-label>
+                          <textarea
+                            class="input-full-field no-resize"
+                            type="text"
+                            matInput
+                            cdkTextareaAutosize
+                            #autosize="cdkTextareaAutosize"
+                            cdkAutosizeMinRows="5"
+                            autocomplete="off"
+                            formControlName="reason"
+                            [maxlength]="500"></textarea>
+                        </mat-form-field>
+                      </ng-container>
+                      <div *ngIf="!hasEditMode || !data.get('actionFlag')?.value">
+                        <span class="thin-letter">{{ 'COMMON.LABEL_REMARKS' | translate }}</span>
+                        <div>{{ data.get('reason')?.value }}</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div
+                    fxLayout="row"
+                    fxLayoutGap="16"
+                    fxLayoutAlign="start start"
+                    class="elm-form mb-35"
+                    *ngIf="isOnRequest">
+                    <div fxLayout="column" fxFlex="15">
+                      <h6>
+                        หมายศาล
+                        <span *ngIf="hasEditMode && data.get('actionFlag')?.value" class="color-red">*</span>
+                      </h6>
+                    </div>
+                    <div fxLayout="column" [fxFlex]="hasEditMode && data.get('actionFlag')?.value ? '' : '60'">
+                      <ng-container>
+                        <app-upload-file-dropdown
+                          [list]="data?.get('allDocuments')?.value || []"
+                          [uploadMultiInfo]="uploadMultiInfo"
+                          [readonly]="!hasEditMode || !data.get('actionFlag')?.value"
+                          [labelAcceptFile]="'UPLOAD_FILE.LABEL_HINT_DOCUMENT_PDF_JPG_JPEG'"
+                          (uploadFileEvent)="uploadFileEvent($event, data)"
+                          [documentNameOptions]="documentNameList"
+                          [defaultDocumentName]="
+                            data?.get('allDocuments')?.value?.length > 0
+                              ? data?.get('allDocuments')?.value[0]?.documentTemplateId
+                              : ''
+                          "></app-upload-file-dropdown>
+                        <spig-error-msg
+                          [control]="data.get('hasDocument')"
+                          [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'"></spig-error-msg>
+                      </ng-container>
+                    </div>
+                  </div>
+
+                  <div
+                    *ngIf="data.get('rejectReason')?.value && !isOnRequest"
+                    fxLayoutAlign="start start"
+                    fxLayout="row"
+                    fxLayoutGap="16"
+                    class="mb-35">
+                    <div fxLayout="column" fxFlex="15">
+                      <h6>{{ 'AUCTION_DETAIL.REASON_CONSIDERATION' | translate }}</h6>
+                    </div>
+                    <div fxFlex="70" fxLayout="column" fxLayoutGap="12" class="mr-16">
+                      <span class="thin-letter">
+                        {{ 'AUCTION_DETAIL.CASHIER_CHEQUE_COLLATERAL.SEND_BACK_EDIT_REASON' | translate }}</span
+                      >
+                      <div>{{ data.get('rejectReason')?.value || '-' }}</div>
+                    </div>
+                  </div>
+                  <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16" class="elm-form mb-35">
+                    <div fxLayout="column" fxFlex="15">
+                      <h6>{{ 'AUCTION_DETAIL.CASHIER_CHEQUE_COLLATERAL.PAYABLE' | translate }}</h6>
+                    </div>
+                    <div fxLayout="column" fxFlex="70" fxLayoutGap="12">
+                      <span class="thin-letter"> สถานที่สั่งจ่าย</span>
+                      <div>{{ data.get('ledName')?.value }}</div>
+                    </div>
+                  </div>
+                  <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16" class="elm-form mb-35">
+                    <div fxLayout="column" fxFlex="15">
+                      <h6>{{ 'AUCTION_DETAIL.CASHIER_CHEQUE_COLLATERAL.RESPONSIBLE_LAWYER' | translate }}</h6>
+                    </div>
+                    <div fxFlex="30" fxLayout="column" fxLayoutGap="12" class="mr-16">
+                      <span class="thin-letter mb-0">{{
+                        'AUCTION_DETAIL.CASHIER_CHEQUE_COLLATERAL.LAWYER' | translate
+                      }}</span>
+                      <div>{{ findLawyerName(data.get('assignedLawyerId')?.value) || '-' }}</div>
+                    </div>
+                    <div fxFlex="30" fxLayout="column" fxLayoutGap="12">
+                      <div *ngIf="!hasEditMode || !data.get('actionFlag')?.value">
+                        <span class="thin-letter">
+                          {{ 'AUCTION_DETAIL.CASHIER_CHEQUE_COLLATERAL.PHONE_NUMBER' | translate }}</span
+                        >
+                        <div>{{ (data.get('assignedLawyerMobileNo')?.value | mask: '000-000-0000') || '-' }}</div>
+                      </div>
+                      <div *ngIf="hasEditMode && data.get('actionFlag')?.value">
+                        <mat-form-field class="input-full-field" color="primary">
+                          <mat-label class="required">
+                            {{ 'AUCTION_DETAIL.CASHIER_CHEQUE_COLLATERAL.PHONE_NUMBER' | translate }}</mat-label
+                          >
+                          <input
+                            type="text"
+                            matInput
+                            required
+                            placeholder="{{ 'AUCTION_DETAIL.CASHIER_CHEQUE_COLLATERAL.PHONE_NUMBER' | translate }}"
+                            autocomplete="off"
+                            mask="000-000-0000"
+                            formControlName="assignedLawyerMobileNo" />
+                        </mat-form-field>
+                        <spig-error-msg
+                          [control]="data.get('assignedLawyerMobileNo')"
+                          [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED_2'"></spig-error-msg>
+                      </div>
+                    </div>
+                  </div>
+                  <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16" class="elm-form mb-35">
+                    <div fxFlex="15" fxLayout="column">
+                      <h6 class="new-line">
+                        {{ 'AUCTION_DETAIL.CASHIER_CHEQUE_COLLATERAL.LAWYER_RECEIVED_CASHIER_CHEQUE' | translate }}
+                      </h6>
+                    </div>
+                    <div fxFlex="30" fxLayout="column" fxLayoutGap="12" class="mr-16">
+                      <div *ngIf="!hasEditMode || !data.get('actionFlag')?.value">
+                        <span class="thin-letter">{{
+                          'AUCTION_DETAIL.CASHIER_CHEQUE_COLLATERAL.LAWYER' | translate
+                        }}</span>
+                        <div>{{ findLawyerName(data.get('receivedByLawyerId')?.value) || '-' }}</div>
+                      </div>
+                      <div *ngIf="hasEditMode && data.get('actionFlag')?.value">
+                        <spig-dropdown
+                          [required]="true"
+                          classInput="input-normal icon"
+                          [config]="lawyerConfig"
+                          [options]="lawyerOptions"
+                          formControlName="receivedByLawyerId"
+                          (selectedOption)="changeLawyer($event, data.get('receivedByLawyerMobileNo'))"></spig-dropdown>
+                        <spig-error-msg
+                          [control]="data.get('receivedByLawyerId')"
+                          [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED_2'"></spig-error-msg>
+                      </div>
+                    </div>
+                    <div fxFlex="30" fxLayout="column" fxLayoutGap="12">
+                      <div *ngIf="!hasEditMode || !data.get('actionFlag')?.value">
+                        <span class="thin-letter">
+                          {{ 'AUCTION_DETAIL.CASHIER_CHEQUE_COLLATERAL.PHONE_NUMBER' | translate }}</span
+                        >
+                        <div>{{ (data.get('receivedByLawyerMobileNo')?.value | mask: '000-000-0000') || '-' }}</div>
+                      </div>
+                      <div *ngIf="hasEditMode && data.get('actionFlag')?.value">
+                        <mat-form-field class="input-full-field" color="primary">
+                          <mat-label class="required">
+                            {{ 'AUCTION_DETAIL.CASHIER_CHEQUE_COLLATERAL.PHONE_NUMBER' | translate }}</mat-label
+                          >
+                          <input
+                            type="text"
+                            matInput
+                            required
+                            placeholder="{{ 'AUCTION_DETAIL.CASHIER_CHEQUE_COLLATERAL.PHONE_NUMBER' | translate }}"
+                            autocomplete="off"
+                            mask="000-000-0000"
+                            formControlName="receivedByLawyerMobileNo" />
+                        </mat-form-field>
+                        <spig-error-msg
+                          [control]="data.get('receivedByLawyerMobileNo')"
+                          [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED_2'"></spig-error-msg>
+                      </div>
+                    </div>
+                  </div>
+                  <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16" class="elm-form mb-35">
+                    <div fxFlex="15" fxLayout="column">
+                      <h6>{{ 'AUCTION_DETAIL.CASHIER_CHEQUE_COLLATERAL.CHEQUE_LIST' | translate }}</h6>
+                    </div>
+                    <div fxFlex="30" fxLayout="column" fxLayoutGap="12" class="mr-16">
+                      <div *ngIf="!hasEditMode || !data.get('actionFlag')?.value">
+                        <span class="thin-letter">
+                          {{
+                            'AUCTION_DETAIL.CASHIER_CHEQUE_COLLATERAL.BRANCH_ISSUED_CASHIER_CHEQUE' | translate
+                          }}</span
+                        >
+                        <div>
+                          {{
+                            data.get('branchCode')?.value || data.get('branchName')?.value
+                              ? data.get('branchCode')?.value + ' - ' + data.get('branchName')?.value
+                              : '-'
+                          }}
+                        </div>
+                      </div>
+                      <div *ngIf="hasEditMode && data.get('actionFlag')?.value">
+                        <spig-dropdown
+                          [required]="true"
+                          classInput="input-normal icon"
+                          [config]="branchConfig"
+                          [options]="branchOptions"
+                          formControlName="branchCode"></spig-dropdown>
+                        <spig-error-msg
+                          [control]="data.get('branchCode')"
+                          [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED_2'"></spig-error-msg>
+                      </div>
+                    </div>
+                    <div fxFlex="30" fxLayout="column" fxLayoutGap="12">
+                      <div *ngIf="!hasEditMode || !data.get('actionFlag')?.value">
+                        <span class="thin-letter">
+                          {{ 'AUCTION_DETAIL.CASHIER_CHEQUE_COLLATERAL.RECEIVE_CASHIER_DATE' | translate }}</span
+                        >
+                        <div>{{ (data.get('receiveCashierDate')?.value | buddhistEra: 'DD/MM/yyyy') || '-' }}</div>
+                      </div>
+                      <div *ngIf="hasEditMode && data.get('actionFlag')?.value">
+                        <spig-datepicker
+                          [required]="true"
+                          [classInput]="'input-s icon'"
+                          [label]="'AUCTION_DETAIL.CASHIER_CHEQUE_COLLATERAL.RECEIVE_CASHIER_DATE'"
+                          class="display-grid"
+                          [min]="currentDate"
+                          formControlName="receiveCashierDate"></spig-datepicker>
+                        <spig-error-msg
+                          [control]="data.get('receiveCashierDate')"
+                          [customErrorMsg]="
+                            data.get('receiveCashierDate')?.hasError('invalidDate')
+                              ? 'กรุณาเลือกวันที่ใหม่'
+                              : 'COMMON.ERROR_MSG_REQUIRED_2'
+                          "></spig-error-msg>
+                      </div>
+                    </div>
+                  </div>
+                  <div *ngIf="!isOnRequest" fxLayout="row" fxLayoutAlign="end center" class="elm-form mb-20 fs-14 mr-0">
+                    {{
+                      (sectionName === 'COLLATERAL'
+                        ? 'AUCTION_DETAIL.CASHIER_CHEQUE_COLLATERAL.TOTAL_AMOUNT_OF_COLLATERAL'
+                        : 'AUCTION_DETAIL.CASHIER_CHEQUE_STAMP_DUTY.TOTAL_AMOUNT_OF_STAMP'
+                      ) | translate
+                    }}:
+                    <h6 class="ml-5">
+                      {{ (data.get('totalAmount')?.value | numberDecimal) || '-' }}
+                    </h6>
+                  </div>
+                  <div
+                    fxLayout="row"
+                    fxLayoutAlign="start start"
+                    fxLayoutGap="16"
+                    class="elm-form"
+                    *ngIf="!isOnRequest">
+                    <div fxFlex="15" fxLayout="column"></div>
+                    <div fxLayout="column" [fxFlex]="isOnRequest ? '60' : '100'">
+                      <app-auction-cashier-cheque-table
+                        [dataTable]="data.get('deedGroupRecordList')?.value"
+                        [sectionName]="sectionName"
+                        [hasEditMode]="hasEditMode"
+                        [dataInfo]="data"></app-auction-cashier-cheque-table>
+                    </div>
+                  </div>
+                  <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16" class="elm-form" *ngIf="isOnRequest">
+                    <div fxFlex="15" fxLayout="column"></div>
+                    <div fxFlex="60" fxLayout="column">
+                      <div class="data-table-content">
+                        <table
+                          mat-table
+                          [dataSource]="
+                            data.get('orderList')?.value && data.get('orderList')?.value.length > 0
+                              ? data.get('orderList')?.value
+                              : [{}]
+                          ">
+                          <ng-container matColumnDef="no">
+                            <th mat-header-cell *matHeaderCellDef class="text-center width-pct-5">
+                              {{ 'COMMON.LABEL_NO' | translate }}
+                            </th>
+                            <td mat-cell *matCellDef="let element; let j = index" class="text-center width-pct-5">
+                              {{ j + 1 }}
+                            </td>
+                          </ng-container>
+                          <ng-container matColumnDef="total">
+                            <th mat-header-cell *matHeaderCellDef class="new-line text-right">
+                              จำนวนเงินสั่งจ่าย (บาท)
+                            </th>
+                            <td mat-cell *matCellDef="let element" class="text-right">
+                              {{ (data?.get('amount')?.value | numberDecimal) || '-' }}
+                            </td>
+                          </ng-container>
+                          <ng-container matColumnDef="orderPaymentDate">
+                            <th mat-header-cell *matHeaderCellDef>วันที่สั่งจ่าย</th>
+                            <td mat-cell *matCellDef="let element">
+                              {{ (data.get('receiveCashierDate')?.value | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                            </td>
+                          </ng-container>
+
+                          <tr mat-header-row *matHeaderRowDef="cashierColumns"></tr>
+                          <tr mat-row *matRowDef="let row; columns: cashierColumns"></tr>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </div>
+        </div>
+      </ng-container>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

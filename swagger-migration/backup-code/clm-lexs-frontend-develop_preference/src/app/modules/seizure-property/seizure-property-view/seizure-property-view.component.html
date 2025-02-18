@@ -1,0 +1,70 @@
+<app-action-bar
+  (backButtonHandler)="onBack($event)"
+  [hasSaveButton]="actionBar.hasSave"
+  [saveButtonText]="actionBar.saveText || ''"
+  [hasPrimaryButton]="actionBar.hasPrimary"
+  [primaryButtonText]="actionBar.primaryText || ''"
+  [showNavBarInformation]="true"
+  (saveButtonHandler)="onSave()"
+  [primaryButtonIcon]="actionBar.primaryIcon || 'icon-Selected'"
+  (primaryButtonHandler)="onSubmit()">
+  <ng-container navBarInformationTemplate>
+    <mat-icon [svgIcon]="pageIcon" class="icon icon-xmedium default-cursor"></mat-icon
+    ><span class="ml-8">{{ title | translate }}</span>
+    <span *ngIf="!!statusName" class="ml-12 status-label status-pending">
+      {{ seizurePropertyMode === 'UPDATE_E05_02_3C' ? 'รอรับเอกสารต้นฉบับที่ถูกปฏิเสธ' : statusName }}</span
+    >
+  </ng-container>
+</app-action-bar>
+
+<div class="content-below-action-bar-area">
+  <div class="pt-16 pl-24 pr-24" *ngIf="mode !== 'VIEW' && messageBanner">
+    <app-message-banner [type]="'black-info'" [message]="messageBanner"> </app-message-banner>
+  </div>
+
+  <div class="pt-16 pl-24 pr-24" *ngIf="isDimCoverPageDownload && this.taskCode === 'R2E05-02-3C'">
+    <app-message-banner
+      type="info"
+      message="มีการส่งคืนเอกสารต้นฉบับให้กับห้องมั่นคง กรุณาดาวน์โหลดใบปะหน้าเอกสารที่ส่งคืน DIMS"
+      [actionButtonBorder]="false"
+      actionButtonClass="bold  icon-small-xm  info"
+      actionButton="ดาวน์โหลดใบปะหน้า"
+      actionButtonIcon="icon-Download"
+      (actionButtonHandler)="onClickDownloadCopy()">
+    </app-message-banner>
+  </div>
+  <!-- รายละเอียดสั่งการยึดทรัพย์ -->
+  <app-case-details
+    [title]="'TITLE_MSG.LAWSUIT_DETAIL'"
+    [isViewMode]="!taskCode"
+    [data]="litigationCaseShortDetail"
+    [hidelawyer]="caseDetailHidelawyer"></app-case-details>
+
+  <!-- ทนายความผู้รับผิดชอบ -->
+  <app-responsible-lawyer
+    *ngIf="responsibleLawyerTask"
+    [data]="litigationCaseShortDetail"
+    [mode]="responsibleLawyerMode"
+    [hasExpand]="false"
+    [dataForm]="dataLawyerForm"
+    [labelLawyer]="responsibleLawyerTask ? 'ฝ่ายงานบังคับคดี' : 'ทนายความผู้รับผิดชอบ'"></app-responsible-lawyer>
+
+  <!-- Tabs -->
+  <div class="mt-24 mb-24">
+    <nav mat-tab-nav-bar class="ml-24 mr-24 pl-0 pr-0" [tabPanel]="tabPanel">
+      <ng-container *ngFor="let tab of tabsInfo; let i = index">
+        <a
+          mat-tab-link
+          (click)="onRouterLink(tab)"
+          routerLinkActive="active"
+          [active]="tab.index === tabIndex"
+          [attr.link]="tab.fullPath">
+          {{ tab.label | translate }}
+        </a>
+      </ng-container>
+    </nav>
+    <mat-tab-nav-panel #tabPanel>
+      <router-outlet></router-outlet>
+    </mat-tab-nav-panel>
+  </div>
+</div>

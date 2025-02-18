@@ -1,0 +1,216 @@
+<ng-container *ngIf="seizureCommand?.litigationCases.length > 0">
+  <div
+    *ngFor="let element of seizureCommand?.litigationCases; let index = index"
+    class="content-container no-horizontal-gap">
+    <mat-accordion class="accordion-headers-align">
+      <mat-card appearance="outlined" class="bg-blue-00 mat-elevation-z0 pb-0">
+        <div fxLayout="row" fxLayoutAlign="space-between center" class="title-content bg-blue-00">
+          <div fxLayout="row" fxLayoutAlign="space-between center">
+            <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="5px" class="p-0">
+              <mat-icon svgIcon="icon-Asset-nobg" class="icon icon-medium"></mat-icon>&nbsp;&nbsp;
+              <h5>{{ 'LAWSUIT.SUIT.CONFISCATION_LIST_LAWSUIT' | translate }} {{ index + 1 }}</h5>
+              &nbsp;&nbsp;
+            </div>
+            <div class="mr-8" fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="5px">
+              <h6 class="text-gray-900 opacity-70-percent mr-8">
+                {{ 'LAWSUIT.CASE_NUMBER_BLACK' | translate }}
+              </h6>
+              <div>
+                <h5>{{ seizureCommand.litigationCases[index].courtBlackCaseNo || '-' }}</h5>
+              </div>
+            </div>
+            &nbsp;&nbsp;
+            <div fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="5px">
+              <h6 class="text-gray-900 opacity-70-percent">
+                {{ 'LAWSUIT.CASE_NUMBER_RED' | translate }}
+              </h6>
+              <div class="fill-red">
+                <h5>{{ seizureCommand.litigationCases[index].courtRedCaseNo || '-' }}</h5>
+              </div>
+            </div>
+          </div>
+          <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="16px">
+            <div *ngIf="canWithdrawn || canOrderSeizure">
+              <button class="long-button ml-10" type="button" mat-stroked-button [matMenuTriggerFor]="actionMenu">
+                <mat-icon svgIcon="icon-Option" class="icon btn-icon icon-sm"></mat-icon>
+              </button>
+              <mat-menu class="deb-menu-item" #actionMenu="matMenu" xPosition="before">
+                <div *ngIf="canWithdrawn" class="pt-12 pb-12 pl-16 pr-16" (click)="onClickWithdrawn(element)">
+                  <div class="cursor-pointer" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+                    <div>
+                      <mat-icon svgIcon="icon-Arrow-Revert" class="icon icon-small-xl"></mat-icon>
+                    </div>
+                    <div>ถอนยึดทรัพย์</div>
+                  </div>
+                </div>
+                <div
+                  *ngIf="canOrderSeizure"
+                  class="pt-12 pb-12 pl-16 pr-16"
+                  (click)="onClickOrderSeizure(element, index)">
+                  <div class="cursor-pointer" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+                    <div><mat-icon svgIcon="icon-add" class="icon icon-small-xl"></mat-icon></div>
+                    <div>สั่งการยึดทรัพย์เพิ่ม</div>
+                  </div>
+                </div>
+              </mat-menu>
+            </div>
+            <div class="description" (click)="element.isOpened = !element?.isOpened">
+              <mat-icon
+                [svgIcon]="element?.isOpened ? 'icon-Slide-Hide' : 'icon-Expand'"
+                class="icon icon-hide-show fill-blue">
+              </mat-icon
+              >{{
+                element.isOpened
+                  ? ('COMMON.ICON_EXPANSION_HIDE' | translate)
+                  : ('COMMON.ICON_EXPANSION_SHOW' | translate)
+              }}
+            </div>
+          </div>
+        </div>
+      </mat-card>
+    </mat-accordion>
+    <mat-expansion-panel [expanded]="element.isOpened" hideToggle>
+      <app-seizure-property-item
+        [data]="filterSeizure(element?.seizures, 'COL')"
+        [total]="element.litigationCaseCollateralsCount || 0"
+        (onViewDetailClick)="onViewDetail(element, $event)"></app-seizure-property-item>
+      <app-seizure-property-item
+        [data]="filterSeizure(element?.seizures, 'NCOL')"
+        [total]="element.litigationCaseAssetsCount || 0"
+        (onViewDetailClick)="onViewDetail(element, $event)"></app-seizure-property-item>
+      <!-- Withdrawn Seizure List -->
+      <ng-container *ngIf="getWithdrawnSeizureByCaseId(element.litigationCaseId); let withdrawnSeizureCase">
+        <ng-container *ngFor="let withdrawnSeizure of withdrawnSeizureCase.withdrawSeizure; let i = index">
+          <div
+            fxLayout="row"
+            fxLayoutAlign="space-between center"
+            class="title-content no-horizontal-padding bg-gray-900 mt-10"
+            fxLayoutGap="5px">
+            <div fxLayout="row" fxLayoutAlign="space-between center">
+              <div fxLayout="column">
+                <div fxLayout="row" fxLayoutAlign="left center">
+                  <span> <mat-icon svgIcon="icon-Window" class="icon icon-medium"></mat-icon>&nbsp;&nbsp;&nbsp; </span>
+                  <h5>คำขอถอนยึดทรัพย์ ครั้งที่ {{ withdrawnSeizure?.withdrawSeizureSeq }}</h5>
+                  <span *ngIf="!!withdrawnSeizure.statusName" class="ml-12 status-label status-pending">{{
+                    withdrawnSeizure.statusName
+                  }}</span>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="space-between center">
+                  ทรัพยที่ถอน:
+                  <span class="bold ml-8">
+                    {{ countWithdrawnCallateral(withdrawnSeizure?.withdrawSeizureGroups) || '-' }}
+                  </span>
+                  <span>
+                    <div class="divider-vertical"></div>
+                  </span>
+                  จำนวนผู้เกี่ยวข้อง:
+                  <span class="bold ml-8">
+                    {{ countWithdrawnContact(withdrawnSeizure?.withdrawSeizureGroups) || '-' }}
+                  </span>
+                  <span>
+                    <div class="divider-vertical"></div>
+                  </span>
+                  วันที่สั่งการถอนยึดทรัพย์:
+                  <span class="bold ml-8">
+                    {{
+                      hideDateSeizureDate.includes(withdrawnSeizure.status)
+                        ? '-'
+                        : (withdrawnSeizure.createdTimestamp | buddhistEra: 'DD/MM/yyyy') || '-'
+                    }}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div fxFlex></div>
+            <button
+              type="button"
+              mat-flat-button
+              color="primary"
+              class="medium-button"
+              (click)="onViewWithdrawnDetail(withdrawnSeizure)">
+              {{ 'COMMON.BUTTON_VIEW_DETAIL' | translate }}
+            </button>
+          </div>
+          <!-- เหตุผลการถอน -->
+          <ng-container *ngIf="getWithdrawnSeizureReason(withdrawnSeizure); let reasons">
+            <ng-container
+              *ngIf="withdrawnSeizure.status === 'CANCELLED' && withdrawnSeizure.rejectReason; else elseTemplate">
+              <table mat-table [dataSource]="reasons" [trackBy]="trackReason">
+                <ng-container matColumnDef="text1">
+                  <th mat-header-cell class="text-left" *matHeaderCellDef>เหตุผลการถอน</th>
+                  <td mat-cell class="text-left size-width-column" *matCellDef="let element">
+                    <span> {{ element.reason || '-' }} </span>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="text2">
+                  <th mat-header-cell class="text-left" *matHeaderCellDef>เหตุผลการไม่อนุมัติ</th>
+                  <td mat-cell class="text-left size-width-column" *matCellDef="let element">
+                    <span> {{ element.rejectReason || '-' }} </span>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="text3">
+                  <th mat-header-cell *matHeaderCellDef class="text-right">ยอดชำระหนี้เสร็จสิ้น</th>
+                  <td mat-cell *matCellDef="let element" class="text-right">
+                    <span> {{ (element.debtPaidAmount | numberDecimal) || '-' }} </span>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="text4">
+                  <th mat-header-cell class="text-left" *matHeaderCellDef>ตั้งเรื่องถอนโดย</th>
+                  <td mat-cell class="text-left" *matCellDef="let element">
+                    <span> {{ element.maker || '-' }} </span>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="['text1', 'text2', 'text3', 'text4']"></tr>
+                <tr mat-row *matRowDef="let row; columns: ['text1', 'text2', 'text3', 'text4']"></tr>
+              </table>
+            </ng-container>
+            <ng-template #elseTemplate>
+              <table mat-table [dataSource]="reasons" [trackBy]="trackReason">
+                <ng-container matColumnDef="text1">
+                  <th mat-header-cell class="text-left size-width-column" *matHeaderCellDef>เหตุผลการถอน</th>
+                  <td mat-cell class="text-left" *matCellDef="let element">
+                    <span> {{ element.reason || '-' }} </span>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="text2">
+                  <th mat-header-cell *matHeaderCellDef class="text-right">ยอดชำระหนี้เสร็จสิ้น</th>
+                  <td mat-cell *matCellDef="let element" class="text-right">
+                    <span> {{ (element.debtPaidAmount | numberDecimal) || '-' }} </span>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="text3">
+                  <th mat-header-cell class="text-left" *matHeaderCellDef>ตั้งเรื่องถอนโดย</th>
+                  <td mat-cell class="text-left" *matCellDef="let element">
+                    <span> {{ element.maker || '-' }} </span>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="['text1', 'text2', 'text3']"></tr>
+                <tr mat-row *matRowDef="let row; columns: ['text1', 'text2', 'text3']"></tr>
+              </table>
+            </ng-template>
+
+            <ng-container *ngIf="reasons.length === 0">
+              <app-message-empty message="ไม่มีรายการที่เกี่ยวข้อง"> </app-message-empty>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+
+      <app-message-empty *ngIf="element?.seizures?.length === 0" message="ไม่พบข้อมูล"></app-message-empty>
+    </mat-expansion-panel>
+    <app-message-empty
+      *ngIf="seizureCommand?.litigationCases?.length === 0"
+      [bgColor]="'bg-gray'"
+      message="ไม่มีคดีหรือข้อมูลที่เกี่ยวข้อง"></app-message-empty>
+  </div>
+</ng-container>
+<!-- ไม่มีคดีหรือข้อมูลที่เกี่ยวข้อง -->
+<ng-container *ngIf="seizureCommand?.litigationCases.length === 0">
+  <app-message-empty message="ไม่มีคดีหรือข้อมูลที่เกี่ยวข้อง"> </app-message-empty>
+</ng-container>

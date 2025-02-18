@@ -1,0 +1,206 @@
+<!-- part: dropdowns
+parts: table radio
+ -->
+<!-- สามารถค้นหาได้เลยถ้ากรอกค่าใกค่าหนึ่งมา -->
+<!-- TODO: layout dropdowns ตัวอย่าง -->
+<!-- DD + table selection -->
+<!-- app-auc-announcement-lexs-pending -->
+<!-- search-controller:: placeholder -->
+
+<!-- TODO: ตัวอย่าง table with radio -->
+<!-- defendant-table -->
+<!-- layout -->
+<!-- app-confirm-merge-lg -->
+<!-- <div class="content-container">
+  <div class="inner-container-padding-24">
+    <div class="search-section pb-16" fxLayout="row" fxLayoutAlign="center start" fxLayoutGap="12px">
+    </div>
+  </div>
+</div> -->
+
+<div class="container">
+  <!-- <mat-card appearance="outlined" class="mat-elevation-z0 p-0"> -->
+    <div>
+
+      <div [formGroup]="searchCtrl" class="search-section pb-8" fxLayout="row" fxLayoutAlign="center" fxLayoutGap="12px">
+        <div fxLayout="column" fxFlex  class="mx-width-pct-32">
+          <!-- Search:: CIF No. -->
+          <mat-form-field class="no-label input-sm-icon search-input-field">
+            <input
+              type="text"
+              matInput
+              [placeholder]="'CIF No.' | translate"
+              autocomplete="off"
+              (keyup)="onKeyup($event)"
+              formControlName="cifNo"
+              />
+              <!--
+              (focus)="placeholder = ''"
+              (blur)="placeholder = placeholderText"
+              formControlName="searchString"
+              -->
+            <mat-icon matSuffix class="icon icon-small-xm" svgIcon="icon-Search" (click)="onSearch()"> </mat-icon>
+          </mat-form-field>
+          <spig-error-msg
+            *ngIf="searchCtrl.get('searchString')?.value"
+            [control]="searchCtrl.get('searchString')"
+            [customErrorMsg]="'SEARCH_CONTROL.ERROR_SEARCH_CONDITION'"></spig-error-msg>
+        </div>
+        <div fxLayout="column" fxFlex  class="mx-width-pct-32">
+          <!-- Search:: Citizen ID/Tax ID -->
+          <mat-form-field class="no-label input-sm-icon search-input-field">
+            <input
+              type="text"
+              matInput
+              [placeholder]="'Citizen ID/Tax ID' | translate"
+              autocomplete="off"
+              (keyup)="onKeyup($event)"
+              formControlName="citizenId"
+              />
+            <mat-icon matSuffix class="icon icon-small-xm" svgIcon="icon-Search" (click)="onSearch()"> </mat-icon>
+          </mat-form-field>
+        </div>
+        <div fxLayout="column" fxFlex  class="mx-width-pct-32">
+          <mat-form-field class="no-label input-sm-icon search-input-field" >
+            <input
+              type="text"
+              matInput
+              [placeholder]="'ชื่อ-นามสกุล' | translate"
+              autocomplete="off"
+              (keyup)="onKeyup($event)"
+              formControlName="fullName"
+              />
+            <mat-icon matSuffix class="icon icon-small-xm" svgIcon="icon-Search" (click)="onSearch()"> </mat-icon>
+          </mat-form-field>
+        </div>
+      </div>
+
+    </div>
+   </div>
+   <br>
+   <div
+        fxLayout="row"
+        fxLayoutAlign="end stretch"
+        fxLayoutGap="8"
+        class="pr-5">
+        <span class="sub-title">เลือก: </span>
+        <h6>{{ selectedCustomer&&selectedCustomer.cifNo ? 1 : 0 }}</h6>
+        <h6>จาก</h6>
+        <h6>{{ customerTableDataSource.length }}</h6>
+      </div>
+      <br>
+    <div class="data-table-content">
+      <ng-container *ngTemplateOutlet="customerTable"></ng-container>
+      <spig-paginator
+      *ngIf="customerTableDataSource.length > 0 && customerPageResultConfig && customerPageActionConfig"
+      [result]="customerPageResultConfig"
+      [action]="customerPageActionConfig"
+      (pageEvent)="pageEvent($event)">
+    </spig-paginator>
+</div>
+<ng-template #customerTable>
+
+    <div class="table-scroll" table-scroll>
+      <table mat-table [dataSource]="customerTableDataSource" class="mat-elevation-z8">
+
+        <!-- Radio Button Column -->
+        <ng-container matColumnDef="select">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let element">
+            <mat-radio-button
+              [value]="element"
+              [checked]="selectedCustomer === element"
+              (change)="onSelectionChange(element)">
+            </mat-radio-button>
+          </td>
+        </ng-container>
+
+        <!-- Running Number Column -->
+        <ng-container matColumnDef="no">
+          <th mat-header-cell *matHeaderCellDef>ลำดับ</th>
+          <td mat-cell *matCellDef="let element; let i = index">
+            {{ i + 1 }}
+          </td>
+        </ng-container>
+
+        <!-- CIF Name Column -->
+        <ng-container matColumnDef="cifName">
+          <th mat-header-cell *matHeaderCellDef>CIF No./ชื่อลูกหนี้</th>
+          <td mat-cell *matCellDef="let element">
+            <div class="link"  (click)="navigateToCustomer(element.cifNo)">
+            {{element.cifNo||'-' }}
+          </div>
+          {{ element.fullName || '' }}
+          </td>
+        </ng-container>
+
+        <!-- DPD Column -->
+        <ng-container matColumnDef="dpd">
+          <th mat-header-cell *matHeaderCellDef>DPD</th>
+          <td mat-cell *matCellDef="let element">{{ element.dpd || '-' }}</td>
+        </ng-container>
+
+        <!-- C-Final/Stage Column -->
+        <ng-container matColumnDef="cFinalStage">
+          <th mat-header-cell *matHeaderCellDef>C-Final/Stage</th>
+          <td mat-cell *matCellDef="let element">
+            <div *ngIf="element.cfinalStage && element.cfinalStage !=='N/A'">{{ element.cfinalStage || '-' }}/{{ element.stageAccount || '-' }}</div>
+            <div *ngIf="!element.cfinalStage || element.cfinalStage ==='N/A'">{{element.cfinalStage}}</div>
+          </td>
+        </ng-container>
+
+        <!-- Response Unit Column -->
+        <ng-container matColumnDef="responseUnit">
+          <th mat-header-cell *matHeaderCellDef>Response Unit/ผู้ดูแลลูกหนี้</th>
+          <td mat-cell *matCellDef="let element">
+            <div *ngIf="element.responseUnitCode">
+              {{ element.responseUnitCode || '' }} - {{ element.responseUnitName || '' }}
+            <br>/ {{ element.responseUserId || '' }} - {{ element.responseUserName || '' }}
+            </div>
+            <diV *ngIf="!element.responseUnitCode">
+              -/-
+            </diV>
+          </td>
+        </ng-container>
+
+        <!-- Response AMD Unit Column -->
+        <ng-container matColumnDef="responseAmdUnit">
+          <th mat-header-cell *matHeaderCellDef>Response AMD Unit/ผู้ดูแลลูกหนี้</th>
+          <td mat-cell *matCellDef="let element">
+            <diV *ngIf="element.amdResponseUnitCode">
+              {{ element.amdResponseUnitCode || '' }} - {{ element.amdResponseUnitName || '' }}
+            <br>/ {{ element.amdResponseUserId || '' }} - {{ element.amdResponseUserName || '' }}
+            </diV>
+            <diV *ngIf="!element.amdResponseUnitCode">
+              -/-
+            </diV>
+          </td>
+        </ng-container>
+
+        <!-- Branch Column -->
+        <ng-container matColumnDef="branch">
+          <th mat-header-cell *matHeaderCellDef>สาขา (Booking/Cost Center)</th>
+          <td mat-cell *matCellDef="let element">{{ element.branchCode || '' }} - {{ element.branchName || '-' }}</td>
+        </ng-container>
+
+        <!-- Header Row -->
+        <tr mat-header-row *matHeaderRowDef="customerColumns"></tr>
+
+        <!-- Data Rows -->
+        <tr mat-row *matRowDef="let row; columns: customerColumns;"></tr>
+      </table>
+
+      <app-message-empty
+        *ngIf="customerTableDataSource?.length === 0"
+        [message]="'ไม่พบงาน'">
+      </app-message-empty>
+
+      <!-- Selected Customer Display -->
+      <!-- <div *ngIf="selectedCustomer" class="selected-customer">
+        <p>Selected Customer: {{ selectedCustomer.cifNo }}</p>
+      </div> -->
+
+  </div>
+
+</ng-template>
+

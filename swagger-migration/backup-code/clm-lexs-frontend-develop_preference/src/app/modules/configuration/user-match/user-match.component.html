@@ -1,0 +1,147 @@
+<div class="data-table-content" *ngIf="!!extendedResponseUnitUserDetailsDtos">
+  <!-- extendedResponseUnitUserDetailsDtos -->
+  <ng-container
+    *ngIf="extendedResponseUnitUserDetailsDtos.length > 0; else searchEmpty"
+    [ngTemplateOutlet]="mainTable"
+    [ngTemplateOutletContext]="{ list: extendedResponseUnitUserDetailsDtos || [] }">
+  </ng-container>
+</div>
+
+<mat-card appearance="outlined" class="customer-info-card mat-elevation-z0 p-0">
+  <div fxLayout="column" fxLayoutGap="20">
+    <h5>{{ 'CONFIGURATION.TITLE_ADD_USER' | translate }}</h5>
+    <!-- <div class="pt-16 pl-24 pr-24"> -->
+    <app-message-banner [type]="'info'" [message]="'CONFIGURATION.ADD_USER_BANNER_MSG'"> </app-message-banner>
+    <!-- </div> -->
+
+    <form [formGroup]="userMatchForm" class="user-match">
+      <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+        <div fxFlex="49">
+          <!-- ชื่อผู้ดูแล -> userId -->
+          <spig-dropdown
+            [classInput]="'input-normal border-black-40'"
+            [config]="ddlUserConfig"
+            [options]="userOptions"
+            formControlName="userId"
+            (selectedOption)="onUserOptionsSelected($event)">
+          </spig-dropdown>
+          <spig-error-msg [control]="getControl('userId')" [customErrorMsg]="userOptionErrorMsg"> </spig-error-msg>
+        </div>
+        <div fxFlex="49">
+          <!-- วันที่เริ่มดูแล -->
+          <spig-datepicker
+            class="date-picker-block"
+            [classInput]="'input-s icon border-black-40'"
+            [label]="'CONFIGURATION.HEAD_COLUMN_EFFECTIVE_DATE'"
+            [min]="currentDate"
+            formControlName="effectiveDate">
+          </spig-datepicker>
+          <spig-error-msg [control]="getControl('effectiveDate')" [customErrorMsg]="effectiveDateErrorMsg">
+          </spig-error-msg>
+        </div>
+      </div>
+    </form>
+
+    <div>
+      <button mat-flat-button color="primary" class="bg-gradient long-aw-button" (click)="onClickAddUser()">
+        <mat-icon svgIcon="icon-Plus" class="icon icon-medium icon-fill-white"></mat-icon>
+        {{ 'CONFIGURATION.TITLE_ADD_USER' | translate }}
+      </button>
+    </div>
+  </div>
+</mat-card>
+
+<ng-template #mainTable let-dataSource="list">
+  <table mat-table [dataSource]="dataSource">
+    <!-- ชื่อผู้ดูแล -->
+    <ng-container matColumnDef="userIdName">
+      <th mat-header-cell *matHeaderCellDef>{{ 'CONFIGURATION.USER_NAME' | translate }}</th>
+      <td mat-cell *matCellDef="let element">
+        {{ (element.userId || '') + ' - ' + (element.name || '') + ' ' + (element.surName || '') }}
+      </td>
+    </ng-container>
+
+    <!-- สถานะการจับคู่ -->
+    <ng-container matColumnDef="statusCode">
+      <th mat-header-cell *matHeaderCellDef>{{ 'CONFIGURATION.MATCHING_STATUS' | translate }}</th>
+      <td mat-cell *matCellDef="let element">
+        <div
+          [ngClass]="{
+            'status-success': element.statusCode === 'ACTIVE',
+            'status-info': element.statusCode === 'INACTIVE',
+          }"
+          class="status-label status-normal">
+          {{ element.statusName }}
+        </div>
+        <div></div>
+      </td>
+    </ng-container>
+    <!-- วันที่นำเข้าทีม -->
+    <ng-container matColumnDef="createdDate">
+      <th mat-header-cell *matHeaderCellDef>{{ 'CONFIGURATION.HEAD_COLUMN_CREATED_DATE' | translate }}</th>
+      <td mat-cell *matCellDef="let element">{{ element.createdDate | buddhistEra: 'DD/MM/yyyy' || '-' }}</td>
+    </ng-container>
+
+    <!-- วันที่เริ่มดูแล -->
+    <ng-container matColumnDef="effectiveDate">
+      <th mat-header-cell *matHeaderCellDef>{{ 'CONFIGURATION.HEAD_COLUMN_EFFECTIVE_DATE' | translate }}</th>
+      <td mat-cell *matCellDef="let element">{{ element.effectiveDate | buddhistEra: 'DD/MM/yyyy' || '-' }}</td>
+    </ng-container>
+
+    <!-- 6. คำสั่ง : display hyperlink ‘ยกเลิก’ when ExtendedResponseUnitUserDetailDto[x].statusCode = ‘QUEUE’ -->
+    <ng-container matColumnDef="cmd">
+      <th class="text-center" mat-header-cell *matHeaderCellDef>
+        {{ 'COMMON.LABEL_COMMAND' | translate }}
+      </th>
+      <td mat-cell *matCellDef="let element; let i = index">
+        <a
+          *ngIf="element.statusCode === 'QUEUE'"
+          mat-button
+          color="primary"
+          class="text-underline"
+          (click)="onClickCancelQueue(i)"
+          >{{ 'COMMON.BUTTON_CANCEL' | translate }}</a
+        >
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns" [hidden]="row.updateFlag === 'D'"></tr>
+  </table>
+</ng-template>
+
+<ng-template #searchEmpty>
+  <table mat-table [dataSource]="dataSource">
+    <!-- ชื่อผู้ดูแล -->
+    <ng-container matColumnDef="userIdName">
+      <th mat-header-cell *matHeaderCellDef>{{ 'CONFIGURATION.USER_NAME' | translate }}</th>
+    </ng-container>
+
+    <!-- สถานะการจับคู่ -->
+    <ng-container matColumnDef="statusCode">
+      <th mat-header-cell *matHeaderCellDef>{{ 'CONFIGURATION.MATCHING_STATUS' | translate }}</th>
+    </ng-container>
+    <!-- วันที่นำเข้าทีม -->
+    <ng-container matColumnDef="createdDate">
+      <th mat-header-cell *matHeaderCellDef>{{ 'CONFIGURATION.HEAD_COLUMN_CREATED_DATE' | translate }}</th>
+    </ng-container>
+
+    <!-- วันที่เริ่มดูแล -->
+    <ng-container matColumnDef="effectiveDate">
+      <th mat-header-cell *matHeaderCellDef>{{ 'CONFIGURATION.HEAD_COLUMN_EFFECTIVE_DATE' | translate }}</th>
+    </ng-container>
+
+    <!-- 6. คำสั่ง : display hyperlink ‘ยกเลิก’ when ExtendedResponseUnitUserDetailDto[x].statusCode = ‘QUEUE’ -->
+    <ng-container matColumnDef="cmd">
+      <th class="text-center" mat-header-cell *matHeaderCellDef>
+        {{ 'COMMON.LABEL_COMMAND' | translate }}
+      </th>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <!-- <tr mat-row *matRowDef="let row; columns: displayedColumns;" [hidden]="row.updateFlag === 'D'"></tr> -->
+  </table>
+  <div>
+    <app-message-empty [message]="'COMMON.LABEL_PREFIX_NOT_FOUND'"></app-message-empty>
+  </div>
+</ng-template>

@@ -1,0 +1,166 @@
+{
+  "configs": [
+    {
+      "key": "APPEAL_DURATION",
+      "value": "10"
+    },
+    {
+      "key": "LEXS_DPD",
+      "value": "10"
+    },
+    {
+      "key": "LITIGATION_DPD",
+      "value": "90"
+    },
+    {
+      "key": "NOTICE_DURATION",
+      "value": "10"
+    },
+    {
+      "key": "PETITION_DURATION",
+      "value": "90"
+    },
+    {
+      "key": "MARKET_CODE_UNUSE",
+      "value": "7001,7002,8001,8002,8081,8091,9001,9003,9901,9902,9903,9904,9905,9906,9907,9908,9911,9912,9913,9915,9916,9990"
+    },
+    {
+      "key": "KLAW_ACCOUNT_OFFIER_ID",
+      "value": "20613"
+    },
+    {
+      "key": "KLAW_TRANSFER_ID",
+      "value": "20613"
+    },
+    {
+      "key": "KLAW_INVOICE_RESPONSE_CODE",
+      "value": "108763"
+    },
+    {
+      "key": "WASH_ACCOUNT",
+      "value": "6700283248"
+    },
+    {
+      "key": "NEWSPAPER_NAME",
+      "value": "ไทยรัด"
+    },
+    {
+      "key": "DEFAULT_KLAW_USER_ID",
+      "value": "k6120"
+    },
+    {
+      "key": "DEFAULT_KTB_USER_ID",
+      "value": "k3440"
+    },
+    {
+      "key": "NO_ORIGINAL_COPY_EMAIL",
+      "value": "<html xmlns=\"http://www.w3.org/1999/xhtml\"><head>    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" /></head><body style=\"margin: 0; padding: 0;\">เรียน ${userFullName}<br />จากการตรวจสอบเอกสารในระบบ LEXS ตามที่ลูกหนี้  ${cif} ${cifName} พบว่ามีเอกสารบางฉบับที่ไม่สามารถหาต้นฉบับได้<br />${documentList}<br />จึงขอให้ท่านตรวจสอบข้อมูลและดำเนินการตามขั้นตอนต่อไปที่อยู่ในความดูแลของหน่วยงานท่าน<br /><br /><br />อีเมลฉบับนี้เป็นการแจ้งข้อมูลจากระบบโดยอัตโนมัติ กรุณาอย่าตอบกลับ</body></html>"
+    },
+    {
+      "key": "TEMPLATE_MAIL_ERROR_NOTICE_TRACKING",
+      "value": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\r\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\r\n<head>\r\n    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"/>\r\n\r\n    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>\r\n\r\n    <!-- use the font -->\r\n    <style>\r\n        body {\r\n            font-family: 'Roboto', sans-serif;\r\n            font-size: 24px;\r\n        }\r\n    </style>\r\n</head>\r\n<body style=\"margin: 0; padding: 0;\">\r\n\r\n    <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"600\" style=\"border-collapse: collapse;\">\r\n        <tr>\r\n            <td bgcolor=\"#eaeaea\" style=\"padding: 40px 30px 40px 30px;\">\r\n    <p>Date ${enDate}</p>\r\n    <p><b>Dear  All</b></p>\r\n    <br>\r\n    <p>&emsp;&emsp;Error Description : ${errorDescription}</p>\r\n    <br><br><br>\r\n    <p><b>Best regards,</b></p>\r\n     <p><b>LEXS</b></p>\r\n    <p><b>Krung Thai Bank PCL</b></p>\r\n    <br>\r\n   </td>\r\n        </tr>\r\n\r\n    </table>\r\n\r\n</body>\r\n</html>"
+    },
+    {
+      "key": "LEXS_EMAIL",
+      "value": "LEXS@krungthai.com"
+    },
+    {
+      "key": "OPERATION_COMMITTEE",
+      "value": "krisada.workspace@gmail.com"
+    },
+    {
+      "key": "IT_SUPPORT",
+      "value": "chaiyarut.junboonjue@gmail.com"
+    },
+    {
+      "key": "DEFAULT_KTBLAW_CONTACT",
+      "value": "02-096-8800"
+    },
+    {
+      "key": "KLAW_ORG_CODE",
+      "value": "001000"
+    },
+    {
+      "key": "NO_ORIGINAL_COPY_SUBJECT",
+      "value": "เรื่อง การแจ้งรายละเอียดเอกสารที่ไม่พบต้นฉบับจากระบบ LEXS  <CIF>"
+    }
+  ],
+  "responseUnits": [
+    {
+      "responseUnitCode": "108368",
+      "responseUnitName": "กลุ่มธุรกิจขนาดกลางภาคตะวันออกเฉียงเหนือ"
+    },
+    {
+      "responseUnitCode": "108611",
+      "responseUnitName": "สายงานธุรกิจขนาดใหญ่ 2"
+    },
+    {
+      "responseUnitCode": "108369",
+      "responseUnitName": "กลุ่มธุรกิจขนาดกลางภาคใต้"
+    },
+    {
+      "responseUnitCode": "108546",
+      "responseUnitName": "กลุ่มธุรกิจขนาดใหญ่ 8"
+    },
+    {
+      "responseUnitCode": "108018",
+      "responseUnitName": "สายงานธุรกิจขนาดกลาง"
+    },
+    {
+      "responseUnitCode": "108276",
+      "responseUnitName": "กลุ่มธุรกิจขนาดกลางภาคกลางและภาคตะวันออก"
+    },
+    {
+      "responseUnitCode": "108277",
+      "responseUnitName": "กลุ่มธุรกิจขนาดใหญ่ 1"
+    },
+    {
+      "responseUnitCode": "108542",
+      "responseUnitName": "กลุ่มธุรกิจขนาดใหญ่ 5"
+    },
+    {
+      "responseUnitCode": "108300",
+      "responseUnitName": "กลุ่มธุรกิจขนาดกลางภาคเหนือ"
+    },
+    {
+      "responseUnitCode": "108278",
+      "responseUnitName": "กลุ่มธุรกิจขนาดใหญ่ 2"
+    },
+    {
+      "responseUnitCode": "108312",
+      "responseUnitName": "กลุ่มกลยุทธ์วิสาหกิจขนาดกลาง"
+    },
+    {
+      "responseUnitCode": "108367",
+      "responseUnitName": "กลุ่มธุรกิจขนาดกลางนครหลวง 2"
+    },
+    {
+      "responseUnitCode": "108054",
+      "responseUnitName": "สายงานธุรกิจขนาดใหญ่ 1"
+    },
+    {
+      "responseUnitCode": "108275",
+      "responseUnitName": "กลุ่มธุรกิจขนาดกลางนครหลวง 1"
+    },
+    {
+      "responseUnitCode": "108603",
+      "responseUnitName": "กลุ่มธุรกิจขนาดใหญ่ 6"
+    },
+    {
+      "responseUnitCode": "108604",
+      "responseUnitName": "กลุ่มธุรกิจขนาดใหญ่ 7"
+    },
+    {
+      "responseUnitCode": "108538",
+      "responseUnitName": "กลุ่มธุรกิจขนาดใหญ่ 4"
+    },
+    {
+      "responseUnitCode": "108979",
+      "responseUnitName": "กลุ่มธุรกิจสถาบันการเงิน"
+    },
+    {
+      "responseUnitCode": "108606",
+      "responseUnitName": "กลุ่มธุรกิจขนาดใหญ่ 3"
+    }
+  ]
+}

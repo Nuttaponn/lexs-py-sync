@@ -1,0 +1,305 @@
+<ng-container>
+  <div *ngIf="isShowLayout" class="content-container container">
+    <div class="title-content" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="12">
+      <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="10px">
+        <b>{{ 'LAWSUIT.TITLE_ACCOUNT_AND_DEBT' | translate }}</b>
+        <span>{{ 'PROFILE_DIRECT.ACCOUNT_SUMMARY.LAST_PAYMENT_DATE' | translate }}:</span>
+        <b>{{ lastPaidDate | buddhistEra: 'DD/MM/yyyy' }}</b>
+      </div>
+      <div fxFlex fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="12">
+        <button mat-flat-button color="primary" class="bg-gradient xsmall-aw-button" (click)="onRouteProfileDirect()">
+          <mat-icon svgIcon="icon-Expand" class="icon icon-sm icon-fill-white"></mat-icon>
+          {{ 'PROFILE_DIRECT.MAIN_ROUTE_BTN' | translate }}
+        </button>
+
+        <button
+          *ngIf="isBtnSubAccount && isBtnSubAccount"
+          mat-stroked-button
+          class="xsmall-aw-button overflow-ellipsis"
+          (click)="onClickBtnAddSubAccount()">
+          <mat-icon svgIcon="icon-Plus" class="icon icon-sm btn-icon"></mat-icon>
+          {{ 'CUSTOMER.ADD_SUB_ACCOUNT' | translate }}
+        </button>
+
+        <spig-dropdown
+          classInput="input-xsm icon"
+          [config]="lawsuitStatusConfig"
+          [options]="lawsuitStatusOptions"
+          [formControl]="lawsuitStatusCtrl"
+          (selectedOption)="filterLawsuitStatus($event)"></spig-dropdown>
+      </div>
+    </div>
+    <div>
+      <div class="table-content">
+        <div class="table-scroll" table-scroll>
+          <table mat-table [dataSource]="accounts">
+            <ng-container [matColumnDef]="accountAndDebtColumns[0]">
+              <th class="text-center" mat-header-cell *matHeaderCellDef>
+                {{ 'COMMON.LABEL_NO' | translate }}
+              </th>
+              <td
+                class="text-center"
+                [class.bg-blue]="element?.newSubAccount === true"
+                mat-cell
+                *matCellDef="let element; let i = index">
+                {{ i + 1 }}
+              </td>
+            </ng-container>
+
+            <ng-container [matColumnDef]="accountAndDebtColumns[1]">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'LAWSUIT.HEAD_COLUMN_ACCOUNT_NO' | translate }}
+              </th>
+              <td [class.bg-blue]="element?.newSubAccount === true" mat-cell *matCellDef="let element; let i = index">
+                <div class="link" (click)="onClickAccountDetail(i)">
+                  {{ element?.accountNo || '-' }}
+                </div>
+              </td>
+            </ng-container>
+
+            <ng-container [matColumnDef]="accountAndDebtColumns[2]">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'LAWSUIT.HEAD_COLUMN_BILL_NO' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element" [class.bg-blue]="element?.newSubAccount === true">
+                <ng-container *ngIf="element?.billNo; else elseElementTemplate">
+                  {{ element.billNo ?? '' }}
+                </ng-container>
+              </td>
+            </ng-container>
+
+            <ng-container [matColumnDef]="accountAndDebtColumns[3]">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'COMMON.LABEL_DPD' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element" [class.bg-blue]="element?.newSubAccount === true">
+                {{ element?.dpd || '-' }}
+              </td>
+            </ng-container>
+
+            <ng-container [matColumnDef]="accountAndDebtColumns[4]">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'LAWSUIT.HEAD_COLUMN_C_FINAL_STAGE' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element" [class.bg-blue]="element?.newSubAccount === true">
+                {{
+                  element['cfinal'] || element['stageFinal']
+                    ? element['cfinal'] + (element['stageFinal'] ? '/' + element['stageFinal'] : '')
+                    : '-'
+                }}
+              </td>
+            </ng-container>
+
+            <ng-container [matColumnDef]="accountAndDebtColumns[5]">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'LAWSUIT.HEAD_COLUMN_DEBT_TYPE' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element" [class.bg-blue]="element?.newSubAccount === true">
+                {{ (element.marketCode ?? '') + '-' + (element.marketDescription ?? '') }}
+              </td>
+            </ng-container>
+
+            <ng-container [matColumnDef]="accountAndDebtColumns[6]">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'LAWSUIT.HEAD_COLUMN_TOTAL_DEBT' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element" [class.bg-blue]="element?.newSubAccount === true">
+                {{ (element?.totalDebt | numberDecimal) || '-' }}
+              </td>
+            </ng-container>
+
+            <ng-container [matColumnDef]="accountAndDebtColumns[7]">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'LAWSUIT.HEAD_COLUMN_EXPIRED_DATE' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element; let i = index" [class.bg-blue]="element?.newSubAccount === true">
+                {{ (element?.prescriptionDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                <app-tooltip
+                  *ngIf="element?.prescriptionDate"
+                  [params]="[
+                    {
+                      title: 'LAWSUIT.EXPIRE_DATE_WARNING_TOOLTIP' | translate,
+                      content:
+                        'กรุณาตรวจสอบวันที่อาจครบอายุความ เนื่องจากบัญชีไม่ตกเงื่อนไขปกติและจำเป็นต้องคำนวณวันที่หมดอายุความจากกลุ่มของบัญชี (Fall back)',
+                    },
+                  ]"
+                  [iconClass]="['icon-small', 'fill-red']">
+                </app-tooltip>
+              </td>
+            </ng-container>
+
+            <ng-container [matColumnDef]="accountAndDebtColumns[8]">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'LAWSUIT.BRANCH_NAME' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element" [class.bg-blue]="element?.newSubAccount === true">
+                <ng-container
+                  *ngIf="element.bookingCode && element.bookingName && element.bookingName; else elseElementTemplate">
+                  {{ element.bookingCode ?? '' }}
+                  {{ element.bookingName ? '-' : '' }}
+                  {{ element.bookingName ?? '' }}
+                </ng-container>
+              </td>
+            </ng-container>
+            <ng-container [matColumnDef]="accountAndDebtColumns[9]">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'LAWSUIT.RESPONSE_UNIT_NAME' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element" [class.bg-blue]="element?.newSubAccount === true">
+                <ng-container
+                  *ngIf="
+                    element.responseBranchCode && element.responseBranchName && element.responseBranchName;
+                    else elseElementTemplate
+                  ">
+                  {{ element.responseBranchCode ?? '' }}
+                  {{ element.responseBranchName ? '-' : '' }}
+                  {{ element.responseBranchName ?? '' }}
+                </ng-container>
+              </td>
+            </ng-container>
+            <ng-container [matColumnDef]="accountAndDebtColumns[10]">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'LAWSUIT.TDR_INFO' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element; let i = index" [class.bg-blue]="element?.newSubAccount === true">
+                <app-tooltip
+                  *ngIf="element.tdrTrackingResult && element.tdrTrackingResult !== '-'"
+                  [icon]="[]"
+                  [params]="[
+                    {
+                      title: 'CUSTOMER.LIABILITY.TDR_MONITORING' | translate,
+                      content: element.tdrTrackingResult ?? '-',
+                      header: 'CUSTOMER.LIABILITY.CBS_INFO' | translate,
+                    },
+                    {
+                      title: 'CUSTOMER.LIABILITY.TDR_LAST_DATE' | translate,
+                      content: (element.tdrDate | buddhistEra: 'DD/MM/yyyy') ?? '-',
+                    },
+                  ]">
+                  <div bodytoggle class="status-label status-pending cur-pointer">
+                    {{ 'LAWSUIT.TDR_TITLE' | translate }}
+                  </div>
+                </app-tooltip>
+                <div *ngIf="!element.tdrTrackingResult || element.tdrTrackingResult === '-'">-</div>
+              </td>
+            </ng-container>
+
+            <ng-container [matColumnDef]="accountAndDebtColumns[11]" stickyEnd>
+              <th columnElevationRight mat-header-cell *matHeaderCellDef>
+                {{ 'LAWSUIT.HEAD_COLUMN_LAWSUIT_STATUS' | translate }}
+              </th>
+              <td
+                columnElevationRight
+                [class.bg-blue]="element?.newSubAccount === true"
+                mat-cell
+                *matCellDef="let element">
+                <div
+                  *ngIf="element.litigationStatus && element.litigationStatus !== '-'"
+                  class="status-label status-normal">
+                  {{ element.litigationStatus }}
+                </div>
+                <span *ngIf="!element.litigationStatus || element.litigationStatus === '-'">-</span>
+              </td>
+            </ng-container>
+
+            <!-- empty footer row-->
+            <ng-container matColumnDef="emptyFooter">
+              <td mat-cell *matFooterCellDef colspan="1"></td>
+            </ng-container>
+
+            <ng-container matColumnDef="emptyFooterElevationRightStaking" stickyEnd>
+              <td columnElevationRight mat-cell *matFooterCellDef colspan="1"></td>
+            </ng-container>
+
+            <!-- set footer for total amount-->
+            <ng-container matColumnDef="summaryAllLabel">
+              <td mat-cell *matFooterCellDef colspan="1">
+                {{ 'LAWSUIT.LABEL_TOTAL_DEBT_PAYLOAD' | translate }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="summaryAll">
+              <td class="bold" mat-cell *matFooterCellDef colspan="1">
+                {{ summaryAll | numberDecimal }}
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="accountAndDebtColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: accountAndDebtColumns; let i = index"></tr>
+            <ng-container *ngIf="accounts.length > 0">
+              <tr mat-footer-row *matFooterRowDef="displayedTotalColumns"></tr>
+            </ng-container>
+            <tr class="mat-row" *matNoDataRow>
+              <td class="mat-cell" [attr.colspan]="accountAndDebtColumns.length">
+                <ng-container
+                  [ngTemplateOutlet]="dataNotFound"
+                  [ngTemplateOutletContext]="{
+                    value: ('LAWSUIT.ACCOUNT_AND_DEBT' | translate),
+                  }">
+                </ng-container>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="account-and-debt-card content-container container">
+    <div class="pt-16 title-content">
+      <h5>{{ 'LAWSUIT.TITLE_DEBT_SUMMARY' | translate }}</h5>
+    </div>
+    <div>
+      <div class="table-content">
+        <ng-container>
+          <table mat-table [dataSource]="debtSummaryDataSource">
+            <ng-container [matColumnDef]="debtSummaryColumns[0]">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'LAWSUIT.HEAD_COLUMN_DEBT_SUMMARY_NAME' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element">
+                {{ element[debtSummaryColumns[0]] | translate }}
+              </td>
+            </ng-container>
+
+            <ng-container [matColumnDef]="debtSummaryColumns[1]">
+              <th class="mat-cell-right" mat-header-cell *matHeaderCellDef>
+                {{ 'LAWSUIT.HEAD_COLUMN_ACCOUNT_DEBT' | translate }}
+              </th>
+              <td class="mat-cell-right" mat-cell *matCellDef="let element">
+                {{ element[debtSummaryColumns[1]] | numberDecimal }}
+              </td>
+            </ng-container>
+
+            <ng-container [matColumnDef]="debtSummaryColumns[2]">
+              <th class="mat-cell-right" mat-header-cell *matHeaderCellDef>
+                {{ 'LAWSUIT.HEAD_COLUMN_BAD_DEBT' | translate }}
+              </th>
+              <td class="mat-cell-right" mat-cell *matCellDef="let element">
+                {{ element[debtSummaryColumns[2]] | numberDecimal }}
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="debtSummaryColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: debtSummaryColumns"></tr>
+            <tr class="mat-row" *matNoDataRow>
+              <td class="mat-cell" [attr.colspan]="debtSummaryColumns.length">
+                <ng-container
+                  [ngTemplateOutlet]="dataNotFound"
+                  [ngTemplateOutletContext]="{
+                    value: ('LAWSUIT.SUMMARY_DEBT_PAYLOAD' | translate),
+                  }">
+                </ng-container>
+              </td>
+            </tr>
+          </table>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template let-value="value" #dataNotFound>
+  <app-message-empty message="{{ 'COMMON.LABEL_PREFIX_NOT_FOUND' | translate }}{{ value }}"></app-message-empty>
+</ng-template>
+
+<ng-template #elseElementTemplate> - </ng-template>

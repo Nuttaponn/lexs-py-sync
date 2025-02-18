@@ -1,0 +1,17 @@
+<ng-container *ngIf="propertyDataSources && propertyDataSources.length > 0; else elseNoDataTemplate">
+  <ng-container *ngFor="let group of propertyDataSources">
+    <app-withdrawn-seizure-property-asset-list
+      [title]="group.groupName"
+      [collateralColumns]="collateralColumns"
+      [assetColumns]="assetColumns"
+      [lgPersonColumn]="lgPersonColumn"
+      [collaterals]="group.collaterals || []"
+      [asset]="group.asset || []"
+      [contactPersons]="group.contactPersons || []"
+      [consentDocuments]="group.consentDocuments || []"
+      [config]="tableConfig"></app-withdrawn-seizure-property-asset-list>
+  </ng-container>
+</ng-container>
+<ng-template #elseNoDataTemplate>
+  <app-message-empty [message]="'WITHDRAWN_SEIZURE_PROPERTY.NO_DATA'"></app-message-empty>
+</ng-template>

@@ -1,0 +1,80 @@
+@import '/src/styles/colors';
+@import '/src/styles/typography';
+
+::ng-deep app-doc-collateral {
+  * {
+    white-space: pre-wrap;
+  }
+  .bg-l-green {
+    width: 100%;
+    height: 72px;
+    background: map-get($ktb-palette-green, 50);
+    border-radius: 8px;
+    padding: 10px;
+  }
+  .bg-l-gray {
+    width: 100%;
+    height: 72px;
+    background: map_get($ktb-palette-biz-gray, 50);
+    border-radius: 8px;
+    padding: 10px;
+  }
+
+  .expanded {
+    font-size: $font-sub-description;
+    color: $krungthai-green;
+  }
+
+  .mat-expansion-panel-body {
+    padding: 0px !important;
+  }
+  .icon-xmedium {
+    width: 24px !important;
+    height: 24px !important;
+  }
+  .text-dark {
+    color: map_get($ktb-palette-biz-gray, 900);
+  }
+  .text-end {
+    text-align: end;
+  }
+
+  .detail-row,
+  .detail-row-wrapper {
+    height: 0;
+  }
+  .detail-row-wrapper .active {
+    height: 72px;
+  }
+  .hasO-cell {
+    width: 20%;
+  }
+
+  .elm-check {
+    left: -5px !important;
+    top: 2px !important;
+  }
+  .text-b-80 {
+    color: map-get($ktb-palette-biz-black, 80);
+  }
+  .attributes {
+    height: 130px !important;
+  }
+  ul {
+    li {
+      padding-bottom: 5px;
+    }
+  }
+  .elm-form {
+    display: initial;
+  }
+  .hasO-cell {
+    width: 20%;
+  }
+  .reasons {
+    margin: 20px;
+  }
+  tr.bg-red-50 {
+    background-color: map_get($ktb-palette-red, 50) !important;
+  }
+}

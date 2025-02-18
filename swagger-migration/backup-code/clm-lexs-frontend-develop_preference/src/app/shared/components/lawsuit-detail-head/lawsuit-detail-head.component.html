@@ -1,0 +1,148 @@
+<div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10" class="mt-24">
+  <h3 fxLayout="row" class="mb-0 mt-0">
+    <div>&nbsp;&nbsp;&nbsp;{{ 'COMMON.LABEL_LITIGATION_ID' | translate }}: {{ litigationDetail.litigationId }}</div>
+    <div *ngIf="litigationDetail.litigationClosed" class="fill-red">&nbsp;(Closed)</div>
+    <div class="divider-vertical"></div>
+    <div>{{ litigationDetail.customerName }}</div>
+  </h3>
+  <div fxLayout="row" fxLayoutAlign="start center">
+    <div
+      *ngIf="
+        defermentStatus &&
+        defermentStatus !== 'DEFERMENT_EXEC_SEIZURE' &&
+          defermentStatus !== 'DEFERMENT_EXEC_SALE' &&
+          defermentStatus !== 'DEFERMENT_EXEC_SEIZURE_SALE'
+      "
+      class="status-label status-pending">
+      {{ 'LAWSUIT.DEFERMANT_STATUS.' + litigationDetail.defermentStatus | translate }}
+    </div>
+  </div>
+</div>
+<div
+  *ngIf="litigationDetail?.debtSaleStatus"
+  class="pl-16"
+  fxLayout="row"
+  fxLayoutAlign="start center"
+  fxLayoutGap="10">
+  <div class="size-md fill-red bold">
+    {{ litigationDetail.debtSaleStatus || '' }}
+  </div>
+</div>
+
+<div class="main-info-container">
+  <div fxLayout="row" class="body-container">
+    <div fxLayout="row" fxFlex="35" fxLayoutGap="10px">
+      <div fxLayout="row" fxLayoutAlign="left center">
+        <mat-icon class="icon icon-medium default-cursor fill-blue" svgIcon="icon-Person-Board"></mat-icon>
+      </div>
+      <div fxLayout="column">
+        <div class="label">{{ 'COMMON.LABEL_CIF_NO' | translate }}</div>
+        <div class="sub-label-bold">{{ litigationDetail.customerId }}</div>
+      </div>
+    </div>
+    <div fxLayout="row" fxFlex="35" fxLayoutGap="10px">
+      <div fxLayout="row" fxLayoutAlign="left center">
+        <mat-icon class="icon icon-medium default-cursor fill-blue" svgIcon="icon-rd-Party"></mat-icon>
+      </div>
+      <div fxLayout="column">
+        <div class="label">
+          {{ 'LAWSUIT.INFO_LABEL_RESPONSE_UNIT' | translate }}
+        </div>
+        <div class="sub-label-bold">
+          {{
+            (litigationDetail.responseUnitCode | emptyFormat) +
+              (!litigationDetail.responseUnitCode || litigationDetail.responseUnitName ? ' - ' : '') +
+              (litigationDetail.responseUnitName | emptyFormat)
+          }}
+        </div>
+      </div>
+    </div>
+    <div fxLayout="row" fxFlex="35" fxLayoutGap="10px">
+      <div fxLayout="row" fxLayoutAlign="left center">
+        <mat-icon class="icon icon-medium default-cursor fill-blue" svgIcon="icon-Home-Person"></mat-icon>
+      </div>
+      <div fxLayout="column">
+        <div class="label">{{ 'COMMON.LABEL_BOOKING_COST_CENTER' | translate }}</div>
+        <div class="sub-label-bold">
+          {{
+            (litigationDetail.branchCode | emptyFormat) +
+              (!litigationDetail.branchCode || litigationDetail.branchName ? ' - ' : '') +
+              (litigationDetail.branchName | emptyFormat)
+          }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div fxLayout="row" class="body-container">
+    <div fxLayout="row" fxFlex="35" fxLayoutGap="10px">
+      <div fxLayout="row" fxLayoutAlign="left center">
+        <mat-icon class="icon icon-medium default-cursor fill-blue" svgIcon="icon-Person-Call"></mat-icon>
+      </div>
+      <div fxLayout="column">
+        <div class="label">
+          {{ 'LAWSUIT.INFO_LABEL_AMD_RESPONSE_UNIT' | translate }}
+        </div>
+        <div class="sub-label-bold">
+          {{
+            (litigationDetail.amdResponseUnitCode | emptyFormat) +
+              (!litigationDetail.amdResponseUnitCode || litigationDetail.amdResponseUnitName ? ' - ' : '') +
+              (litigationDetail.amdResponseUnitName | emptyFormat)
+          }}
+        </div>
+      </div>
+    </div>
+
+    <div fxLayout="row" fxFlex="35" fxLayoutGap="10px">
+      <div fxLayout="row" fxLayoutAlign="left center">
+        <mat-icon class="icon icon-medium default-cursor fill-blue" svgIcon="icon-Flash"></mat-icon>
+      </div>
+      <div fxLayout="column">
+        <div class="label">
+          {{ 'LAWSUIT.INFO_LABEL_RESPONSE_UNIT_APPROVE' | translate }}
+        </div>
+        <div class="sub-label-bold">
+          {{
+            (litigationDetail.approvalResponseUnitCode | emptyFormat) +
+              (!litigationDetail.approvalResponseUnitCode || litigationDetail.approvalResponseUnitName ? ' - ' : '') +
+              (litigationDetail.approvalResponseUnitName | emptyFormat)
+          }}
+        </div>
+      </div>
+      <div fxLayout="row" fxFlex="35" fxLayoutGap="10px"></div>
+    </div>
+    <div fxLayout="row" fxFlex="35" fxLayoutGap="10px"></div>
+  </div>
+  <mat-divider class="ml-16 mr-16"></mat-divider>
+  <div fxLayout="row" fxLayoutAlign="start center" class="status-container">
+    <div fxLayout="row" fxFlex="30" fxLayoutGap="10px">
+      <div class="status-label">{{ 'LAWSUIT.INFO_LABEL_STATUS_CURRENT' | translate }}:</div>
+      <div *ngIf="litigationDetail?.litigationStatus">
+        <div class="status-label status-normal">
+          {{ litigationDetail.litigationStatusCode }} {{ litigationDetail.litigationStatus }}
+        </div>
+      </div>
+      <div class="status-label" *ngIf="!litigationDetail?.litigationStatus">-</div>
+    </div>
+    <div class="divider-vertical"></div>
+    <div fxLayout="row" fxFlex="30" fxLayoutGap="10px">
+      <div class="status-label">{{ 'LAWSUIT.INFO_LABEL_STATUS_CUSTOMER' | translate }}:</div>
+      <div *ngIf="litigationDetail?.mainBorrowerLitigationStatus">
+        <div class="status-label status-normal">
+          {{ litigationDetail.mainBorrowerLitigationStatusCode }} {{ litigationDetail.mainBorrowerLitigationStatus }}
+        </div>
+      </div>
+      <div class="status-label" *ngIf="!litigationDetail?.mainBorrowerLitigationStatus">-</div>
+    </div>
+    <div class="divider-vertical"></div>
+    <div fxLayout="row" fxFlex="30" fxLayoutGap="10px">
+      <div class="status-label">{{ 'LAWSUIT.INFO_LABEL_STATUS_GUARANTOR' | translate }}:</div>
+      <div *ngIf="litigationDetail?.coBorrowerLitigationStatus">
+        <div class="status-label status-normal">
+          {{ litigationDetail.coBorrowerLitigationStatusCode }} {{ litigationDetail.coBorrowerLitigationStatus }}
+        </div>
+      </div>
+      <div class="status-label" *ngIf="!litigationDetail?.coBorrowerLitigationStatus">-</div>
+    </div>
+  </div>
+</div>

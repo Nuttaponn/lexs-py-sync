@@ -1,0 +1,430 @@
+<div fxLayout="row">
+  <!-- REMIND: fix UI defect LEX2-5851 No.SP3-18 -->
+  <div fxFlex class="mt-20">
+    <div
+      fxFlex
+      fxLayout="row"
+      fxLayoutAlign="start center"
+      fxLayoutGap="10px"
+      *ngIf="isLawsuit && personInfoArray.length > 0 && filterOptions.length > 2">
+      <spig-dropdown
+        classInput="input-normal icon"
+        [config]="filterConfig"
+        [options]="filterOptions"
+        [formControl]="filterCtrl"
+        (selectedOption)="ddlOnChanges($event)"></spig-dropdown>
+      <p *ngIf="getCaseSelectIndex() > 0">
+        {{ getCaseSelectIndex() }} {{ 'COMMON.LABEL_FROM' | translate }}
+        {{ uniqueCivilCourtBlackCaseNo.length }}
+        {{ 'COMMON.LABEL_LAWSUIT' | translate }}
+      </p>
+    </div>
+    <div fxFlex [fxLayoutAlign]="filterOptions.length > 2 ? 'end center' : 'start center'">
+      <ng-container *ngIf="isLawsuit && !isFromTask">
+        <button
+          mat-stroked-button
+          id="btn-deb-rel-delete"
+          class="medium-aw-button"
+          [disabled]="!checkAddRelatePerson || isAddBlackCase"
+          (click)="removeRelatePersonLegal()">
+          <mat-icon svgIcon="icon-Bin" class="icon btn-icon icon-sm"></mat-icon
+          >{{ 'DEBT_RELATED_INFO_TAB.BTN_REMOVE_RELATE_PERSON' | translate }}
+        </button>
+        <button
+          class="long-button ml-10"
+          type="button"
+          mat-flat-button
+          color="primary"
+          [disabled]="!checkAddRelatePerson || isAddBlackCase"
+          [matMenuTriggerFor]="actionMenu">
+          {{ 'DEBT_RELATED_INFO_TAB.BTN_ADD_RELATE_PERSON' | translate }}
+          <mat-icon svgIcon="icon-Direction-Down" class="icon btn-icon icon-sm"></mat-icon>
+        </button>
+        <mat-menu class="deb-menu-item" #actionMenu="matMenu" xPosition="before">
+          <div class="pt-12 pb-12 pl-16 pr-16">
+            <div
+              class="cursor-pointer"
+              fxLayout="row"
+              fxLayoutAlign="start center"
+              fxLayoutGap="16px"
+              (click)="addRelatePersonLegal()">
+              <div>
+                <mat-icon svgIcon="icon-Plus" class="icon icon-small-xl"></mat-icon>
+              </div>
+              <div>{{ 'DEBT_RELATED_INFO_TAB.BTN_ADD_RELATE_PERSON_LEGAL' | translate }}</div>
+            </div>
+            <div
+              class="cursor-pointer mt-24"
+              fxLayout="row"
+              fxLayoutAlign="start center"
+              fxLayoutGap="16px"
+              (click)="addRelatePersonLawsuit()">
+              <div>
+                <mat-icon svgIcon="icon-Plus" class="icon icon-small-xl"></mat-icon>
+              </div>
+              <div>{{ 'DEBT_RELATED_INFO_TAB.BTN_ADD_RELATE_PERSON_LAWSUIT' | translate }}</div>
+            </div>
+          </div>
+        </mat-menu>
+      </ng-container>
+      <ng-container
+        *ngIf="
+          (isLawsuit && permissions.includes('ADD_LEGAL_RELATED_PERSON') && !isFromTask) ||
+          canAddRelatePersonCaseInvestigateHeir
+        ">
+        <button
+          mat-flat-button
+          color="primary"
+          id="btn-deb-rel-info-add"
+          class="small-button overflow-ellipsis ml-10"
+          (click)="onAdd()"
+          [disabled]="!actionOnScreen.canAdd || isEdited || isOnAdd">
+          <mat-icon svgIcon="icon-Plus" class="icon btn-icon icon-sm"></mat-icon>
+          {{ 'LAWSUIT.BTN_ADD_RELATED_PERSON' | translate }}
+        </button>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+<ng-container
+  *ngIf="!isEmptyPerson"
+  [ngTemplateOutlet]="personInfo"
+  [ngTemplateOutletContext]="{ list: personInfoArray }"></ng-container>
+<ng-container
+  *ngIf="isEmptyPerson"
+  [ngTemplateOutlet]="notFoundDebtRelatedInfo"
+  [ngTemplateOutletContext]="{
+    value: ('CUSTOMER.HEAD_COLUMN_DEBT_RELATED_INFO' | translate),
+  }"></ng-container>
+
+<ng-template #personInfo let-items="list" let-type="type">
+  <ng-container *ngFor="let item of items; let i = index">
+    <mat-card appearance="outlined" class="related-info-card" [ngClass]="getClassRelatedInfoCard(item)">
+      <div class="related-info-header">
+        <div class="title" fxLayout="row" fxLayoutAlign="space-between center">
+          <div fxLayout="row" fxLayoutGap="12px" class="mt-12">
+            <h5 *ngIf="item.relation">
+              {{ 'LAWSUIT.MAPPING.RELATION.' + item.relation | translate }}
+            </h5>
+          </div>
+          <div fxLayoutGap="12px" *ngIf="!isFromTask || isTaskInvestigateHeir">
+            <span
+              fxLayoutGap="12px"
+              *ngIf="
+                (item.isAdditionalPersons && !isFromTask) ||
+                (item.isAdditionalPersons && isTaskInvestigateHeir && !item.personId)
+              ">
+              <button
+                mat-stroked-button
+                id="btn-deb-rel-info-delete"
+                class="medium-aw-button mat-warn"
+                [disabled]="!actionOnScreen.canDelete || isEdited"
+                (click)="onDelete(item)">
+                <mat-icon svgIcon="icon-Bin" class="icon btn-icon"></mat-icon>{{ 'COMMON.BUTTON_DELETE' | translate }}
+              </button>
+              <button
+                mat-stroked-button
+                id="btn-deb-rel-info-edit"
+                class="medium-aw-button"
+                [disabled]="!actionOnScreen.canEdit || isEdited"
+                (click)="onEdit(item)">
+                <mat-icon svgIcon="icon-Edit" class="icon btn-icon"></mat-icon>{{ 'COMMON.BUTTON_EDIT' | translate }}
+              </button>
+            </span>
+            <span fxLayoutGap="12px" *ngIf="showUpdateStatusFromDOPA(item)">
+              <button
+                mat-stroked-button
+                id="btn-deb-rel-info-update-dopa"
+                class="medium-aw-button"
+                (click)="onUpdateStatusFromDOPA(item, i)">
+                <mat-icon svgIcon="icon-Arrow-Sync" class="icon btn-icon"></mat-icon
+                >{{ 'DOPA.UPDATE_STATUS_BTN' | translate }}
+              </button>
+            </span>
+          </div>
+        </div>
+        <div class="sub-title" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="12px">
+          <div fxFlex="20">
+            <span class="fill-black-70">{{ 'COMMON.LABEL_CIF_NO' | translate }}</span>
+            <div class="color-biz-black-100">
+              {{ !item.isAdditionalPersons ? item.personId : '-' }}
+            </div>
+          </div>
+          <div fxFlex="27">
+            <span class="fill-black-70">
+              {{ 'CUSTOMER.LABEL_NAME_SURNAME_JURISTIC_NAME' | translate }}
+            </span>
+            <div class="color-biz-black-100">
+              {{ item.name || '-' }}
+            </div>
+          </div>
+          <div fxFlex="27">
+            <span class="fill-black-70">{{ 'CUSTOMER.LABEL_FULLNAME_DOPA_DBD' | translate }}</span>
+            <div class="color-biz-black-100">{{ item.dopaDbdName || '-' }}</div>
+          </div>
+          <div fxFlex="auto">
+            <span class="wrap-line-break fill-black-70">{{ 'CUSTOMER.LABEL_NATIONAL_ID_TAX_ID' | translate }}</span>
+            <div class="color-biz-black-100">{{ item.identificationNo }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="table-content" *ngIf="item.personStatus === 'DEATH' || item.personStatus === 'CLOSE'">
+        <app-message-banner *ngIf="!item.foundHeirObj" [message]="getDeathStatus(item)"></app-message-banner>
+
+        <app-message-banner
+          *ngIf="showBannerDeathStatus(item)"
+          [type]="isFromTask ? 'info' : ''"
+          [message]="getDeathStatus(item)"
+          [actionButton]="'CUSTOMER.ACTION_VIEW_RESON_BTN'"
+          (actionButtonHandler)="openDialogResonReject(item.personId)"
+          actionButtonClass="bold icon-black icon-small-xm black"
+          actionButtonIcon="icon-Expand"
+          [actionButtonBorder]="true">
+        </app-message-banner>
+      </div>
+      <mat-divider [inset]="true"></mat-divider>
+      <mat-card-content>
+        <div class="table-content" *ngIf="item.address && !isFromTask">
+          <div class="header">{{ 'CUSTOMER.ADDRESS' | translate }}</div>
+          <app-message-banner
+            *ngIf="item?.canUpdateAddress && !item?.foundDopaOrDBD"
+            [type]="item?.manualAddressLineEmpty ? '' : 'info'"
+            [message]="
+              !!item?.address[0]?.addressLine ? 'CUSTOMER.MANUAL_UPDATE_ADDRESS' : 'CUSTOMER.NO_DOPA_ADDR_BANNER'
+            "
+            [actionButton]="'CUSTOMER.ACTION_NO_DOPA_ADDR_BTN' | translate"
+            (actionButtonHandler)="onOpenRegisterAddressDialog(item, i)"
+            actionButtonClass="bold icon-black icon-small-xm black"
+            actionButtonIcon="icon-Edit"
+            [actionButtonBorder]="true">
+          </app-message-banner>
+
+          <app-message-banner
+            *ngIf="!item?.canUpdateAddress && item?.foundDopaOrDBD"
+            [type]="item?.manualAddressLineEmpty ? '' : 'info'"
+            [message]="
+              !!item?.address[0]?.addressLine ? 'CUSTOMER.MANUAL_UPDATE_ADDRESS' : 'CUSTOMER.NO_DOPA_ADDR_BANNER'
+            "
+            [actionButton]="'CUSTOMER.ACTION_NO_DOPA_ADDR_BTN'"
+            actionButtonClass="bold icon-black icon-small-xm black"
+            actionButtonIcon="icon-Edit"
+            [actionButtonBorder]="false">
+          </app-message-banner>
+          <br />
+          <ng-container *ngIf="item.address.length > 0">
+            <table mat-table [dataSource]="item.address">
+              <ng-container matColumnDef="no">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ 'COMMON.LABEL_NO' | translate }}
+                </th>
+                <td mat-cell *matCellDef="let element; let i = index">
+                  {{ i + 1 }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="type">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ 'CUSTOMER.COLUMN_ADDRESS_TYPE' | translate }}
+                </th>
+                <td mat-cell *matCellDef="let element">
+                  {{ 'CUSTOMER.MAPPING.ADDRESS_TYPE.' + element.addressType | translate }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="address">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ 'CUSTOMER.COLUMN_ADDRESS' | translate }}
+                </th>
+                <td mat-cell *matCellDef="let element">
+                  {{ getFullAddress(element) }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="date">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ 'CUSTOMER.COLUMN_INFO_AT_DATE' | translate }}
+                </th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element?.lastUpdate | buddhistEra: 'DD/MM/yyyy' || '-' }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="reference">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ 'CUSTOMER.COLUMN_SOURCE' | translate }}
+                </th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element?.sourceSystem || '-' }}
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="addressPhoneColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: addressPhoneColumns"></tr>
+            </table>
+          </ng-container>
+          <ng-container
+            *ngIf="item.address.length === 0"
+            [ngTemplateOutlet]="dataNotFound"
+            [ngTemplateOutletContext]="{
+              value: ('CUSTOMER.ADDRESS' | translate),
+              table: 'address',
+            }">
+          </ng-container>
+        </div>
+        <div class="table-content" *ngIf="item.bankruptcy">
+          <div class="header">
+            {{ 'CUSTOMER.BANKRUPTCY_VERIFICATION' | translate }}
+          </div>
+          <ng-container *ngIf="item.bankruptcy.length > 0">
+            <table mat-table [dataSource]="item.bankruptcy">
+              <ng-container matColumnDef="no">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ 'COMMON.LABEL_NO' | translate }}
+                </th>
+                <td mat-cell *matCellDef="let element; let i = index">
+                  {{ i + 1 }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="case">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ 'CUSTOMER.COLUMN_RED_NO_BANKRUPTCY' | translate }}
+                </th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.redCaseNo || '-' }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ 'CUSTOMER.LABEL_NAME_SURNAME_JURISTIC_NAME' | translate }}
+                </th>
+                <td mat-cell *matCellDef="let element">
+                  <span>{{ element.firstName + ' ' + element.lastName }}</span>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="citizenId">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ 'CUSTOMER.COLUMN_NATIONAL_ID_TAX_ID' | translate }}
+                </th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.identificationNo || '-' }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ 'CUSTOMER.COLUMN_BANKRUPTCY_STATUS' | translate }}
+                </th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.brsStatus || '-' }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="courtDate">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ 'CUSTOMER.COLUMN_COURT_DATE' | translate }}
+                </th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.absProtDate ? (element.absProtDate | buddhistEra: 'DD/MM/yyyy') : '-' }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="comparisonBy">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{
+                    (item.personType === 'JURISTIC' ? 'COMMON.LABEL_TAX_ID' : 'COMMON.LABEL_NATIONAL_ID') | translate
+                  }}
+                </th>
+                <td mat-cell *matCellDef="let element">
+                  {{ item.personType ? ('CUSTOMER.' + item.personType + '_IDENTIFICATION' | translate) : '-' }}
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="bankruptcyColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: bankruptcyColumns"></tr>
+            </table>
+          </ng-container>
+          <ng-container
+            *ngIf="item.bankruptcy.length === 0"
+            [ngTemplateOutlet]="dataNotFound"
+            [ngTemplateOutletContext]="{
+              value: ('CUSTOMER.BANKRUPTCY_VERIFICATION' | translate),
+              table: 'bankruptcy',
+            }">
+          </ng-container>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </ng-container>
+</ng-template>
+
+<ng-template let-value="value" let-table="table" #dataNotFound>
+  <ng-container *ngIf="table === 'address'">
+    <table mat-table>
+      <ng-container matColumnDef="no">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'COMMON.LABEL_NO' | translate }}
+        </th>
+      </ng-container>
+      <ng-container matColumnDef="type">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'CUSTOMER.COLUMN_ADDRESS_TYPE' | translate }}
+        </th>
+      </ng-container>
+      <ng-container matColumnDef="address">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'CUSTOMER.COLUMN_ADDRESS' | translate }}
+        </th>
+      </ng-container>
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'CUSTOMER.COLUMN_INFO_AT_DATE' | translate }}
+        </th>
+      </ng-container>
+      <ng-container matColumnDef="reference">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'CUSTOMER.COLUMN_SOURCE' | translate }}
+        </th>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="addressPhoneColumns"></tr>
+    </table>
+  </ng-container>
+  <ng-container *ngIf="table === 'bankruptcy'">
+    <table mat-table>
+      <ng-container matColumnDef="no">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'COMMON.LABEL_NO' | translate }}
+        </th>
+      </ng-container>
+      <ng-container matColumnDef="case">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'CUSTOMER.COLUMN_RED_NO_BANKRUPTCY' | translate }}
+        </th>
+      </ng-container>
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'CUSTOMER.COLUMN_NAME_SURNAME_JURISTIC_NAME' | translate }}
+        </th>
+      </ng-container>
+      <ng-container matColumnDef="citizenId">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'CUSTOMER.COLUMN_NATIONAL_ID_TAX_ID' | translate }}
+        </th>
+      </ng-container>
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'CUSTOMER.COLUMN_BANKRUPTCY_STATUS' | translate }}
+        </th>
+      </ng-container>
+      <ng-container matColumnDef="courtDate">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'CUSTOMER.COLUMN_COURT_DATE' | translate }}
+        </th>
+      </ng-container>
+      <ng-container matColumnDef="comparisonBy">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'CUSTOMER.COLUMN_COMPARISON_BY' | translate }}
+        </th>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="bankruptcyColumns"></tr>
+    </table>
+  </ng-container>
+  <app-message-empty message="{{ 'COMMON.LABEL_PREFIX_NOT_FOUND' | translate }}{{ value }}"></app-message-empty>
+</ng-template>
+
+<ng-template let-value="value" #notFoundDebtRelatedInfo>
+  <mat-card appearance="outlined" class="related-info-card">
+    <app-message-empty message="{{ 'COMMON.LABEL_PREFIX_NOT_FOUND' | translate }}{{ value }}"></app-message-empty>
+  </mat-card>
+</ng-template>

@@ -1,0 +1,211 @@
+<div class="content-container">
+  <div class="inner-container-padding">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+      <div class="title-text">
+        <h5 class="mt-12 mb-12 ml-12 mr-12">
+          {{ 'COMMON.LABEL_EXECUTION_RESULT' | translate }}
+        </h5>
+      </div>
+      <div fxLayout="row">
+        <div class="description" (click)="isOpened = !isOpened" *ngIf="mode === 'VIEW'">
+          <mat-icon [svgIcon]="isOpened ? 'icon-Slide-Hide' : 'icon-Expand'" class="icon icon-hide-show fill-blue">
+          </mat-icon
+          >{{ isOpened ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate) }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <mat-accordion>
+    <mat-expansion-panel [expanded]="isOpened" hideToggle>
+      <mat-divider class="mr-24"></mat-divider>
+      <ng-container *ngIf="mode === 'VIEW'; else editTemplate">
+        <div class="m-16" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+          <div fxLayout="column" fxFlex="14">
+            <h6>{{ 'TASK_CODE_BUTTON.SAVE_RESULT' | translate }}</h6>
+          </div>
+          <div fxLayout="column" fxFlex="27">
+            <div fxLayout="column" fxFlex="27">
+              <span class="thin-letter">{{ 'COMMON.LABEL_WITHDRAW_EXECUTION_DATE' | translate }}</span>
+              <div class="dataLabel">{{ (data.withdrawWritOfExecDatetime | buddhistEra: 'DD/MM/yyyy') || '-' }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-16 mr-16 ml-16" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+          <div fxLayout="column" fxFlex="14"></div>
+          <div fxLayout="column" fxFlex="27">
+            <ng-container [ngSwitch]="data.withdrawWritOfExecResult">
+              <div *ngSwitchCase="'S'" class="dataLabel">
+                {{ 'LAWSUIT.WITHDRAW_EXECUTION.SELECT_LABEL.SUCCESS_EXECUTION' | translate }}
+              </div>
+              <div *ngSwitchCase="'U'" class="dataLabel">
+                {{ 'LAWSUIT.WITHDRAW_EXECUTION.SELECT_LABEL.FAILED_EXECUTION' | translate }}
+              </div>
+            </ng-container>
+            <div *ngIf="!data?.withdrawWritOfExecResult">-</div>
+          </div>
+        </div>
+
+        <div
+          class="mb-16 mr-16 ml-16"
+          fxLayout="row"
+          fxLayoutAlign="start center"
+          fxLayoutGap="16px"
+          *ngIf="data.withdrawWritOfExecResult === 'U'">
+          <div fxLayout="column" fxFlex="14"></div>
+          <div fxLayout="column" fxFlex="27">
+            <span class="thin-letter">{{ 'COMMON.LABEL_REMARKS' | translate }}</span>
+            <div class="dataLabel">{{ data.withdrawWritOfExecRemark || '-' }}</div>
+          </div>
+        </div>
+
+        <ng-container>
+          <div class="mb-16 mt-16 mr-16 ml-16" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+            <div fxLayout="column" fxFlex="14">
+              <h6>{{ 'COMMON.LABEL_REFERENCE_DOCUMENT' | translate }}</h6>
+            </div>
+            <div fxLayout="column" fxFlex>
+              <app-upload-multi-file-content
+                [list]="withdrawWritOfExecDocument"
+                [uploadMultiInfo]="uploadMultiInfo"
+                [column]="docColumns"
+                [readonly]="isViewMode"
+                (uploadFileEvent)="uploadDocument($event)"
+                [labelAcceptFile]="''"></app-upload-multi-file-content>
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-container>
+          <div class="mb-16 mr-16 ml-16" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+            <div fxLayout="column" fxFlex="14">
+              <h6>{{ 'COMMON.LABEL_REFUND_AMOUNT' | translate }}</h6>
+            </div>
+            <div fxLayout="column" fxFlex="27">
+              <span class="thin-letter">{{ 'COMMON.LABEL_TOTAL_REFUND' | translate }}</span>
+              <div class="dataLabel">{{ (data.returnAmount | numberDecimal) || '-' }}</div>
+            </div>
+          </div>
+        </ng-container>
+      </ng-container>
+
+      <!--EDIT MODE-->
+      <ng-template #editTemplate>
+        <ng-container [formGroup]="dataForm">
+          <div class="m-16" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+            <div fxLayout="column" fxFlex="14">
+              <h6>{{ 'TASK_CODE_BUTTON.SAVE_RESULT' | translate }}</h6>
+            </div>
+            <div fxLayout="column" fxFlex="27">
+              <spig-datepicker
+                [classInput]="'input-full-field'"
+                [label]="'COMMON.LABEL_WITHDRAW_EXECUTION_DATE'"
+                formControlName="withdrawWritOfExecDatetime"
+                [required]="true"
+                [max]="today">
+              </spig-datepicker>
+              <spig-error-msg
+                [control]="getControl('withdrawWritOfExecDatetime')"
+                [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'"></spig-error-msg>
+            </div>
+          </div>
+
+          <div class="mb-16 mr-16 ml-16" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+            <div fxLayout="column" fxFlex="14"></div>
+            <div fxLayout="column" fxFlex="27">
+              <mat-radio-group
+                (ngModelChange)="handleRadioChange($event)"
+                formControlName="withdrawWritOfExecResult"
+                [required]="true">
+                <div fxLayout="row" fxLayoutGap="42">
+                  <mat-radio-button type="radio" color="accent" class="radio-btn" value="S">{{
+                    'LAWSUIT.WITHDRAW_EXECUTION.SELECT_LABEL.SUCCESS_EXECUTION' | translate
+                  }}</mat-radio-button>
+                  <mat-radio-button type="radio" color="accent" class="radio-btn" value="U">{{
+                    'LAWSUIT.WITHDRAW_EXECUTION.SELECT_LABEL.FAILED_EXECUTION' | translate
+                  }}</mat-radio-button>
+                </div>
+              </mat-radio-group>
+              <spig-error-msg
+                [control]="getControl('withdrawWritOfExecResult')"
+                [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'"></spig-error-msg>
+            </div>
+          </div>
+
+          <div
+            class="mb-16 mr-16 ml-16"
+            fxLayout="row"
+            fxLayoutAlign="start center"
+            fxLayoutGap="16px"
+            *ngIf="this.dataForm.get('withdrawWritOfExecResult')?.value === 'U'">
+            <div fxLayout="column" fxFlex="14"></div>
+            <div fxLayout="column" fxFlex="50">
+              <mat-form-field class="input-full-field">
+                <mat-label>{{ 'COMMON.LABEL_REMARKS' | translate }}</mat-label>
+                <textarea
+                  class="input-full-field"
+                  type="text"
+                  matInput
+                  [placeholder]="'COMMON.LABEL_REMARKS' | translate"
+                  [required]="true"
+                  autocomplete="off"
+                  formControlName="withdrawWritOfExecRemark"
+                  maxlength="1000"></textarea>
+              </mat-form-field>
+              <spig-error-msg
+                [control]="getControl('withdrawWritOfExecRemark')"
+                [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'"></spig-error-msg>
+            </div>
+          </div>
+
+          <ng-container>
+            <div class="mb-16 mt-24 ml-16" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+              <div fxLayout="column" fxFlex="14">
+                <h6>{{ 'COMMON.LABEL_REFERENCE_DOCUMENT' | translate }}</h6>
+              </div>
+              <div fxLayout="column" fxFlex>
+                <app-upload-multi-file-content
+                  [list]="withdrawWritOfExecDocument"
+                  [uploadMultiInfo]="uploadMultiInfo"
+                  [column]="docColumns"
+                  [readonly]="isViewMode"
+                  (uploadFileEvent)="uploadDocument($event)"
+                  [labelAcceptFile]="''"></app-upload-multi-file-content>
+                <spig-error-msg
+                  [control]="getControl('uploadSessionId')"
+                  [customErrorMsg]="'UPLOAD_FILE.ERROR_FILE_UPLOAD_REQUIRED'"></spig-error-msg>
+              </div>
+            </div>
+          </ng-container>
+
+          <ng-container>
+            <div class="mb-16 mr-16 ml-16" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+              <div fxLayout="column" fxFlex="14">
+                <h6>{{ 'COMMON.LABEL_REFUND_AMOUNT' | translate }}</h6>
+              </div>
+              <div fxLayout="column" fxFlex="27">
+                <span class="thin-letter"></span>
+                <mat-form-field class="input-full-field">
+                  <mat-label>{{ 'COMMON.LABEL_TOTAL_REFUND' | translate }}</mat-label>
+                  <input
+                    matInput
+                    appNumberOnly="qualitative"
+                    type="text"
+                    formControlName="returnAmount"
+                    [required]="false" />
+                </mat-form-field>
+                <spig-error-msg
+                  [control]="getControl('returnAmount')"
+                  [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'"></spig-error-msg>
+              </div>
+              <div fxLayout="column" fxFlex="27">
+                <span class="thin-letter"></span>
+                <div></div>
+              </div>
+            </div>
+          </ng-container>
+        </ng-container>
+      </ng-template>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

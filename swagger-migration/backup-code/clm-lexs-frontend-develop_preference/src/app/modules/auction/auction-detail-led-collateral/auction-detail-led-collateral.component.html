@@ -1,0 +1,55 @@
+<div class="content-container">
+  <div class="inner-container-padding-24">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+      <div class="title-text">
+        <h5 class="mt-12 mb-12 mr-12">{{actionCode === ACTION_TYPE.R2E09_2_A ? 'รายละเอียดทรัพย์จากกรมบังคับคดี' : 'รายละเอียดทรัพย์ในประกาศ'}}</h5>
+      </div>
+      <div fxLayout="row">
+        <div class="description" (click)="isOpened = !isOpened">
+          <mat-icon
+            [svgIcon]="isOpened ? 'icon-Slide-Hide' : 'icon-Expand'"
+            class="icon icon-xmedium icon-hide-show fill-blue mr-5">
+          </mat-icon
+          >{{ isOpened ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate) }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <mat-accordion>
+    <mat-expansion-panel [expanded]="isOpened" hideToggle>
+      <!-- <mat-divider class="no-margin"></mat-divider> -->
+      <ng-container *ngIf="actionCode === ACTION_TYPE.R2E09_2_A; else elseTemplate">
+        <app-auction-detail-led-collateral-table
+          [actionCode]="actionCode"
+          [data]="data"
+          [collateralColumns]="collateralCheckColumns"></app-auction-detail-led-collateral-table>
+      </ng-container>
+      <ng-template #elseTemplate>
+        <mat-tab-group [(selectedIndex)]="tabIndex" mat-align-tabs="start" (selectedTabChange)="onTabChanged($event)">
+          <mat-tab label="0">
+            <ng-template mat-tab-label>ทรัพย์ที่จับคู่ได้</ng-template>
+            <ng-template matTabContent>
+              <app-auction-detail-led-collateral-table
+                [actionCode]="actionCode"
+                [data]="dataMatche"
+                [collateralColumns]="collateralMatchedColumns"
+                [buttonType]="'EDIT'"
+                [mode]="mode"></app-auction-detail-led-collateral-table>
+            </ng-template>
+          </mat-tab>
+          <mat-tab label="1">
+            <ng-template mat-tab-label>ทรัพย์ที่จับคู่ไม่ได้</ng-template>
+            <ng-template matTabContent>
+              <app-auction-detail-led-collateral-table
+                [actionCode]="actionCode"
+                [data]="dataUnMatche"
+                [collateralColumns]="collateralUnmatchedColumns"
+                [buttonType]="'MATCH'"
+                [mode]="mode"></app-auction-detail-led-collateral-table>
+            </ng-template>
+          </mat-tab>
+        </mat-tab-group>
+      </ng-template>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

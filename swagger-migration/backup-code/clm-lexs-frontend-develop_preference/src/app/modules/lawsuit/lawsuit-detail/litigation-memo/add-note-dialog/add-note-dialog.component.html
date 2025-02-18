@@ -1,0 +1,5 @@
+<mat-form-field class="full-width">
+  <mat-label>{{ 'LAWSUIT.MEMO.MEMO_DETAIL' | translate }}</mat-label>
+  <textarea class="tall" matInput required [formControl]="detailControl"></textarea>
+</mat-form-field>
+<spig-error-msg [control]="detailControl" [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'"> </spig-error-msg>

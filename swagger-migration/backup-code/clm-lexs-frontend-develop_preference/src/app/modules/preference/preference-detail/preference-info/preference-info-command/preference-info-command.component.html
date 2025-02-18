@@ -1,0 +1,913 @@
+
+<!-- card 1 -->
+<ng-container [formGroup]="preferenceForm">
+  <ng-container>
+
+    <div class="content-container">
+      <mat-card>
+        <app-message-banner *ngIf="currentScenario===ScenarioPreferenceEnum.SCENARIO1 || currentScenario===ScenarioPreferenceEnum.SCENARIO2||currentScenario===ScenarioPreferenceEnum.SCENARIO3"
+        type="black-info" [icon]="'icon-Error'"
+      message="กรุณาตรวจสอบข้อมูลการยื่นคำร้องขอรับชำระหนี้บุริมสิทธิจำนองก่อนกดปุ่ม &quot;นำเสนอ&quot; เพื่อดำเนินการยื่นคำร้องขอรับชำระหนี้บุริมสิทธิและส่งต้นฉบับโฉนดให้กรมบังคับคดี"
+      ></app-message-banner>
+      <br>
+        <!-- TODO: use this kind of condition with 'เหตุผลการพิจารณา'
+          *ngIf="
+          accountDocFollowup?.latestReviewInfo &&
+          accountDocFollowup?.latestReviewInfo?.reviewResult !== 'APPROVE' &&
+          accountDocFollowup.latestReviewInfo?.rejectReason
+        " -->
+        <div class="sub-container" fxLayout="row" fxLayoutAlign="start center">
+          <div fxLayout="row" fxLayoutAlign="start center" class="mr-24" fxFlex="15">
+            <mat-icon svgIcon="icon-Error" class="icon icon-medium fill-blue"></mat-icon>
+            <h6>เลขที่หนังสือสั่งการ</h6>
+          </div>
+          <div fxFlex="70">
+            <div class="content-form">
+                {{ preferenceDto.preferenceGroupNo || '-' }}
+            </div>
+          </div>
+        </div>
+        <br>
+        <div  *ngIf="currentScenario===ScenarioPreferenceEnum.SCENARIO3"
+          class="sub-container" fxLayout="row">
+          <h6 class="mr-24" fxFlex="15">
+            {{ 'เหตุผลการพิจารณา' | translate }}
+          </h6>
+          <div fxFlex="70">
+            <div class="content-form">
+              <!-- เหตุผลส่งกลับแก้ไข -->
+              <span class="thin-letter fill-black-70">{{
+                'AUCTION_DETAIL.ACCOUNT_DOCUMENT.REASON_FOR_REVISION' | translate
+              }}</span>
+              <div class="color-biz-black-100">
+                {{ preferenceDto.approverRejectReason || '-' }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <mat-card-title>
+          <h5 class="title bold">
+            {{ 'รายละเอียดหมายจากโจทก์นอก' | translate }}
+          </h5>
+        </mat-card-title>
+        <br>
+        <div class="sub-container" fxLayout="row">
+          <h6 class="mr-24" fxFlex="15">
+            {{ 'ประเภทหมาย' | translate }}
+          </h6>
+          <div fxFlex="70">
+            <div
+              fxLayout="row"
+              fxLayoutGap="16px"
+              class="mb-16">
+              <div fxFlex="49">
+                <ng-container *ngIf="!isModeView">
+                  <spig-dropdown [config]="writTypeConfig" [options]="dropdownOptions.executeType" formControlName="executeType"
+                                 [classInput]="'input-normal elevation-e1 border-black-40'"
+                                 (selectedOption)="onChangeExecuteType($event)">
+                  </spig-dropdown>
+                  <!-- *ngIf="getControl('executeType')?.hasError('required')" -->
+                  <spig-error-msg
+                    [control]="getControl('executeType')"
+                    [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+                  </spig-error-msg>
+                </ng-container>
+                <ng-container *ngIf="isModeView">
+                  <span class="thin-letter"> {{ 'ประเภทหมาย' | translate }}</span>
+                  <div>{{ getDropdownName('executeType', (preferenceDto.executeType || '-')) }}</div>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="getControl('executeType')?.getRawValue() === ExecuteTypeEnum.Other" class="sub-container" fxLayout="row">
+          <h6 class="mr-24" fxFlex="15">
+            {{ 'หมายเหตุ' | translate }}
+          </h6>
+          <div fxFlex="70">
+            <div
+              fxLayout="row"
+              fxLayoutGap="16px"
+              class="mb-16">
+              <div fxFlex="49">
+                <ng-container *ngIf="!isModeView">
+                  <mat-form-field class="input-full-field border-black-40 min-width-pct-50">
+                    <mat-label>{{ 'หมายเหตุ' | translate }}</mat-label>
+                    <input matInput [required]="true" formControlName="executeTypeRemark" />
+                  </mat-form-field>
+                  <spig-error-msg
+                    [control]="getControl('executeTypeRemark')"
+                    [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+                  </spig-error-msg>
+                </ng-container>
+                <ng-container *ngIf="isModeView">
+                  <span class="thin-letter"> {{ 'หมายเหตุ' | translate }}</span>
+                  <div>{{ preferenceDto.executeTypeRemark || '-' }}</div>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="sub-container" fxLayout="row" *ngIf="getControl('executeType')?.getRawValue() === ExecuteTypeEnum.DeedLed">
+          <h6 class="mr-24" fxFlex="15">
+            {{ 'รายละเอียดหมายส่ง\nโฉนดจากกรมบังคับคดี' | translate }}
+          </h6>
+          <div fxFlex="70">
+            <div fxLayout="row" fxLayoutGap="16px" class="mb-16">
+              <div fxFlex="49">
+                <ng-container *ngIf="!isModeView">
+                  <spig-datepicker
+                    class="date-picker-block"
+                    [classInput]="'input-s icon no-border'"
+                    [label]="'หมายลงวันที่'"
+                    [required]="true"
+                    formControlName="executeDate"></spig-datepicker>
+                  <spig-error-msg
+                    *ngIf="getControl('executeDate')?.hasError('executeDate')"
+                    [control]="getControl('executeDate')"
+                    [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+                  </spig-error-msg>
+                </ng-container>
+                <ng-container *ngIf="isModeView">
+                  <span class="thin-letter"> {{ 'หมายลงวันที่' | translate }}</span>
+                  <div>{{ (preferenceDto.executeDate | buddhistEra: 'DD/MM/yyyy') || '-' }}</div>
+                </ng-container>
+              </div>
+              <div fxFlex="49">
+                <ng-container *ngIf="!isModeView">
+                  <spig-datepicker
+                    class="date-picker-block"
+                    [classInput]="'input-s icon no-border'"
+                    [label]="'วันที่หน่วยงานดูแลลูกหนี้ได้รับหมาย'"
+                    [required]="true"
+                    formControlName="receivedDate"></spig-datepicker>
+                  <spig-error-msg
+                    *ngIf="getControl('receivedDate')?.hasError('required')"
+                    [control]="getControl('receivedDate')"
+                    [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+                  </spig-error-msg>
+                </ng-container>
+                <ng-container *ngIf="isModeView">
+                  <span class="thin-letter"> {{ 'วันที่หน่วยงานดูแลลูกหนี้ได้รับหมาย' | translate }}</span>
+                  <div>
+                    {{ (preferenceDto.receivedDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+            <div fxLayout="row" fxLayoutGap="16px" class="mb-16">
+              <div fxFlex="49">
+                <ng-container *ngIf="!isModeView">
+                  <mat-form-field class="input-full-field border-black-40 min-width-pct-50">
+                    <mat-label>{{ 'เลขที่หมายแจ้ง' | translate }}</mat-label>
+                    <input matInput appNumberOnly="integer" maxlength="20" [required]="true" formControlName="executeNo" />
+                  </mat-form-field>
+                  <spig-error-msg
+                    *ngIf="getControl('executeNo')?.hasError('required')"
+                    [control]="getControl('executeNo')"
+                    [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+                  </spig-error-msg>
+                </ng-container>
+                <ng-container *ngIf="isModeView">
+                  <span class="thin-letter"> {{ 'เลขที่หมายแจ้ง' | translate }}</span>
+                  <div>{{ preferenceDto.executeNo || '-' }}</div>
+                </ng-container>
+              </div>
+              <div fxFlex="49">
+                <ng-container *ngIf="!isModeView && dropdownOptions.led.length !== 0">
+                  <spig-dropdown [config]="executionOfficeConfig" [options]="dropdownOptions.led" formControlName="ledId"
+                                 [classInput]="'input-normal elevation-e1 border-black-40'">
+                  </spig-dropdown>
+                  <spig-error-msg
+                    [control]="getControl('ledId')"
+                    [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+                  </spig-error-msg>
+                </ng-container>
+                <ng-container *ngIf="isModeView && dropdownOptions.led.length !== 0">
+                  <span class="thin-letter"> {{ 'สำนักงานบังคับคดี' | translate }}</span>
+                  <div>{{ getDropdownName('led', (preferenceDto.ledId || '-')) }}</div>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <mat-card-title>
+          <h5 class="title bold">
+            {{ 'รายละเอียดคดีในหมาย' | translate }}
+          </h5>
+        </mat-card-title>
+        <br>
+        <div class="sub-container" fxLayout="row">
+          <h6 class="mr-24" fxFlex="15">
+            {{ 'คดีหมายเลขดำ\nโจทก์นอก' | translate }}
+          </h6>
+          <div fxFlex="70">
+            <div
+              fxLayout="row"
+              fxLayoutGap="16px"
+              class="mb-16">
+              <div fxFlex="49">
+                <span class="thin-letter"> {{ 'คดีหมายเลขดำโจทก์นอก' | translate }}</span>
+                <div  class="thin-letter">{{ '-' }}</div>
+                <!-- preferenceDto.blackCaseNo ||  -->
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="sub-container" fxLayout="row">
+          <h6 class="mr-24" fxFlex="15">
+            {{ 'คดีหมายเลขแดง\nโจทก์นอก' | translate }}
+          </h6>
+          <div fxFlex="70">
+            <div
+              fxLayout="row"
+              fxLayoutGap="16px"
+              class="mb-16">
+              <div fxFlex="33">
+                <ng-container *ngIf="!isModeView">
+                  <spig-dropdown [config]="categoryConfig" [options]="dropdownOptions.ciosCaseType" formControlName="elementRedCaseCiosCode"
+                                 [classInput]="'input-normal elevation-e1 border-black-40'">
+                  </spig-dropdown>
+                  <spig-error-msg
+                    [control]="getControl('elementRedCaseCiosCode')"
+                    [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+                  </spig-error-msg>
+                </ng-container>
+                <ng-container *ngIf="isModeView">
+                  <span class="thin-letter"> {{ 'หมวด' | translate }}</span>
+                  <div>{{ getDropdownName('ciosCaseType', (preferenceDto.elementRedCaseCiosCode || '-')) }}</div>
+                </ng-container>
+              </div>
+              <div fxFlex="33">
+                <ng-container *ngIf="!isModeView">
+                  <mat-form-field class="input-full-field border-black-40 min-width-pct-50">
+                    <mat-label>{{ 'เลขที่คดี' | translate }}</mat-label>
+                    <input matInput appNumberOnly="integer" [required]="true" formControlName="elementRedCaseRunning" />
+                  </mat-form-field>
+                  <spig-error-msg
+                    *ngIf="getControl('elementRedCaseRunning')?.hasError('required')"
+                    [control]="getControl('elementRedCaseRunning')"
+                    [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+                  </spig-error-msg>
+                </ng-container>
+                <ng-container *ngIf="isModeView">
+                  <span class="thin-letter"> {{ 'เลขที่คดี' | translate }}</span>
+                  <div>{{ preferenceDto.elementRedCaseRunning || '-' }}</div>
+                </ng-container>
+              </div>
+              <div fxFlex="33">
+                <ng-container *ngIf="!isModeView">
+                  <spig-dropdown [config]="yearConfig" [options]="dropdownOptions.year" formControlName="elementRedCaseYear"
+                    [classInput]="'input-normal elevation-e1 border-black-40'">
+                  </spig-dropdown>
+                  <spig-error-msg
+                    [control]="getControl('elementRedCaseYear')"
+                    [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+                  </spig-error-msg>
+                </ng-container>
+                <ng-container *ngIf="isModeView">
+                  <span class="thin-letter"> {{ 'ปี พ.ศ. (4 หลัก)' | translate }}</span>
+                  <div>{{ getDropdownName('year', (preferenceDto.elementRedCaseYear || '-')) }}</div>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="sub-container" fxLayout="row">
+          <h6 class="mr-24" fxFlex="15">
+            {{ 'ชื่อโจทก์และสำนักงาน\nบังคับคดี' | translate }}
+          </h6>
+          <div fxFlex="70">
+            <div
+              fxLayout="row"
+              fxLayoutGap="16px"
+              class="mb-16">
+              <div fxFlex="33">
+                <ng-container *ngIf="!isModeView">
+                  <mat-form-field class="input-full-field border-black-40 min-width-pct-50">
+                    <mat-label>{{ 'ชื่อโจทก์' | translate }}</mat-label>
+                    <input matInput [required]="true" maxlength="100" formControlName="plaintiffName" />
+                  </mat-form-field>
+                  <spig-error-msg
+                    *ngIf="getControl('plaintiffName')?.hasError('required')"
+                    [control]="getControl('plaintiffName')"
+                    [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+                  </spig-error-msg>
+                </ng-container>
+                <ng-container *ngIf="isModeView">
+                  <span class="thin-letter"> {{ 'ชื่อโจทก์' | translate }}</span>
+                  <div>{{ preferenceDto.plaintiffName || '-' }}</div>
+                </ng-container>
+              </div>
+              <div fxFlex="33">
+                <ng-container *ngIf="!isModeView">
+                  <mat-form-field class="input-full-field border-black-40 min-width-pct-50">
+                    <mat-label>{{ 'ชื่อจำเลย' | translate }}</mat-label>
+                    <input matInput [required]="true"  maxlength="100" formControlName="defendantName" />
+                  </mat-form-field>
+                  <spig-error-msg
+                    *ngIf="getControl('defendantName')?.hasError('required')"
+                    [control]="getControl('defendantName')"
+                    [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+                  </spig-error-msg>
+                </ng-container>
+                <ng-container *ngIf="isModeView">
+                  <span class="thin-letter"> {{ 'ชื่อจำเลย' | translate }}</span>
+                  <div>{{ preferenceDto.defendantName || '-' }}</div>
+                </ng-container>
+              </div>
+              <div fxFlex="33">
+                <ng-container *ngIf="!isModeView">
+                  <spig-dropdown [config]="courtConfig" [options]="dropdownOptions.court" formControlName="courtCode"
+                    [classInput]="'input-normal elevation-e1 border-black-40'">
+                  </spig-dropdown>
+                  <spig-error-msg
+                    [control]="getControl('courtCode')"
+                    [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+                  </spig-error-msg>
+                </ng-container>
+                <ng-container *ngIf="isModeView">
+                  <span class="thin-letter"> {{ 'ศาล' | translate }}</span>
+                  <div>{{ getDropdownName('court', (preferenceDto.courtCode || '-')) }}</div>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="sub-container" fxLayout="row">
+          <h6 class="mr-24" fxFlex="15">
+            {{ 'อัพโหลดเอกสาร' | translate }}
+          </h6>
+          <div fxFlex="70">
+            <div class="data-table-content">
+              <div class="table-scroll">
+                <app-upload-multi-file-content
+                  [uploadMultiInfo]="uploadMultiInfo"
+                  [list]="documentUpload"
+                  [column]="documentColumns"
+                  (uploadFileEvent)="uploadFileEvent($event)"
+                  [readonly]="isModeView"
+                  [useUploadBasicFunc]="true"
+                  [isPreference]="true"
+                  [labelAcceptFile]="isModeView ? '' : 'UPLOAD_FILE.LABEL_HINT_DOCUMENT_PDF_JPG_JPEG_2'"
+                >
+                </app-upload-multi-file-content>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+  </ng-container>
+  <!-- card expand ลูกหนี้ -->
+  <ng-container>
+    <ng-template #cifBtn>
+      <button
+        *ngIf="!isModeView && custTableDataSource.length <= 0"
+        type="button"
+        mat-flat-button
+        color="primary"
+        class="medium-button"
+        (click)="onSelectCustomer()"
+        [disabled]="disableButtonSearchDebtor"
+        cdkFocusInitial>
+        <mat-icon svgIcon="icon-Search" class="icon icon-md"></mat-icon>
+        {{ 'ค้นหาลูกหนี้' | translate }}
+      </button>
+      <button
+        *ngIf="!isModeView && custTableDataSource && custTableDataSource.length > 0"
+        id="btn-task-transfer-0"
+        type="button"
+        mat-flat-button
+        class="medium-button overflow-ellipsis"
+        (click)="onSelectCustomer()"
+        [disabled]="disableButtonSearchDebtor"
+        >
+      <mat-icon svgIcon="icon-Edit" class="icon icon-md"></mat-icon>
+      {{ "แก้ไข"}}
+    </button>
+    </ng-template>
+      <div class="content-container">
+        <div class="inner-container-padding-24">
+          <app-preference-header
+            [title]="'รายละเอียด CIF' | translate"
+            [isMain]="true"
+            [expanded]="isOpenedCustomer"
+            (expand)="isOpenedCustomer = !isOpenedCustomer"
+            [customBtnTemplate]="cifBtn">
+          </app-preference-header>
+        </div>
+        <mat-accordion>
+          <mat-expansion-panel [expanded]="isOpenedCustomer" hideToggle *ngIf="custTableDataSource && custTableDataSource.length > 0">
+            <mat-divider class="no-margin"></mat-divider>
+            <div class="pt-24">
+              <mat-accordion>
+                <ng-container>
+                  <ng-container *ngTemplateOutlet="customerTable"></ng-container>
+                </ng-container>
+              </mat-accordion>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>
+    <!-- </ng-template> -->
+  </ng-container>
+
+  <ng-template #accountBtn>
+    <button
+      *ngIf="!isModeView"
+      id="btn-doc-col-select-doc-1"
+      type="button"
+      mat-flat-button
+      color="primary"
+      class="medium-button"
+      (click)="onSelectAccounts()"
+      cdkFocusInitial>
+      <mat-icon svgIcon="icon-Search" class="icon icon-md"></mat-icon>
+      {{ 'เลือกบัญชี' | translate }}
+    </button>
+  </ng-template>
+  <!-- card expand บัญชี -->
+  <ng-container *ngIf="custTableDataSource.length > 0">
+    <div class="content-container">
+      <div class="inner-container-padding-24">
+        <!-- TODO: ต้องแยก title ตาม Figma -->
+        <app-preference-header
+          [title]="'รายละเอียดบัญชีและจำเลย ' + (accountTableDataSource.length > 0 ? ' จำนวนบัญชี: ' + accountTableDataSource.length : '')"
+          [isMain]="true"
+          [expanded]="isOpenedAccount"
+          (expand)="isOpenedAccount = !isOpenedAccount"
+          [customBtnTemplate]="accountBtn">
+        </app-preference-header>
+      </div>
+      <mat-accordion>
+        <mat-expansion-panel [expanded]="isOpenedAccount" hideToggle *ngIf="accountTableDataSource && accountTableDataSource.length > 0">
+          <mat-divider class="no-margin"></mat-divider>
+          <div class="pt-24">
+            <mat-accordion>
+              <ng-container>
+                <ng-container *ngTemplateOutlet="accountTable"></ng-container>
+              </ng-container>
+            </mat-accordion>
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </ng-container>
+
+  <!-- card expand หลักประกัน -->
+  <ng-container *ngIf="accountTableDataSource.length > 0">
+    <div class="content-container">
+      <div class="inner-container-padding-24">
+        <app-preference-header
+          [title]="'หลักประกันที่ยื่นบุริมสิทธิ' | translate"
+          [isMain]="true"
+          [expanded]="isOpenedCollateral"
+          (expand)="isOpenedCollateral = !isOpenedCollateral">
+        </app-preference-header>
+      </div>
+      <mat-accordion>
+        <mat-expansion-panel [expanded]="isOpenedCollateral" hideToggle>
+          <mat-divider class="no-margin"></mat-divider>
+          <ng-container>
+            <div class="pt-24">
+              <mat-accordion>
+                <app-message-banner
+                  [type]="'fail'"
+                  [icon]="'icon-Error'"
+                  [message]="'กรุณาตรวจสอบข้อมูลก่อนกดปุ่ม “นำเสนอ” เพื่อสั่งการยื่นคำร้องขอรับชำระหนี้บุริมสิทธิจำนองและส่งต้นฉบับโฉนดให้กรมบังคับคดี'">
+                </app-message-banner>
+                <br>
+                <!-- <div fxLayout="row" class="p-32 pb-24"> -->
+                <ng-container *ngIf="collateralTableDataSource.length > 0">
+                  <ng-container *ngTemplateOutlet="collateralTable"></ng-container>
+                </ng-container>
+                <!-- </div> -->
+              </mat-accordion>
+            </div>
+          </ng-container>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </ng-container>
+
+  <!-- card expand สั่งการ -->
+  <ng-container>
+    <div class="content-container">
+      <div class="inner-container-padding-24">
+        <app-preference-header
+          [title]="'สั่งการ' | translate"
+          [isMain]="true"
+          [expanded]="isOpened"
+          (expand)="isOpened = !isOpened">
+        </app-preference-header>
+      </div>
+      <mat-accordion>
+        <mat-expansion-panel [expanded]="isOpened" hideToggle>
+          <mat-divider class="no-margin"></mat-divider>
+          <ng-container>
+            <div class="pt-24">
+              <mat-accordion>
+                <app-message-banner
+                  [type]="'warn-normal'"
+                  [icon]="'icon-Error'"
+                  [message]="'หน่วยงานดูแลลูกหนี้จะต้องนำส่งต้นฉบ้บโฉนด สัญญาจำนอง และสรุปภาระหนี้ ให้ทนายทันทีหลังจากมีการกดปุ่ม “นำเสนอ”'">
+                </app-message-banner>
+                <br>
+                <div fxLayout="row" class="p-32 pb-24">
+                  <div fxFlex="25" class="text-align-right pt-8">
+                    <h6>{{ 'ประเภทสั่งการ' | translate }}</h6>
+                  </div>
+                  <div fxFlex="70" class="pt-8">
+                    <div fxFlex="50" fxLayout="column" fxLayoutGap="24">
+                      <ng-container *ngIf="!isModeView">
+                        <spig-dropdown [config]="orderTypeConfig" [options]="dropdownOptions.executeCaseTypeEnum" formControlName="executeCaseType"
+                                       [classInput]="'input-normal elevation-e1 border-black-40'"
+                                       (selectedOption)="changeExecuteCaseType($event)">
+                        </spig-dropdown>
+                        <spig-error-msg
+                          [control]="getControl('executeCaseType')"
+                          [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+                        </spig-error-msg>
+                      </ng-container>
+                      <ng-container *ngIf="isModeView">
+                        <div>{{ getDropdownName('executeCaseTypeEnum', (preferenceDto.executeCaseType || '-')) }}</div>
+                      </ng-container>
+                    </div>
+                  </div>
+                </div>
+                <div *ngIf="getControl('executeCaseType')?.getRawValue() === ExecuteCaseTypeEnum.NotPreferranceNotDebt ||
+                            getControl('executeCaseType')?.getRawValue() === ExecuteCaseTypeEnum.NotPreferranceHaveDebt" fxLayout="row" class="p-32 pb-24">
+                  <div fxFlex="25" class="text-align-right pt-8">
+                    <h6>{{ 'เหตุผลที่ไม่ยื่นขอรับชำระหนี้' | translate }}</h6>
+                  </div>
+                  <div fxFlex="70" class="pt-8">
+                    <div fxFlex="50" fxLayout="column" fxLayoutGap="24">
+                      <ng-container *ngIf="!isModeView">
+                        <spig-dropdown [config]="rejectReasonConfig" [options]="dropdownOptions.rejectReason" formControlName="rejectReason"
+                                       [classInput]="'input-normal elevation-e1 border-black-40'"
+                                       (selectedOption)="changeRejectReason($event)">
+                        </spig-dropdown>
+                        <spig-error-msg
+                          [control]="getControl('rejectReason')"
+                          [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+                        </spig-error-msg>
+                      </ng-container>
+                      <ng-container *ngIf="isModeView">
+                        <div>{{ getDropdownName('rejectReason', (preferenceDto.rejectReason || '')) || '-' }}</div>
+                      </ng-container>
+                    </div>
+                  </div>
+                </div>
+                <div *ngIf="getControl('rejectReason')?.getRawValue() === 'OTHER'" fxLayout="row" class="p-32 pb-24">
+                  <div fxFlex="25" class="text-align-right pt-8">
+                    <h6>{{ 'หมายเหตุ' | translate }}</h6>
+                  </div>
+                  <div fxFlex="70" class="pt-8">
+                    <div fxFlex="50" fxLayout="column" fxLayoutGap="24">
+                      <ng-container *ngIf="!isModeView">
+                        <mat-form-field class="input-full-field border-black-40 min-width-pct-50">
+                          <mat-label>{{ 'หมายเหตุ' | translate }}</mat-label>
+                          <input matInput [required]="true" formControlName="rejectReasonRemark" />
+                        </mat-form-field>
+                        <spig-error-msg
+                          [control]="getControl('rejectReasonRemark')"
+                          [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+                        </spig-error-msg>
+                      </ng-container>
+                      <ng-container *ngIf="isModeView">
+                        <div>{{ preferenceDto.rejectedReasonRemark || '-' }}</div>
+                      </ng-container>
+                    </div>
+                  </div>
+                </div>
+                <div fxLayout="row" class="p-32 pb-24">
+                  <div fxFlex="25" class="text-align-right pt-8">
+                    <h6>{{ 'วิธีการขาย' | translate }}</h6>
+                  </div>
+                  <div fxFlex="70" class="pt-8">
+                    <div fxFlex="50" fxLayout="column" fxLayoutGap="24">
+                      <ng-container *ngIf="!isModeView">
+                        <spig-dropdown *ngIf="showHideSell" [config]="saleMethodConfig" [options]="dropdownOptions.sell" formControlName="sell"
+                                       [classInput]="'input-normal elevation-e1 border-black-40'">
+                        </spig-dropdown>
+                        <spig-error-msg *ngIf="showHideSell"
+                          [control]="getControl('sell')"
+                          [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+                        </spig-error-msg>
+                        <spig-dropdown *ngIf="!showHideSell" [config]="cannotSelectedConfig" [options]="dropdownOptions.cannotSelected" formControlName="sell"
+                                       [classInput]="'input-normal elevation-e1 border-black-40'">
+                        </spig-dropdown>
+                      </ng-container>
+                      <ng-container *ngIf="isModeView">
+                        <div>{{ getDropdownName('sell', (preferenceDto.sell || '-')) }}</div>
+                      </ng-container>
+                    </div>
+                  </div>
+<!--                  <div *ngIf="!showHideSell" fxFlex="70" class="pt-8">-->
+<!--                    <div fxFlex="50" fxLayout="column" fxLayoutGap="24">-->
+<!--                      {{ '-' }}-->
+<!--                    </div>-->
+<!--                  </div>-->
+                </div>
+              </mat-accordion>
+            </div>
+          </ng-container>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </ng-container>
+
+
+</ng-container>
+
+<ng-template #customerTable>
+  <div class="table-container">
+    <table mat-table [dataSource]="custTableDataSource" class="mat-elevation-z8">
+      <!-- Running Number Column -->
+      <ng-container matColumnDef="no">
+        <th mat-header-cell *matHeaderCellDef>{{ 'ลำดับ' | translate }}</th>
+        <td mat-cell *matCellDef="let element; let i = index">
+          {{ i + 1 }}
+        </td>
+      </ng-container>
+
+      <!-- CIF Name Column -->
+      <ng-container matColumnDef="cifName">
+        <th mat-header-cell *matHeaderCellDef>{{ 'CIF No./\nชื่อลูกหนี้' | translate }}</th>
+        <td mat-cell *matCellDef="let element">
+          <div class="link"  (click)="navigateToCustomer(element.cifNo)">
+            {{element.cifNo||'-' }}
+          </div>
+          {{ element.fullName || '' }}
+        </td>
+      </ng-container>
+
+      <!-- DPD Column -->
+      <ng-container matColumnDef="dpd">
+        <th mat-header-cell *matHeaderCellDef>{{ 'DPD' | translate }}</th>
+        <td mat-cell *matCellDef="let element">{{ (element.dpd| number) || '-' }}</td>
+      </ng-container>
+
+      <!-- C-Final/Stage Column -->
+      <ng-container matColumnDef="cFinalStage">
+        <th mat-header-cell *matHeaderCellDef>{{ 'C-Final/Stage' | translate }}</th>
+        <td mat-cell *matCellDef="let element">
+          <div *ngIf="element.cfinalStage && element.cfinalStage !=='N/A'">{{ element.cfinalStage || '-' }}/{{ element.stageAccount || '-' }}</div>
+          <div *ngIf="!element.cfinalStage || element.cfinalStage ==='N/A'">{{element.cfinalStage}}</div>
+        </td>
+      </ng-container>
+
+      <!-- Response Unit Column -->
+      <ng-container matColumnDef="responseUnit">
+        <th mat-header-cell *matHeaderCellDef>{{ 'Response Unit/ผู้ดูแลลูกหนี้' | translate }}</th>
+        <td mat-cell *matCellDef="let element">
+          <div *ngIf="element.responseUnitCode">
+            {{ element.responseUnitCode || '' }} - {{ element.responseUnitName || '' }}
+          <br>/ {{ element.responseUserId || '' }} - {{ element.responseUserName || '' }}
+          </div>
+          <diV *ngIf="!element.responseUnitCode">
+            -/-
+          </diV>
+        </td>
+      </ng-container>
+
+      <!-- Response AMD Unit Column -->
+      <ng-container matColumnDef="responseAmdUnit">
+        <th mat-header-cell *matHeaderCellDef>{{ 'Response AMD Unit/ผู้ดูแลลูกหนี้' | translate }}</th>
+        <td mat-cell *matCellDef="let element">
+          <diV *ngIf="element.amdResponseUnitCode">
+            {{ element.amdResponseUnitCode || '' }} - {{ element.amdResponseUnitName || '' }}
+          <br>/ {{ element.amdResponseUserId || '' }} - {{ element.amdResponseUserName || '' }}
+          </diV>
+          <diV *ngIf="!element.amdResponseUnitCode">
+            -/-
+          </diV>
+        </td>
+      </ng-container>
+
+      <!-- Branch Column -->
+      <ng-container matColumnDef="branch">
+        <th mat-header-cell *matHeaderCellDef>{{ 'สาขา (Booking/Cost Center)' | translate }}</th>
+        <td mat-cell *matCellDef="let element">{{ element.branchCode || '-' }} - {{ element.branchName || '-' }}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="customerColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: customerColumns;"></tr>
+
+    </table>
+
+    <app-message-empty
+    *ngIf="custTableDataSource.length === 0"
+    [message]="'ไม่พบข้อมูล'"></app-message-empty>
+  </div>
+</ng-template>
+
+<ng-template #accountTable>
+  <div class="table-container">
+    <table mat-table [dataSource]="accountTableDataSource" class="mat-elevation-z8">
+
+      <!-- Running Number Column -->
+      <ng-container matColumnDef="no">
+        <th mat-header-cell *matHeaderCellDef>ลำดับ</th>
+        <td mat-cell *matCellDef="let element; let i = index">
+          {{ i + 1 }}
+        </td>
+      </ng-container>
+
+      <!-- Account Number Column -->
+      <ng-container matColumnDef="accountNumber">
+        <th mat-header-cell *matHeaderCellDef>เลขที่บัญชี</th>
+        <td mat-cell *matCellDef="let element">{{ element.accountNo || '-' }}</td>
+      </ng-container>
+
+      <!-- Bill Number Column -->
+      <ng-container matColumnDef="billNumber">
+        <th mat-header-cell *matHeaderCellDef>เลขที่ Bill</th>
+        <td mat-cell *matCellDef="let element">{{ element.billNo || '-' }}</td>
+      </ng-container>
+
+      <!-- DPD Column -->
+      <ng-container matColumnDef="dpd">
+        <th mat-header-cell *matHeaderCellDef>DPD</th>
+        <td mat-cell *matCellDef="let element">{{ (element.dpd| number) || '-' }}</td>
+      </ng-container>
+
+      <!-- C-Final/Stage Column -->
+      <ng-container matColumnDef="cFinalStage">
+        <th mat-header-cell *matHeaderCellDef>C-Final/Stage</th>
+        <td mat-cell *matCellDef="let element">
+          <div *ngIf="element.cfinalStage && element.cfinalStage !=='N/A'">{{ element.cfinalStage || '-' }}/{{ element.stageAccount || '-' }}</div>
+          <div *ngIf="!element.cfinalStage || element.cfinalStage ==='N/A'">{{element.cfinalStage}}</div>
+        </td>
+      </ng-container>
+
+      <!-- Debt Type Column -->
+      <ng-container matColumnDef="debtType">
+        <th mat-header-cell *matHeaderCellDef>ประเภทหนี้</th>
+        <td mat-cell *matCellDef="let element">{{ element.marketCode || '-' }} - {{ element.marketDescription || '-' }}</td>
+      </ng-container>
+
+      <!-- Law Number Column -->
+      <ng-container matColumnDef="lawNumber">
+        <th mat-header-cell *matHeaderCellDef>เลขที่กฎหมาย</th>
+        <td mat-cell *matCellDef="let element">{{ element.litigationId || '-' }}</td>
+      </ng-container>
+
+      <!-- Collateral Details Column -->
+      <ng-container matColumnDef="totalDebtBurden">
+        <th mat-header-cell *matHeaderCellDef>ภาระหนี้รวม</th>
+        <td mat-cell *matCellDef="let element">{{ element.totalAmount| numberDecimal }}</td>
+      </ng-container>
+
+      <!-- Litigation Status Column -->
+      <ng-container matColumnDef="litigationStatus">
+        <th mat-header-cell *matHeaderCellDef>สถานะดำเนินคดี</th>
+        <td mat-cell *matCellDef="let element">{{ element.litigationStatusName || '-' }}</td>
+      </ng-container>
+
+      <!-- Collateral Details Column -->
+      <ng-container matColumnDef="collateralDetails">
+        <th mat-header-cell *matHeaderCellDef>รายละเอียดหลักประกัน</th>
+        <td mat-cell *matCellDef="let element">
+          <button
+            id="btn-doc-col-select-doc-2"
+            type="button"
+            mat-flat-button
+            color="primary"
+            class="medium-button"
+            (click)="onLookupCollaterals(element.accountNo,element.billNo)"
+            cdkFocusInitial>
+            <mat-icon svgIcon="icon-Search-Doc" class="icon icon-md"></mat-icon>
+            {{ 'ดูหลักประกัน' | translate }}
+          </button>
+        </td>
+      </ng-container>
+
+      <!-- Header Row -->
+      <tr mat-header-row *matHeaderRowDef="accountColumns"></tr>
+
+      <!-- Data Rows -->
+      <tr mat-row *matRowDef="let row; columns: accountColumns;"></tr>
+
+    </table>
+
+    <!-- Empty State -->
+    <app-message-empty
+      *ngIf="accountTableDataSource.length === 0"
+      [message]="'COMMON.SEARCH_NOT_FOUND'">
+    </app-message-empty>
+  </div>
+</ng-template>
+
+<ng-template #collateralTable>
+  <div class="table-container">
+    <table mat-table [dataSource]="collateralTableDataSource" class="mat-elevation-z8">
+      <ng-container matColumnDef="select">
+        <th mat-header-cell *matHeaderCellDef>
+          <mat-checkbox
+            (change)="toggleAllCollateralRows()"
+            [checked]="isAllCollateralSelected()"
+            [indeterminate]="collateralSelection.hasValue() && !isAllCollateralSelected()">
+          </mat-checkbox>
+        </th>
+        <td mat-cell *matCellDef="let row; let i = index">
+          <mat-checkbox
+            (click)="$event.stopPropagation()"
+            (change)="toggleRow(row, i)"
+            [checked]="collateralSelection.isSelected(row)">
+          </mat-checkbox>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="no">
+        <th mat-header-cell *matHeaderCellDef>ลำดับ</th>
+        <td mat-cell *matCellDef="let element; let i = index">{{ i+1 }}</td>
+      </ng-container>
+      <!-- Collateral Number Column -->
+      <ng-container matColumnDef="collateralId">
+        <th mat-header-cell *matHeaderCellDef>เลขที่หลักประกัน</th>
+        <td mat-cell *matCellDef="let element">{{ element.collateralId || '-' }}</td>
+      </ng-container>
+
+      <!-- Main Type Column -->
+      <ng-container matColumnDef="collateralTypeDesc">
+        <th mat-header-cell *matHeaderCellDef>ประเภทหลักประกัน</th>
+        <td mat-cell *matCellDef="let element">{{ element.collateralTypeDesc || '-' }}</td>
+      </ng-container>
+
+      <!-- Subtype Column -->
+      <ng-container matColumnDef="collateralSubTypeDesc">
+        <th mat-header-cell *matHeaderCellDef>ประเภทหลักประกันย่อย</th>
+        <td mat-cell *matCellDef="let element">{{ element.collateralSubTypeDesc || '-' }}</td>
+      </ng-container>
+
+      <!-- Document Number Column -->
+      <ng-container matColumnDef="documentNo">
+        <th mat-header-cell *matHeaderCellDef>เลขที่เอกสารสิทธิ์</th>
+        <td mat-cell *matCellDef="let element">{{ element.documentNo || '-' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="deteil">
+        <th mat-header-cell *matHeaderCellDef>รายละเอียดทรัพย์</th>
+        <td mat-cell *matCellDef="let element">{{ element.description || '-' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="litigationNo1">
+        <th mat-header-cell *matHeaderCellDef>เจ้าของกรรมสิทธิ์</th>
+        <td mat-cell *matCellDef="let element">{{ element.ownerName || '-' }}</td>
+      </ng-container>
+
+      <!-- Asset Details Column -->
+      <ng-container matColumnDef="litigationNo">
+        <th mat-header-cell *matHeaderCellDef>เลขที่กฎหมาย</th>
+        <td mat-cell *matCellDef="let element">
+          <div *ngFor="let item of (element.litigationIds||'-').split(',')">
+            {{item}}<br>
+          </div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="amount">
+        <th mat-header-cell *matHeaderCellDef>ราคาประเมิน</th>
+        <td mat-cell *matCellDef="let element">{{ (element.totalAppraisalAmount | numberDecimal)||'-' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="statuscms">
+        <th mat-header-cell *matHeaderCellDef>สถานะหลักประกัน(CMS)</th>
+        <td mat-cell *matCellDef="let element">{{ element.collateralCmsStatus
+          ? ('COLLATERAL_CMS_STATUS.' + (element.collateralCmsStatus | uppercase) | translate)
+          : '-'}}</td>
+      </ng-container>
+
+      <!-- Collateral Status Column -->
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>สถานะหลักประกัน</th>
+        <td mat-cell *matCellDef="let element">
+          <div
+          [class]="element.collateralCaseLexStatus?'status-label size-xl status-normal text-left':''"
+          fxLayout="row"
+          fxLayoutAlign="space-between center">
+          {{ element.collateralCaseLexStatus
+          ? ('COLLATERAL_LEXS_STATUS.' + (element.collateralCaseLexStatus | uppercase) | translate)
+          : '-'}}
+
+        </div>
+        </td>
+      </ng-container>
+
+      <!-- Header Row -->
+      <tr mat-header-row *matHeaderRowDef="collateralColumns"></tr>
+
+      <!-- Data Rows -->
+      <tr mat-row *matRowDef="let row; columns: collateralColumns;"></tr>
+    </table>
+
+    <!-- Empty State -->
+    <app-message-empty
+      *ngIf="collateralTableDataSource.length === 0"
+      [message]="'COMMON.SEARCH_NOT_FOUND'">
+    </app-message-empty>
+  </div>
+</ng-template>

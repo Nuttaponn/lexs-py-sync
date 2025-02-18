@@ -1,0 +1,443 @@
+{
+  "externalPaymentTrackingId": 29,
+  "aucRef": 605,
+  "aucRound": 1,
+  "trackingRound": 1,
+  "bidDate": "2023-09-08",
+  "aucLedSeq": 2,
+  "aucBiddingId": 346,
+  "onSiteLawyerId": "K6065",
+  "status": "R2E09-05-01-12A_CREATE",
+  "ledName": "สำนักงานบังคับคดีจังหวัดภูเก็ต",
+  "collateralGroups": [
+    {
+      "externalPaymentTrackingDeedGroupId": 40,
+      "deedGroupId": 1081,
+      "collaterals": [
+        {
+          "collateralDocNo": "8876",
+          "collateralId": "293950"
+        }
+      ],
+      "saleTypeDesc": "การจำนองติดไป",
+      "buyerType": "EXTERNAL",
+      "buyerName": "Miink 10",
+      "soldPrice": "789000.00",
+      "aucBiddingDeedGroupId": 192,
+      "externalPaymentTrackingDocuments": [
+        {
+          "documentId": 0,
+          "documentTemplate": {
+            "documentTemplateId": "LEXSF142",
+            "documentName": "ใบเสร็จชำระวางเงิน"
+          }
+        },
+        {
+          "documentId": 0,
+          "documentTemplate": {
+            "documentTemplateId": "LEXSF143",
+            "documentName": "หนังสือโอนกรรมสิทธิ์"
+          }
+        },
+        {
+          "documentId": 0,
+          "documentTemplate": {
+            "documentTemplateId": "LEXSF144",
+            "documentName": "คำร้องขอวางเงินส่วนที่เหลือ"
+          }
+        }
+      ],
+      "fsubbidnum": "10"
+    },
+    {
+      "externalPaymentTrackingDeedGroupId": 41,
+      "deedGroupId": 1082,
+      "collaterals": [
+        {
+          "collateralDocNo": "8876",
+          "collateralId": "293939"
+        }
+      ],
+      "saleTypeDesc": "การจำนองติดไป",
+      "buyerType": "EXTERNAL",
+      "buyerName": "Miink 11",
+      "soldPrice": "987000.00",
+      "aucBiddingDeedGroupId": 193,
+      "externalPaymentTrackingDocuments": [
+        {
+          "documentId": 0,
+          "documentTemplate": {
+            "documentTemplateId": "LEXSF142",
+            "documentName": "ใบเสร็จชำระวางเงิน"
+          }
+        },
+        {
+          "documentId": 0,
+          "documentTemplate": {
+            "documentTemplateId": "LEXSF143",
+            "documentName": "หนังสือโอนกรรมสิทธิ์"
+          }
+        },
+        {
+          "documentId": 0,
+          "documentTemplate": {
+            "documentTemplateId": "LEXSF144",
+            "documentName": "คำร้องขอวางเงินส่วนที่เหลือ"
+          }
+        }
+      ],
+      "fsubbidnum": "11"
+    },
+    {
+      "externalPaymentTrackingDeedGroupId": 39,
+      "deedGroupId": 716,
+      "collaterals": [
+        {
+          "collateralDocNo": "6398",
+          "collateralId": "1197009"
+        }
+      ],
+      "saleTypeDesc": "ปลอดการจำนอง",
+      "buyerType": "EXTERNAL",
+      "buyerName": "Miink 01",
+      "soldPrice": "999000.00",
+      "aucBiddingDeedGroupId": 183,
+      "externalPaymentTrackingDocuments": [
+        {
+          "documentId": 0,
+          "documentTemplate": {
+            "documentTemplateId": "LEXSF142",
+            "documentName": "ใบเสร็จชำระวางเงิน"
+          }
+        },
+        {
+          "documentId": 0,
+          "documentTemplate": {
+            "documentTemplateId": "LEXSF143",
+            "documentName": "หนังสือโอนกรรมสิทธิ์"
+          }
+        },
+        {
+          "documentId": 0,
+          "documentTemplate": {
+            "documentTemplateId": "LEXSF144",
+            "documentName": "คำร้องขอวางเงินส่วนที่เหลือ"
+          }
+        }
+      ],
+      "fsubbidnum": "1"
+    },
+    {
+      "externalPaymentTrackingDeedGroupId": 36,
+      "deedGroupId": 713,
+      "collaterals": [
+        {
+          "collateralDocNo": "9069",
+          "collateralId": "424831"
+        }
+      ],
+      "saleTypeDesc": "ปลอดการจำนอง",
+      "buyerType": "EXTERNAL",
+      "buyerName": "Miink 04",
+      "soldPrice": "666000.00",
+      "aucBiddingDeedGroupId": 186,
+      "externalPaymentTrackingDocuments": [
+        {
+          "documentId": 0,
+          "documentTemplate": {
+            "documentTemplateId": "LEXSF142",
+            "documentName": "ใบเสร็จชำระวางเงิน"
+          }
+        },
+        {
+          "documentId": 0,
+          "documentTemplate": {
+            "documentTemplateId": "LEXSF143",
+            "documentName": "หนังสือโอนกรรมสิทธิ์"
+          }
+        },
+        {
+          "documentId": 0,
+          "documentTemplate": {
+            "documentTemplateId": "LEXSF144",
+            "documentName": "คำร้องขอวางเงินส่วนที่เหลือ"
+          }
+        }
+      ],
+      "fsubbidnum": "4"
+    },
+    {
+      "externalPaymentTrackingDeedGroupId": 37,
+      "deedGroupId": 714,
+      "collaterals": [
+        {
+          "collateralDocNo": "11989",
+          "collateralId": "424089"
+        }
+      ],
+      "saleTypeDesc": "การจำนองติดไป",
+      "buyerType": "EXTERNAL",
+      "buyerName": "Miink 03",
+      "soldPrice": "777000.00",
+      "aucBiddingDeedGroupId": 185,
+      "externalPaymentTrackingDocuments": [
+        {
+          "documentId": 0,
+          "documentTemplate": {
+            "documentTemplateId": "LEXSF142",
+            "documentName": "ใบเสร็จชำระวางเงิน"
+          }
+        },
+        {
+          "documentId": 0,
+          "documentTemplate": {
+            "documentTemplateId": "LEXSF143",
+            "documentName": "หนังสือโอนกรรมสิทธิ์"
+          }
+        },
+        {
+          "documentId": 0,
+          "documentTemplate": {
+            "documentTemplateId": "LEXSF144",
+            "documentName": "คำร้องขอวางเงินส่วนที่เหลือ"
+          }
+        }
+      ],
+      "fsubbidnum": "3"
+    },
+    {
+      "externalPaymentTrackingDeedGroupId": 32,
+      "deedGroupId": 709,
+      "collaterals": [
+        {
+          "collateralDocNo": "15358",
+          "collateralId": "293942"
+        }
+      ],
+      "saleTypeDesc": "การจำนองติดไป",
+      "buyerType": "EXTERNAL",
+      "buyerName": "Miink 08",
+      "soldPrice": "222000.00",
+      "aucBiddingDeedGroupId": 190,
+      "externalPaymentTrackingDocuments": [
+        {
+          "documentId": 0,
+          "documentTemplate": {
+            "documentTemplateId": "LEXSF142",
+            "documentName": "ใบเสร็จชำระวางเงิน"
+          }
+        },
+        {
+          "documentId": 0,
+          "documentTemplate": {
+            "documentTemplateId": "LEXSF143",
+            "documentName": "หนังสือโอนกรรมสิทธิ์"
+          }
+        },
+        {
+          "documentId": 0,
+          "documentTemplate": {
+            "documentTemplateId": "LEXSF144",
+            "documentName": "คำร้องขอวางเงินส่วนที่เหลือ"
+          }
+        }
+      ],
+      "fsubbidnum": "8"
+    },
+    {
+      "externalPaymentTrackingDeedGroupId": 33,
+      "deedGroupId": 710,
+      "collaterals": [
+        {
+          "collateralDocNo": "34135",
+          "collateralId": "293947"
+        }
+      ],
+      "saleTypeDesc": "ปลอดภาระผูกพัน",
+      "buyerType": "EXTERNAL",
+      "buyerName": "Miink 07",
+      "soldPrice": "333000.00",
+      "aucBiddingDeedGroupId": 189,
+      "externalPaymentTrackingDocuments": [
+        {
+          "documentId": 0,
+          "documentTemplate": {
+            "documentTemplateId": "LEXSF142",
+            "documentName": "ใบเสร็จชำระวางเงิน"
+          }
+        },
+        {
+          "documentId": 0,
+          "documentTemplate": {
+            "documentTemplateId": "LEXSF143",
+            "documentName": "หนังสือโอนกรรมสิทธิ์"
+          }
+        },
+        {
+          "documentId": 0,
+          "documentTemplate": {
+            "documentTemplateId": "LEXSF144",
+            "documentName": "คำร้องขอวางเงินส่วนที่เหลือ"
+          }
+        }
+      ],
+      "fsubbidnum": "7"
+    },
+    {
+      "externalPaymentTrackingDeedGroupId": 34,
+      "deedGroupId": 711,
+      "collaterals": [
+        {
+          "collateralDocNo": "34134",
+          "collateralId": "293946"
+        }
+      ],
+      "saleTypeDesc": "ปลอดภาระผูกพัน",
+      "buyerType": "EXTERNAL",
+      "buyerName": "Miink 06",
+      "soldPrice": "444000.00",
+      "aucBiddingDeedGroupId": 188,
+      "externalPaymentTrackingDocuments": [
+        {
+          "documentId": 0,
+          "documentTemplate": {
+            "documentTemplateId": "LEXSF142",
+            "documentName": "ใบเสร็จชำระวางเงิน"
+          }
+        },
+        {
+          "documentId": 0,
+          "documentTemplate": {
+            "documentTemplateId": "LEXSF143",
+            "documentName": "หนังสือโอนกรรมสิทธิ์"
+          }
+        },
+        {
+          "documentId": 0,
+          "documentTemplate": {
+            "documentTemplateId": "LEXSF144",
+            "documentName": "คำร้องขอวางเงินส่วนที่เหลือ"
+          }
+        }
+      ],
+      "fsubbidnum": "6"
+    },
+    {
+      "externalPaymentTrackingDeedGroupId": 35,
+      "deedGroupId": 712,
+      "collaterals": [
+        {
+          "collateralDocNo": "34133",
+          "collateralId": "424246"
+        }
+      ],
+      "saleTypeDesc": "ปลอดภาระผูกพัน",
+      "buyerType": "EXTERNAL",
+      "buyerName": "Miink 05",
+      "soldPrice": "555000.00",
+      "aucBiddingDeedGroupId": 187,
+      "externalPaymentTrackingDocuments": [
+        {
+          "documentId": 0,
+          "documentTemplate": {
+            "documentTemplateId": "LEXSF142",
+            "documentName": "ใบเสร็จชำระวางเงิน"
+          }
+        },
+        {
+          "documentId": 0,
+          "documentTemplate": {
+            "documentTemplateId": "LEXSF143",
+            "documentName": "หนังสือโอนกรรมสิทธิ์"
+          }
+        },
+        {
+          "documentId": 0,
+          "documentTemplate": {
+            "documentTemplateId": "LEXSF144",
+            "documentName": "คำร้องขอวางเงินส่วนที่เหลือ"
+          }
+        }
+      ],
+      "fsubbidnum": "5"
+    },
+    {
+      "externalPaymentTrackingDeedGroupId": 38,
+      "deedGroupId": 715,
+      "collaterals": [
+        {
+          "collateralDocNo": "8874",
+          "collateralId": "424801"
+        }
+      ],
+      "saleTypeDesc": "ปลอดการจำนอง",
+      "buyerType": "EXTERNAL",
+      "buyerName": "Miink 02",
+      "soldPrice": "888000.00",
+      "aucBiddingDeedGroupId": 184,
+      "externalPaymentTrackingDocuments": [
+        {
+          "documentId": 0,
+          "documentTemplate": {
+            "documentTemplateId": "LEXSF142",
+            "documentName": "ใบเสร็จชำระวางเงิน"
+          }
+        },
+        {
+          "documentId": 0,
+          "documentTemplate": {
+            "documentTemplateId": "LEXSF143",
+            "documentName": "หนังสือโอนกรรมสิทธิ์"
+          }
+        },
+        {
+          "documentId": 0,
+          "documentTemplate": {
+            "documentTemplateId": "LEXSF144",
+            "documentName": "คำร้องขอวางเงินส่วนที่เหลือ"
+          }
+        }
+      ],
+      "fsubbidnum": "2"
+    },
+    {
+      "externalPaymentTrackingDeedGroupId": 31,
+      "deedGroupId": 708,
+      "collaterals": [
+        {
+          "collateralDocNo": "8876",
+          "collateralId": "130323"
+        }
+      ],
+      "saleTypeDesc": "การจำนองติดไป",
+      "buyerType": "EXTERNAL",
+      "buyerName": "Miink 09",
+      "soldPrice": "111000.00",
+      "aucBiddingDeedGroupId": 191,
+      "externalPaymentTrackingDocuments": [
+        {
+          "documentId": 0,
+          "documentTemplate": {
+            "documentTemplateId": "LEXSF142",
+            "documentName": "ใบเสร็จชำระวางเงิน"
+          }
+        },
+        {
+          "documentId": 0,
+          "documentTemplate": {
+            "documentTemplateId": "LEXSF143",
+            "documentName": "หนังสือโอนกรรมสิทธิ์"
+          }
+        },
+        {
+          "documentId": 0,
+          "documentTemplate": {
+            "documentTemplateId": "LEXSF144",
+            "documentName": "คำร้องขอวางเงินส่วนที่เหลือ"
+          }
+        }
+      ],
+      "fsubbidnum": "9"
+    }
+  ]
+}

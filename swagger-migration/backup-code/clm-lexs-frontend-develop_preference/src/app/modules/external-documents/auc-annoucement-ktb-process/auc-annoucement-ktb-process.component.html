@@ -1,0 +1,165 @@
+<div class="search-filter-content">
+  <app-external-documents-search-controller
+    [template]="'AUC_ANNOUCEMENT_KTB_PROCESS'"
+    [lotOptions]="lotOptions"
+    [setOptions]="setOptions"
+    [orderNoOptions]="orderNoOptions"
+    [redCaseNoOptions]="redCaseNoOptions"
+    [legalExecutionOfficeOptions]="legalExecutionOfficeOptions"
+    [statusOptions]="statusOptions"
+    [defendantOptions]="defendantOptions"
+    (onApplyFilter)="onFilter($event)">
+  </app-external-documents-search-controller>
+  <div class="pt-8" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="12px">
+    <div fxFlex="80" fxLayoutGap="10px">
+      <button
+        mat-stroked-button
+        id="button-save-file"
+        class="xsmall-aw-button overflow-ellipsis"
+        (click)="onSaveFile()">
+        <mat-icon svgIcon="icon-Download" class="icon icon-sm btn-icon"></mat-icon>
+        {{ 'COMMON.BUTTON_SAVE_EXCEL_FILE' | translate }}
+      </button>
+    </div>
+    <div fxFlex>
+      <spig-dropdown
+        classInput="input-xsm long icon"
+        [config]="sortingConfig"
+        [options]="sortingOptions"
+        [formControl]="sortingControl"
+        (selectedOption)="sortSelected($event)"></spig-dropdown>
+    </div>
+  </div>
+</div>
+
+<div class="data-table-content">
+  <ng-container *ngTemplateOutlet="aucAnnoucementKTBProcessTable"></ng-container>
+  <ng-container *ngIf="!dataSource || allCurrentData.length === 0" [ngTemplateOutlet]="dataNotFound"> </ng-container>
+  <!-- Paginator -->
+  <app-paginator
+    *ngIf="allCurrentData.length > 0"
+    #paginator
+    [pageSize]="pageSize"
+    [length]="allCurrentData.length"
+    (page)="onPaging($event)"></app-paginator>
+</div>
+
+<ng-template #aucAnnoucementKTBProcessTable>
+  <div class="table-scroll section" table-scroll>
+    <table mat-table [dataSource]="dataSource.filteredData" [class.empty]="allCurrentData.length === 0">
+      <!-- no Column -->
+      <ng-container matColumnDef="no" sticky>
+        <th class="text-center" mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_NO' | translate }}</th>
+        <td class="text-center" mat-cell *matCellDef="let element; let i = index">
+          {{ pageSize * (pageIndex - 1) + i + 1 }}
+        </td>
+      </ng-container>
+      <!-- datePublishedOnWeb Column -->
+      <ng-container matColumnDef="datePublishedOnWeb" sticky>
+        <th mat-header-cell *matHeaderCellDef columnElevationLeft class="new-line">
+          {{ 'EXTERNAL_DOCUMENTS_SEARCH_CONTROL.DATE_SAVE_PUBLISHED' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" columnElevationLeft>
+          {{ (element.announceDate | date: 'dd/MM/yyyy') || '-' }}
+        </td>
+      </ng-container>
+      <!-- lot Column -->
+      <ng-container matColumnDef="lot">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'EXTERNAL_DOCUMENTS_SEARCH_CONTROL.LOT' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.aucLot || '-' }}
+        </td>
+      </ng-container>
+      <!-- set Column -->
+      <ng-container matColumnDef="set">
+        <th mat-header-cell *matHeaderCellDef>{{ 'EXTERNAL_DOCUMENTS_SEARCH_CONTROL.SET' | translate }}</th>
+        <td mat-cell *matCellDef="let element">{{ element.aucSet || '-' }}</td>
+      </ng-container>
+      <!-- orderNo Column -->
+      <ng-container matColumnDef="orderNo">
+        <th mat-header-cell *matHeaderCellDef>{{ 'EXTERNAL_DOCUMENTS_SEARCH_CONTROL.NO' | translate }}</th>
+        <td mat-cell *matCellDef="let element">{{ element.fbidnum || '-' }}</td>
+      </ng-container>
+      <!-- LEX2-42660 courtName Column -->
+      <ng-container matColumnDef="courtName">
+        <th mat-header-cell *matHeaderCellDef>{{ 'EXTERNAL_DOCUMENTS_SEARCH_CONTROL.COURT_NAME' | translate }}</th>
+        <td mat-cell *matCellDef="let element">{{ element.lawCourtName || '-' }}</td>
+      </ng-container>
+      <!-- LEX2-42660 caseType Column -->
+      <ng-container matColumnDef="caseType">
+        <th mat-header-cell *matHeaderCellDef>{{ 'EXTERNAL_DOCUMENTS_SEARCH_CONTROL.CASE_TYPE' | translate }}</th>
+        <td mat-cell *matCellDef="let element">{{ element.caseTypeName || '-' }}</td>
+      </ng-container>
+      <!-- redCaseNo Column -->
+      <ng-container matColumnDef="redCaseNo">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'EXTERNAL_DOCUMENTS_SEARCH_CONTROL.LABEL_RED_CASE_NO' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <span class="fill-red"> {{ element.redCaseNo || '-' }} </span>
+        </td>
+      </ng-container>
+      <!-- defendant Column -->
+      <ng-container matColumnDef="defendant">
+        <th mat-header-cell *matHeaderCellDef>{{ 'EXTERNAL_DOCUMENTS_SEARCH_CONTROL.DEFENDANT' | translate }}</th>
+        <td mat-cell *matCellDef="let element">{{ element.defendantName || '-' }}</td>
+      </ng-container>
+      <!-- legalExecutionOffice Column -->
+      <ng-container matColumnDef="legalExecutionOffice">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'EXTERNAL_DOCUMENTS_SEARCH_CONTROL.LEGAL_EXECUTION_OFFICE' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.ledOriginalName || '-' }}</td>
+      </ng-container>
+      <!-- status Column -->
+      <ng-container matColumnDef="status" stickyEnd>
+        <th mat-header-cell *matHeaderCellDef columnElevationRight>
+          {{ 'EXTERNAL_DOCUMENTS_SEARCH_CONTROL.STATUS' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" columnElevationRight>
+          <div class="status-label size-small status-pending text-left">
+            <!-- <span *ngIf="element.status === 'PENDING_CASE'"> รอตรวจสอบคดีความ </span>
+            <span *ngIf="element.status === 'PENDING_COLL'"> รอตรวจสอบข้อมูลทรัพย์ </span> -->
+            <span>{{ element.matchingStatusName }}</span>
+          </div>
+        </td>
+      </ng-container>
+      <!-- action Column -->
+      <ng-container matColumnDef="command" stickyEnd>
+        <th mat-header-cell *matHeaderCellDef class="text-center">
+          {{ 'COMMON.LABEL_COMMAND' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" class="text-center no-pad-left">
+          <!-- edit mode -->
+          <ng-container *ngIf="canEdit; else elseTemplate">
+            <button
+              type="button"
+              class="medium-fw-button"
+              mat-flat-button
+              color="primary"
+              (click)="actionClick(element)">
+              <mat-icon svgIcon="icon-btn-doc-check" class="icon icon-xmedium"></mat-icon>
+              <span *ngIf="element.matchingStatus === AUCTION_STATUS.PENDING_CASE">ตรวจสอบประกาศ</span>
+              <span *ngIf="element.matchingStatus === AUCTION_STATUS.PENDING_COLL">ตรวจสอบทรัพย์</span>
+            </button>
+          </ng-container>
+          <!-- view mode -->
+          <ng-template #elseTemplate>
+            <button type="button" class="medium-fw-button" mat-stroked-button (click)="actionClick(element)">
+              <mat-icon svgIcon="icon-view-detail" class="icon icon-xmedium"></mat-icon>
+              <span>{{ 'COMMON.BUTTON_VIEW_DETAIL' | translate }}</span>
+            </button>
+          </ng-template>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </div>
+</ng-template>
+
+<ng-template #dataNotFound>
+  <app-message-empty [message]="'EXTERNAL_DOCUMENTS.NOT_FOUND_AUC_ANNOUCEMENT_KTB_PROCESS'"></app-message-empty>
+</ng-template>

@@ -1,0 +1,105 @@
+/* Override mat-tab-group and mat-tab style */
+.mat-mdc-tab-header {
+  padding: 0 1em;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+
+  /* Styles for the label */
+  /* FIXED(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
+  .mat-mdc-tab-label-container {
+    flex-grow: 0;
+    min-width: auto;
+
+    .mat-mdc-tab {
+      background-color: transparent !important;
+      opacity: 1 !important;
+      padding: 0 !important;
+      margin: 0 16px !important;
+
+      &:first-child {
+        margin-left: 0 !important;
+      }
+
+      .mdc-tab__content .mdc-tab__text-label {
+        color: map-get($ktb-palette-biz-gray, 900);
+        font-family: KrungthaiFastBold;
+        font-size: 16px;
+      }
+    }
+
+    .mat-mdc-tab.mdc-tab--active {
+      opacity: 1 !important;
+
+      .mdc-tab__content .mdc-tab__text-label {
+        color: $krungthai-blue;
+        font-family: KrungthaiFastBold;
+        font-size: 16px;
+      }
+    }
+  }
+
+  /* Styles for the ink bar */
+  /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
+  .mat-tab-label-container .mat-ink-bar {
+    background-color: $krungthai-blue !important;
+    height: 3px;
+  }
+}
+
+.mat-mdc-tab-body-wrapper .mat-tab-body .mat-tab-body-content {
+  overflow: hidden !important;
+}
+
+.mat-mdc-tab-nav-bar {
+  &.tab-content-info {
+    margin: 25px;
+  }
+}
+
+/* FIXED(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
+.mat-mdc-tab-link-container {
+
+  /* FIXED(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
+  .mat-mdc-tab-list {
+    flex-grow: 0;
+
+    a,
+    span {
+      color: map-get($ktb-palette-biz-gray, 900);
+      font-family: KrungthaiFastBold !important;
+      font-size: 16px !important;
+    }
+
+    a {
+      opacity: 1 !important;
+      padding: 0 !important;
+      margin: 0 16px !important;
+      min-width: auto;
+
+      /* FIXED(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
+      &.mdc-tab--active {
+        color: $krungthai-blue !important;
+      }
+    }
+
+    .mat-ink-bar {
+      background-color: $krungthai-blue !important;
+      height: 3px;
+    }
+  }
+}
+
+.mat-mdc-tab:hover .mdc-tab__ripple::before {
+  opacity: 0px !important;
+  background-color: unset !important;
+}
+
+.mat-mdc-tab-link:hover {
+  .mdc-tab__ripple::before {
+    opacity: 0px !important;
+    background-color: unset !important;
+  }
+
+  .mdc-tab__text-label {
+    color: inherit !important;
+  }
+}

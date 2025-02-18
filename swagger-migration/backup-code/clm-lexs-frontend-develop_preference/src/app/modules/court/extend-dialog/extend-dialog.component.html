@@ -1,0 +1,87 @@
+<div class="wrap-title" mat-dialog-title fxLayout-="row" fxLayoutAlign="space-between center">
+  <div fxLayout-="row" fxLayoutAlign="start center" fxLayoutGap="14px">
+    <mat-icon svgIcon="icon-Edit" class="icon icon-md"></mat-icon>
+    <strong id="dialog-title-text" class="dialog-title-margin dialog-title">
+      {{ 'COURT.EXTEND_APPEAL' | translate }}
+    </strong>
+  </div>
+</div>
+<div class="dialog-content" [formGroup]="form">
+  <div class="table-content pb-20 pt-20">
+    <div class="table-scroll">
+      <table mat-table [dataSource]="dataSource">
+        <ng-container matColumnDef="no">
+          <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_NO' | translate }}</th>
+          <td mat-cell *matCellDef="let element; let i = index">
+            {{ i + 1 }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="createdDate">
+          <th mat-header-cell *matHeaderCellDef>{{ 'COURT.EXTEND_DATE' | translate }}</th>
+          <td mat-cell *matCellDef="let element">
+            <span>{{ element?.extendDate | buddhistEra: 'DD/MM/yyyy' || '-' }}</span>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="imageName">
+          <th mat-header-cell *matHeaderCellDef>{{ 'COURT.DOC_COPY_NAME' | translate }}</th>
+          <td mat-cell *matCellDef="let element">
+            <div [class.link]="element?.attachment?.imageId" (click)="onViewDocument(element)">
+              {{ element?.attachment?.documentTemplate?.documentName || '-' }}
+            </div>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="docColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: docColumns"></tr>
+      </table>
+    </div>
+    <ng-container *ngIf="dataSource.data?.length === 0" [ngTemplateOutlet]="dataNotFound"> </ng-container>
+  </div>
+  <div class="content p-20" fxLayout fxLayoutGap="20">
+    <h5>
+      {{ 'COURT.MEMO_EXTENDS_APPEAL_PERIOD' | translate }}
+    </h5>
+  </div>
+
+  <div class="pb-20 content pt-20 bg-gray p-20" fxLayout fxLayoutGap="10">
+    <div fxFlex="45" fxLayout="column" fxLayoutAlign="top">
+      <spig-datepicker [label]="'COURT.EXTEND_DATE'" formControlName="date" [required]="true" [min]="minDate">
+      </spig-datepicker>
+      <spig-error-msg [control]="getControl('date')"> </spig-error-msg>
+    </div>
+    <div fxFlex="50" fxLayout="column" fxLayoutAlign="center" *ngIf="!uploaded.imageName">
+      <input
+        type="file"
+        #fileUpload
+        name="fileUpload"
+        onclick="this.value=null;"
+        formControlName="file"
+        accept="application/pdf,image/jpg,image/jpeg"
+        class="display-none" />
+      <button
+        id="btn-doc-selection-select-document"
+        mat-flat-button
+        (click)="selectDocument()"
+        color="primary"
+        class="long-aw-button">
+        <mat-icon svgIcon="icon-Arrow-Upload" class="icon-xmedium"> </mat-icon>
+        {{ 'COURT.UPLOAD_REQUEST_EXTENSION_APPEAL_PERIOD' | translate }}
+      </button>
+      <spig-error-msg [control]="getControl('file')"> </spig-error-msg>
+    </div>
+    <div fxFlex="50" fxLayoutAlign="space-between center" *ngIf="uploaded.imageName">
+      <span
+        class="link pr-20"
+        (click)="onViewDocument({ attachment: { imageId: uploaded.imageId, imageSource: uploaded.imageSource } })"
+        >{{ uploaded.imageName || '-' }}</span
+      >
+      <mat-icon svgIcon="icon-Bin" (click)="remove()" class="icon-xmedium fill-red"></mat-icon>
+      <input type="file" #fileUpload name="fileUpload" accept="application/pdf,image/jpg,image/jpeg" class="hidden" />
+      <mat-icon svgIcon="icon-Arrow-Upload" (click)="selectDocument()" class="icon-xmedium"></mat-icon>
+    </div>
+  </div>
+  <ng-template #dataNotFound>
+    <app-message-empty [message]="'DOC_PREP.NOT_FOUND_DOC'"></app-message-empty>
+  </ng-template>
+</div>

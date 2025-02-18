@@ -1,0 +1,77 @@
+@import '/src/styles/colors';
+
+.chart-container {
+  position: relative;
+  width: calc(100% - 30px);
+  padding-top: 36px;
+  padding-bottom: 32px;
+
+  &.tall {
+    padding-top: 72px;
+  }
+}
+
+.chart-bar {
+  position: relative;
+  height: 60px;
+  cursor: pointer;
+  min-width: 9px;
+
+  .chart-arrow-before {
+    display: block;
+    width: 1px;
+    height: 1px;
+    border-top: 41px solid $black;
+    border-left: 41px solid $black;
+    transform: rotate(135deg);
+    position: absolute;
+    right: -21px;
+    top: 9px;
+  }
+
+  &:not(:last-child) {
+    .chart-arrow-after {
+      display: block;
+      width: 1px;
+      height: 1px;
+      border-top: 41px solid $white;
+      border-left: 41px solid $white;
+      transform: rotate(135deg);
+      position: absolute;
+      left: -21px;
+      top: 9px;
+    }
+  }
+
+  .label-container {
+    height: 36px;
+    border-left: 4px solid $black;
+    border-right: none;
+    position: absolute;
+    left: 0;
+    top: -36px;
+    white-space: nowrap;
+    padding: 0 8px;
+
+    &.tall {
+      height: 72px;
+      top: -72px;
+    }
+  }
+
+  &:first-child,
+  &.end-label {
+    .label-container {
+      border-left: none;
+      border-right: 4px solid $black;
+      left: initial;
+      right: 0;
+    }
+  }
+
+  .total-label {
+    position: absolute;
+    right: 0;
+    bottom: -32px;
+  }
+}

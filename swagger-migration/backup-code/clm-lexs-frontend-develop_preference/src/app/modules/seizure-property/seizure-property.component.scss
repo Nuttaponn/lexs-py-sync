@@ -1,0 +1,41 @@
+.mat-column-legalDepartment {
+  min-width: 100px;
+  white-space: pre-line;
+}
+
+.mat-column-legalNumber,
+.mat-column-documentNo,
+.mat-column-totalAppraisalValue,
+.mat-column-action {
+  min-width: 115px;
+}
+
+.mat-column-paymentMethod,
+.mat-column-collateralCmsStatus,
+.mat-column-collateralCaseLexsStatus {
+  min-width: 130px;
+}
+
+.mat-column-legalType,
+.mat-column-legalSubType,
+.mat-column-owner {
+  min-width: 150px;
+}
+
+.mat-column-propertieDesc {
+  min-width: 352px;
+}
+
+::ng-deep app-seizure-property app-case-details {
+  .no-margin-left {
+    margin-left: 0px !important;
+  }
+}
+
+.min-width-85 {
+  min-width: 85px;
+}
+
+.min-width-100 {
+  min-width: 100px;
+}

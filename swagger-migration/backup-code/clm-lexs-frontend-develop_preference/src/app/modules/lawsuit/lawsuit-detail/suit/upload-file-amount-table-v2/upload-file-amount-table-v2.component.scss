@@ -1,0 +1,25 @@
+.display-none {
+  display: none;
+}
+.upload-table {
+  .text-align-right {
+    text-align: right;
+  }
+  .full-width {
+    width: 100% !important;
+  }
+  .secondary-button {
+    width: auto;
+    min-width: fit-content;
+    padding: 0 4px;
+    box-shadow: none;
+  }
+  mat-form-field {
+    min-width: 200px;
+    text-align: right;
+  }
+  .receipt-name {
+    display: flex;
+    align-items: center;
+  }
+}

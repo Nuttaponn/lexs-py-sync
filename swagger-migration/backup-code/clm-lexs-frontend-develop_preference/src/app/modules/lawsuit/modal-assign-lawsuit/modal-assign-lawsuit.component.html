@@ -1,0 +1,112 @@
+<div class="modal-assign-lawsuilt">
+  <app-message-banner [message]="messageBanner" [type]="'info'" [icon]="'icon-Error'"> </app-message-banner>
+  <div class="mt-20">
+    <mat-radio-group [(ngModel)]="level" class="flex-gap-30">
+      <mat-radio-button *ngFor="let list of levelList" [value]="list.value">{{ list.name }}</mat-radio-button>
+    </mat-radio-group>
+  </div>
+  <div fxlayout="row" class="search-section" [formGroup]="searchGroup">
+    <div fxFlex="60">
+      <mat-form-field class="no-label input-sm-icon input-full-field">
+        <input
+          type="text"
+          matInput
+          placeholder="{{ 'LAWSUIT.SEARCH_USER_ID_FROM_LDAP' | translate }}"
+          autocomplete="off"
+          (keyup)="onKeyup($event)"
+          formControlName="searchInput" />
+        <mat-icon
+          matSuffix
+          class="icon icon-small"
+          [ngClass]="{ 'fill-red': false }"
+          svgIcon="icon-Search"
+          (click)="onSearch()"></mat-icon>
+      </mat-form-field>
+      <spig-error-msg
+        [control]="searchGroup.get('searchInput')"
+        [customErrorMsg]="'SEARCH_CONTROL.ERROR_SEARCH_CONDITION'">
+      </spig-error-msg>
+    </div>
+    <div fxFlex>
+      <spig-dropdown
+        classInput="input-xsm icon"
+        formControlName="role"
+        [config]="roleConfig"
+        (selectedOption)="onSearch()"
+        [options]="roleOptions">
+      </spig-dropdown>
+    </div>
+  </div>
+  <ng-container *ngIf="dataSourceFillter.length > 0; else searchEmpty">
+    <div class="data-table table-fixed">
+      <table mat-table [dataSource]="dataSourceFillter" class="mat-elevation-z0">
+        <!-- no Column -->
+        <ng-container matColumnDef="no">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let element">
+            <mat-radio-group [(ngModel)]="selelectedNo">
+              <mat-radio-button [value]="element?.userId"> </mat-radio-button>
+            </mat-radio-group>
+          </td>
+        </ng-container>
+
+        <!-- ldap_id Column -->
+        <ng-container matColumnDef="userId">
+          <th mat-header-cell *matHeaderCellDef>{{ 'USER.HEADER_COLUMN_USER_ID' | translate }}</th>
+          <td mat-cell *matCellDef="let element">{{ element.userId }}</td>
+        </ng-container>
+
+        <!-- f_name Column -->
+        <ng-container matColumnDef="fullName">
+          <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_FULL_NAME' | translate }}</th>
+          <td mat-cell *matCellDef="let element">{{ element.fullName }}</td>
+        </ng-container>
+
+        <!-- lexs_role Column -->
+        <ng-container matColumnDef="roleCode">
+          <th mat-header-cell *matHeaderCellDef>{{ 'USER.HEADER_COLUMN_LEXS_ROLE' | translate }}</th>
+          <td mat-cell *matCellDef="let element">{{ element.roleCode }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+  </ng-container>
+  <ng-container>
+    <div class="pt-20" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="12px">
+      <div class="text-left error-msg" fxFlex="50">
+        <ng-container *ngIf="isSubmited && !selelectedNo">
+          {{ 'LAWSUIT.DIALOG_ALERT_TABLE_SELECTED' | translate }}
+        </ng-container>
+      </div>
+      <div class="text-right" fxFlex="50">{{ 'PAGINATION.RESULT' | translate }}: {{ dataSourceFillter.length }}</div>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #searchEmpty>
+  <div class="data-table table-fixed">
+    <table mat-table [dataSource]="dataSourceFillter" class="mat-elevation-z0">
+      <!-- no Column -->
+      <ng-container matColumnDef="no">
+        <th mat-header-cell *matHeaderCellDef></th>
+      </ng-container>
+      <!-- ldap_id Column -->
+      <ng-container matColumnDef="userId">
+        <th mat-header-cell *matHeaderCellDef>{{ 'USER.HEADER_COLUMN_USER_ID' | translate }}</th>
+      </ng-container>
+      <!-- f_name Column -->
+      <ng-container matColumnDef="fullName">
+        <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_FULL_NAME' | translate }}</th>
+      </ng-container>
+      <!-- lexs_role Column -->
+      <ng-container matColumnDef="roleCode">
+        <th mat-header-cell *matHeaderCellDef>{{ 'USER.HEADER_COLUMN_LEXS_ROLE' | translate }}</th>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+    <app-message-empty [message]="'COMMON.SEARCH_EMPTY'"></app-message-empty>
+  </div>
+</ng-template>

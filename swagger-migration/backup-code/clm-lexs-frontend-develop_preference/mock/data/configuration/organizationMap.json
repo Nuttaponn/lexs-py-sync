@@ -1,0 +1,520 @@
+[
+  {
+    "id": 105,
+    "roleCode": "AMD_PREVENTION",
+    "organizationCode": "108337",
+    "organizationName": "สายงานปรับโครงสร้างหนี้และบริหารทรัพย์สิน",
+    "groupCode": "108286",
+    "groupName": "กลุ่มปรับโครงสร้างหนี้ 1",
+    "factionCode": "108783",
+    "factionName": "ฝ่ายปรับโครงสร้างหนี้ 1",
+    "authorityCode": "108337108286108783",
+    "authorityName": "เจ้าหน้าที่ฝ่ายปรับโครงสร้างหนี้ 1"
+  },
+  {
+    "id": 106,
+    "roleCode": "AMD_PREVENTION",
+    "organizationCode": "108337",
+    "organizationName": "สายงานปรับโครงสร้างหนี้และบริหารทรัพย์สิน",
+    "groupCode": "108286",
+    "groupName": "กลุ่มปรับโครงสร้างหนี้ 1",
+    "factionCode": "108784",
+    "factionName": "ฝ่ายปรับโครงสร้างหนี้ 2",
+    "authorityCode": "108337108286108784",
+    "authorityName": "เจ้าหน้าที่ฝ่ายปรับโครงสร้างหนี้ 2"
+  },
+  {
+    "id": 107,
+    "roleCode": "AMD_PREVENTION",
+    "organizationCode": "108337",
+    "organizationName": "สายงานปรับโครงสร้างหนี้และบริหารทรัพย์สิน",
+    "groupCode": "108286",
+    "groupName": "กลุ่มปรับโครงสร้างหนี้ 1",
+    "factionCode": "108785",
+    "factionName": "ฝ่ายปรับโครงสร้างหนี้ 3",
+    "authorityCode": "108337108286108785",
+    "authorityName": "เจ้าหน้าที่ฝ่ายปรับโครงสร้างหนี้ 3"
+  },
+  {
+    "id": 108,
+    "roleCode": "AMD_PREVENTION",
+    "organizationCode": "108337",
+    "organizationName": "สายงานปรับโครงสร้างหนี้และบริหารทรัพย์สิน",
+    "groupCode": "108286",
+    "groupName": "กลุ่มปรับโครงสร้างหนี้ 1",
+    "factionCode": "108339",
+    "factionName": "ฝ่ายปรับโครงสร้างหนี้ 4",
+    "authorityCode": "108337108286108339",
+    "authorityName": "เจ้าหน้าที่ฝ่ายปรับโครงสร้างหนี้ 4"
+  },
+  {
+    "id": 109,
+    "roleCode": "AMD_PREVENTION",
+    "organizationCode": "108337",
+    "organizationName": "สายงานปรับโครงสร้างหนี้และบริหารทรัพย์สิน",
+    "groupCode": "108338",
+    "groupName": "กลุ่มปรับโครงสร้างหนี้ 2",
+    "factionCode": "108340",
+    "factionName": "ฝ่ายปรับโครงสร้างหนี้ 5",
+    "authorityCode": "108337108338108340",
+    "authorityName": "เจ้าหน้าที่ฝ่ายปรับโครงสร้างหนี้ 5"
+  },
+  {
+    "id": 110,
+    "roleCode": "AMD_PREVENTION",
+    "organizationCode": "108337",
+    "organizationName": "สายงานปรับโครงสร้างหนี้และบริหารทรัพย์สิน",
+    "groupCode": "108338",
+    "groupName": "กลุ่มปรับโครงสร้างหนี้ 2",
+    "factionCode": "108341",
+    "factionName": "ฝ่ายปรับโครงสร้างหนี้ 6",
+    "authorityCode": "108337108338108341",
+    "authorityName": "เจ้าหน้าที่ฝ่ายปรับโครงสร้างหนี้ 6"
+  },
+  {
+    "id": 111,
+    "roleCode": "AMD_PREVENTION",
+    "organizationCode": "108337",
+    "organizationName": "สายงานปรับโครงสร้างหนี้และบริหารทรัพย์สิน",
+    "groupCode": "108338",
+    "groupName": "กลุ่มปรับโครงสร้างหนี้ 2",
+    "factionCode": "108346",
+    "factionName": "ฝ่ายปรับโครงสร้างหนี้ 7",
+    "authorityCode": "108337108338108346",
+    "authorityName": "เจ้าหน้าที่ฝ่ายปรับโครงสร้างหนี้ 7"
+  },
+  {
+    "id": 112,
+    "roleCode": "AMD_PREVENTION",
+    "organizationCode": "108337",
+    "organizationName": "สายงานปรับโครงสร้างหนี้และบริหารทรัพย์สิน",
+    "groupCode": "108338",
+    "groupName": "กลุ่มปรับโครงสร้างหนี้ 2",
+    "factionCode": "108347",
+    "factionName": "ฝ่ายปรับโครงสร้างหนี้ 8",
+    "authorityCode": "108337108338108347",
+    "authorityName": "เจ้าหน้าที่ฝ่ายปรับโครงสร้างหนี้ 8"
+  },
+  {
+    "id": 113,
+    "roleCode": "AMD_PREVENTION",
+    "organizationCode": "108337",
+    "organizationName": "สายงานปรับโครงสร้างหนี้และบริหารทรัพย์สิน",
+    "groupCode": "108316",
+    "groupName": "กลุ่มบริหารทรัพย์สินพร้อมขาย",
+    "factionCode": "108781",
+    "factionName": "ฝ่ายบริหารทรัพย์สินพร้อมขาย 1",
+    "authorityCode": "108337108316108781",
+    "authorityName": "เจ้าหน้าที่ฝ่ายบริหารทรัพย์สินพร้อมขาย 1"
+  },
+  {
+    "id": 114,
+    "roleCode": "AMD_PREVENTION",
+    "organizationCode": "108337",
+    "organizationName": "สายงานปรับโครงสร้างหนี้และบริหารทรัพย์สิน",
+    "groupCode": "108316",
+    "groupName": "กลุ่มบริหารทรัพย์สินพร้อมขาย",
+    "factionCode": "108787",
+    "factionName": "ฝ่ายบริหารทรัพย์สินพร้อมขาย 2",
+    "authorityCode": "108337108316108787",
+    "authorityName": "เจ้าหน้าที่ฝ่ายบริหารทรัพย์สินพร้อมขาย 2"
+  },
+  {
+    "id": 115,
+    "roleCode": "AMD_RESTRUCTURE",
+    "organizationCode": "108337",
+    "organizationName": "สายงานปรับโครงสร้างหนี้และบริหารทรัพย์สิน",
+    "groupCode": "108286",
+    "groupName": "กลุ่มปรับโครงสร้างหนี้ 1",
+    "factionCode": "108783",
+    "factionName": "ฝ่ายปรับโครงสร้างหนี้ 1",
+    "authorityCode": "108337108286108783",
+    "authorityName": "เจ้าหน้าที่ฝ่ายปรับโครงสร้างหนี้ 1"
+  },
+  {
+    "id": 116,
+    "roleCode": "AMD_RESTRUCTURE",
+    "organizationCode": "108337",
+    "organizationName": "สายงานปรับโครงสร้างหนี้และบริหารทรัพย์สิน",
+    "groupCode": "108286",
+    "groupName": "กลุ่มปรับโครงสร้างหนี้ 1",
+    "factionCode": "108784",
+    "factionName": "ฝ่ายปรับโครงสร้างหนี้ 2",
+    "authorityCode": "108337108286108784",
+    "authorityName": "เจ้าหน้าที่ฝ่ายปรับโครงสร้างหนี้ 2"
+  },
+  {
+    "id": 117,
+    "roleCode": "AMD_RESTRUCTURE",
+    "organizationCode": "108337",
+    "organizationName": "สายงานปรับโครงสร้างหนี้และบริหารทรัพย์สิน",
+    "groupCode": "108286",
+    "groupName": "กลุ่มปรับโครงสร้างหนี้ 1",
+    "factionCode": "108785",
+    "factionName": "ฝ่ายปรับโครงสร้างหนี้ 3",
+    "authorityCode": "108337108286108785",
+    "authorityName": "เจ้าหน้าที่ฝ่ายปรับโครงสร้างหนี้ 3"
+  },
+  {
+    "id": 118,
+    "roleCode": "AMD_RESTRUCTURE",
+    "organizationCode": "108337",
+    "organizationName": "สายงานปรับโครงสร้างหนี้และบริหารทรัพย์สิน",
+    "groupCode": "108286",
+    "groupName": "กลุ่มปรับโครงสร้างหนี้ 1",
+    "factionCode": "108339",
+    "factionName": "ฝ่ายปรับโครงสร้างหนี้ 4",
+    "authorityCode": "108337108286108339",
+    "authorityName": "เจ้าหน้าที่ฝ่ายปรับโครงสร้างหนี้ 4"
+  },
+  {
+    "id": 119,
+    "roleCode": "AMD_RESTRUCTURE",
+    "organizationCode": "108337",
+    "organizationName": "สายงานปรับโครงสร้างหนี้และบริหารทรัพย์สิน",
+    "groupCode": "108338",
+    "groupName": "กลุ่มปรับโครงสร้างหนี้ 2",
+    "factionCode": "108340",
+    "factionName": "ฝ่ายปรับโครงสร้างหนี้ 5",
+    "authorityCode": "108337108338108340",
+    "authorityName": "เจ้าหน้าที่ฝ่ายปรับโครงสร้างหนี้ 5"
+  },
+  {
+    "id": 120,
+    "roleCode": "AMD_RESTRUCTURE",
+    "organizationCode": "108337",
+    "organizationName": "สายงานปรับโครงสร้างหนี้และบริหารทรัพย์สิน",
+    "groupCode": "108338",
+    "groupName": "กลุ่มปรับโครงสร้างหนี้ 2",
+    "factionCode": "108341",
+    "factionName": "ฝ่ายปรับโครงสร้างหนี้ 6",
+    "authorityCode": "108337108338108341",
+    "authorityName": "เจ้าหน้าที่ฝ่ายปรับโครงสร้างหนี้ 6"
+  },
+  {
+    "id": 121,
+    "roleCode": "AMD_RESTRUCTURE",
+    "organizationCode": "108337",
+    "organizationName": "สายงานปรับโครงสร้างหนี้และบริหารทรัพย์สิน",
+    "groupCode": "108338",
+    "groupName": "กลุ่มปรับโครงสร้างหนี้ 2",
+    "factionCode": "108346",
+    "factionName": "ฝ่ายปรับโครงสร้างหนี้ 7",
+    "authorityCode": "108337108338108346",
+    "authorityName": "เจ้าหน้าที่ฝ่ายปรับโครงสร้างหนี้ 7"
+  },
+  {
+    "id": 122,
+    "roleCode": "AMD_RESTRUCTURE",
+    "organizationCode": "108337",
+    "organizationName": "สายงานปรับโครงสร้างหนี้และบริหารทรัพย์สิน",
+    "groupCode": "108338",
+    "groupName": "กลุ่มปรับโครงสร้างหนี้ 2",
+    "factionCode": "108347",
+    "factionName": "ฝ่ายปรับโครงสร้างหนี้ 8",
+    "authorityCode": "108337108338108347",
+    "authorityName": "เจ้าหน้าที่ฝ่ายปรับโครงสร้างหนี้ 8"
+  },
+  {
+    "id": 123,
+    "roleCode": "AMD_RESTRUCTURE",
+    "organizationCode": "108337",
+    "organizationName": "สายงานปรับโครงสร้างหนี้และบริหารทรัพย์สิน",
+    "groupCode": "108316",
+    "groupName": "กลุ่มบริหารทรัพย์สินพร้อมขาย",
+    "factionCode": "108781",
+    "factionName": "ฝ่ายบริหารทรัพย์สินพร้อมขาย 1",
+    "authorityCode": "108337108316108781",
+    "authorityName": "เจ้าหน้าที่ฝ่ายบริหารทรัพย์สินพร้อมขาย 1"
+  },
+  {
+    "id": 124,
+    "roleCode": "AMD_RESTRUCTURE",
+    "organizationCode": "108337",
+    "organizationName": "สายงานปรับโครงสร้างหนี้และบริหารทรัพย์สิน",
+    "groupCode": "108316",
+    "groupName": "กลุ่มบริหารทรัพย์สินพร้อมขาย",
+    "factionCode": "108787",
+    "factionName": "ฝ่ายบริหารทรัพย์สินพร้อมขาย 2",
+    "authorityCode": "108337108316108787",
+    "authorityName": "เจ้าหน้าที่ฝ่ายบริหารทรัพย์สินพร้อมขาย 2"
+  },
+  {
+    "id": 125,
+    "roleCode": "STRAREGY_AMD",
+    "authorityCode": "STRAREGY_AMD",
+    "authorityName": "เจ้าหน้าที่ฝ่ายกลยุทธ์ AMD"
+  },
+  {
+    "id": 126,
+    "roleCode": "CBC",
+    "organizationCode": "108054",
+    "organizationName": "สายงานธุรกิจขนาดใหญ่ 1",
+    "groupCode": "108542",
+    "groupName": "กลุ่มธุรกิจขนาดใหญ่ 5",
+    "authorityCode": "108054108542",
+    "authorityName": "เจ้าหน้าที่กลุ่มธุรกิจขนาดใหญ่ 5"
+  },
+  {
+    "id": 127,
+    "roleCode": "CBC",
+    "organizationCode": "108611",
+    "organizationName": "สายงานธุรกิจขนาดใหญ่ 2",
+    "groupCode": "108603",
+    "groupName": "กลุ่มธุรกิจขนาดใหญ่ 6",
+    "authorityCode": "108611108603",
+    "authorityName": "เจ้าหน้าที่กลุ่มธุรกิจขนาดใหญ่ 6"
+  },
+  {
+    "id": 128,
+    "roleCode": "CBC",
+    "organizationCode": "108611",
+    "organizationName": "สายงานธุรกิจขนาดใหญ่ 2",
+    "groupCode": "108604",
+    "groupName": "กลุ่มธุรกิจขนาดใหญ่ 7",
+    "authorityCode": "108611108604",
+    "authorityName": "เจ้าหน้าที่กลุ่มธุรกิจขนาดใหญ่ 7"
+  },
+  {
+    "id": 129,
+    "roleCode": "CBC",
+    "organizationCode": "108611",
+    "organizationName": "สายงานธุรกิจขนาดใหญ่ 2",
+    "groupCode": "108546",
+    "groupName": "กลุ่มธุรกิจขนาดใหญ่ 8",
+    "authorityCode": "108611108546",
+    "authorityName": "เจ้าหน้าที่กลุ่มธุรกิจขนาดใหญ่ 8"
+  },
+  {
+    "id": 130,
+    "roleCode": "CBC",
+    "organizationCode": "108611",
+    "organizationName": "สายงานธุรกิจขนาดใหญ่ 2",
+    "groupCode": "108979",
+    "groupName": "กลุ่มธุรกิจสถาบันการเงิน",
+    "authorityCode": "108611108979",
+    "authorityName": "เจ้าหน้าที่กลุ่มธุรกิจสถาบันการเงิน"
+  },
+  {
+    "id": 131,
+    "roleCode": "FINANCIAL3",
+    "authorityCode": "FINANCIAL3",
+    "authorityName": "เจ้าหน้าที่ฝ่ายการเงิน3"
+  },
+  {
+    "id": 132,
+    "roleCode": "ALLOTMENT",
+    "authorityCode": "ALLOTMENT",
+    "authorityName": "เจ้าหน้าที่ Allotment"
+  },
+  {
+    "id": 133,
+    "roleCode": "ADMIN",
+    "authorityCode": "ADMIN",
+    "authorityName": "ผู้ดูแลระบบ"
+  },
+  {
+    "id": 134,
+    "roleCode": "INTERNAL_AUDITOR",
+    "authorityCode": "INTERNAL_AUDITOR",
+    "authorityName": "เจ้าหน้าที่ตรวจสอบภายใน"
+  },
+  {
+    "id": 135,
+    "roleCode": "EXTERNAL_AUDITOR",
+    "authorityCode": "EXTERNAL_AUDITOR",
+    "authorityName": "เจ้าหน้าที่ตรวจสอบจากภายนอก"
+  },
+  {
+    "id": 136,
+    "roleCode": "PROSECUTION_DEPARTMENT",
+    "factionCode": "108765",
+    "factionName": "ฝ่ายกำกับและบริหารการดำเนินคดี",
+    "authorityCode": "PROSECUTION_DEPARTMENT",
+    "authorityName": "เจ้าหน้าที่ฝ่ายกำกับและบริหารการดำเนินคดี"
+  },
+  {
+    "id": 137,
+    "roleCode": "EXECUTION_DEPARTMENT",
+    "factionCode": "108763",
+    "factionName": "ฝ่ายกำกับและบริหารการบังคับคดี",
+    "authorityCode": "EXECUTION_DEPARTMENT",
+    "authorityName": "เจ้าหน้าที่ฝ่ายกำกับและบริหารการบังคับคดี"
+  },
+  {
+    "id": 138,
+    "roleCode": "FINANCIAL1",
+    "factionCode": "108763",
+    "factionName": "ฝ่ายกำกับและบริหารการบังคับคดี",
+    "teamCode": "FIN001",
+    "teamName": "ทีมการเงิน1",
+    "authorityCode": "108763FIN001",
+    "authorityName": "เจ้าหน้าที่ทีมการเงิน1"
+  },
+  {
+    "id": 139,
+    "roleCode": "KLAW_USER",
+    "factionCode": "LAW001",
+    "factionName": "ฝ่ายคดีแพ่ง 1",
+    "authorityCode": "LAW001",
+    "authorityName": "เจ้าหน้าที่ฝ่ายคดีแพ่ง 1"
+  },
+  {
+    "id": 140,
+    "roleCode": "KLAW_FINANCIAL",
+    "factionCode": "KFIN01",
+    "factionName": "ฝ่ายบัญชีการเงิน",
+    "authorityCode": "KFIN01",
+    "authorityName": "เจ้าหน้าที่ฝ่ายบัญชีการเงิน"
+  },
+  {
+    "id": 141,
+    "roleCode": "KLAW_SECRETARY",
+    "authorityCode": "KLAW_SECRETARY",
+    "authorityName": "พนักงานปฏิบัติการเลขานุการ"
+  },
+  {
+    "id": 142,
+    "roleCode": "KLAW_USER",
+    "factionCode": "LAW002",
+    "factionName": "ฝ่ายคดีแพ่ง 2",
+    "authorityCode": "LAW002",
+    "authorityName": "เจ้าหน้าที่ฝ่ายคดีแพ่ง 2"
+  },
+  {
+    "id": 143,
+    "roleCode": "KLAW_USER",
+    "factionCode": "LAW003",
+    "factionName": "ฝ่ายคดีแพ่ง 3",
+    "authorityCode": "LAW003",
+    "authorityName": "เจ้าหน้าที่ฝ่ายคดีแพ่ง 3"
+  },
+  {
+    "id": 144,
+    "roleCode": "KLAW_USER",
+    "factionCode": "LAW004",
+    "factionName": "ฝ่ายบอกกล่าวและคำนวณยอดหนี้",
+    "authorityCode": "LAW004",
+    "authorityName": "เจ้าหน้าที่ฝ่ายบอกกล่าวและคำนวณยอดหนี้"
+  },
+  {
+    "id": 145,
+    "roleCode": "BC",
+    "organizationCode": "108018",
+    "organizationName": "สายงานธุรกิจขนาดกลาง",
+    "groupCode": "108312",
+    "groupName": "กลุ่มกลยุทธ์วิสาหกิจขนาดกลาง",
+    "authorityCode": "108018108312",
+    "authorityName": "เจ้าหน้าที่กลุ่มกลยุทธ์วิสาหกิจขนาดกลาง"
+  },
+  {
+    "id": 146,
+    "roleCode": "BC",
+    "organizationCode": "108018",
+    "organizationName": "สายงานธุรกิจขนาดกลาง",
+    "groupCode": "108275",
+    "groupName": "กลุ่มธุรกิจขนาดกลางนครหลวง 1",
+    "authorityCode": "108018108275",
+    "authorityName": "เจ้าหน้าที่กลุ่มธุรกิจขนาดกลางนครหลวง 1"
+  },
+  {
+    "id": 147,
+    "roleCode": "BC",
+    "organizationCode": "108018",
+    "organizationName": "สายงานธุรกิจขนาดกลาง",
+    "groupCode": "108367",
+    "groupName": "กลุ่มธุรกิจขนาดกลางนครหลวง 2",
+    "authorityCode": "108018108367",
+    "authorityName": "เจ้าหน้าที่กลุ่มธุรกิจขนาดกลางนครหลวง 2"
+  },
+  {
+    "id": 148,
+    "roleCode": "BC",
+    "organizationCode": "108018",
+    "organizationName": "สายงานธุรกิจขนาดกลาง",
+    "groupCode": "108300",
+    "groupName": "กลุ่มธุรกิจขนาดกลางภาคเหนือ",
+    "authorityCode": "108018108300",
+    "authorityName": "เจ้าหน้าที่กลุ่มธุรกิจขนาดกลางภาคเหนือ"
+  },
+  {
+    "id": 149,
+    "roleCode": "BC",
+    "organizationCode": "108018",
+    "organizationName": "สายงานธุรกิจขนาดกลาง",
+    "groupCode": "108368",
+    "groupName": "กลุ่มธุรกิจขนาดกลางภาคตะวันออกเฉียงเหนือ",
+    "authorityCode": "108018108368",
+    "authorityName": "เจ้าหน้าที่กลุ่มธุรกิจขนาดกลางภาคตะวันออกเฉียงเหนือ"
+  },
+  {
+    "id": 150,
+    "roleCode": "BC",
+    "organizationCode": "108018",
+    "organizationName": "สายงานธุรกิจขนาดกลาง",
+    "groupCode": "108276",
+    "groupName": "กลุ่มธุรกิจขนาดกลางภาคกลางและภาคตะวันออก",
+    "authorityCode": "108018108276",
+    "authorityName": "เจ้าหน้าที่กลุ่มธุรกิจขนาดกลางภาคกลางและภาคตะวันออก"
+  },
+  {
+    "id": 151,
+    "roleCode": "BC",
+    "organizationCode": "108018",
+    "organizationName": "สายงานธุรกิจขนาดกลาง",
+    "groupCode": "108369",
+    "groupName": "กลุ่มธุรกิจขนาดกลางภาคใต้",
+    "authorityCode": "108018108369",
+    "authorityName": "เจ้าหน้าที่กลุ่มธุรกิจขนาดกลางภาคใต้"
+  },
+  {
+    "id": 152,
+    "roleCode": "CBC",
+    "organizationCode": "108054",
+    "organizationName": "สายงานธุรกิจขนาดใหญ่ 1",
+    "groupCode": "108277",
+    "groupName": "กลุ่มธุรกิจขนาดใหญ่ 1",
+    "authorityCode": "108054108277",
+    "authorityName": "เจ้าหน้าที่กลุ่มธุรกิจขนาดใหญ่ 1"
+  },
+  {
+    "id": 153,
+    "roleCode": "CBC",
+    "organizationCode": "108054",
+    "organizationName": "สายงานธุรกิจขนาดใหญ่ 1",
+    "groupCode": "108278",
+    "groupName": "กลุ่มธุรกิจขนาดใหญ่ 2",
+    "authorityCode": "108054108278",
+    "authorityName": "เจ้าหน้าที่กลุ่มธุรกิจขนาดใหญ่ 2"
+  },
+  {
+    "id": 154,
+    "roleCode": "CBC",
+    "organizationCode": "108054",
+    "organizationName": "สายงานธุรกิจขนาดใหญ่ 1",
+    "groupCode": "108606",
+    "groupName": "กลุ่มธุรกิจขนาดใหญ่ 3",
+    "authorityCode": "108054108606",
+    "authorityName": "เจ้าหน้าที่กลุ่มธุรกิจขนาดใหญ่ 3"
+  },
+  {
+    "id": 155,
+    "roleCode": "CBC",
+    "organizationCode": "108054",
+    "organizationName": "สายงานธุรกิจขนาดใหญ่ 1",
+    "groupCode": "108538",
+    "groupName": "กลุ่มธุรกิจขนาดใหญ่ 4",
+    "authorityCode": "108054108538",
+    "authorityName": "เจ้าหน้าที่กลุ่มธุรกิจขนาดใหญ่ 4"
+  },
+  {
+    "id": 156,
+    "roleCode": "FINANCIAL2",
+    "factionCode": "108763",
+    "factionName": "ฝ่ายกำกับและบริหารการบังคับคดี",
+    "teamCode": "FIN002",
+    "teamName": "ทีมการเงิน2",
+    "authorityCode": "108763FIN002",
+    "authorityName": "เจ้าหน้าที่ทีมการเงิน2"
+  }
+]

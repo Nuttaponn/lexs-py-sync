@@ -1,0 +1,59 @@
+@import '/src/styles/colors';
+@import '/src/styles/typography';
+
+/* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version. */
+mat-checkbox {
+
+  /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version. */
+  ::ng-deep .mat-checkbox-inner-container {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.mat-mdc-checkbox {
+  padding-bottom: 15px;
+}
+
+.panel-blue {
+  background: map-get($ktb-palette-blue, 50);
+  padding-left: 10px;
+  height: 78px;
+  padding-top: 25px;
+}
+
+/* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version. */
+.mat-checkbox-inner-container {
+  width: 20px !important;
+  height: 20px !important;
+  border-radius: 3% !important;
+}
+
+.border-radius-tb-left {
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+
+.border-radius-tb-right {
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.elm-check-label {
+  color: map-get($ktb-palette-biz-gray, 900);
+  font-weight: 400;
+  font-size: $font-description;
+  margin-left: 20px;
+
+  &.disabled {
+    color: map-get($ktb-palette-biz-black, 40);
+  }
+}
+
+.elm-form {
+  margin-bottom: 20px;
+}
+
+.justify-content-end {
+  justify-content: end;
+}

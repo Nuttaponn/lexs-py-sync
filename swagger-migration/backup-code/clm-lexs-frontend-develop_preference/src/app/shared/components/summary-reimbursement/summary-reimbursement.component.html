@@ -1,0 +1,143 @@
+<app-action-bar
+  *ngIf="isShowActionBar"
+  [disabledBackButton]="false"
+  (backButtonHandler)="back()"
+  [showNavBarInformation]="true">
+  <ng-container navBarInformationTemplate>
+    <div fxLayout="row" fxLayoutGap="12px">
+      <mat-icon svgIcon="icon-Information" class="icon icon-xmedium"></mat-icon>
+      <span class="ml-05em">
+        {{ 'SUMMARY_RIEMBURSEMENT.MAIN_TITLE' | translate }}
+        {{ litigationId || '-' }}
+      </span>
+    </div>
+  </ng-container>
+</app-action-bar>
+
+<div [class.content-below-action-bar-area]="isShowActionBar">
+  <mat-card appearance="outlined" class="content-container">
+    <div fxLayout="column" class="body-container pt-8" fxLayoutGap="12px">
+      <div fxLayout="row" fxLayoutGap="12px">
+        <mat-icon svgIcon="icon-Information" class="icon icon-xmedium"></mat-icon>
+        <h5>
+          {{ 'SUMMARY_RIEMBURSEMENT.MAIN_TITLE' | translate }}
+          {{ financialLitigationSummaryData?.litigationId || '-' }}
+        </h5>
+      </div>
+      <div class="debt-sale-status fill-red bold">{{ debtSaleStatus || '' }}</div>
+
+      <div class="mt-40" fxLayout="row" fxLayoutGap="16px">
+        <div fxFlex="22" class="content-form">
+          <div class="header">
+            {{ 'COMMON.LABEL_CIF_NUMBER' | translate }}
+          </div>
+          <div class="detail">
+            {{ financialLitigationSummaryData?.customerId || '-' }}
+          </div>
+        </div>
+        <div fxFlex="22" class="content-form">
+          <div class="header">
+            {{ 'FINANCE.DEBTOR_NAME' | translate }}
+          </div>
+          <div class="detail">
+            {{ financialLitigationSummaryData?.customerName || '-' }}
+          </div>
+        </div>
+        <div fxFlex="26" class="content-form">
+          <div class="header">
+            {{ 'FINANCE.EXPENSE_DETAIL.BRANCH' | translate }}
+          </div>
+          <div class="detail">
+            {{ financialLitigationSummaryData?.branchCode }} -
+            {{ financialLitigationSummaryData?.branchName }}
+          </div>
+        </div>
+        <div fxFlex="22" class="content-form">
+          <div class="header">
+            {{ 'SEARCH_CONTROL.LABEL_ALL_RESPONSE_UNIT' | translate }}
+          </div>
+          <div class="detail">
+            {{ financialLitigationSummaryData?.responseUnitCode }} -
+            {{ financialLitigationSummaryData?.responseUnitName }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="body-container body-content-style">
+      <mat-tab-group
+        class="tab-group-container"
+        mat-align-tabs="start"
+        [(selectedIndex)]="tabIndex"
+        (selectedTabChange)="onTabChanged()">
+        <mat-tab label="{{ 'SUMMARY_RIEMBURSEMENT.LG_TAB' | translate }}">
+          <div class="content-container-no-bg" fxFlex fxLayout="column" fxLayoutGap="20px">
+            <app-search-controller
+              class="mt-20"
+              [searchType]="'BY_REIMBURSE_TYPE_1'"
+              [condition]="myLgSearch"
+              [template]="'SUMMARY_REIMBURSE_TYPE_1'"
+              (searchEvent)="onSearchResult($event, 0)">
+            </app-search-controller>
+
+            <app-summary-reimbursement-table
+              *ngIf="financialLitigationSummaryData"
+              #summaryReimbursementTableComponentTab0
+              [financialLitigationSummaryData]="financialLitigationSummaryData">
+            </app-summary-reimbursement-table>
+
+            <ng-container [ngTemplateOutlet]="financeialCreditNoteTableTemplate"> </ng-container>
+          </div>
+        </mat-tab>
+        <mat-tab label="{{ 'SUMMARY_RIEMBURSEMENT.CUSTOMER_TAB' | translate }}">
+          <mat-tab-group
+            class="tab-group-container"
+            mat-align-tabs="start"
+            [(selectedIndex)]="subTabIndex"
+            (selectedTabChange)="onSubTabChanged()">
+            <mat-tab label="{{ 'SUMMARY_RIEMBURSEMENT.CUSTOMER_SUB_TAB_1' | translate }}">
+              <div class="content-container-no-bg" fxFlex fxLayout="column" fxLayoutGap="20px">
+                <app-search-controller
+                  [searchType]="'BY_REIMBURSE_TYPE_1'"
+                  [condition]="myCustSearch"
+                  [template]="'SUMMARY_REIMBURSE_TYPE_1'"
+                  (searchEvent)="onSearchResult($event, 1)">
+                </app-search-controller>
+
+                <app-summary-reimbursement-table
+                  *ngIf="financialCustomerSummaryTranData"
+                  #summaryReimbursementTableComponentTab1_0
+                  [financialCustomerSummaryData]="financialCustomerSummaryTranData">
+                </app-summary-reimbursement-table>
+
+                <ng-container [ngTemplateOutlet]="financeialCreditNoteTableTemplate"> </ng-container>
+              </div>
+            </mat-tab>
+            <mat-tab label="{{ 'SUMMARY_RIEMBURSEMENT.CUSTOMER_SUB_TAB_2' | translate }}">
+              <div class="content-container-no-bg" fxFlex fxLayout="column" fxLayoutGap="20px">
+                <app-search-controller
+                  [searchType]="'BY_REIMBURSE_TYPE_2'"
+                  [condition]="myCust2Search"
+                  [template]="'SUMMARY_REIMBURSE_TYPE_2'"
+                  (searchEvent)="onSearchResult($event, 2)"
+                  [lgIdOptions]="lgIdOptions">
+                </app-search-controller>
+
+                <app-financial-customer-summary-table
+                  *ngIf="financialCustomerSummaryData"
+                  [financialCustomerSummaryData]="financialCustomerSummaryData"></app-financial-customer-summary-table>
+              </div>
+            </mat-tab>
+          </mat-tab-group>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+  </mat-card>
+</div>
+
+<ng-template #financeialCreditNoteTableTemplate>
+  <app-financial-credit-note-table
+    *ngIf="financialCreditNoteResponse"
+    [financialCreditNoteResponse]="financialCreditNoteResponse">
+  </app-financial-credit-note-table>
+</ng-template>

@@ -1,0 +1,539 @@
+<app-action-bar
+  (backButtonHandler)="onBack()"
+  [hasCancelButton]="actionBar.hasCancel"
+  (cancelButtonHandler)="onCancel()"
+  [hasSaveButton]="actionBar.hasSave"
+  [saveButtonText]="actionBar.saveText || 'COMMON.BUTTON_SAVE'"
+  (saveButtonHandler)="onSave()"
+  [hasRejectButton]="actionBar.hasReject"
+  [rejectButtonText]="actionBar.rejectText || 'COMMON.BUTTON_REJECT'"
+  [rejectButtonIcon]="actionBar.rejectIcon || 'icon-Dismiss-Square'"
+  [rejectNormalBtnStyle]="actionBar.rejectNormalBtnStyle || false"
+  (rejectButtonHandler)="onReject()"
+  [hasPrimaryButton]="actionBar.hasPrimary"
+  [primaryButtonText]="actionBar.primaryText || ''"
+  [primaryButtonIcon]="actionBar.primaryIcon || 'icon-Selected'"
+  (primaryButtonHandler)="onSubmit()"
+  [disabledPrimaryButton]="actionBar.disabledPrimaryButton || false"
+  [primaryButtonTextString]="actionBar.primaryTextString || ''"
+  [displayPrimaryButtonTextString]="actionBar.displayPrimaryTextString || false"
+  [showNavBarInformation]="true"
+  [subButtonList]="subButtonList"
+  (subButtonHandler)="subButtonHandler($event)"
+  [hasEditButton]="actionBar.hasEdit || false"
+  [editButtonText]="actionBar.editText || ''"
+  [editButtonIcon]="actionBar.editIcon || ''"
+  (editButtonHandler)="onReject()"
+  [maxSubButton]="maxSubButton">
+  <ng-container navBarInformationTemplate>
+    <mat-icon svgIcon="icon-Task-List" class="icon icon-xmedium default-cursor"></mat-icon>
+    <span class="ml-8 bold">{{ title | translate }}</span>
+    <span
+      class="ml-12 status-label"
+      *ngIf="taskDetail.statusCode !== 'FINISHED'"
+      [ngClass]="taskDetail.statusCode | taskStatus: flowType : taskCode">
+      {{
+        (TASK_CODE_LIST.includes(taskCode)
+          ? 'TASK.TASK_CODE_STATUS.' + taskDetail.statusCode + '_' + taskCode
+          : 'TASK.TASK_CODE_STATUS.NO_STATUS'
+        ) | translate
+      }}
+    </span>
+    <span class="ml-12 status-label status-normal" *ngIf="taskDetail.statusCode === 'FINISHED' && taskDetail.taskName">
+      {{ taskDetail.taskName }}</span
+    >
+  </ng-container>
+</app-action-bar>
+
+<div class="content-below-action-bar-area">
+  <div class="pt-16 pl-24 pr-24">
+    <app-message-banner
+      *ngIf="messageBannerMapper.get(taskCode) && !isShowErrorMsgBanner; else errorMsgBanner"
+      [type]="isBannerSuccess ? 'success' : 'black-info'"
+      [icon]="isBannerSuccess ? 'icon-Mark' : ''"
+      [message]="messageBannerMapper.get(taskCode) || ''">
+    </app-message-banner>
+    <ng-template #errorMsgBanner>
+      <app-message-banner
+        *ngIf="messageBannerMapper.get(taskCode)"
+        type="fail"
+        icon="icon-Error"
+        [message]="messageBannerMapper.get(taskCode) || ''"></app-message-banner>
+    </ng-template>
+  </div>
+
+  <!-- APPROVAL FLOW -->
+  <ng-template #approvalFlow>
+    <app-indictment-detail
+      [approverId]="taskDetail.approverId || ''"
+      [dataForm]="indictmentForm"
+      *ngIf="statusCode === 'PENDING_APPROVAL' && taskCode === 'INDICTMENT_RECORD'"></app-indictment-detail>
+    <app-deferment-detail
+      [documentUpload]="documentUpload"
+      [approverId]="taskDetail.approverId || ''"
+      [dataForm]="defermentForm"
+      [currentLitigationObj]="_currentLitigation"
+      *ngIf="
+        statusCode === 'PENDING_APPROVAL' &&
+        (taskCode === 'REQUEST_DEFERMENT' || taskCode === 'EXTEND_DEFERMENT' || taskCode === 'REQUEST_CESSATION')
+      "
+      [defermentState]="defermentState"
+      [defermentMessageBanner]="defermentMsgBanner"
+      [cessationState]="cessationState"
+      [cessationMessageBanner]="cessationMsgBanner"
+      [hasCeased]="taskCode === 'REQUEST_CESSATION'"></app-deferment-detail>
+    <app-court-result
+      *ngIf="
+        ['MEMORANDUM_COURT_FIRST_INSTANCE', 'MEMORANDUM_SUPREME_COURT', 'MEMORANDUM_COURT_APPEAL'].includes(taskCode) &&
+        ['PENDING_APPROVAL', 'AWAITING'].includes(statusCode)
+      "
+      [consAppealCtrl]="consAppealCtrl"></app-court-result>
+
+    <app-customer-organization
+      *ngIf="
+        this.taskCode === 'MEMORANDUM_COURT_FIRST_INSTANCE' &&
+        this.statusCode === 'AWAITING' &&
+        currentUser?.subRoleCode === 'MAKER'
+      "></app-customer-organization>
+
+    <ng-container
+      *ngIf="['DECREE_OF_FIRST_INSTANCE', 'DECREE_OF_APPEAL', 'DECREE_OF_SUPREME_COURT'].includes(taskCode)">
+      <ng-container [ngTemplateOutlet]="nonApprovalFlow"></ng-container>
+    </ng-container>
+    <app-efiling-form
+      *ngIf="
+        ['RECORD_OF_APPEAL', 'RECORD_OF_SUPREME_COURT', 'RECORD_OF_SUPREME_COURT_ACKNOWLEDGE'].includes(taskCode)
+      "></app-efiling-form>
+    <app-court-fee-form *ngIf="taskCode === 'UPLOAD_E_FILING'"></app-court-fee-form>
+
+    <!-- for FinanceTask -->
+    <ng-container *ngIf="taskAndFinanceTaskCode.includes(taskCode)">
+      <app-expense-payment-detail
+        class="content-pt-0"
+        [currentAssigneeId]="currentAssigneeId"
+        [currentAssigneeName]="currentAssigneeName"
+        [taskCode]="taskCode"
+        [dataForm]="paymentBookForm"
+        [statusCode]="statusCode"></app-expense-payment-detail>
+    </ng-container>
+    <ng-container *ngIf="taskAndFinanceEditTaskCode.includes(taskCode)">
+      <app-create-payment-book
+        #createPaymentBook
+        [mode]="paymentMode"
+        [dataForm]="paymentBookForm"
+        [actionBarEventName]="actionBarEventName"
+        [taskCode]="taskCode"
+        [statusCode]="statusCode"
+        [currentAssigneeId]="currentAssigneeId"
+        [currentAssigneeName]="currentAssigneeName"></app-create-payment-book>
+    </ng-container>
+
+    <!-- LEXS2-486 -->
+    <ng-container
+      *ngIf="
+        taskCode === 'R2E07-02-B' || taskCode === 'R2E07-04-D' || taskCode === 'R2E07-03-C' || taskCode === 'R2E07-05-E'
+      ">
+      <app-deferment-detail
+        [documentUpload]="documentUpload"
+        [dataForm]="defermentForm"
+        [hasCancelDeferment]="false"
+        [approverId]="taskDetail.approverId || ''"
+        [currentLitigationObj]="_currentLitigation"
+        [taskId]="taskId"
+        [defermentState]="defermentState"
+        [defermentMessageBanner]="defermentMsgBanner"
+        [hasAutoCreate]="hasAutoCreate"
+        [_btnAction]="'DEFERMENT'"
+        [defermentCategory]="'EXECUTION'"
+        [extendDeferment]="false"
+        [viewModeExtendDeferment]="taskCode === 'R2E07-02-B' || taskCode === 'R2E07-03-C'"></app-deferment-detail>
+    </ng-container>
+  </ng-template>
+
+  <!-- NOT APPROVAL FLOW -->
+  <ng-container
+    *ngIf="
+      !((statusCode === 'PENDING_APPROVAL' || statusCode === 'AWAITING') && hasApprovalFlow.includes(taskCode)) &&
+        !forceApprovalFlowTaskCode.includes(taskCode) &&
+        !taskAndFinanceTaskCode.includes(taskCode) &&
+        !taskAndFinanceEditTaskCode.includes(taskCode);
+      else approvalFlow
+    ">
+    <ng-container [ngTemplateOutlet]="nonApprovalFlow"></ng-container>
+  </ng-container>
+  <ng-template #nonApprovalFlow>
+    <div class="task-detail-container">
+      <!-- CUSTOMER Mode -->
+      <h3 *ngIf="taskMode?.mode === 'CUSTOMER'">{{ customerDetail.name }}</h3>
+
+      <!-- LITIGATION Mode -->
+      <h3
+        *ngIf="
+          taskMode?.mode === 'LITIGATION' &&
+          taskCode !== 'SEND_AND_TRACK_NOTICE' &&
+          taskCode !== 'SEND_AND_TRACK_NOTICE_GUARANTOR' &&
+          taskCode !== 'AUTO_CREATE_DRAFT_CESSATION' &&
+          taskCode !== 'AUTO_CREATE_DRAFT_DEFERMENT' &&
+          taskCode !== 'RECEIVE_ADVANCE_PAYMENT' &&
+          taskCode !== 'REQUEST_REVISE_DEFERMENT' &&
+          taskCode !== 'R2E07-01-A' &&
+          taskCode !== 'REQUEST_REVISE_CESSATION' &&
+          taskCode !== 'SAVE_DRAFT_DEFERMENT' &&
+          taskCode !== 'SAVE_DRAFT_CESSATION'
+        ">
+        {{ 'COMMON.LABEL_LG_ID_TEXT' | translate }}:
+        {{ litigationDetail.litigationId }}
+        <span class="divider-vertical"> </span>{{ litigationDetail.customerName }}
+      </h3>
+      <div
+        *ngIf="litigationDetail?.debtSaleStatus"
+        class="pb-16"
+        fxLayout="row"
+        fxLayoutAlign="start center"
+        fxLayoutGap="10">
+        <div class="size-md fill-red bold">
+          {{ litigationDetail.debtSaleStatus || '' }}
+        </div>
+      </div>
+      <div
+        class="info-container"
+        *ngIf="
+          taskCode !== 'SEND_AND_TRACK_NOTICE' &&
+          taskCode !== 'SEND_AND_TRACK_NOTICE_GUARANTOR' &&
+          taskCode !== 'RESPONSE_UNIT_MAPPING' &&
+          taskCode !== 'AUTO_CREATE_DRAFT_CESSATION' &&
+          taskCode !== 'AUTO_CREATE_DRAFT_DEFERMENT' &&
+          taskCode !== 'RECEIVE_ADVANCE_PAYMENT' &&
+          taskCode !== 'REQUEST_REVISE_DEFERMENT' &&
+          taskCode !== 'R2E07-01-A' &&
+          taskCode !== 'REQUEST_REVISE_CESSATION' &&
+          taskCode !== 'SAVE_DRAFT_DEFERMENT' &&
+          taskCode !== 'SAVE_DRAFT_CESSATION'
+        ">
+        <div class="info-section" fxLayout="row" fxLayoutAlign="start center">
+          <div class="info-content" fxLayoutAlign="start center" fxFlex="33">
+            <mat-icon class="icon icon-medium default-cursor fill-blue information-icon" svgIcon="icon-Person-Board">
+            </mat-icon>
+            <div class="pl-8">
+              <div class="label">{{ 'COMMON.LABEL_CIF_NO' | translate }}</div>
+              <div class="sub-label" *ngIf="taskMode?.mode === 'LITIGATION'">
+                {{ litigationDetail.customerId }}
+              </div>
+              <div class="sub-label" *ngIf="taskMode?.mode === 'CUSTOMER'">
+                {{ customerDetail.customerId }}
+              </div>
+            </div>
+          </div>
+          <div class="info-content" fxLayoutAlign="start center" fxFlex="40">
+            <mat-icon class="icon icon-medium default-cursor fill-blue pr-8" svgIcon="icon-rd-Party"></mat-icon>
+            <div class="pl-8">
+              <div class="label">
+                {{ 'TASK.LABEL_RESPONSE_UNIT' | translate }}
+              </div>
+              <div class="sub-label">
+                {{
+                  taskMode.mode === 'LITIGATION'
+                    ? litigationDetail.responseUnitCode + ' - ' + litigationDetail.responseUnitName
+                    : taskMode.mode === 'CUSTOMER'
+                      ? customerDetail.amdResponseUnitCode && customerDetail.amdResponseUnitName
+                        ? customerDetail.amdResponseUnitCode + ' - ' + customerDetail.amdResponseUnitName
+                        : customerDetail.responseUnitCode + ' - ' + customerDetail.responseUnitName
+                      : ''
+                }}
+                <app-tooltip
+                  *ngIf="taskMode?.mode === 'CUSTOMER'"
+                  [iconClass]="'icon-xsmall fill-blue'"
+                  [params]="[
+                    {
+                      title: 'TASK.TOOLTIP_TITLE_RESPONSE_UNIT' | translate,
+                      content:
+                        taskMode.mode === 'LITIGATION'
+                          ? litigationDetail.responseUnitCode + ' - ' + litigationDetail.responseUnitName
+                          : taskMode.mode === 'CUSTOMER'
+                            ? customerDetail.responseUnitCode + ' - ' + customerDetail.responseUnitName
+                            : '',
+                    },
+                  ]"></app-tooltip>
+              </div>
+            </div>
+          </div>
+          <div class="info-content" fxLayoutAlign="start center" fxFlex>
+            <mat-icon class="icon icon-medium default-cursor fill-blue pr-8" svgIcon="icon-Home-Person"></mat-icon>
+            <div class="pl-8">
+              <div class="label">{{ 'TASK.LABEL_BRANCH' | translate }}</div>
+              <div class="sub-label" *ngIf="taskMode?.mode === 'LITIGATION'">
+                {{ litigationDetail.branchCode }} -
+                {{ litigationDetail.branchName }}
+              </div>
+              <div class="sub-label" *ngIf="taskMode?.mode === 'CUSTOMER'">
+                {{ customerDetail.branchCode }} -
+                {{ customerDetail.branchName }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="taskMode?.mode === 'LITIGATION'" class="info-section" fxLayout="row" fxLayoutAlign="start center">
+          <div class="info-content" fxLayout="row" fxLayoutAlign="start center" fxFlex="33">
+            <mat-icon class="icon icon-medium default-cursor fill-blue pr-8" svgIcon="icon-Person-Call"></mat-icon>
+            <div class="pl-8">
+              <div class="label">
+                {{ 'TASK.INFO_LABEL_AMD_RESPONSE_UNIT' | translate }}
+              </div>
+              <div class="sub-label">
+                {{
+                  (litigationDetail.amdResponseUnitCode | emptyFormat) +
+                    (!litigationDetail.amdResponseUnitCode || litigationDetail.amdResponseUnitName ? ' - ' : '') +
+                    (litigationDetail.amdResponseUnitName | emptyFormat)
+                }}
+              </div>
+            </div>
+          </div>
+          <div class="info-content" fxLayout="row" fxLayoutAlign="start center" fxFlex="40">
+            <mat-icon class="icon icon-medium default-cursor fill-blue pr-8" svgIcon="icon-Flash"></mat-icon>
+            <div class="pl-8">
+              <div class="label">
+                {{ 'TASK.INFO_LABEL_RESPONSE_UNIT_APPROVE' | translate }}
+              </div>
+              <div class="sub-label">
+                {{
+                  (litigationDetail.responseUnitCode | emptyFormat) +
+                    (!litigationDetail.responseUnitCode || litigationDetail.responseUnitName ? ' - ' : '') +
+                    (litigationDetail.responseUnitName | emptyFormat)
+                }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="status-section" fxLayout="row" fxLayoutAlign="start center">
+          <ng-container *ngIf="taskMode?.mode === 'LITIGATION'">
+            <div fxLayout="row" fxFlex="33" fxLayoutGap="8px">
+              <div class="status-label mt-0 mb-0">{{ 'TASK.LABEL_LITIGATION_STATUS' | translate }}:</div>
+              <div
+                class="status-label mt-0 mb-0"
+                [ngClass]="{
+                  'status-normal': litigationDetail.litigationStatus,
+                }"
+                *ngIf="litigationDetail?.litigationStatus">
+                {{ litigationDetail.litigationStatus || '-' }}
+              </div>
+            </div>
+            <div class="divider-vertical align-margin"></div>
+            <div fxLayout="row" fxFlex="33" fxLayoutGap="8px">
+              <div class="status-label mt-0 mb-0">{{ 'TASK.LABEL_LITIGATION_STATUS_CUSTOMER' | translate }}:</div>
+              <div
+                class="status-label mt-0 mb-0"
+                [ngClass]="{
+                  'status-normal': litigationDetail.mainBorrowerLitigationStatus,
+                }">
+                {{ litigationDetail.mainBorrowerLitigationStatus || '-' }}
+              </div>
+            </div>
+            <div class="divider-vertical align-margin"></div>
+            <div fxLayout="row" fxFlex="33" fxLayoutGap="8px">
+              <div class="status-label mt-0 mb-0">{{ 'TASK.LABEL_LITIGATION_STATUS_GUARANTOR' | translate }}:</div>
+              <div
+                class="status-label mt-0 mb-0"
+                [ngClass]="{
+                  'status-normal': litigationDetail.coBorrowerLitigationStatus,
+                }">
+                {{ litigationDetail.coBorrowerLitigationStatus || '-' }}
+              </div>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="taskMode?.mode === 'CUSTOMER'">
+            <div class="status-label mt-0 mb-0">{{ 'TASK.LABEL_CUSTOMER_STATUS' | translate }}:</div>
+            <div class="status-label mt-0 mb-0 status-normal" *ngIf="customerDetail?.customerStatus">
+              {{ 'CUSTOMER.' + customerDetail.customerStatus | translate }}
+            </div>
+            <div class="status-label status-pending" *ngIf="customerDetail?.defermentStatus">
+              {{ 'CUSTOMER.' + customerDetail.defermentStatus | translate }}
+            </div>
+          </ng-container>
+        </div>
+      </div>
+
+      <!-- CUSTOMER Mode -->
+      <ng-container *ngIf="taskMode?.mode === 'CUSTOMER'">
+        <mat-tab-group
+          class="tab-group-container"
+          mat-align-tabs="start"
+          (selectedTabChange)="onTabChanged($event)"
+          [selectedIndex]="tabIndex">
+          <mat-tab>
+            <ng-template mat-tab-label>{{ 'TASK.DETAIL_TAB_DEBT_RELATED_INFO' | translate }}</ng-template>
+            <app-debt-related-info-tab *ngIf="customerDetail" [customerDetail]="customerDetail">
+            </app-debt-related-info-tab>
+          </mat-tab>
+          <mat-tab>
+            <ng-template mat-tab-label>{{ 'TASK.DETAIL_TAB_ACCOUNT_INFO' | translate }}</ng-template>
+            <app-account-info *ngIf="accountInfo" [accountInfo]="accountInfo"></app-account-info>
+          </mat-tab>
+          <mat-tab>
+            <ng-template mat-tab-label>{{ 'TASK.DETAIL_TAB_COLLATERAL_INFO' | translate }}</ng-template>
+            <app-collateral-info
+              (tabIndexChanged)="setTabIndex($event)"
+              *ngIf="collateralInfo"
+              [collateralInfo]="collateralInfo"
+              [hasAsset]="false">
+            </app-collateral-info>
+          </mat-tab>
+          <mat-tab>
+            <ng-template mat-tab-label>{{ 'TASK.DETAIL_TAB_DOCUMENT_CHECKLIST_INFO' | translate }}</ng-template>
+            <app-document-preparation></app-document-preparation>
+          </mat-tab>
+        </mat-tab-group>
+      </ng-container>
+
+      <!-- LITIGATION Mode -->
+      <ng-container
+        *ngIf="
+          taskMode?.mode === 'LITIGATION' &&
+          taskCode !== 'CONSIDER_REMAINING_COSTS' &&
+          taskCode !== 'CONSIDER_APPROVE_CLOSE_LG' &&
+          taskCode !== 'AUTO_CREATE_DRAFT_CESSATION' &&
+          taskCode !== 'AUTO_CREATE_DRAFT_DEFERMENT' &&
+          taskCode !== 'REQUEST_REVISE_DEFERMENT' &&
+          taskCode !== 'R2E07-01-A' &&
+          taskCode !== 'REQUEST_REVISE_CESSATION' &&
+          taskCode !== 'SAVE_DRAFT_DEFERMENT' &&
+          taskCode !== 'SAVE_DRAFT_CESSATION'
+        ">
+        <ng-container *ngIf="taskCode === 'SEND_AND_TRACK_NOTICE' || taskCode === 'SEND_AND_TRACK_NOTICE_GUARANTOR'">
+          <app-update-tracking-status></app-update-tracking-status>
+        </ng-container>
+        <ng-container *ngIf="taskCode !== 'SEND_AND_TRACK_NOTICE' && taskCode !== 'SEND_AND_TRACK_NOTICE_GUARANTOR'">
+          <mat-tab-group
+            class="tab-group-container"
+            mat-align-tabs="start"
+            (selectedTabChange)="onTabChanged($event)"
+            [selectedIndex]="tabIndex">
+            <mat-tab>
+              <ng-template mat-tab-label>{{ 'LAWSUIT.INFO_LABEL_TAB_LITIGATION_SUMMARY' | translate }}</ng-template>
+              <app-litigation-summary [litigationDetail]="litigationDetail" [blackCaseNo]="blackCaseNo">
+              </app-litigation-summary>
+            </mat-tab>
+            <mat-tab>
+              <ng-template mat-tab-label>ข้อมูลสำหรับดำเนินคดี</ng-template>
+              <ng-container *ngIf="tabIndex === 1">
+                <mat-tab-group
+                  class="tab-group-container"
+                  [(selectedIndex)]="subTabIndex"
+                  mat-align-tabs="start"
+                  (selectedTabChange)="onSubTabChanged($event)">
+                  <mat-tab>
+                    <ng-template mat-tab-label>{{ 'TASK.DETAIL_TAB_DEBT_RELATED_INFO' | translate }}</ng-template>
+                    <app-debt-related-info-tab *ngIf="litigationDetail" [litigationDetail]="litigationDetail">
+                    </app-debt-related-info-tab>
+                  </mat-tab>
+                  <mat-tab>
+                    <ng-template mat-tab-label>{{ 'TASK.DETAIL_TAB_ACCOUNT_INFO' | translate }}</ng-template>
+                    <app-account-info *ngIf="accountInfo" [accountInfo]="accountInfo"></app-account-info>
+                  </mat-tab>
+                  <mat-tab>
+                    <ng-template mat-tab-label>{{ 'TASK.DETAIL_TAB_COLLATERAL_INFO' | translate }}</ng-template>
+                    <app-collateral-info
+                      [litigationId]="litigationDetail.litigationId || ''"
+                      (tabIndexChanged)="setSubTabIndex($event)"
+                      *ngIf="collateralInfo"
+                      [collateralInfo]="collateralInfo"
+                      [hasAsset]="true">
+                    </app-collateral-info>
+                  </mat-tab>
+                </mat-tab-group>
+              </ng-container>
+            </mat-tab>
+            <mat-tab>
+              <ng-template mat-tab-label>คดีแพ่ง</ng-template>
+              <ng-container *ngIf="tabIndex === 2">
+                <mat-tab-group
+                  class="tab-group-container"
+                  [(selectedIndex)]="subTabIndex"
+                  mat-align-tabs="start"
+                  (selectedTabChange)="onSubTabChanged($event)">
+                  <mat-tab>
+                    <ng-template mat-tab-label>{{ 'TASK.DETAIL_TAB_PREPARE_TO_SUE_INFO' | translate }}</ng-template>
+                    <app-prepare-lawsuit [activetabNavBar]="false" [tabIndex]="underSubTabIndex"></app-prepare-lawsuit>
+                  </mat-tab>
+                  <mat-tab>
+                    <ng-template mat-tab-label>{{ 'TASK.DETAIL_TAB_SUE_INFO' | translate }}</ng-template>
+                    <app-suit-efiling
+                      [litigationId]="litigationDetail.litigationId || ''"
+                      [caseGroupDto]="litigationCaseGroupDto"
+                      [mode]="suitMode"
+                      [editCourtLevel]="suitCourtLevel"
+                      [suitLitigationCaseId]="suitLitigationCaseId"
+                      (checkBannerUploadEFiling)="setBannerUploadEFiling()"
+                      (refreshTaskDetailWithoutRefresh)="refreshTaskDetail(taskId)">
+                    </app-suit-efiling>
+                  </mat-tab>
+                  <mat-tab>
+                    <ng-template mat-tab-label>{{ 'TASK.DETAIL_TAB_COURT_TRIAL' | translate }}</ng-template>
+                    <app-trial></app-trial>
+                  </mat-tab>
+                  <mat-tab>
+                    <ng-template mat-tab-label>{{ 'TASK.DETAIL_TAB_JUDGE' | translate }}</ng-template>
+                    <app-court [tabIndex]="underSubTabIndex"></app-court>
+                  </mat-tab>
+                </mat-tab-group>
+              </ng-container>
+            </mat-tab>
+            <mat-tab [label]="auditTabLabel">
+              <ng-template matTabContent>
+                <app-audit-log></app-audit-log>
+              </ng-template>
+            </mat-tab>
+          </mat-tab-group>
+        </ng-container>
+      </ng-container>
+
+      <!-- Close Litigation (still in LITIGATION mode) -->
+      <ng-container *ngIf="taskCode === 'CONSIDER_REMAINING_COSTS' || taskCode === 'CONSIDER_APPROVE_CLOSE_LG'">
+        <app-close-lg-detail></app-close-lg-detail>
+      </ng-container>
+
+      <!-- [LEX2-46] การนำเข้างานรอชะลอ/ยุติดำเนินคดีอัตโนมัติ  (still in LITIGATION mode) -->
+      <ng-container
+        *ngIf="
+          taskCode === 'AUTO_CREATE_DRAFT_CESSATION' ||
+          taskCode === 'AUTO_CREATE_DRAFT_DEFERMENT' ||
+          taskCode === 'REQUEST_REVISE_DEFERMENT' ||
+          taskCode === 'REQUEST_REVISE_CESSATION' ||
+          taskCode === 'SAVE_DRAFT_DEFERMENT' ||
+          taskCode === 'SAVE_DRAFT_CESSATION' ||
+          taskCode === 'R2E07-01-A'
+        ">
+        <app-deferment-detail
+          [documentUpload]="documentUpload"
+          [dataForm]="defermentForm"
+          [currentLitigationObj]="_currentLitigation"
+          [taskId]="taskId"
+          [defermentState]="defermentState"
+          [defermentMessageBanner]="defermentMsgBanner"
+          [cessationState]="cessationState"
+          [cessationMessageBanner]="cessationMsgBanner"
+          [hasAutoCreate]="hasAutoCreate"
+          [defermentCategory]="taskCode === 'R2E07-01-A' ? 'EXECUTION' : 'PROSECUTE'"
+          [hasCeased]="
+            taskCode === 'REQUEST_REVISE_CESSATION' || taskCode === 'SAVE_DRAFT_CESSATION'
+          "></app-deferment-detail>
+      </ng-container>
+
+      <!-- CONFIGURATION Mode -->
+      <ng-container *ngIf="taskMode?.mode === 'CONFIGURATION'">
+        <div class="content-container gap-top">
+          <app-configuration-matching [taskId]="taskId"></app-configuration-matching>
+        </div>
+      </ng-container>
+
+      <!-- [LEX2-72/74]  -->
+      <ng-container *ngIf="taskCode === 'RECEIVE_ADVANCE_PAYMENT'">
+        <app-advance-detail-payment
+          [dataForm]="dataForm"
+          [isFromTask]="true"
+          [isSubmit]="isSubmit"
+          [statusCode]="statusCode"></app-advance-detail-payment>
+      </ng-container>
+    </div>
+  </ng-template>
+</div>

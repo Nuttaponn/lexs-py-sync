@@ -1,0 +1,36 @@
+@import '/src/styles/colors';
+
+.content-container {
+  margin: 24px;
+  background: $white;
+  border: 1px solid map-get($ktb-palette-biz-black, 10);
+  box-shadow: 0px 2px 4px map-get($ktb-palette-biz-black, B008);
+  border-radius: 8px;
+
+  .title-content {
+    padding: 1em;
+
+    .title-text {
+      margin: 0 1em;
+    }
+  }
+
+  .tab-group-content {
+    .search-filter-content {
+      padding: 1em;
+    }
+
+    .data-table-content {
+      margin: 1em;
+
+      .table-btn-group {
+        padding: 5px 0;
+      }
+
+      .yellow-golden {
+        color: map-get($ktb-palette-golden-yellow, 700); // yl-golden-80
+        background-color: map-get($ktb-palette-golden-yellow, 100); // yl-golden-20
+      }
+    }
+  }
+}

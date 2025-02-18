@@ -1,0 +1,41 @@
+.mat-column-order {
+  width: 7%;
+}
+
+.mat-column-accountNo {
+  width: 38%;
+}
+
+.mat-column-tdrInfo {
+  width: 15%;
+}
+
+.mat-column-timeStamp {
+  width: 15%;
+}
+
+.mat-column-action {
+  width: 25%;
+}
+
+.mat-expansion-panel.bill-sub-content {
+  ::ng-deep .mat-expansion-panel-content {
+    .mat-expansion-panel-body {
+      padding: 0;
+    }
+  }
+}
+
+tr.example-detail-row {
+  height: 0;
+}
+
+td > * > .sub-row-detail {
+  height: 32px;
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.label-total-debt {
+  font-size: 16px;
+}

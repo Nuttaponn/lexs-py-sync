@@ -1,0 +1,366 @@
+<div *ngIf="isShowHeader" class="seizure-property-header" fxLayout="row" fxLayoutAlign="space-between center">
+  <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16">
+    <div class="info-icon">
+      <mat-icon svgIcon="icon-Information" class="icon-small"></mat-icon>
+    </div>
+    <h6>{{ headerText }}</h6>
+    <span>จำนวนทรัพย์: </span>
+    <h6>{{ dataSource.filteredData.length }}</h6>
+  </div>
+
+  <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16">
+    <div (click)="onEdit()" *ngIf="canEdit">
+      <mat-icon svgIcon="icon-Edit" class="icon icon-md ml-4"> </mat-icon>
+      <span class="bold">{{ 'COMMON.BUTTON_EDIT' | translate }}</span>
+    </div>
+    <div class="description" (click)="headerExpanded = !headerExpanded">
+      <mat-icon
+        [svgIcon]="headerExpanded ? 'icon-Slide-Hide' : 'icon-Expand'"
+        class="icon icon-hide-show fill-blue ml-4">
+      </mat-icon>
+      <span class="bold">
+        {{ headerExpanded ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate) }}
+      </span>
+    </div>
+  </div>
+</div>
+<div *ngIf="showSelectAll || showSelectCount || showTotal">
+  <div fxLayout="row" class="mt-15 mb-10" fxLayoutAlign="space-between center" fxLayoutGap="12px">
+    <div>
+      <button
+        *ngIf="showSelectAll"
+        id="btn-task-transfer-0"
+        mat-stroked-button
+        class="medium-aw-button overflow-ellipsis"
+        (click)="isSelectAll ? unSelectAll() : selectAll(true)">
+        <mat-icon svgIcon="icon-Checkmark-Circle-Regular" class="icon icon-small"></mat-icon>
+        {{ isSelectAll ? 'ไม่เลือกทั้งหมด' : 'เลือกทั้งหมด' }}
+      </button>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="8">
+      <div *ngIf="showSelectCount" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="8">
+        <span>เลือก:</span>
+        <h6>{{ selection.selected.length }} จาก {{ dataSource.data.length }}</h6>
+      </div>
+      <div *ngIf="showSelectCount || showTotal">
+        <span class="divider-vertical"></span>
+      </div>
+      <div *ngIf="showTotal" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="8">
+        <span>ราคาประเมินรวมของธนาคาร (บาท):</span>
+        <h6>
+          {{ (totalAppraisal | numberDecimal) || '-' }}
+        </h6>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="(!isShowHeader || (isShowHeader && headerExpanded)) && hasAnnounceAuction !== true">
+  <div class="table-scroll section" table-scroll>
+    <table mat-table [dataSource]="pagedData" #seizureListTable>
+      <ng-container matColumnDef="selection" sticky>
+        <th class="text-center" mat-header-cell *matHeaderCellDef>
+          <mat-checkbox
+            (change)="selectAllInPage()"
+            [checked]="!disableSelection ? isAllSelected() : false"
+            [indeterminate]="isIndeterminate()"
+            [disabled]="disableSelection">
+          </mat-checkbox>
+        </th>
+        <td class="text-center" mat-cell *matCellDef="let row; let i = index; let element">
+          <mat-checkbox
+            *ngIf="element.enabled"
+            (click)="$event.stopPropagation()"
+            (change)="onCheck(row)"
+            [disabled]="row.disabled"
+            [id]="row.collateralId"
+            [checked]="selection.isSelected(row.collateralId)">
+          </mat-checkbox>
+          <div *ngIf="!element.enabled">
+            <app-tooltip
+              [params]="[
+                {
+                  content: 'LAWSUIT.DEFERMENT.TOOLTIP_CANNOT_SELECT_EXECUTION_ALREADY' | translate,
+                },
+              ]"
+              [icon]="['icon-Pause-Circle-Grey', 'icon-Pause-Circle-Grey']"
+              [iconClass]="['icon-xmedium']"
+              [isDeferment]="true"></app-tooltip>
+          </div>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="order" sticky>
+        <th mat-header-cell *matHeaderCellDef class="text-center">
+          {{ 'COMMON.LABEL_NO' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element; let rowNo = index" class="text-center">
+          <ng-container>
+            <div>
+              <label [for]="rowNo"></label>
+            </div>
+          </ng-container>
+          <ng-container>
+            {{ (pageIndex - 1) * pageSize + (rowNo + 1) }}
+          </ng-container>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="collateralId" sticky>
+        <th mat-header-cell *matHeaderCellDef columnElevationLeft>
+          {{ 'SEIZURE_PROPERTY.SEIZURE_LIST_INFO.COLLATERAL_NO' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element; let rowNo = index" columnElevationLeft>
+          <div fxLayoutAlign="center" fxLayoutGap="8">
+            <span>
+              {{ element.collateralId || '-' }}
+            </span>
+            <app-tooltip
+              *ngIf="element.updateTimestamp"
+              [params]="[
+                {
+                  content:
+                    'LAWSUIT.DEFERMENT.TOOLTIP_COLLATERAL_HAS_UPDATE'
+                    | translate
+                      : {
+                          DATE: element.updateTimestamp | buddhistEra: 'DD MMMM yyyy',
+                        },
+                },
+              ]"
+              [iconClass]="['icon-small', 'fill-krungthai-red']"
+              [isDeferment]="true"></app-tooltip>
+          </div>
+          <span *ngIf="element.disabledDesc" class="status-label status-failed disable-desc">{{
+            element.disabledDesc || ''
+          }}</span>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="collateralType">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'SEIZURE_PROPERTY.SEIZURE_LIST_INFO.COLLATERAL_TYPE' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <span>
+            {{ element.collateralTypeDesc || '-' }}
+          </span>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="collateralSubType">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'SEIZURE_PROPERTY.SEIZURE_LIST_INFO.COLLATERAL_SUB_TYPE' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <span>
+            {{ element.collateralSubTypeDesc || '-' }}
+          </span>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="documentNo">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'COMMON.LABEL_DOCUMENT_NUMBER' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <span>
+            {{ element.documentNo || '-' }}
+          </span>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="collateralDetails">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'SEIZURE_PROPERTY.SEIZURE_LIST_INFO.DETAIL_ASSET' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" class="new-line">
+          <div class="m-10 detail-cell">
+            {{ element.collateralDetails || '-' }}
+          </div>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="totalAppraisalValue">
+        <th mat-header-cell *matHeaderCellDef class="text-right">
+          {{ 'SEIZURE_PROPERTY.SEIZURE_LIST_INFO.TOTAL_APPRAISAL_VALUE' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" class="text-right">
+          <span>
+            {{ (element.totalAppraisalValue | numberDecimal) || '-' }}
+          </span>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="appraisalDate">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'SEIZURE_PROPERTY.SEIZURE_LIST_INFO.APPRAISAL_DATE' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <span>
+            {{ element.appraisalDate ? (element.appraisalDate | buddhistEra: 'DD/MM/yyyy') : '-' }}
+          </span>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="ownerName">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'SEIZURE_PROPERTY.SEIZURE_LIST_INFO.OWNER_NAME' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <span>
+            {{ element.ownerFullName || '-' }}
+          </span>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="insurancePolicyNumber">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'SEIZURE_PROPERTY.SEIZURE_LIST_INFO.INSURANCE_NO' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <span>
+            {{ (element.insurancePolicyNumber | uppercase) || '-' }}
+          </span>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="litigationId">
+        <th mat-header-cell *matHeaderCellDef class="new-line">
+          {{ 'SEIZURE_PROPERTY.SEIZURE_LIST_INFO.LITIGATION_ID' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div *ngFor="let litigation of element.litigations">
+            <span>{{ (litigation.litigationId | uppercase) || '-' }}/<br /></span>
+            <span class="fill-red">{{ litigation.redCaseNo || '-' }}</span>
+          </div>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="collateralCmsStatus">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'SEIZURE_PROPERTY.SEIZURE_LIST_INFO.COLLATERAL_CMS_STATUS' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <span>
+            {{ (element.collateralCmsStatus | uppercase) || '-' }}
+          </span>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="collateralCaseLexStatus" stickyEnd>
+        <th mat-header-cell *matHeaderCellDef columnElevationRight class="new-line text-center">
+          {{ 'SEIZURE_PROPERTY.SEIZURE_LIST_INFO.COLLATERAL_STATUS' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" columnElevationRight>
+          <div class="status-label status-normal m-auto full-width">
+            {{ element.lexsCollateralStatus | collateralStatus | translate }}
+          </div>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="columns"></tr>
+      <tr mat-row *matRowDef="let row; columns: columns" [class.hidden]="row.hide"></tr>
+    </table>
+  </div>
+  <ng-container [ngTemplateOutlet]="dataNotFound" *ngIf="dataSource.filteredData.length === 0"> </ng-container>
+  <app-paginator
+    #paginator
+    [pageSize]="pageSize"
+    [length]="dataSource.data.length"
+    (page)="onPaging($event)"></app-paginator>
+</div>
+<div *ngIf="(!isShowHeader || (isShowHeader && headerExpanded)) && hasAnnounceAuction === true">
+  <div class="table-scroll section" table-scroll>
+    <table class="collateral-table" multiTemplateDataRows mat-table [dataSource]="pagedData">
+      <ng-container matColumnDef="selection" sticky>
+        <th mat-header-cell *matHeaderCellDef columnElevationLeft></th>
+        <td class="text-center" columnElevationLeft mat-cell *matCellDef="let row; let i = dataIndex; let element">
+          <mat-checkbox
+            *ngIf="element.enabled"
+            [ngClass]="selection.isSelected(row.deedGroupId) ? 'lg-checkbox-checked' : 'lg-checkbox-unchecked'"
+            [id]="row.deedGroupId"
+            [checked]="selection.isSelected(row.deedGroupId)"
+            (click)="$event.stopPropagation()"
+            (change)="onCheckAnnounceAuction(row, element, 'CHECKBOX')"></mat-checkbox>
+          <div *ngIf="!element.enabled">
+            <app-tooltip
+              [params]="[
+                {
+                  content: 'LAWSUIT.DEFERMENT.TOOLTIP_CANNOT_SELECT_EXECUTION_ANNOUNCE' | translate,
+                },
+              ]"
+              [icon]="['icon-Pause-Circle-Grey', 'icon-Pause-Circle-Grey']"
+              [iconClass]="['icon-xmedium']"
+              [isDeferment]="true"></app-tooltip>
+          </div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="order" sticky>
+        <th class="text-center" mat-header-cell *matHeaderCellDef columnElevationLeft>
+          {{ 'COMMON.LABEL_NO' | translate }}
+        </th>
+        <td class="text-center" mat-cell *matCellDef="let element; let rowNo = dataIndex" columnElevationLeft>
+          <ng-container>
+            <div>
+              <label [for]="rowNo"></label>
+            </div>
+          </ng-container>
+          <ng-container>
+            {{ (pageIndex - 1) * pageSizeAnnounce + (rowNo + 1) }}
+          </ng-container>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="lawnaumber" sticky>
+        <th mat-header-cell *matHeaderCellDef columnElevationLeft>{{ 'COMMON.LABEL_LITIGATION_ID' | translate }}</th>
+        <td mat-cell *matCellDef="let element" columnElevationLeft>{{ element.litigationId || '-' }}</td>
+      </ng-container>
+      <ng-container matColumnDef="casenumber">
+        <th mat-header-cell *matHeaderCellDef class="new-line">
+          {{ 'COMMON.LABEL_BLACK_CASE_NO_RED_CASE_NO' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <span> {{ element.blackCaseNo || '-' }} </span><br />
+          <span class="fill-red">
+            {{ element.redCaseNo || '-' }}
+          </span>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="officeexecution">
+        <th mat-header-cell *matHeaderCellDef>{{ 'LAWSUIT.LEGAL_EXECUTION_OFFICE' | translate }}</th>
+        <td mat-cell *matCellDef="let element" class="new-line">
+          <span>
+            {{ element.ledName || '-' }}
+          </span>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="assets">
+        <th mat-header-cell *matHeaderCellDef>{{ 'PROPERTY.PROPERTY_SET_NUMBER' | translate }}</th>
+        <td mat-cell *matCellDef="let element">
+          <span class="link" (click)="collateralAuctionDetail(element)"
+            >{{ 'LAWSUIT.DEFERMENT.ASSETS_NUMBER' | translate }} {{ element.fsubbidnum || '-' }}</span
+          >
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="amountproperty">
+        <th mat-header-cell *matHeaderCellDef class="text-right new-line">
+          {{ 'PROPERTY.PROPERTY_TOTAL' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" class="text-right">{{ element.totalDeeds || '-' }}</td>
+      </ng-container>
+      <ng-container matColumnDef="sell">
+        <th mat-header-cell *matHeaderCellDef>{{ 'PROPERTY.SALES_TYPE' | translate }}</th>
+        <td mat-cell *matCellDef="let element">{{ element.saletypedesc || '-' }}</td>
+      </ng-container>
+      <ng-container matColumnDef="delayed" stickyEnd>
+        <th mat-header-cell *matHeaderCellDef columnElevationRight>
+          {{ 'LAWSUIT.DEFERMENT.DATE_EXECUTION_NUMBER' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let row; let element" columnElevationRight>
+          <ng-container *ngIf="!getAucRound(element.auctionInfos); else linkAppoint">-</ng-container>
+          <ng-template #linkAppoint>
+            <span class="link" (click)="openAddNoteDialog(row, element, 'DETAIL')">{{
+              getAucRound(element.auctionInfos)
+            }}</span>
+          </ng-template>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="tableColumnssale"></tr>
+      <tr mat-row *matRowDef="let row; columns: tableColumnssale"></tr>
+    </table>
+  </div>
+  <ng-container [ngTemplateOutlet]="dataNotFound" *ngIf="dataSource.filteredData.length === 0"> </ng-container>
+  <app-paginator
+    #paginator
+    [pageSize]="pageSizeAnnounce"
+    [length]="dataSource.data.length"
+    (page)="onPaging($event)"></app-paginator>
+</div>
+<ng-template #dataNotFound>
+  <app-message-empty [message]="'COMMON.LABEL_PREFIX_NOT_FOUND'"></app-message-empty>
+</ng-template>

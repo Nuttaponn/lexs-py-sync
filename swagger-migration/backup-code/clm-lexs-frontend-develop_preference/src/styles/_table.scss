@@ -1,0 +1,370 @@
+table {
+  width: 100%;
+  max-width: 100%;
+
+  &.empty tbody tr,
+  &.empty tfoot tr {
+    height: 0;
+    visibility: hidden;
+    display: none;
+  }
+
+  .mat-mdc-header-cell {
+    line-height: 1.5;
+    height: 75px;
+    background-color: map_get($ktb-palette-blue, 80);
+    @include font-style(description, KrungthaiFastBold);
+    color: white;
+    padding: 0 1em !important;
+    border-top: 1px solid map_get($ktb-palette-blue, 900) !important;
+    border-bottom: 1px solid map_get($ktb-palette-blue, 900) !important;
+
+    &.action-cell:last-child {
+      padding-left: 0 !important;
+
+      span.action-label {
+        text-align: left;
+        margin-left: 16px;
+      }
+    }
+  }
+
+  .mat-mdc-cell,
+  .mat-mdc-footer-cell {
+    line-height: 1.5;
+    height: 75px;
+    @include font-style;
+    color: map_get($ktb-palette-biz-gray, 900);
+    padding: 0 1em !important;
+
+    &.action-cell:last-child {
+      padding-left: 0 !important;
+
+      span.action-label {
+        text-align: left;
+        margin-left: 16px;
+      }
+    }
+
+    &.fil-blue {
+      color: $krungthai-blue;
+    }
+
+    &.fil-light-blue {
+      color: $krungthai-light-blue;
+    }
+
+    &.fil-precious-blue {
+      color: $krungthai-precious-blue;
+    }
+
+    &.fil-golden-yellow {
+      color: $krungthai-golden-yellow;
+    }
+
+    &.fil-green {
+      color: $krungthai-green;
+    }
+
+    &.fil-red {
+      color: $krungthai-red;
+    }
+
+    &.fil-orange {
+      color: map-get($ktb-palette-golden-yellow, 700);
+    }
+
+    .error-msg {
+      color: $krungthai-red-600;
+      font-size: $font-tag;
+    }
+  }
+
+  // custome size for index column
+  .mat-column-no.no-col-normal {
+    width: 64px;
+  }
+
+  &.space-pre-line {
+    white-space: pre-line;
+  }
+}
+
+.table-scroll {
+  white-space: nowrap;
+  overflow: auto;
+  max-width: 100%;
+
+  &.has-elevation-left {
+
+    th.elevation-left-staking,
+    td.elevation-left-staking {
+      box-shadow: 3px 0px 2px map-get($ktb-palette-biz-black, B012);
+      transform: scale(1, 1);
+      /* fix shadows appearing behind the cell to its right in chrome (and probably other browsers) */
+    }
+  }
+
+  &.has-elevation-right {
+
+    th.elevation-right-staking,
+    td.elevation-right-staking {
+      box-shadow: -3px 0px 2px map-get($ktb-palette-biz-black, B012);
+    }
+  }
+
+  &.white-space-init {
+    white-space: initial !important;
+  }
+}
+
+.cur-pointer {
+  cursor: pointer;
+}
+
+.cur-text {
+  cursor: text;
+}
+
+.newLine {
+  display: block;
+}
+
+.paginator-container {
+  max-width: 100%;
+  @include font-style;
+  padding: 1em;
+  @include flex-row-justify-space-btw;
+  font-weight: 700;
+
+  .page-action {
+    display: flex;
+
+    .previous {
+      display: flex;
+      font-size: $font-sub-description;
+      color: map-get($ktb-palette-biz-gray, 900);
+
+      &.disabled {
+        color: map-get($ktb-palette-biz-black, 50);
+      }
+    }
+
+    .page {
+      display: flex;
+      margin: 0 1em;
+
+      .page-number {
+        margin: 0 8px;
+        text-align: center;
+        width: 24px;
+        height: 24px;
+
+        &.current-page {
+          background-color: $krungthai-blue;
+          border-radius: 50%;
+          color: $white;
+        }
+      }
+    }
+
+    .next {
+      display: flex;
+      font-size: $font-sub-description;
+      color: map-get($ktb-palette-biz-gray, 900);
+
+      &.disabled {
+        color: map-get($ktb-palette-biz-black, 50);
+      }
+    }
+  }
+}
+
+td.mat-mdc-cell,
+th.mat-mdc-header-cell,
+td.mat-mdc-footer-cell {
+  &.text-left {
+    text-align: left;
+  }
+
+  &.text-center {
+    text-align: center;
+  }
+
+  &.no-pad-left {
+    padding-left: 0px !important;
+  }
+
+  &.text-right {
+    text-align: right;
+  }
+
+  &.space-pre-line {
+    white-space: pre-line;
+  }
+
+  &.text-end {
+    text-align: end;
+  }
+}
+
+tr.mat-mdc-row {
+  &.bg-green-50 {
+    background-color: map-get($ktb-palette-green, 50);
+  }
+
+  &.bg-red-50 {
+    background-color: map-get($ktb-palette-red, 50);
+  }
+}
+
+table.mat-mdc-table thead tr {
+  background-color: map-get($ktb-palette-blue, 700) !important;
+}
+
+th,
+td {
+  &.bg-red {
+    background-color: map-get($ktb-palette-red, 50);
+  }
+
+  &.new-line {
+    white-space: pre;
+  }
+
+  &.bold {
+    font-family: KrungthaiFastBold !important;
+  }
+
+  .display-none {
+    display: none;
+  }
+}
+
+/** check box style */
+th {
+
+  /* FIXED(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
+  .mdc-checkbox__background,
+  .mdc-checkbox__checkmark {
+    border: 2.2px solid white;
+    border-radius: 3px;
+  }
+
+  /* FIXED(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
+  .mdc-checkbox__native-control:enabled:indeterminate~.mdc-checkbox__background {
+    background-color: transparent !important;
+    border-color: white;
+
+    .mdc-checkbox__mixedmark {
+      transform: scaleX(0.75) rotate(0deg) !important;
+    }
+  }
+
+  /* FIXED(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
+  .mat-mdc-checkbox-checked.mat-accent {
+    .mdc-checkbox__background {
+      background-color: map-get($ktb-palette-blue, 700) !important;
+      border: 2.2px solid white !important;
+
+      /* FIXED(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
+      svg .mdc-checkbox__checkmark-path {
+        stroke: white !important;
+      }
+    }
+
+    /* FIXED(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
+    .mdc-checkbox__checkmark {
+      top: -2px;
+      left: -2px;
+      border: 2.2px solid white;
+    }
+  }
+
+}
+
+td {
+
+  /* FIXED(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
+  .mdc-checkbox__background,
+  .mdc-checkbox__checkmark {
+    border: 2.2px solid map-get($ktb-palette-biz-black, 40);
+    border-radius: 3px;
+  }
+
+  /* FIXED(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
+  .mdc-checkbox__native-control:enabled:indeterminate~.mdc-checkbox__background {
+    .mdc-checkbox__mixedmark {
+      transform: scaleX(0.75) rotate(0deg) !important;
+    }
+  }
+
+  /* FIXED(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
+  .mat-mdc-checkbox-checked.mat-accent {
+    .mdc-checkbox__background {
+      background-color: map-get($ktb-palette-blue, 30) !important;
+      border: 2.2px solid map-get($ktb-palette-precious-blue, 50);
+
+      /* FIXED(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
+      svg .mdc-checkbox__checkmark-path {
+        stroke: map-get($ktb-palette-precious-blue, 50) !important;
+      }
+    }
+
+    /* FIXED(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
+    .mdc-checkbox__checkmark {
+      top: -2px;
+      left: -2px;
+      border: 2.2px solid map-get($ktb-palette-precious-blue, 50);
+    }
+  }
+
+  /* FIXED(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
+  .mat-mdc-checkbox.mat-accent.mdc-checkbox--disabled {
+
+    /* FIXED(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
+    .mdc-checkbox__background {
+      border: inherit;
+    }
+
+    /* FIXED(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
+    .mdc-checkbox__native-control:disabled:indeterminate~.mdc-checkbox__background {
+
+      /* FIXED(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
+      background-color: white !important;
+      border: 2px solid #868686;
+      border-radius: 3px;
+
+      /* FIXED(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
+      .mdc-checkbox__mixedmark {
+        border-color: #868686 !important;
+        width: calc(100% - 6px) !important;
+      }
+    }
+  }
+
+  /* FIXED(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
+  .mat-mdc-checkbox-checked.mat-accent.mdc-checkbox--disabled {
+    .mdc-checkbox__native-control:disabled:checked~.mdc-checkbox__background {
+      background-color: $button-disabled-color !important;
+      border: 2.2px solid map-get($ktb-palette-biz-gray, 600);
+
+      /* FIXED(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
+      svg .mdc-checkbox__checkmark-path {
+        stroke: map-get($ktb-palette-biz-gray, 600) !important;
+      }
+    }
+
+    .mdc-checkbox__checkmark {
+      border: 2.2px solid #868686;
+    }
+  }
+
+  &.text-end {
+    text-align: end !important;
+  }
+}
+
+.mdc-data-table__row .mat-mdc-cell {
+  border-bottom-color: rgba(0, 0, 0, 0.12) !important;
+}

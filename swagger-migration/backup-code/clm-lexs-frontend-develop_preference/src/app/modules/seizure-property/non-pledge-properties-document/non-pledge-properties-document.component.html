@@ -1,0 +1,46 @@
+<div class="content-container">
+  <mat-card appearance="outlined" class="mt-16 mb-16 mat-elevation-z">
+    <div class="title-row mb-1em" fxLayout="row" fxLayoutAlign="space-between center">
+      <div fxLayoutAlign="flex-start stretch" fxLayoutGap="24">
+        <div>
+          <h5 class="ml-05em">{{ 'SEIZURE_PROPERTY.DOC_PREP.TITLE' | translate }}</h5>
+        </div>
+      </div>
+    </div>
+    <!-- <mat-divider [inset]="true"></mat-divider> -->
+    <mat-card-content>
+      <mat-accordion>
+        <div class="mt-16 mb-16 sub-expansion" *ngFor="let data of processingDocument">
+          <app-auction-header
+            [title]="data.title"
+            [isMainSub]="true"
+            [showIcon]="true"
+            iconName="icon-Hat"
+            [iconClass]="data?.iconClass"
+            [isMain]="true"
+            [details]="data.details"
+            [expanded]="data.expand"
+            (expand)="data.expand = !data.expand">
+          </app-auction-header>
+          <mat-accordion>
+            <mat-expansion-panel class="expansion-inside" [expanded]="data.expand" hideToggle>
+              <app-upload-multi-file-content
+                [uploadMultiInfo]="uploadMultiInfo"
+                [list]="data.documents"
+                [column]="display"
+                [labelAcceptFile]="''"
+                [readonly]="true">
+              </app-upload-multi-file-content>
+              <ng-container *ngIf="data.documents && data.documents.length === 0" [ngTemplateOutlet]="dataNotFound">
+              </ng-container>
+            </mat-expansion-panel>
+          </mat-accordion>
+        </div>
+      </mat-accordion>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<ng-template #dataNotFound>
+  <app-message-empty [message]="'DOC_PREP.NOT_FOUND_DOC'"></app-message-empty>
+</ng-template>

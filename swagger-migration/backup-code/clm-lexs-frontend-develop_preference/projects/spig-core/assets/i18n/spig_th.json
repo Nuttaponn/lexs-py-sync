@@ -1,0 +1,89 @@
+{
+  "LOCALE": "th",
+  "DATE_LOCALE": "th-TH",
+  "COMMON": {
+    "BUTTON_NEXT": "ถัดไป",
+    "BUTTON_BACK": "ย้อนกลับ",
+    "BUTTON_CONFIRM": "ยืนยัน",
+    "BUTTON_CANCEL": "ยกเลิก",
+    "BUTTON_CHANGE": "แก้ไข",
+    "BUTTON_DELTE": "ลบ",
+    "BUTTON_SAVE": "บันทึก",
+    "BUTTON_OK": "ตกลง",
+    "BUTTON_APPLY": "ยืนยัน",
+    "BUTTON_REJECT": "ไม่อนุมัติ",
+    "BUTTON_APPROVE": "อนุมัติ",
+    "BUTTON_COMPLETE": "เสร็จสิ้น",
+    "BUTTON_SAVE_DARFT": "บันทึกร่าง",
+    "LOG_OUT": "ออกจากระบบ",
+    "CONTINUE": "ดำเนินการต่อ",
+    "PLACEHOLDER_PLEASE_SELECT": "กรุณาเลือก",
+    "SUFFIX_THB": "บาท",
+    "MSG_PROCESSING": "กำลังดำเนินการ\nกรุณารอสักครู่"
+  },
+  "EXCEPTION_CONFIG": {
+    "BUTTON_RIGHT": "ลองอีกครั้ง",
+    "BUTTON_LEFT": "ยกเลิก",
+    "BUTTON_OK": "ตกลง",
+    "TITLE_CONNECTION_ERROR": "เกิดข้อผิดพลาด",
+    "MESSAGE_CONNECTION_ERROR": "เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองใหม่อีกครั้ง",
+    "TITLE_NO_INTERNET": "ไม่มีการเชื่อมต่ออินเทอร์เน็ต",
+    "MESSAGE_NO_INTERNET": "กรุณาเชื่อมต่ออินเทอร์เน็ตและลองใหม่อีกครั้ง",
+    "MESSAGE_SYSTEM_ERROR": "กรุณาลองอีกครั้ง"
+  },
+  "LOGIN": {
+    "APP_TITLE": "SPIG Core",
+    "WELCOME": "ยินดีต้อนรับสู่",
+    "COPYRIGHT": "© สงวนสิทธิ์ พ.ศ.2565 บมจ. ธนาคารกรุงไทย",
+    "LABEL_USER_ID": "รหัสผู้ใช้งาน",
+    "LABEL_PASSWORD": "รหัสผ่าน",
+    "PLACEHOLDER_USER_ID": "ระบุรหัสผู้ใช้งาน",
+    "PLACEHOLDER_PASSWORD": "ระบุรหัสผ่าน",
+    "BUTTON_LOGIN": "เข้าสู่ระบบ",
+    "ERROR_GENERAL": "ขณะนี้ไม่สามารถเชื่อมต่อระบบได้\nกรุณาลองใหม่อีกครั้ง",
+    "ERROR_REQUIRED": "กรุณากรอกข้อมูลช่องนี้",
+    "REMARK": "",
+    "CONTACT": "",
+    "FORCE_LOGOUT_TITLE": "",
+    "FORCE_LOGOUT_MESSAGE": "ท่านต้องการเข้าสู่ระบบบนอุปกรณ์นี้\nและออกจากระบบบนอุปกรณ์อื่นหรือไม่",
+    "FORCE_LOGOUT_RIGHT_BUTTON": "เข้าสู่ระบบ",
+    "FORCE_LOGOUT_LEFT_BUTTON": "ยกเลิก"
+  },
+  "TIMEOUT_WARNING": {
+    "TITLE": "คุณต้องการดำเนินการต่อหรือไม่",
+    "MESSAGE": "เนื่องจากไม่มีการใช้งานระบบเป็นเวลานาน คุณจะถูกออกจากระบบภายใน",
+    "MINS": "นาที",
+    "SECS": "วินาที",
+    "FORCE_TITLE": "ออกจากระบบเรียบร้อยแล้ว",
+    "FORCE_MESSAGE": "ออกจากระบบแล้ว เนื่องจากคุณไม่ได้ทำรายการภายในระยะเวลาที่ธนาคารกำหนด กรุณาเข้าระบบใหม่อีกครั้ง",
+    "PREFIX_MSG": "เหลือเวลาทำรายการอีก",
+    "SUFFIX_MSG": "\nหากไม่ทำรายการต่อ คุณจะออกจากระบบโดยอัตโนมัติ"
+  },
+  "FORM_ERROR_MSG": {
+    "INVALID": "ข้อมูลไม่ถูกต้อง",
+    "REQUIRED": "กรุณากรอกข้อมูลช่องนี้",
+    "INCORRECT": "ยอดที่กรอกห้ามเกินภาระหนี้",
+    "EXCEED": "ยอดที่กรอกห้ามเกินจำนวนเงินที่\nใช้ตัดบัญชีคงเหลือ",
+    "MORETHANDEBT": "จำนวนเงินที่ระบุต้องไม่เกินจำนวนเงิน\nคงเหลือสำหรับตัดหักชำระหนี้"
+  },
+  "DIALOG": {
+    "ALERT_BUTTON_OK": "ตกลง",
+    "CONFIRM_BUTTON_CONFIRM": "ยืนยัน",
+    "CONFIRM_BUTTON_CANCEL": "ยกเลิก",
+    "SHOW_BUTTON": "ตกลง",
+    "EXPAND_BUTTON": "ตกลง",
+    "EXPAND_MORE_INFO_TEXT": "ดูข้อมูลเพิ่มเติม",
+    "EXPAND_DEFAULT_DETAIL_TITLE": "เนื่องจาก"
+  },
+  "DROPDOWN": {
+    "SEARCH": "ค้นหา",
+    "SELECT_ALL": "เลือกทั้งหมด"
+  },
+  "PAGINATION": {
+    "RESULT": "ผลลัพธ์",
+    "FROM": "จาก",
+    "PREVIOUS": "ก่อนหน้า",
+    "NEXT": "ถัดไป",
+    "LABEL_RESULT": "ผลลัพธ์: {{START}} - {{FROM}} จาก {{TOTAL}}"
+  }
+}

@@ -1,0 +1,131 @@
+<app-action-bar
+  (backButtonHandler)="onBack($event)"
+  [hasPrimaryButton]="actionBar.hasPrimary"
+  [primaryButtonText]="actionBar.primaryText || ''"
+  [primaryButtonIcon]="actionBar.primaryIcon || ''"
+  [hasCancelButton]="actionBar.hasCancel"
+  [subButtonList]="subButtonList"
+  (subButtonHandler)="subButtonHandler($event)"
+  [showNavBarInformation]="true">
+  <ng-container navBarInformationTemplate>
+    <mat-icon svgIcon="icon-License" class="icon icon-xmedium default-cursor"></mat-icon>
+    <span class="ml-05em">{{ 'LAWSUIT.TITLE_LAWSUIT_DETAIL' | translate }}</span>
+  </ng-container>
+</app-action-bar>
+
+<div class="body-container action-bar-margin">
+  <div fxLayout="row" *ngIf="isAddsubAccountBannerSuccess">
+    <div class="banner-content">
+      <app-message-banner [message]="messageBannerMapper || ''"> </app-message-banner>
+    </div>
+  </div>
+
+  <div
+    fxLayout="row"
+    *ngIf="
+      !!cessationTypeBanner &&
+      !!cessationMsgBanner &&
+      ((cessationState === 'CESSATION_PENDING_APPROVED' && responseUnitType !== null) || cessationState !== 'DEFERMENT')
+    ">
+    <div class="banner-content">
+      <app-message-banner
+        [type]="cessationTypeBanner"
+        [message]="cessationMsgBanner"
+        [size]="'large'"
+        [actionButtonBorder]="false"
+        actionButtonIcon="icon-Expand"
+        [actionButtonClass]="getDefermentActionButtonClass()"
+        [actionButton]="'COMMON.BUTTON_VIEW_DETAIL' | translate"
+        (actionButtonHandler)="onClickBannerCessation()">
+      </app-message-banner>
+    </div>
+  </div>
+  <div
+    fxLayout="row"
+    *ngIf="
+      !!defermentTypeBanner &&
+      !!defermentMsgBanner &&
+      ((defermentState === 'NORMAL_PENDING_APPROVED' && responseUnitType !== null) || defermentState !== 'NORMAL') &&
+      !(cessationState === 'CESSATION')
+    ">
+    <div class="banner-content">
+      <app-message-banner
+        [type]="defermentTypeBanner"
+        [message]="defermentMsgBanner"
+        [size]="'large'"
+        [actionButtonBorder]="false"
+        actionButtonIcon="icon-Expand"
+        [actionButtonClass]="getDefermentActionButtonClass()"
+        [actionButton]="'COMMON.BUTTON_VIEW_DETAIL' | translate"
+        (actionButtonHandler)="onClickBanner()">
+      </app-message-banner>
+    </div>
+  </div>
+
+  <div fxLayout="row" *ngIf="!litigationDetail.litigationClosed && litigationDetail?.litigationCloseInfo?.litigationId">
+    <div class="banner-content">
+      <app-message-banner
+        type="warn-normal"
+        [message]="closeStartedBannerMessage"
+        [size]="'medium'"></app-message-banner>
+    </div>
+  </div>
+  <div fxLayout="row" *ngIf="!!defermentExecActiveBanner.message">
+    <div class="banner-content">
+      <app-message-banner
+        [type]="defermentExecActiveBanner.type"
+        [message]="defermentExecActiveBanner.message"
+        [actionButtonClass]="defermentExecActiveBanner.actionButtonClass"
+        [actionButtonBorder]="false"
+        [actionButton]="defermentExecActiveBanner.actionButton"
+        icon="icon-Error"
+        [actionButtonIcon]="defermentExecActiveBanner.actionButtonIcon"
+        [size]="defermentExecActiveBanner.size"
+        (actionButtonHandler)="onClickBanner('EXEC_ACTIVE')"></app-message-banner>
+    </div>
+  </div>
+  <div fxLayout="row" *ngIf="legalExecutionDefermentState">
+    <div class="banner-content">
+      <app-message-banner
+        [type]="defermentExcutionBanner.type"
+        [message]="defermentExcutionBanner.message"
+        [actionButtonClass]="defermentExcutionBanner.actionButtonClass"
+        [actionButtonBorder]="false"
+        [actionButton]="defermentExcutionBanner.actionButton"
+        icon="icon-Error"
+        [actionButtonIcon]="defermentExcutionBanner.actionButtonIcon"
+        [size]="defermentExcutionBanner.size"
+        (actionButtonHandler)="onClickBanner()"></app-message-banner>
+    </div>
+  </div>
+
+  <div fxLayout="row" *ngIf="litigationDetail?.hasLogisticDoc">
+    <div class="banner-content">
+      <app-message-banner
+        type="info"
+        [message]="'LAWSUIT.BANNER_DOCS_RETURN'"
+        [actionButtonBorder]="false"
+        actionButtonClass="bold  icon-small-xm  info"
+        [actionButton]="'LAWSUIT.DOWNLOAD_COVER_SHEET' | translate"
+        actionButtonIcon="icon-Download"
+        (actionButtonHandler)="onClickDownloadCopy()">
+      </app-message-banner>
+    </div>
+  </div>
+  <app-lawsuit-detail-head [litigationDetail]="litigationDetail"></app-lawsuit-detail-head>
+
+  <div class="mt-24 mb-24">
+    <nav mat-tab-nav-bar [tabPanel]="tabPanel">
+      <a
+        mat-tab-link
+        *ngFor="let tab of tabsInfo; let i = index"
+        (click)="onRouterLink(tab)"
+        [active]="tab.index === tabIndex"
+        >{{ tab.label | translate }}
+      </a>
+    </nav>
+    <mat-tab-nav-panel #tabPanel>
+      <router-outlet></router-outlet>
+    </mat-tab-nav-panel>
+  </div>
+</div>

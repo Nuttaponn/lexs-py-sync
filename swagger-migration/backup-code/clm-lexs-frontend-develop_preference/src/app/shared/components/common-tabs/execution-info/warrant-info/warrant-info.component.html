@@ -1,0 +1,413 @@
+<ng-container *ngIf="writOfExecDataSoure.length === 0; else contentTemplate">
+  <app-message-empty message="ไม่มีคดีหรือข้อมูลที่เกี่ยวข้อง"></app-message-empty>
+</ng-container>
+
+<ng-template #contentTemplate>
+  <div *ngFor="let element of writOfExecDataSoure; let i = index" class="content-container no-horizontal-gap">
+    <div class="inner-container-padding">
+      <div fxLayout="row" fxLayoutAlign="space-between center" class="title-content bg-blue-00">
+        <div fxLayout="row" fxLayoutAlign="space-between center">
+          <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="5px" class="p-0">
+            <mat-icon svgIcon="icon-Stack" class="icon icon-medium"></mat-icon>&nbsp;&nbsp;
+            <h5>
+              {{ 'LAWSUIT.SUIT.LIGITATION_CASE_TITLE' | translate }}
+              {{ writOfExecs.length - i }}
+            </h5>
+            &nbsp;&nbsp;
+          </div>
+          <div fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="5px">
+            <span class="label-black"> {{ 'LAWSUIT.CASE_NUMBER_BLACK' | translate }}</span>
+            <div *ngIf="element.courtBlackCaseNo">
+              <h6>{{ element.courtBlackCaseNo }}</h6>
+            </div>
+          </div>
+          &nbsp;&nbsp;
+          <span> </span>
+          <div fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="5px">
+            <span class="label-black"> {{ 'LAWSUIT.CASE_NUMBER_RED' | translate }}</span>
+            <div *ngIf="element.courtRedCaseNo" class="fill-red">
+              <h6>{{ element.courtRedCaseNo }}</h6>
+            </div>
+          </div>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="8px">
+          <div>
+            <button
+              [disabled]="!showButtonWithdrawWritExecution"
+              class="long-button ml-10"
+              type="button"
+              mat-stroked-button
+              (click)="onWithdrawWritExecution(element)">
+              {{ 'LAWSUIT.WITHDRAW_EXECUTION.BUTTON_LABEL' | translate }}
+            </button>
+          </div>
+          <div class="description" (click)="isOpened2 = !isOpened2">
+            <mat-icon [svgIcon]="isOpened2 ? 'icon-Slide-Hide' : 'icon-Expand'" class="icon icon-hide-show fill-blue">
+            </mat-icon
+            >{{ isOpened2 ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate) }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <mat-expansion-panel [expanded]="isOpened2" hideToggle>
+      <mat-accordion class="accordion-headers-align">
+        <div class="mat-elevation-z0 no-horizontal-padding">
+          <div fxLayout="row" class="title-content no-horizontal-padding" fxLayoutGap="5px">
+            <div fxLayout="row" fxLayoutAlign=" center">
+              <mat-icon svgIcon="icon-Arrow-Revert" class="icon icon-medium"></mat-icon>
+              <div class="title-text">
+                <h6>
+                  {{ 'LAWSUIT.TITLE_REQUEST_WITHDRAWN_EXECUTION' | translate }}
+                </h6>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <ng-container>
+          <div
+            class="table-scroll"
+            table-scroll
+            *ngIf="
+              getWithdrawWritOfExecList(element.litigationCaseId || 0) &&
+                getWithdrawWritOfExecList(element.litigationCaseId || 0).length > 0;
+              else emptyRequestWithdrawnExecution
+            ">
+            <table mat-table [dataSource]="getWithdrawWritOfExecList(element.litigationCaseId || 0)">
+              <ng-container matColumnDef="no">
+                <th mat-header-cell *matHeaderCellDef class="no-col-normal text-center">
+                  {{ 'COMMON.LABEL_NO' | translate }}
+                </th>
+                <td mat-cell *matCellDef="let elm; let rowNo = index" class="no-col-normal text-center">
+                  {{ rowNo + 1 }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="withdrawWritOfExecDatetime">
+                <th mat-header-cell *matHeaderCellDef>
+                  <div class="col-withdraw-writ-of-exec-datetime">
+                    {{ 'LAWSUIT.WARRANT.TABLE_HEADER.WITHDRAW_DATE' | translate }}
+                  </div>
+                </th>
+                <td mat-cell *matCellDef="let elm; let i = index">
+                  <div
+                    class="link"
+                    (click)="
+                      navigateToWithdrawnWritWxecution(elm.withdrawWritOfExecId, element?.litigationCaseId || 0)
+                    ">
+                    {{ elm?.createdTimestamp ? (elm.createdTimestamp | buddhistEra: 'DD/MM/yyyy') : '-' }}
+                  </div>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="withdrawWritOfExecReason">
+                <th mat-header-cell *matHeaderCellDef>
+                  <div class="col-withdraw-writ-of-exec-reason">
+                    {{ 'LAWSUIT.WARRANT.TABLE_HEADER.WITHDRAW_REASON' | translate }}
+                  </div>
+                </th>
+                <td mat-cell *matCellDef="let elm; let i = index">
+                  <div
+                    [innerHTML]="
+                      elm?.withdrawWritOfExecReason === '01'
+                        ? ('LAWSUIT.WARRANT.NO_REMAIN_DEBT' | translate)
+                        : ('LAWSUIT.WARRANT.NO_REASON' | translate)
+                    "></div>
+                  <span *ngIf="elm?.withdrawWritOfExecReason === '02'">{{
+                    elm.withdrawWritOfExecOtherReasonRemark
+                  }}</span>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="initBy">
+                <th mat-header-cell *matHeaderCellDef>
+                  <div class="col-init-by">{{ 'LAWSUIT.WARRANT.TABLE_HEADER.WITHDRAW_AUTHORITY' | translate }}</div>
+                </th>
+                <td mat-cell *matCellDef="let elm; let i = index">
+                  <div *ngIf="elm.initBy">
+                    {{
+                      (elm.initBy || '') +
+                        '-' +
+                        (elm.initByTitle || '') +
+                        (elm.initByName || '') +
+                        ' ' +
+                        (elm.initBySurname || '')
+                    }}
+                  </div>
+                  <div *ngIf="!elm.initBy">-</div>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="approval">
+                <th mat-header-cell *matHeaderCellDef>
+                  <div class="col-approval">{{ 'LAWSUIT.WARRANT.TABLE_HEADER.WITHDRAW_ORDER_RESULT' | translate }}</div>
+                </th>
+                <td mat-cell *matCellDef="let elm; let i = index">
+                  <ng-container [ngSwitch]="elm?.approval?.reviewResult">
+                    <div *ngSwitchCase="'E'">
+                      <div *ngIf="elm?.status === 'CANCELLED'">
+                        <span class="status-label m-auto ml-8 status-failed text-center">
+                          {{ 'COMMON.BUTTON_CANCEL' | translate }}
+                        </span>
+                      </div>
+                      <div *ngIf="elm?.status !== 'CANCELLED'">
+                        <span class="status-label m-auto ml-8 status-pending text-center">
+                          {{ 'COMMON.LABEL_SEND_BACK_APPROVAL' | translate }}
+                        </span>
+                        <app-tooltip
+                          [params]="[
+                            {
+                              content: ('COMMON.LABEL_REASON' | translate) + ': ' + elm?.approval?.rejectReason,
+                            },
+                          ]">
+                        </app-tooltip>
+                      </div>
+                    </div>
+                    <div *ngSwitchCase="'A'">
+                      <span class="status-label m-auto ml-8 status-success text-center">
+                        <mat-icon [svgIcon]="'icon-Mark'" class="icon icon-small"></mat-icon>
+                        {{ 'COMMON.LABEL_APPROVE' | translate }}
+                      </span>
+                    </div>
+                    <div *ngSwitchCase="'R'">
+                      <span class="status-label m-auto ml-8 status-failed text-center">
+                        {{ 'COMMON.LABEL_NOT_APPROVE' | translate }}
+                      </span>
+                      <app-tooltip
+                        [params]="[
+                          {
+                            content: ('COMMON.LABEL_REASON' | translate) + ': ' + elm?.approval?.rejectReason,
+                          },
+                        ]">
+                      </app-tooltip>
+                    </div>
+                  </ng-container>
+                  <div *ngIf="!elm?.approval || !elm?.approval?.reviewResult">
+                    <span class="status-label m-auto ml-8 status-pending text-center">
+                      {{ 'COMMON.LABEL_PENDING_APPROVE' | translate }}
+                    </span>
+                  </div>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="publicAuctionLawyerName" stickyEnd>
+                <th mat-header-cell *matHeaderCellDef columnElevationRight>
+                  <div class="col-public-auction-lawyer-name">
+                    {{ 'LAWSUIT.WARRANT.TABLE_HEADER.RESPONSIBLE_LAWYER' | translate }}
+                  </div>
+                </th>
+                <td mat-cell *matCellDef="let elm; let i = index">
+                  <div *ngIf="elm.publicAuctionLawyerId && !statusNotShowLawyer(elm.status)">
+                    {{
+                      (elm.publicAuctionLawyerId || '') +
+                        '-' +
+                        (elm.publicAuctionLawyerTitle || '') +
+                        (elm.publicAuctionLawyerName || '') +
+                        ' ' +
+                        (elm.publicAuctionLawyerSurname || '')
+                    }}
+                  </div>
+                  <div *ngIf="!elm.publicAuctionLawyerId || statusNotShowLawyer(elm.status)">-</div>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="withdrawWritOfExecResult" stickyEnd>
+                <th mat-header-cell *matHeaderCellDef columnElevationRight>
+                  <div class="col-withdraw-writ-of-exec-result">
+                    {{ 'LAWSUIT.WARRANT.TABLE_HEADER.WITHDRAW_RESULT' | translate }}
+                  </div>
+                </th>
+                <td mat-cell *matCellDef="let elm; let i = index">
+                  <div *ngIf="elm.withdrawWritOfExecResult" class="status-label m-auto ml-8 status-success">
+                    {{ 'LAWSUIT.WARRANT.STATUS.SAVE_COMPLETE' | translate }}
+                  </div>
+                  <div *ngIf="!elm.withdrawWritOfExecResult && !statusShowWithdrawWritOfExecResult(elm.status)">-</div>
+                  <div
+                    *ngIf="!elm.withdrawWritOfExecResult && statusShowWithdrawWritOfExecResult(elm.status)"
+                    class="status-label m-auto ml-8 status-pending">
+                    {{ 'LAWSUIT.WARRANT.STATUS.PENDING_SAVE' | translate }}
+                  </div>
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="columnsRequestWithdrawnExecution"></tr>
+              <tr mat-row *matRowDef="let row; columns: columnsRequestWithdrawnExecution"></tr>
+            </table>
+            <br />
+          </div>
+        </ng-container>
+
+        <div class="mat-elevation-z0 no-horizontal-padding">
+          <div
+            fxLayout="row"
+            class="title-content no-horizontal-padding"
+            fxLayoutAlign="center center"
+            fxLayoutGap="5px">
+            <div fxLayout="row" fxLayoutAlign="center center">
+              <div fxLayout="row" fxLayoutAlign="center center">
+                <mat-icon svgIcon="icon-Document-Text" class="icon icon-medium"></mat-icon>
+                <div class="title-text">
+                  <h6>{{ 'LAWSUIT.LIST_OF_LEGAL_DOCUMENT' | translate }}</h6>
+                </div>
+              </div>
+              <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
+                <span class="label-black">
+                  <mat-icon
+                    svgIcon="icon-Asset"
+                    class="icon icon-medium"
+                    [ngClass]="
+                      getStatusCompltedRecord(i) === element.writOfExecSubmissions?.length
+                        ? 'fill-krungthai-green'
+                        : 'fill-gold'
+                    "></mat-icon>
+                  {{ 'LAWSUIT.READINESS_ISSUING_WARRANT_EXECUTION' | translate }}:
+                </span>
+                <div>
+                  <h6>{{ getStatusCompltedRecord(i) }}/{{ element.writOfExecSubmissions?.length || 0 }}</h6>
+                </div>
+              </div>
+            </div>
+            <div fxFlex></div>
+            <button type="button" mat-flat-button color="primary" class="medium-button" (click)="onViewDetail(element)">
+              {{ 'COMMON.BUTTON_VIEW_DETAIL' | translate }}
+            </button>
+          </div>
+        </div>
+        <ng-container
+          *ngIf="
+            !!element.writOfExecStatus && element.writOfExecStatus !== 'R2E04-01-2B_CREATE';
+            else emptySubmissions
+          ">
+          <div *ngIf="element.writOfExecSubmissions && element.writOfExecSubmissions.length > 0; else emptySubmissions">
+            <table mat-table [dataSource]="element.writOfExecSubmissions">
+              <ng-container matColumnDef="no">
+                <th mat-header-cell *matHeaderCellDef class="no-col-normal text-center">
+                  {{ 'COMMON.LABEL_NO' | translate }}
+                </th>
+                <td mat-cell *matCellDef="let elm; let rowNo = index" class="no-col-normal text-center">
+                  {{ rowNo + 1 }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="detail">
+                <th mat-header-cell *matHeaderCellDef>{{ 'LAWSUIT.TAB_DOCUMENTS_DETAIL' | translate }}</th>
+                <td mat-cell *matCellDef="let elm; let i = index">
+                  <ng-container *ngIf="i === 0">
+                    <span>{{ 'LAWSUIT.WARRANT.POWER_OF_ATTORNEY_DOCUMENT' | translate }}</span
+                    ><span
+                      class="status-label m-auto ml-8"
+                      [ngClass]="{
+                        'status-pending': !!!element.powerOfAttorneyDocumentId,
+                        'status-success': !!element.powerOfAttorneyDocumentId,
+                      }">
+                      <mat-icon
+                        *ngIf="!!element.powerOfAttorneyDocumentId"
+                        [svgIcon]="'icon-Mark'"
+                        class="icon icon-small"></mat-icon>
+                      {{
+                        !!!element.powerOfAttorneyDocumentId
+                          ? ('LAWSUIT.WARRANT.STATUS.PENDING_SAVE' | translate)
+                          : ('LAWSUIT.WARRANT.STATUS.SAVE_COMPLETE' | translate)
+                      }}
+                    </span>
+                  </ng-container>
+                  <ng-container *ngIf="i !== 0">
+                    <span>{{
+                      i === 1
+                        ? ('LAWSUIT.WARRANT.LEGAL_EXECUTION_REQUEST' | translate)
+                        : ('LAWSUIT.WARRANT.NO_LEGAL_EXECUTION_REQUEST' | translate: { INDEX: i })
+                    }}</span
+                    ><span
+                      class="status-label m-auto ml-8"
+                      [ngClass]="{
+                        'status-pending': !!!elm.submissionId || !!!elm.respondCode,
+                        'status-success': !!elm.submissionId && elm.respondCode === 'A',
+                        'status-failed': !!elm.submissionId && elm.respondCode === 'R',
+                      }">
+                      <mat-icon
+                        *ngIf="!!elm.submissionId && elm.respondCode === 'A'"
+                        [svgIcon]="'icon-Mark'"
+                        class="icon icon-small"></mat-icon>
+                      {{
+                        !!elm.submissionId && !!elm.respondCode
+                          ? elm.respondCode === 'A'
+                            ? ('LAWSUIT.WARRANT.STATUS.SAVE_COMPLETE' | translate)
+                            : ('LAWSUIT.WARRANT.STATUS.SAVE_COMPLETE_BUT_NOT_APPROVE' | translate)
+                          : ('LAWSUIT.WARRANT.STATUS.PENDING_SAVE' | translate)
+                      }}
+                    </span>
+                  </ng-container>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="writOfExecDebtTotalDebt">
+                <th mat-header-cell *matHeaderCellDef>{{ 'LAWSUIT.TAB_FILLING_DATE' | translate }}</th>
+                <td mat-cell *matCellDef="let elm">
+                  {{ elm?.submitDate ? (elm.submitDate | buddhistEra: 'DD/MM/yyyy') : '-' }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="writOfExecDebtAccountsDateTime">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ 'LAWSUIT.TAB_LITIGATION_SUPREME_DIRECTIVE_DATE' | translate }}
+                </th>
+                <td mat-cell *matCellDef="let elm">
+                  {{ elm?.respondDate ? (elm.respondDate | buddhistEra: 'DD/MM/yyyy') : '-' }}
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="columnsDetail"></tr>
+              <tr mat-row *matRowDef="let row; columns: columnsDetail"></tr>
+            </table>
+          </div>
+        </ng-container>
+      </mat-accordion>
+    </mat-expansion-panel>
+  </div>
+</ng-template>
+
+<ng-template #emptySubmissions>
+  <table mat-table>
+    <ng-container matColumnDef="no">
+      <th mat-header-cell *matHeaderCellDef class="no-col-normal text-center">
+        {{ 'COMMON.LABEL_NO' | translate }}
+      </th>
+    </ng-container>
+    <ng-container matColumnDef="detail">
+      <th mat-header-cell *matHeaderCellDef>{{ 'LAWSUIT.TAB_DOCUMENTS_DETAIL' | translate }}</th>
+    </ng-container>
+    <ng-container matColumnDef="writOfExecDebtTotalDebt">
+      <th mat-header-cell *matHeaderCellDef>{{ 'LAWSUIT.TAB_FILLING_DATE' | translate }}</th>
+    </ng-container>
+    <ng-container matColumnDef="writOfExecDebtAccountsDateTime">
+      <th mat-header-cell *matHeaderCellDef>{{ 'LAWSUIT.TAB_LITIGATION_SUPREME_DIRECTIVE_DATE' | translate }}</th>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="columnsDetail"></tr>
+    <tr mat-row *matRowDef="let row; columns: columnsDetail"></tr>
+  </table>
+  <div>
+    <app-message-empty [message]="'LAWSUIT.WARRANT.MESSAGE_EMPTY'"></app-message-empty>
+  </div>
+</ng-template>
+
+<ng-template #emptyRequestWithdrawnExecution>
+  <table mat-table>
+    <ng-container matColumnDef="no">
+      <th mat-header-cell *matHeaderCellDef class="no-col-normal text-center">
+        {{ 'COMMON.LABEL_NO' | translate }}
+      </th>
+    </ng-container>
+    <ng-container matColumnDef="withdrawWritOfExecDatetime">
+      <th mat-header-cell *matHeaderCellDef>{{ 'LAWSUIT.WARRANT.TABLE_HEADER.WITHDRAW_DATE' | translate }}</th>
+    </ng-container>
+    <ng-container matColumnDef="withdrawWritOfExecReason">
+      <th mat-header-cell *matHeaderCellDef>{{ 'LAWSUIT.WARRANT.TABLE_HEADER.WITHDRAW_REASON' | translate }}</th>
+    </ng-container>
+    <ng-container matColumnDef="initBy">
+      <th mat-header-cell *matHeaderCellDef>{{ 'LAWSUIT.WARRANT.TABLE_HEADER.WITHDRAW_AUTHORITY' | translate }}</th>
+    </ng-container>
+    <ng-container matColumnDef="approval">
+      <th mat-header-cell *matHeaderCellDef>{{ 'LAWSUIT.WARRANT.TABLE_HEADER.WITHDRAW_ORDER_RESULT' | translate }}</th>
+    </ng-container>
+    <ng-container matColumnDef="publicAuctionLawyerName">
+      <th mat-header-cell *matHeaderCellDef>{{ 'LAWSUIT.WARRANT.TABLE_HEADER.RESPONSIBLE_LAWYER' | translate }}</th>
+    </ng-container>
+    <ng-container matColumnDef="withdrawWritOfExecResult">
+      <th mat-header-cell *matHeaderCellDef>{{ 'LAWSUIT.WARRANT.TABLE_HEADER.WITHDRAW_RESULT' | translate }}</th>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="columnsRequestWithdrawnExecution"></tr>
+    <tr mat-row *matRowDef="let row; columns: columnsRequestWithdrawnExecution"></tr>
+  </table>
+  <div>
+    <app-message-empty [message]="'LAWSUIT.WARRANT.MESSAGE_EMPTY'"></app-message-empty>
+  </div>
+</ng-template>

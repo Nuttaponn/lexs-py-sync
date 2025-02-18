@@ -1,0 +1,17 @@
+::ng-deep app-external-documents {
+
+  /* FIXED(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
+  .mat-mdc-tab-link-container .mat-mdc-tab-list a {
+    margin: 0 !important;
+  }
+
+  /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
+  .mat-mdc-tab-link-container .mat-mdc-tab-list .mat-ink-bar {
+    left: 0 !important;
+  }
+
+  .mat-mdc-tab-header {
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+}

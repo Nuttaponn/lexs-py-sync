@@ -1,0 +1,18 @@
+<ng-container *ngIf="displayProcessingDocument">
+  <app-auction-processing-document
+    [documentUpload]="documentUpload"
+    [isUploadReadOnly]="mode === 'VIEW'"
+    [uploadMultiInfo]="uploadMultiInfo"
+    (onUploadFileEvent)="uploadFileEvent($event)"
+    [auctionSubmitResultForm]="auctionSubmitResultForm"></app-auction-processing-document>
+</ng-container>
+<ng-container *ngIf="displayGroupCollateralList && isUpdated">
+  <app-auction-group-collateral
+    [data]="collaterals"
+    [tableColumnsList]="tableColumns"
+    [mode]="mode"
+    [aucRef]="auctionBidingInfo?.aucRef"
+    (clickSubmitResult)="submitAuctionResult($event)"
+    (onUpdateData)="updateData($event)"
+    [bidDate]="auctionBidingInfo?.bidDate"></app-auction-group-collateral>
+</ng-container>

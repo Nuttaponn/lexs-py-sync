@@ -1,0 +1,937 @@
+<div class="mt-12">
+  <ng-container *ngIf="specificFlag === 'EXECUTION'">
+    <div class="mb-16" fxLayout="row" fxLayoutAlign="space-between center">
+      <div class="title-text">
+        <h5 class="mt-12 mb-12 mr-12">{{ 'PROPERTY.PROPERT_DETAIL' | translate }}</h5>
+      </div>
+      <div fxLayout="row" fxLayoutAlign="end center" class="elm-form mb-20 fs-14">
+        {{ 'PROPERTY.ALL_PROPERTY' | translate }}:
+        <h6 class="ml-5">{{ allCurrentData.length | number }}</h6>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="!config?.hideFilter">
+    <div class="search-section pb-8" fxLayout="row" fxLayoutAlign="center start" fxLayoutGap="12px">
+      <div fxFlex *ngIf="specificFlag !== 'EXECUTION' && !displayAuctionDetail && !config?.hideFbidnum">
+        <ng-container *ngIf="dataType === 'LEXS_MAPPING'; else elseTemplate">
+          <spig-dropdown
+            classInput="input-xsm icon"
+            [formControl]="landTypeFilterControl"
+            [config]="dropdownFilterGroupConfig"
+            [options]="landTypeOption"
+            (selectedOption)="onFilter($event, TABLE_FILTER_KEY.LANDTYPE)">
+          </spig-dropdown>
+        </ng-container>
+        <ng-template #elseTemplate>
+          <spig-dropdown
+            classInput="input-xsm icon"
+            [formControl]="typeFilterControl"
+            [config]="dropdownFilterGroupConfig"
+            [options]="collateralGroupOption"
+            (selectedOption)="onFilter($event, TABLE_FILTER_KEY.GROUP)">
+          </spig-dropdown>
+        </ng-template>
+      </div>
+      <div fxFlex>
+        <spig-dropdown
+          classInput="input-xsm icon"
+          [formControl]="statusFilterControl"
+          [config]="dropdownFilterDocumentConfig"
+          [options]="deedNoFilterOption"
+          (selectedOption)="onFilter($event, TABLE_FILTER_KEY.DEEDNO)"></spig-dropdown>
+      </div>
+      <div fxFlex>
+        <spig-dropdown
+          [formControl]="sortControl"
+          classInput="input-xsm icon"
+          [config]="dropdownDocNoSortConfig"
+          [options]="docNoSortOption"
+          (selectedOption)="sortSelected($event)"></spig-dropdown>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="!!config?.isLEXSAdded && mode !== 'VIEW'">
+    <div class="pb-8" fxLayout="row" fxLayoutAlign="start center">
+      <div fxFlex="85"></div>
+      <div fxFlex>
+        <button mat-stroked-button class="medium-aw-button btn-lexs-added-min-width" (click)="onAddCollateral()">
+          <mat-icon svgIcon="icon-Plus" class="icon icon-small-xl mr-4"></mat-icon>
+          <span>เพิ่มทรัพย์จากระบบ LEXS</span>
+        </button>
+      </div>
+    </div>
+  </ng-container>
+  <div
+    *ngIf="(actionCode === 'R2E09-16282' && specificFlag !== 'EXECUTION') || config?.showTotal"
+    fxLayout="row"
+    fxLayoutAlign="end center"
+    class="elm-form mb-8 fs-14">
+    {{ 'PROPERTY.TOTAL_AMOUNT' | translate }}:
+    <h6 class="ml-5">{{ totalAmount | number }}</h6>
+  </div>
+  <div *ngIf="config?.hasTotal" fxLayout="row" fxLayoutAlign="end center" class="elm-form mb-20 fs-14">
+    {{ 'ทรัพย์ทั้งหมด' | translate }}:
+    <h6 class="ml-5">{{ totalCollateral | number }}</h6>
+  </div>
+  <div
+    *ngIf="actionCode === 'R2E11_LEXS2_552'"
+    fxLayout="row"
+    fxLayoutAlign="end stretch"
+    class="mb-20 fs-14"
+    fxLayoutGap="8">
+    <span class="sub-title">ชุดทรัพย์ที่เลือก: </span>
+    <h6>{{ selection.selected.length }}</h6>
+    <div class="vertical-divider"></div>
+    <span class="sub-title">ชุดทรัพย์ทั้งหมด: </span>
+    <h6>{{ totalCollateral }}</h6>
+  </div>
+
+  <ng-container *ngIf="!!config?.isLEXSAdded; then lexsTable; else withdrawnTableTemplate"></ng-container>
+  <ng-template #lexsTable>
+    <div class="table-scroll section" table-scroll>
+        <table mat-table [dataSource]="collateralsSource.filteredData">
+          <ng-container matColumnDef="index" sticky>
+            <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_NO' | translate }}</th>
+            <td mat-cell *matCellDef="let element; let i = index;">
+              {{i + 1}}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="propertySet">
+            <th mat-header-cell *matHeaderCellDef>{{ 'PROPERTY.PROPERTY_SET' | translate }}</th>
+            <td mat-cell *matCellDef="let element">
+              <ng-container *ngIf="element.fsubbidnum && !element.isNonPledgeAsset; else elseGroupTemplate">
+                <span> ชุดทรัพย์ที่ {{ element.fsubbidnum }} </span>
+              </ng-container>
+              <ng-template #elseGroupTemplate>
+                <span>-</span>
+              </ng-template>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="collateralType">
+            <th mat-header-cell *matHeaderCellDef class="text-left">{{ 'PROPERTY.COLLATERAL_TYPE' | translate }}</th>
+            <td mat-cell *matCellDef="let element" class="text-left">
+              <span>{{ element?.assettypedesc?.trim() || element?.assetTypeDesc?.trim() || '-' }}</span>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="subCollateralType">
+            <th mat-header-cell *matHeaderCellDef class="text-left">{{ 'PROPERTY.SUB_COLLATERAL_TYPE' | translate }}</th>
+            <td mat-cell *matCellDef="let element" class="text-left">
+              <span>{{ element?.landtype || element?.landType || '-' }}</span>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="documentNumber">
+            <th mat-header-cell *matHeaderCellDef class="text-left">{{ 'COMMON.LABEL_DOCUMENT_NUMBER' | translate }}</th>
+            <td mat-cell *matCellDef="let element" class="text-left">
+              <span>{{ element.collateralDocNo || '-' }}</span>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="assetDetail">
+            <th mat-header-cell *matHeaderCellDef class="text-left">{{ 'PROPERTY.PROPERT_DETAIL' | translate }}</th>
+            <td mat-cell *matCellDef="let element" class="text-left">
+              <div class="pt-16 pb-16">
+                <span>{{ element.assetDetail || '-' }}</span>
+              </div>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="redCaseNo">
+            <th mat-header-cell *matHeaderCellDef class="text-left">{{ 'PROPERTY.RED_CASE' | translate }}</th>
+            <td mat-cell *matCellDef="let element" class="text-left">
+              <span>{{ element.redCaseNo || '-' }}</span>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="saleTypeDesc">
+            <th mat-header-cell *matHeaderCellDef class="text-left">{{ 'PROPERTY.SALES_METHOD' | translate }}</th>
+            <td mat-cell *matCellDef="let element" class="text-left">
+              <span>{{ element.saletypedesc || '-' }}</span>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="mortgagee">
+            <th mat-header-cell *matHeaderCellDef class="text-left">{{ 'PROPERTY.MORTGAGEE' | translate }}</th>
+            <td mat-cell *matCellDef="let element" class="text-left">
+              <span>{{ element.debtname || '-' }}</span>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="ownername">
+            <th mat-header-cell *matHeaderCellDef class="text-left">{{ 'PROPERTY.OWNER_NAME' | translate }}</th>
+            <td mat-cell *matCellDef="let element" class="text-left">
+              <span>{{ element.ownername || '-' }}</span>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="accuser">
+            <th mat-header-cell *matHeaderCellDef class="text-left">{{ 'PROPERTY.ACCUSER' | translate }}</th>
+            <td mat-cell *matCellDef="let element" class="text-left">
+              <span>{{ element.plaintiffname || '-' }}</span>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="defendant">
+            <th mat-header-cell *matHeaderCellDef class="text-left">{{ 'PROPERTY.DEFENDANT' | translate }}</th>
+            <td mat-cell *matCellDef="let element" class="text-left">
+              <span>{{ element.defendantname || '-' }}</span>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="occupant">
+            <th mat-header-cell *matHeaderCellDef class="text-left">{{ 'PROPERTY.PROPRIETARY_TYPE' | translate }}</th>
+            <td mat-cell *matCellDef="let element" class="text-left">
+              <span>{{ element.occupant || '-' }}</span>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="ledname">
+            <th mat-header-cell *matHeaderCellDef class="text-left">{{ 'PROPERTY.LEGAL_EXECUTION_OFFICE' | translate }}</th>
+            <td mat-cell *matCellDef="let element" class="text-left">
+              <span>{{ element.ledOriginalName || element.ledName || element.ledname || '-' }}</span>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="remark" stickyEnd>
+            <th mat-header-cell *matHeaderCellDef class="text-left">{{ 'COMMON.LABEL_REMARKS' | translate }}</th>
+            <td mat-cell *matCellDef="let element" class="text-left">
+              <span>{{ element.remark || '-' }}</span>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="announceLink" stickyEnd>
+            <th class="text-center" mat-header-cell *matHeaderCellDef>{{ 'PROPERTY.LINK' | translate }}</th>
+            <td class="text-center" mat-cell *matCellDef="let element">
+              <a class="label-link" target="_blank" [href]="element.url">{{
+                'AUC_ANNOUNEMENT_MAP_COLLATERAL.ANNOUNCE_LINK' | translate
+              }}</a>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="command" stickyEnd>
+            <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_COMMAND' | translate }}</th>
+            <td mat-cell *matCellDef="let element">
+              <div class="description mr-30 fill-red cursor-pointer" (click)="removeItem(element)">
+                <mat-icon [svgIcon]="'icon-Bin'" class="icon icon-xmedium icon-hide-show fill-red mr-5"></mat-icon>
+                {{ 'COMMON.BUTTON_DELETE' | translate }}
+              </div>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="collateralColumns; sticky: true"></tr>
+          <tr mat-row *matRowDef="let row; columns: collateralColumns"></tr>
+        </table>
+      <!-- Empty row handler -->
+      <app-message-empty
+        *ngIf="collateralsSource.data.length === 0 || collateralsSource.filteredData.length === 0"
+        [message]="'COMMON.SEARCH_NOT_FOUND'">
+      </app-message-empty>
+    </div>
+  </ng-template>
+  <ng-template #withdrawnTableTemplate>
+    <div
+      [class.can-scroll]="!['RE_SELECT', 'EDIT', 'MATCH'].includes(buttonType)"
+      class="table-scroll section"
+      table-scroll>
+      <table mat-table id="withdrawn-table" [dataSource]="collateralsSource.filteredData" multiTemplateDataRows>
+        <ng-container matColumnDef="selectionMultiple" sticky>
+          <th mat-header-cell *matHeaderCellDef columnElevationLeft>
+            <mat-checkbox
+              (change)="$event ? toggleAllRows() : null"
+              [checked]="selection.hasValue() && isAllSelected()"
+              [indeterminate]="selection.hasValue() && !isAllSelected()">
+            </mat-checkbox>
+          </th>
+          <td mat-cell *matCellDef="let element" columnElevationLeft>
+            <mat-checkbox
+              (click)="$event.stopPropagation()"
+              (change)="$event ? onCheckboxChange(element) : null"
+              [checked]="selection.isSelected(element.collateralId)">
+            </mat-checkbox>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="selection" sticky>
+          <th mat-header-cell *matHeaderCellDef columnElevationLeft></th>
+          <td mat-cell class="text-center" *matCellDef="let element" columnElevationLeft>
+            <mat-radio-group class="inline-block-size-18" [name]="pinData?.collateralId">
+              <mat-radio-button
+                type="radio"
+                [checked]="element.collateralId === selectCollateralId"
+                [value]="true"
+                (change)="radioSelected($event, element)"
+                color="primary">
+              </mat-radio-button>
+            </mat-radio-group>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="orderNumber" sticky>
+          <th mat-header-cell *matHeaderCellDef class="text-center">{{ 'COMMON.LABEL_NO' | translate }}</th>
+          <td mat-cell *matCellDef="let element; let i = dataIndex" class="text-center">
+            {{ indexTable(i, config?.hasPining ? element.fsubbidnum : 0) }}
+          </td>
+        </ng-container>
+        <ng-container *ngIf="buttonType === 'RE_SELECT'; else elsecolumnMainTemplate">
+          <ng-container matColumnDef="sourceOfAsset" sticky>
+            <th mat-header-cell *matHeaderCellDef columnElevationLeft class="text-center">
+              {{ 'ที่มาของทรัพย์' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let element" columnElevationLeft class="text-left">ข้อมูล บน LEXS</td>
+          </ng-container>
+
+          <ng-container matColumnDef="fsubbidnum">
+            <th class="text-left" mat-header-cell *matHeaderCellDef>{{ 'PROPERTY.PROPERTY_SET' | translate }}</th>
+            <td class="text-left" mat-cell *matCellDef="let element">
+              <ng-container *ngIf="element.fsubbidnum && !element.isNonPledgeAsset; else elseGroupTemplate">
+                <span> ชุดทรัพย์ที่ {{ element.fsubbidnum }} </span>
+              </ng-container>
+              <ng-template #elseGroupTemplate>
+                <span>-</span>
+              </ng-template>
+            </td>
+          </ng-container>
+        </ng-container>
+        <ng-template #elsecolumnMainTemplate>
+          <ng-container matColumnDef="sourceOfAsset" sticky>
+            <th mat-header-cell *matHeaderCellDef class="text-center">{{ 'ที่มาของทรัพย์' | translate }}</th>
+            <td mat-cell *matCellDef="let element" class="text-left">ข้อมูล บน LEXS</td>
+          </ng-container>
+
+          <ng-container matColumnDef="fsubbidnum" sticky>
+            <th class="text-left" mat-header-cell *matHeaderCellDef columnElevationLeft>
+              {{ 'PROPERTY.PROPERTY_SET' | translate }}
+            </th>
+            <td class="text-left" mat-cell *matCellDef="let element" columnElevationLeft>
+              <ng-container *ngIf="element.fsubbidnum; else elseGroupTemplate">
+                <span> ชุดทรัพย์ที่ {{ element.fsubbidnum }} </span>
+              </ng-container>
+              <ng-template #elseGroupTemplate>
+                <span>-</span>
+              </ng-template>
+            </td>
+          </ng-container>
+        </ng-template>
+
+        <ng-container matColumnDef="noticeNumber">
+          <th mat-header-cell *matHeaderCellDef>{{ 'PROPERTY.NOTICE_NUMBER' | translate }}</th>
+          <td mat-cell *matCellDef="let element">
+            <ng-container *ngIf="element.fsubbidnum; else elseGroupTemplate">
+              <span> ครั้งที่ {{ 1 }} </span>
+            </ng-container>
+            <ng-template #elseGroupTemplate>
+              <span>-</span>
+            </ng-template>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="assettypedesc">
+          <th mat-header-cell *matHeaderCellDef class="text-left">{{ 'PROPERTY.COLLATERAL_TYPE' | translate }}</th>
+          <td mat-cell *matCellDef="let element" class="text-left">
+            <span>{{ element?.assettypedesc?.trim() || element?.assetTypeDesc?.trim() || '-' }}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="landtype">
+          <th mat-header-cell *matHeaderCellDef class="text-left">{{ 'PROPERTY.SUB_COLLATERAL_TYPE' | translate }}</th>
+          <td mat-cell *matCellDef="let element" class="text-left">
+            <span>{{ element?.landtype || element?.landType || '-' }}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="collateralDocNo">
+          <th mat-header-cell *matHeaderCellDef class="text-left">{{ 'COMMON.LABEL_DOCUMENT_NUMBER' | translate }}</th>
+          <td mat-cell *matCellDef="let element" class="text-left">
+            <span>{{ element.collateralDocNo || '-' }}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="deedno">
+          <th mat-header-cell *matHeaderCellDef class="text-left">{{ 'COMMON.LABEL_DOCUMENT_NUMBER' | translate }}</th>
+          <td mat-cell *matCellDef="let element" class="text-left">
+            <span>{{ element.ledOriginalDeedno || '-' }}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="assetDetail">
+          <th mat-header-cell *matHeaderCellDef class="text-left">{{ 'PROPERTY.PROPERT_DETAIL' | translate }}</th>
+          <td mat-cell *matCellDef="let element" class="text-left">
+            <div class="pt-16 pb-16">
+              <span>{{ element.assetDetail || '-' }}</span>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="redCaseNo">
+          <th mat-header-cell *matHeaderCellDef class="text-left">{{ 'PROPERTY.RED_CASE' | translate }}</th>
+          <td mat-cell *matCellDef="let element" class="text-left">
+            <span>{{ element.redCaseNo || '-' }}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="saletypedesc">
+          <th mat-header-cell *matHeaderCellDef class="text-left">{{ 'PROPERTY.SALES_METHOD' | translate }}</th>
+          <td mat-cell *matCellDef="let element" class="text-left">
+            <span>{{ element.saletypedesc || '-' }}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="debtname">
+          <th mat-header-cell *matHeaderCellDef class="text-left">{{ 'PROPERTY.MORTGAGEE' | translate }}</th>
+          <td mat-cell *matCellDef="let element" class="text-left">
+            <span>{{ element.debtname || '-' }}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="ownername">
+          <th mat-header-cell *matHeaderCellDef class="text-left">{{ 'PROPERTY.OWNER_NAME' | translate }}</th>
+          <td mat-cell *matCellDef="let element" class="text-left">
+            <span>{{ element.ownername || '-' }}</span>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="personName1">
+          <th mat-header-cell *matHeaderCellDef class="text-left">{{ 'PROPERTY.ACCUSER' | translate }}</th>
+          <td mat-cell *matCellDef="let element" class="text-left">
+            <span>{{ element.plaintiffname || '-' }}</span>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="personName2">
+          <th mat-header-cell *matHeaderCellDef class="text-left">{{ 'PROPERTY.DEFENDANT' | translate }}</th>
+          <td mat-cell *matCellDef="let element" class="text-left">
+            <ng-container *ngIf="['EDIT', 'MATCH'].includes(buttonType); else elseDefTemplate">
+              <span>{{ element.defendantname || '-' }}</span>
+            </ng-container>
+            <ng-template #elseDefTemplate>
+              <ng-container *ngIf="element.lexsDefendant?.length > 1; else elseDefendantTemplate">
+                <div class="wrap-tooltip">
+                  <span>{{ (element.lexsDefendant | aucMainDefendant) || '-' }}</span>
+                  <ng-container *ngIf="element.lexsDefendant.length > 0">
+                    <app-tooltip
+                      [iconClass]="['icon-small', 'fill-blue']"
+                      [position]="'top-right'"
+                      [params]="[{ title: 'รายชื่อผู้เกี่ยวข้อง', content: element.lexsDefendant | aucSubDefendant }]">
+                    </app-tooltip>
+                  </ng-container>
+                </div>
+              </ng-container>
+              <ng-template #elseDefendantTemplate>
+                <span>{{ (element.lexsDefendant | aucMainDefendant) || '-' }}</span>
+              </ng-template>
+            </ng-template>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="occupant">
+          <th mat-header-cell *matHeaderCellDef class="text-left">{{ 'PROPERTY.PROPRIETARY_TYPE' | translate }}</th>
+          <td mat-cell *matCellDef="let element" class="text-left">
+            <span>{{ element.occupant || '-' }}</span>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="buyerType">
+          <th mat-header-cell *matHeaderCellDef class="text-left">{{ 'PROPERTY.BUYER_TYPE' | translate }}</th>
+          <td mat-cell *matCellDef="let element" class="text-left">
+            <span>{{ element.buyerType || '-' }}</span>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="ledname">
+          <th mat-header-cell *matHeaderCellDef class="text-left">{{ 'PROPERTY.LEGAL_EXECUTION_OFFICE' | translate }}</th>
+          <td mat-cell *matCellDef="let element" class="text-left">
+            <span>{{ element.ledOriginalName || element.ledName || element.ledname || '-' }}</span>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="remark">
+          <th mat-header-cell *matHeaderCellDef class="text-left">{{ 'COMMON.LABEL_REMARKS' | translate }}</th>
+          <td mat-cell *matCellDef="let element" class="text-left">
+            <span>{{ element.remark || '-' }}</span>
+          </td>
+        </ng-container>
+        <ng-container
+          *ngIf="displayPropertDetail || (displayAuctionDetail && actionCode === 'R2E09-04-01-11')"
+          matColumnDef="col15">
+          <th class="text-center" mat-header-cell *matHeaderCellDef>{{ 'PROPERTY.LINK' | translate }}</th>
+          <td class="text-center" mat-cell *matCellDef="let element">
+            <a class="label-link" target="_blank" [href]="element.url">{{
+              'AUC_ANNOUNEMENT_MAP_COLLATERAL.ANNOUNCE_LINK' | translate
+            }}</a>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="announceLink">
+          <th class="text-center" mat-header-cell *matHeaderCellDef>{{ 'PROPERTY.LINK' | translate }}</th>
+          <td mat-cell *matCellDef="let element" class="text-center">
+            <span *ngIf="element?.url"
+              ><a class="label-link" target="_blank" [href]="element.url">{{
+                'AUC_ANNOUNEMENT_MAP_COLLATERAL.ANNOUNCE_LINK' | translate
+              }}</a></span
+            >
+            <span *ngIf="!element?.url">-</span>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="status" stickyEnd>
+          <th class="text-center" mat-header-cell *matHeaderCellDef columnElevationRight>
+            {{ 'PROPERTY.STATUS' | translate }}
+          </th>
+          <td class="text-center" mat-cell *matCellDef="let element" columnElevationRight>
+            <div class="ml-12" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10px">
+              <span class="status-label status-success">
+                <label> ตรวจสอบแล้ว </label>
+              </span>
+            </div>
+          </td>
+        </ng-container>
+        <!-- status-failed  -->
+        <ng-container
+          *ngIf="displayPropertDetail || (displayAuctionDetail && actionCode === 'R2E09-04-01-11')"
+          matColumnDef="col16"
+          stickyEnd>
+          <th class="text-center" mat-header-cell *matHeaderCellDef columnElevationRight>
+            {{ 'PROPERTY.RESULT' | translate }}
+          </th>
+          <td mat-cell class="text-center" *matCellDef="let element" columnElevationRight>
+            <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10px">
+              <span
+                class="status-label"
+                [ngClass]="{
+                  'status-failed': element.deedInfoValidationResult === 'ข้อมูลไม่ถูกต้อง',
+                  'status-success': element.deedInfoValidationResult === 'ข้อมูลถูกต้อง',
+                }">
+                <mat-icon
+                  *ngIf="element.deedInfoValidationResult === 'ข้อมูลถูกต้อง'"
+                  svgIcon="icon-Mark"
+                  class="icon icon-small-xl fill-krungthai-green mr-4"></mat-icon>
+                <label *ngIf="element.deedInfoValidationResult === 'ข้อมูลถูกต้อง'"> ข้อมูลถูกต้อง </label>
+                <label *ngIf="element.deedInfoValidationResult === 'ข้อมูลไม่ถูกต้อง'"> ข้อมูลไม่ถูกต้อง </label>
+              </span>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container
+          matColumnDef="action"
+          *ngIf="displayPropertDetail || (displayAuctionDetail && actionCode === 'R2E09-04-01-11')"
+          stickyEnd>
+          <th class="text-center" mat-header-cell *matHeaderCellDef>
+            {{ 'COMMON.LABEL_COMMAND' | translate }}
+          </th>
+          <td mat-cell *matCellDef="let row" class="text-center">
+            <button
+              *ngIf="!row.expanded; else hideBtn"
+              mat-stroked-button
+              type="button"
+              class="medium-aw-button"
+              (click)="toggleRow(row)">
+              <mat-icon svgIcon="icon-Down-Circle" class="icon icon-medium"></mat-icon>
+              <span>
+                <!-- แสดง -->
+                {{ 'COMMON.ICON_EXPANSION_SHOW' | translate }}
+              </span>
+            </button>
+            <ng-template #hideBtn>
+              <button mat-stroked-button type="button" class="medium-aw-button" (click)="toggleRow(row)">
+                <mat-icon svgIcon="icon-Up-Circle" class="icon icon-medium remark-style"></mat-icon>
+                <span>
+                  <!-- ซ่อน-->
+                  {{ 'COMMON.ICON_EXPANSION_HIDE' | translate }}
+                </span>
+              </button>
+            </ng-template>
+          </td>
+          <td mat-footer-cell *matFooterCellDef></td>
+        </ng-container>
+
+        <ng-container
+          *ngIf="displayPropertDetail || (displayAuctionDetail && actionCode === 'R2E09-04-01-11')"
+          matColumnDef="expandedDetail">
+          <td
+            mat-cell
+            *matCellDef="let element"
+            [attr.colspan]="collateralColumns.length"
+            class="example-detail-td detail-table"
+            [class.active]="element.expanded">
+            <div fxLayout="column" [fxLayoutGap]="element.expanded ? '2px' : '0px'" *ngIf="element.expanded">
+              <ng-container *ngFor="let memo of element?.deedInfoValidationList || []; let i = index">
+                <div
+                  class="example-element-detail"
+                  [ngClass]="i === 0 ? 'example-element-detail-border-expand' : 'example-element-detail'"
+                  [@detailExpand]="element.expanded ? 'expanded' : 'collapsed'">
+                  <div class="content-form">
+                    <div
+                      class="mb-8 mt-8 mr-16 ml-16 detail"
+                      fxLayout="row"
+                      fxLayoutAlign="start center"
+                      fxLayoutGap="16px">
+                      <div fxLayout="column" fxFlex="100" fxLayoutGap="16px">
+                        <div class="pl-15">
+                          <span class="thin-letter"
+                            >{{ 'SUMMARY_RIEMBURSEMENT.SPECIFIED_BY' | translate }}
+                            {{ i === 0 ? 'KLAW' : 'NPA' }}
+                            {{
+                              ' (' +
+                                memo.validatorUserId +
+                                ' - ' +
+                                memo.validatorUserName +
+                                ') : ' +
+                                (memo.deedInfoValidationDate | buddhistEra: 'DD/MM/yyyy HH:mm' || '-')
+                            }}</span
+                          >
+                          <div>{{ memo.remark || '-' }}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="statusSuccess" stickyEnd>
+          <th class="text-center" mat-header-cell *matHeaderCellDef columnElevationRight>
+            {{ 'PROPERTY.RESULT' | translate }}
+          </th>
+          <td mat-cell *matCellDef="let element" columnElevationRight>
+            <div class="ml-12" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10px">
+              <span
+                [ngClass]="{ 'status-success': element.isDeedInfoValid, 'status-failed': !element.isDeedInfoValid }"
+                class="status-label">
+                <ng-container *ngIf="element.isDeedInfoValid; else elseTemplate">
+                  <mat-icon svgIcon="icon-Mark" class="icon icon-small-xl fill-krungthai-green mr-4"></mat-icon>
+                  <label> ข้อมูลถูกต้อง </label>
+                </ng-container>
+                <ng-template #elseTemplate>
+                  <label> ข้อมูลไม่ถูกต้อง </label>
+                </ng-template>
+              </span>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="statusPending" stickyEnd>
+          <th class="text-center" mat-header-cell *matHeaderCellDef columnElevationRight>
+            {{ 'PROPERTY.STATUS' | translate }}
+          </th>
+          <td mat-cell *matCellDef="let element" columnElevationRight>
+            <div class="ml-12" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10px">
+              <span class="status-label status-pending">
+                <label> รอจับคู่ทรัพย์ </label>
+              </span>
+            </div>
+          </td>
+        </ng-container>
+        <ng-container
+          matColumnDef="action"
+          *ngIf="!displayPropertDetail && !(displayAuctionDetail && actionCode === 'R2E09-04-01-11')"
+          stickyEnd>
+          <ng-container
+            *ngIf="
+              actionCode === ACTION_TYPE.R2E09_2_A || buttonType === 'MAPPING' || buttonType === 'RE_SELECT';
+              else elseOtherTemplate
+            ">
+            <th class="text-center" mat-header-cell *matHeaderCellDef columnElevationRight>
+              <ng-container
+                *ngIf="
+                  actionCode === ACTION_TYPE.R2E09_2_A ||
+                    buttonType === 'MAPPING' ||
+                    (buttonType === 'RE_SELECT' && mode === 'VIEW');
+                  else elseTitleTemplate
+                ">
+                {{ 'PROPERTY.LINK' | translate }}
+              </ng-container>
+              <ng-template #elseTitleTemplate> {{ 'COMMON.LABEL_COMMAND' | translate }} </ng-template>
+            </th>
+            <td mat-cell *matCellDef="let element" columnElevationRight>
+              <div class="ml-12" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10px">
+                <ng-container *ngIf="actionCode === ACTION_TYPE.R2E09_2_A; else elseActionTemplate">
+                  <a class="label-link" target="_blank" [href]="element.url">{{
+                    'AUC_ANNOUNEMENT_MAP_COLLATERAL.ANNOUNCE_LINK' | translate
+                  }}</a>
+                </ng-container>
+                <ng-template #elseActionTemplate>
+                  <ng-container *ngIf="buttonType === 'EDIT'">
+                    <ng-container *ngIf="mode === 'EDIT'; else elseEditTemplate">
+                      <button
+                        type="button"
+                        mat-stroked-button
+                        class="medium-7w-button"
+                        (click)="verifyCollateral(element)">
+                        <mat-icon svgIcon="icon-Edit" class="icon icon-xmedium"></mat-icon>
+                        {{ 'แก้ไขผลตรวจสอบ' | translate }}
+                      </button>
+                    </ng-container>
+                    <ng-template #elseEditTemplate>
+                      <button
+                        type="button"
+                        mat-stroked-button
+                        class="medium-7w-button"
+                        (click)="viewVerifyCollateral(element)">
+                        <mat-icon svgIcon="icon-view-detail" class="icon icon-xmedium"></mat-icon>
+                        {{ 'COMMON.BUTTON_VIEW_DETAIL' | translate }}
+                      </button>
+                    </ng-template>
+                  </ng-container>
+                  <ng-container *ngIf="buttonType === 'MATCH'">
+                    <button
+                      type="button"
+                      mat-flat-button
+                      color="primary"
+                      class="medium-fw-button"
+                      (click)="mapCollateral(element)">
+                      <mat-icon svgIcon="icon-chain" class="icon icon-xmedium mt-14"></mat-icon>
+                      {{ 'จับคู่ทรัพย์' | translate }}
+                    </button>
+                  </ng-container>
+                  <ng-container *ngIf="buttonType === 'RE_SELECT'">
+                    <ng-container *ngIf="mode === 'VIEW'; else elseTemplate">
+                      <a class="label-link" target="_blank" [href]="element.url">{{
+                        'AUC_ANNOUNEMENT_MAP_COLLATERAL.ANNOUNCE_LINK' | translate
+                      }}</a>
+                    </ng-container>
+                    <ng-template #elseTemplate>
+                      <button type="button" mat-stroked-button class="medium-fw-button" (click)="reSelectCollateral()">
+                        <mat-icon svgIcon="icon-Edit" class="icon icon-xmedium"></mat-icon>
+                        {{ 'เลือกทรัพย์ใหม่' | translate }}
+                      </button>
+                    </ng-template>
+                  </ng-container>
+                  <ng-container *ngIf="buttonType === 'MAPPING'">
+                    <span>-</span>
+                  </ng-container>
+                </ng-template>
+              </div>
+            </td>
+          </ng-container>
+          <ng-template #elseOtherTemplate>
+            <th class="text-center" mat-header-cell *matHeaderCellDef>
+              <ng-container
+                *ngIf="
+                  actionCode === ACTION_TYPE.R2E09_2_A ||
+                    buttonType === 'MAPPING' ||
+                    (buttonType === 'RE_SELECT' && mode === 'VIEW');
+                  else elseTitleTemplate
+                ">
+                {{ 'PROPERTY.LINK' | translate }}
+              </ng-container>
+              <ng-template #elseTitleTemplate> {{ 'COMMON.LABEL_COMMAND' | translate }} </ng-template>
+            </th>
+            <td mat-cell *matCellDef="let element">
+              <div class="ml-12" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10px">
+                <ng-container *ngIf="actionCode === ACTION_TYPE.R2E09_2_A; else elseActionTemplate">
+                  <a class="label-link" target="_blank" [href]="element.url">{{
+                    'AUC_ANNOUNEMENT_MAP_COLLATERAL.ANNOUNCE_LINK' | translate
+                  }}</a>
+                </ng-container>
+                <ng-template #elseActionTemplate>
+                  <ng-container *ngIf="buttonType === 'EDIT'">
+                    <ng-container *ngIf="mode === 'EDIT'; else elseEditTemplate">
+                      <button
+                        type="button"
+                        mat-stroked-button
+                        class="medium-7w-button"
+                        (click)="verifyCollateral(element)">
+                        <mat-icon svgIcon="icon-Edit" class="icon icon-xmedium"></mat-icon>
+                        {{ 'แก้ไขผลตรวจสอบ' | translate }}
+                      </button>
+                    </ng-container>
+                    <ng-template #elseEditTemplate>
+                      <button
+                        type="button"
+                        mat-stroked-button
+                        class="medium-7w-button"
+                        (click)="viewVerifyCollateral(element)">
+                        <mat-icon svgIcon="icon-view-detail" class="icon icon-xmedium"></mat-icon>
+                        {{ 'COMMON.BUTTON_VIEW_DETAIL' | translate }}
+                      </button>
+                    </ng-template>
+                  </ng-container>
+                  <ng-container *ngIf="buttonType === 'MATCH'">
+                    <button
+                      type="button"
+                      mat-flat-button
+                      color="primary"
+                      class="medium-fw-button"
+                      (click)="mapCollateral(element)">
+                      <mat-icon svgIcon="icon-chain" class="icon icon-xmedium mt-14"></mat-icon>
+                      {{ 'จับคู่ทรัพย์' | translate }}
+                    </button>
+                  </ng-container>
+                  <ng-container *ngIf="buttonType === 'RE_SELECT'">
+                    <ng-container *ngIf="mode === 'VIEW'; else elseTemplate">
+                      <a class="label-link" target="_blank" [href]="element.url">{{
+                        'AUC_ANNOUNEMENT_MAP_COLLATERAL.ANNOUNCE_LINK' | translate
+                      }}</a>
+                    </ng-container>
+                    <ng-template #elseTemplate>
+                      <button type="button" mat-stroked-button class="medium-fw-button" (click)="reSelectCollateral()">
+                        <mat-icon svgIcon="icon-Edit" class="icon icon-xmedium"></mat-icon>
+                        {{ 'เลือกทรัพย์ใหม่' | translate }}
+                      </button>
+                    </ng-template>
+                  </ng-container>
+                  <ng-container *ngIf="buttonType === 'MAPPING'">
+                    <span>-</span>
+                  </ng-container>
+                </ng-template>
+              </div>
+            </td>
+          </ng-template>
+        </ng-container>
+
+        <!-- Pinning Header Row For รายการตรวจสอบรายละเอียดทรัพย์ -->
+        <ng-container matColumnDef="pin_selection" sticky>
+          <th class="text-center" mat-header-cell *matHeaderCellDef>
+            <span>
+              <mat-icon [svgIcon]="'icon-Pin'" class="icon icon-large"></mat-icon>
+            </span>
+          </th>
+        </ng-container>
+
+        <ng-container matColumnDef="pin_orderNumber" sticky>
+          <th mat-header-cell *matHeaderCellDef class="text-center">
+            <ng-container *ngIf="dataType === 'LEXS_VERIFY'; else elseTemplate"> 1 </ng-container>
+            <ng-template #elseTemplate> &nbsp; </ng-template>
+          </th>
+        </ng-container>
+
+        <ng-container *ngIf="buttonType === 'RE_SELECT'; else elsecolumnTemplate">
+          <ng-container matColumnDef="pin_sourceOfAsset" sticky>
+            <th mat-header-cell *matHeaderCellDef columnElevationLeft class="text-left">ข้อมูลจากกรมบังคับคดี</th>
+          </ng-container>
+
+          <ng-container matColumnDef="pin_fsubbidnum">
+            <th mat-header-cell *matHeaderCellDef>
+              <span> ชุดทรัพย์ที่ {{ pinData?.fsubbidnum }} </span>
+            </th>
+          </ng-container>
+        </ng-container>
+        <ng-template #elsecolumnTemplate>
+          <ng-container matColumnDef="pin_sourceOfAsset">
+            <th mat-header-cell *matHeaderCellDef class="text-left">ข้อมูลจากกรมบังคับคดี</th>
+          </ng-container>
+
+          <ng-container matColumnDef="pin_fsubbidnum" sticky>
+            <th mat-header-cell *matHeaderCellDef columnElevationLeft>
+              <span> ชุดทรัพย์ที่ {{ pinData?.fsubbidnum }} </span>
+            </th>
+          </ng-container>
+        </ng-template>
+
+        <ng-container matColumnDef="pin_assettypedesc">
+          <th mat-header-cell *matHeaderCellDef>
+            <span>
+              {{ pinData?.assettypedesc || '-' }}
+            </span>
+          </th>
+        </ng-container>
+
+        <ng-container matColumnDef="pin_landtype">
+          <th mat-header-cell *matHeaderCellDef>
+            <span>{{ pinData?.landtype || '-' }}</span>
+          </th>
+        </ng-container>
+
+        <ng-container matColumnDef="pin_deedno">
+          <th mat-header-cell *matHeaderCellDef>
+            <span>{{ pinData?.ledOriginalDeedno || '-' }}</span>
+          </th>
+        </ng-container>
+
+        <ng-container matColumnDef="pin_assetDetail">
+          <th mat-header-cell *matHeaderCellDef>
+            <span>{{ pinData?.assetDetail || '-' }}</span>
+          </th>
+        </ng-container>
+
+        <ng-container matColumnDef="pin_redCaseNo">
+          <th mat-header-cell *matHeaderCellDef>
+            <span>{{ pinData?.redCaseNo || '-' }}</span>
+          </th>
+        </ng-container>
+
+        <ng-container matColumnDef="pin_saletypedesc">
+          <th mat-header-cell *matHeaderCellDef>
+            <span>{{ pinData?.saletypedesc || '-' }}</span>
+          </th>
+        </ng-container>
+
+        <ng-container matColumnDef="pin_debtname">
+          <th mat-header-cell *matHeaderCellDef>
+            <span>{{ pinData?.debtname }}</span>
+          </th>
+        </ng-container>
+
+        <ng-container matColumnDef="pin_ownername">
+          <th mat-header-cell *matHeaderCellDef>
+            <span>{{ pinData?.ownername || '-' }}</span>
+          </th>
+        </ng-container>
+        <ng-container matColumnDef="pin_personName1">
+          <th mat-header-cell *matHeaderCellDef>
+            <span *ngIf="pinData">{{ pinData.plaintiffname || '-' }}</span>
+          </th>
+        </ng-container>
+        <ng-container matColumnDef="pin_personName2">
+          <th mat-header-cell *matHeaderCellDef>
+            <span *ngIf="pinData">{{ pinData.defendantname || '-' }}</span>
+          </th>
+        </ng-container>
+        <ng-container matColumnDef="pin_occupant">
+          <th mat-header-cell *matHeaderCellDef>
+            <span>{{ pinData?.occupant || '-' }}</span>
+          </th>
+        </ng-container>
+        <ng-container matColumnDef="pin_ledname">
+          <th mat-header-cell *matHeaderCellDef>
+            <span>{{ pinData?.ledOriginalName || '-' }}</span>
+          </th>
+        </ng-container>
+        <ng-container matColumnDef="pin_remark">
+          <th mat-header-cell *matHeaderCellDef>{{ pinData?.remark || '-' }}</th>
+        </ng-container>
+
+        <ng-container matColumnDef="pin_announceLink">
+          <th mat-header-cell *matHeaderCellDef>
+            <a class="label-link" target="_blank" [href]="pinData?.url">{{
+              'AUC_ANNOUNEMENT_MAP_COLLATERAL.ANNOUNCE_LINK' | translate
+            }}</a>
+          </th>
+        </ng-container>
+
+        <ng-container matColumnDef="pin_action" [stickyEnd]="true">
+          <th class="text-center" mat-header-cell *matHeaderCellDef columnElevationRight>
+            <ng-container *ngIf="buttonType === 'MAPPING'; else elseTemplate">
+              <a class="label-link" target="_blank" [href]="pinData?.url">{{
+                'AUC_ANNOUNEMENT_MAP_COLLATERAL.ANNOUNCE_LINK' | translate
+              }}</a>
+            </ng-container>
+            <ng-template #elseTemplate>
+              <ng-container *ngIf="mode === 'VIEW'; else elseTemplate">
+                <a class="label-link" target="_blank" [href]="pinData?.url">{{
+                  'AUC_ANNOUNEMENT_MAP_COLLATERAL.ANNOUNCE_LINK' | translate
+                }}</a>
+              </ng-container>
+              <ng-template #elseTemplate>
+                <span>-</span>
+              </ng-template>
+            </ng-template>
+          </th>
+        </ng-container>
+        <!-- Pinning Header Row -->
+
+        <tr mat-header-row *matHeaderRowDef="collateralColumns; sticky: true"></tr>
+        <ng-container *ngIf="config?.hasPining">
+          <tr
+            [class.row-shadow]="buttonType !== 'RE_SELECT'"
+            class="pin-header mat-elevation-z2"
+            mat-header-row
+            *matHeaderRowDef="piningTableColumns; sticky: true"></tr>
+        </ng-container>
+
+        <tr
+          mat-row
+          *matRowDef="let row; columns: collateralColumns"
+          [class.example-expanded-row]="row.expanded"
+          class="example-element-row"></tr>
+        <ng-container *ngIf="displayPropertDetail || (displayAuctionDetail && actionCode === 'R2E09-04-01-11')">
+          <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+        </ng-container>
+      </table>
+      <!-- Empty row handler -->
+      <app-message-empty
+        *ngIf="collateralsSource.data.length === 0 || collateralsSource.filteredData.length === 0"
+        [message]="'COMMON.SEARCH_NOT_FOUND'">
+      </app-message-empty>
+    </div>
+  </ng-template>
+
+  <!-- Paginator -->
+  <ng-container *ngIf="!config?.hidePaging">
+    <app-paginator
+      *ngIf="allCurrentData.length > 0"
+      #paginator
+      [pageSize]="pageSize"
+      [length]="allCurrentData.length"
+      (page)="onPaging($event)"></app-paginator>
+  </ng-container>
+</div>

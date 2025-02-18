@@ -1,0 +1,124 @@
+<ng-container
+  [ngTemplateOutlet]="addSubAccountTemplate"
+  [ngTemplateOutletContext]="{ list: accountList }"></ng-container>
+
+<ng-template #addSubAccountTemplate let-dataSource="list">
+  <div class="table-scroll" id="table">
+    <table mat-table [dataSource]="dataSource">
+      <ng-container matColumnDef="select">
+        <th mat-header-cell *matHeaderCellDef>
+          <mat-checkbox
+            (change)="$event ? masterToggle() : null"
+            [checked]="selection.hasValue() && isAllSelected"
+            [indeterminate]="selection.hasValue() && !isAllSelected"
+            [aria-label]="checkboxLabel()"
+            [disabled]="accountList.length === 0">
+          </mat-checkbox>
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <mat-checkbox
+            (click)="$event.stopPropagation()"
+            (change)="$event ? selection.toggle(row) : null"
+            [checked]="selection.isSelected(row)"
+            [aria-label]="checkboxLabel(row)"
+            [disabled]="accountList.length === 0">
+          </mat-checkbox>
+        </td>
+      </ng-container>
+      <!-- หมายเลขบัญชี Column -->
+      <ng-container matColumnDef="accountName">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'CUSTOMER.ACCOUNT_NUMBER' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" class="fil-blue">
+          <div class="cur-pointer">
+            {{ element?.accountName || '-' }}
+          </div>
+        </td>
+      </ng-container>
+      <!-- เลขที่ Bill Column -->
+      <ng-container matColumnDef="billNo">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'LAWSUIT.HEAD_COLUMN_BILL_NO' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" class="fil-blue">
+          <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="3px">
+            <div fxFlex class="black-text cur-pointer">
+              {{ element?.billNo || '-' }}
+            </div>
+          </div>
+        </td>
+      </ng-container>
+      <!-- เงินต้นค้างชำระ Column -->
+      <ng-container matColumnDef="decidedCaseNo">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'LAWSUIT.DEBT_SUMMARY_NAME_ROW_1' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" class="fil-blue">
+          <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="3px">
+            <div fxFlex class="black-text cur-pointer">
+              {{ element?.outstandingBalance || '-' }}
+            </div>
+          </div>
+        </td>
+      </ng-container>
+      <!-- ดอกเบี้ยค้างรับ Column -->
+      <ng-container matColumnDef="outstandingAccruedInterest">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'LAWSUIT.DEBT_SUMMARY_NAME_ROW_2' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element?.outstandingAccruedInterest || '-' }}
+        </td>
+      </ng-container>
+      <!-- ดอกเบี้ยพัก/แขวนในอัตราตามสัญญา Column -->
+      <ng-container matColumnDef="interestNonBook">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'LAWSUIT.DEBT_SUMMARY_NAME_ROW_3' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="3px">
+            <div fxFlex class="black-text cur-pointer">
+              {{ element.interestNonBook || '-' }}
+            </div>
+          </div>
+        </td>
+      </ng-container>
+      <!-- ดอกเบี้ยผิดนัด Column -->
+      <ng-container matColumnDef="lateChargeAmount">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'LAWSUIT.DEBT_SUMMARY_NAME_ROW_4' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="3px">
+            <div fxFlex class="black-text cur-pointer">
+              {{ element.lateChargeAmount || '-' }}
+            </div>
+          </div>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="addSubAccountHeader"></tr>
+      <tr mat-row *matRowDef="let row; columns: addSubAccountHeader"></tr>
+    </table>
+    <ng-container
+      *ngIf="accountList.length === 0"
+      [ngTemplateOutlet]="dataNotFound"
+      [ngTemplateOutletContext]="{
+        value: 'COMMON.LABEL_PREFIX_NOT_FOUND',
+      }">
+    </ng-container>
+  </div>
+</ng-template>
+<ng-container>
+  <div class="footer" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="12px">
+    <div class="fill-red" fxFlex="50">
+      <ng-container *ngIf="isSubmited === true && this.selection.selected.length === 0">
+        {{ 'LAWSUIT.DIALOG_ALERT_TABLE_SELECTED' | translate }}
+      </ng-container>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template let-value="value" #dataNotFound>
+  <app-message-empty message="{{ value }}"></app-message-empty>
+</ng-template>

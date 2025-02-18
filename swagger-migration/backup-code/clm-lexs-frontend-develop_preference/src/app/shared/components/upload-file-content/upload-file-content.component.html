@@ -1,0 +1,146 @@
+<div class="upload-file-content" [ngClass]="{ 'gray-content': isUpload }">
+  <div class="upload-file-description">
+    <div class="upload-file-title" [ngClass]="{ 'color-biz-black-70': isUpload, uploaded: isUpload }">
+      <ng-container *ngIf="isUpload; else elseTemplate">
+        {{ upload_title | translate }}
+      </ng-container>
+      <ng-template #elseTemplate>
+        {{ title | translate }}
+      </ng-template>
+      <label *ngIf="isRequired && !isUpload && !fileName" class="color-red">*</label>
+    </div>
+    <div class="link" (click)="onViewDocument(imageId, fileName)">{{ fileName }}</div>
+    <ng-container *ngIf="!imageId && !(exceedFileSize || (isSubmited && !!!isUpload))">
+      <div class="label" *ngIf="labelAcceptFile"> {{ labelAcceptFile | translate }} </div>
+    </ng-container>
+    <ng-container *ngIf="taskCode === 'INDICTMENT_RECORD' && paymentForm">
+      <div class="upload-file-detail color-biz-black-70">
+        {{ 'UPLOAD_FILE.LABEL_PAYMENT_AMOUNT' | translate }}:
+        <span class="bold" [ngClass]="!invalidAmount ? 'color-biz-black-100' : 'color-red'">{{
+          (paymentForm.amount | numberDecimal) || ''
+        }}</span>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="taskCode === 'R2E05-03-4' && seizureUploadForm && seizureUploadForm.amount">
+      <div class="upload-file-detail color-biz-black-70">
+        {{ 'UPLOAD_FILE.LABEL_PAYMENT_AMOUNT' | translate }}:
+        <span class="bold" [ngClass]="!invalidAmount ? 'color-biz-black-100' : 'color-red'">{{
+          (seizureUploadForm.amount | numberDecimal) || ''
+        }}</span>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="taskCode === 'R2E09-02-3B' && auctionUploadInvoiceForm && auctionUploadInvoiceForm.amount">
+      <div class="upload-file-detail color-biz-black-70">
+        {{ 'UPLOAD_FILE.LABEL_PAYMENT_AMOUNT' | translate }}:
+        <span class="bold" [ngClass]="!invalidAmount ? 'color-biz-black-100' : 'color-red'">{{
+          (auctionUploadInvoiceForm.amount | numberDecimal) || ''
+        }}</span>
+      </div>
+    </ng-container>
+    <!-- Seizure Upload E-Filing -->
+    <ng-container *ngIf="taskCode === 'R2E05-03-4' && seizureUploadReceiptForm && seizureUploadReceiptForm.amount">
+      <div class="upload-file-detail color-biz-black-70">
+        {{ 'UPLOAD_FILE.LABEL_TOTAL_AMOUNT' | translate }}:
+        <span class="bold" [ngClass]="!invalidAmount ? 'color-biz-black-100' : 'color-red'">{{
+          (seizureUploadReceiptForm.amount | numberDecimal) || ''
+        }}</span>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="taskCode === 'R2E05-03-4' && seizureUploadReceiptForm && seizureUploadReceiptForm.blackCaseNo">
+      <div class="upload-file-detail color-biz-black-70">
+        {{ 'UPLOAD_FILE.BLACK_CASE_NO' | translate }}:
+        <span class="bold color-biz-black-100">{{ seizureUploadReceiptForm.blackCaseNo || '' }}</span>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="taskCode === 'R2E05-03-4' && seizureUploadReceiptForm && seizureUploadReceiptForm.redCaseNo">
+      <div class="upload-file-detail color-biz-black-70">
+        {{ 'UPLOAD_FILE.RED_CASE_NO' | translate }}:
+        <span class="bold color-biz-black-100">{{ seizureUploadReceiptForm.redCaseNo || '' }}</span>
+      </div>
+    </ng-container>
+    <!-- Advance Payment Auction E-Filing -->
+    <ng-container *ngIf="taskCode === 'R2E09-02-3B' && auctionUploadReceiptForm && auctionUploadReceiptForm.amount">
+      <div class="upload-file-detail color-biz-black-70">
+        {{ 'UPLOAD_FILE.LABEL_TOTAL_AMOUNT' | translate }}:
+        <span class="bold" [ngClass]="!invalidAmount ? 'color-biz-black-100' : 'color-red'">{{
+          (auctionUploadReceiptForm.amount | numberDecimal) || ''
+        }}</span>
+      </div>
+    </ng-container>
+    <ng-container
+      *ngIf="taskCode === 'R2E09-02-3B' && auctionUploadReceiptForm && auctionUploadReceiptForm.blackCaseNo">
+      <div class="upload-file-detail color-biz-black-70">
+        {{ (auctionCaseTypeCode === '0002' ? 'UPLOAD_FILE.PREFERENCE_BLACK_CASE_NO' : 'UPLOAD_FILE.BLACK_CASE_NO') | translate }}:
+        <span class="bold color-biz-black-100">{{ auctionUploadReceiptForm.blackCaseNo || '' }}</span>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="taskCode === 'R2E09-02-3B' && auctionUploadReceiptForm && auctionUploadReceiptForm.redCaseNo">
+      <div class="upload-file-detail color-biz-black-70">
+        {{ (auctionCaseTypeCode === '0002' ? 'UPLOAD_FILE.PREFERENCE_RED_CASE_NO' : 'UPLOAD_FILE.RED_CASE_NO') | translate }}:
+        <span class="bold color-biz-black-100">{{ auctionUploadReceiptForm.redCaseNo || '' }}</span>
+      </div>
+    </ng-container>
+    <ng-container
+      *ngIf="['UPLOAD_COURT_FEES_RECEIPT', 'CONFIRM_COURT_FEES_PAYMENT'].includes(taskCode) && confirmationForm">
+      <div class="upload-file-detail color-biz-black-70">
+        {{ (auctionCaseTypeCode === '0002' ? 'COMMON.LABEL_PREFERENCE_BLACK_CASE_NO' : 'COMMON.LABEL_BLACK_CASE_NO') | translate }}:
+        <span class="bold color-biz-black-100">{{ confirmationForm.blackCaseNo || '' }}</span>
+      </div>
+      <div class="upload-file-detail color-biz-black-70">
+        <div fxLayout="row" fxLayoutGap="4px">
+          <div>{{ 'UPLOAD_FILE.LABEL_TOTAL_AMOUNT' | translate }}:</div>
+          <ng-container *ngIf="isBlackTotalAmount; else redTotalAmountTempalte">
+            <span class="bold color-biz-black-100">{{ (confirmationForm.totalAmount | numberDecimal) || '0' }}</span>
+          </ng-container>
+          <ng-template #redTotalAmountTempalte>
+            <span class="bold color-red">{{ (confirmationForm.totalAmount | numberDecimal) || '0' }}</span>
+            <mat-icon
+              class="icon icon-sm fill-red"
+              matSuffix
+              svgIcon="icon-Error"
+              (click)="$event.stopPropagation()"></mat-icon>
+          </ng-template>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="isRequired">
+      <ng-container *ngIf="exceedFileSize || (isSubmited && !!!isUpload)">
+        <p class="error-msg">
+          {{ 'UPLOAD_FILE.ERROR_FILE_UPLOAD_REQUIRED' | translate }}
+        </p>
+      </ng-container>
+    </ng-container>
+  </div>
+  <div *ngIf="isShowUploadBtn">
+    <input
+      type="file"
+      #fileUpload
+      name="fileUpload"
+      [accept]="acceptFile.toString()"
+      class="hidden"
+      (change)="onInputChange($event)" />
+    <button
+      id="btn-upfile-cont-upload-0"
+      *ngIf="!isUpload"
+      type="button"
+      mat-flat-button
+      color="primary"
+      class="long-button"
+      (click)="onUploadDocument()"
+      [disabled]="isDisabledBtnUpload">
+      <mat-icon svgIcon="icon-Arrow-Upload" class="icon-xmedium"></mat-icon>
+      {{ btnUpload[0] | translate }}
+    </button>
+    <button
+      id="btn-upfile-cont-upload-1"
+      *ngIf="isUpload"
+      type="button"
+      mat-stroked-button
+      class="long-button"
+      (click)="onUploadDocument()"
+      [disabled]="isDisabledBtnUpload">
+      <mat-icon svgIcon="icon-Arrow-Upload" class="icon-xmedium"></mat-icon>
+      {{ btnUpload[1] | translate }}
+    </button>
+  </div>
+</div>

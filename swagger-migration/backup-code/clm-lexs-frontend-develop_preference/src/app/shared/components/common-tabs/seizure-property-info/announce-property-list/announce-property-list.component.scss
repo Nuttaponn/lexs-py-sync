@@ -1,0 +1,29 @@
+@import '/src/styles/colors';
+
+.header {
+  background-color: map-get($ktb-palette-biz-gray, 50);
+  padding: 24px 16px;
+}
+
+.info-icon {
+  border-radius: 999px;
+  background-color: $krungthai-blue;
+  color: $white;
+  width: 24px;
+  height: 24px;
+  text-align: center;
+
+  .mat-icon {
+    width: 16px;
+    height: 16px;
+    margin: auto;
+  }
+}
+
+td.new-line {
+  white-space: initial;
+}
+
+td .detail-cell {
+  width: 300px;
+}

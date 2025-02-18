@@ -1,0 +1,58 @@
+<table mat-table [dataSource]="documentSet" #uploadTable>
+  <ng-container matColumnDef="no">
+    <th mat-header-cell *matHeaderCellDef class="text-center no-col-normal">{{ 'COMMON.LABEL_NO' | translate }}</th>
+    <td mat-cell *matCellDef="let element; let rowNo = index" class="text-center no-col-normal">
+      <ng-container *ngIf="element.documentTemplate.optional !== true">
+        {{ rowNo + 1 }}
+      </ng-container>
+      <ng-container *ngIf="element.documentTemplate.optional === true">
+        <mat-checkbox (change)="$event ? masterToggle(element) : null" [checked]="element.active"> </mat-checkbox>
+      </ng-container>
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="documentName">
+    <th mat-header-cell *matHeaderCellDef>{{ 'DOC_PREP.DOC_NAME' | translate }}</th>
+    <td mat-cell *matCellDef="let element; let rowNo = index">
+      <div *ngIf="!element.imageId" fxLayoutAlign="space-between center" fxLayoutGap="8">
+        <span
+          >{{ element.documentTemplate.documentName
+          }}<label *ngIf="!element.documentTemplate.optional" class="color-red">*</label></span
+        >
+      </div>
+      <div *ngIf="element.imageId" class="link" fxLayoutAlign="space-between center" fxLayoutGap="8">
+        <span (click)="openDoc(element)" class="break-word">{{ element.documentTemplate.documentName }}</span>
+      </div>
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="documentDate">
+    <th class="new-line" mat-header-cell *matHeaderCellDef>
+      {{ 'EXECUTION_WARRANT.CONCLUDE_CALCULATE_DEBT.DOCUMENT_UPLOAD_DATE' | translate }}
+    </th>
+    <td mat-cell *matCellDef="let element">
+      <span>
+        {{ (element.documentDate | buddhistEra: 'DD/MM/yyyy hh:mm:ss') || '-' }}
+      </span>
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="action">
+    <th mat-header-cell *matHeaderCellDef class="text-center width-pct-25">{{ 'COMMON.LABEL_COMMAND' | translate }}</th>
+    <td mat-cell *matCellDef="let element; let index = index" class="text-end">
+      <ng-container>
+        <input type="file" #fileUpload name="fileUpload" [accept]="acceptFile.toString()" class="hidden" />
+        <button
+          *ngIf="element.active && !element.imageId"
+          type="button"
+          mat-flat-button
+          color="primary"
+          class="medium-fw-button"
+          (click)="selectDocument(index, element)"
+          [disabled]="!!element?.attributes?.disabled">
+          <mat-icon svgIcon="icon-Arrow-Upload" class="icon-xmedium"></mat-icon>
+          {{ 'COMMON.BUTTON_UPLOAD' | translate }}
+        </button>
+      </ng-container>
+    </td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="columns"></tr>
+  <tr mat-row *matRowDef="let row; columns: columns"></tr>
+</table>

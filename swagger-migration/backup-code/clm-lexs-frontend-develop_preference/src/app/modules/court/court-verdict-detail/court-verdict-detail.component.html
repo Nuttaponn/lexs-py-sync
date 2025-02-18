@@ -1,0 +1,992 @@
+<div
+  *ngFor="let court of courtResults; let courtIndex = index"
+  class="court-container content-container no-horizontal-padding pb-16">
+  <mat-accordion class="accordion-headers-align">
+    <mat-card appearance="outlined" class="bg-blue-00 mat-elevation-z0">
+      <div fxLayout="row" fxLayoutAlign="space-between center" class="title-content bg-blue-00">
+        <div fxLayout="row" fxLayoutGap="24">
+          <div fxLayout="row">
+            <mat-icon svgIcon="icon-Stack" class="icon icon-medium"></mat-icon>
+            <div class="title-text">
+              <!-- คดีความ -->
+              <h5>{{ 'COURT.CASE' | translate }} {{ courtIndex + 1 }}</h5>
+            </div>
+          </div>
+          <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="8" *ngIf="court.checkCaseEnd">
+            <mat-icon svgIcon="icon-Warning" class="icon icon-medium"></mat-icon>
+            <h6 class="bold">{{ 'COURT.BUTTON_SAVE_CASE_END' | translate }}</h6>
+          </div>
+        </div>
+        <div fxLayout="row">
+          <div class="description" (click)="toggleExpand(courtIndex)">
+            <mat-icon
+              [svgIcon]="isOpenedList[courtIndex] ? 'icon-Slide-Hide' : 'icon-Expand'"
+              class="icon icon-hide-show fill-blue">
+            </mat-icon
+            >{{
+              isOpenedList[courtIndex]
+                ? ('COMMON.ICON_EXPANSION_HIDE' | translate)
+                : ('COMMON.ICON_EXPANSION_SHOW' | translate)
+            }}
+          </div>
+        </div>
+      </div>
+    </mat-card>
+  </mat-accordion>
+
+  <mat-expansion-panel [expanded]="isOpenedList[courtIndex]" hideToggle>
+    <div class="mat-elevation-z0 no-horizontal-padding">
+      <div fxLayout="row" class="title-content pt-0" fxLayoutGap="8px">
+        <div fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="8px" class="no-padding">
+          <span class="thin-letter">
+            <!-- สำนักงานทนาย -->
+            {{ 'COURT.LABEL_LAWYER_OFFICE' | translate }}:
+          </span>
+          <h6>{{ decreeTasks.includes(taskCode) ? '-' : court.lawyerOfficeCode + ' - ' + court.lawyerOfficeName }}</h6>
+          <span class="divider-vertical"></span>
+        </div>
+        <div fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="8px">
+          <span class="thin-letter">
+            <!-- ทนายความปัจจุบัน -->
+            {{ 'LAWSUIT.SUIT.LAWYER' | translate }}:
+          </span>
+          <h6>{{ court.lawyerId + '-' + court.lawyerName }}</h6>
+        </div>
+      </div>
+    </div>
+
+    <mat-divider class="no-margin"></mat-divider>
+
+    <!-- [LEX2-34] การบันทึกขอพิจารณายื่นอุทธรณ์ -->
+    <mat-card
+      appearance="outlined"
+      class="bg-blue-00 mat-elevation-z0 no-horizontal-padding"
+      *ngIf="
+        court.courtLevel === 'CIVIL' &&
+        (appealTasks.includes(taskCode) ||
+          decreeTasks.includes(taskCode) ||
+          paymentExecutionFee.includes(taskCode) ||
+          !taskCode)
+      ">
+      <div
+        fxLayout="row"
+        fxLayoutAlign="space-between"
+        class="title-content"
+        [ngClass]="(taskCode | courtConsiderAction: court.courtAppeal) === 'ADD' ? 'bg-blue-50' : 'bg-green-50'">
+        <div fxLayout="row" fxLayoutAlign="start center" fxFlex="20">
+          <mat-icon
+            [svgIcon]="
+              (taskCode | courtConsiderAction: court.courtAppeal) === 'ADD' ? 'icon-Error' : 'icon-Product-Selected'
+            "
+            class="icon icon-small-xl"
+            [ngClass]="
+              (taskCode | courtConsiderAction: court.courtAppeal) === 'ADD' ? 'fill-blue' : 'fill-krungthai-green'
+            "></mat-icon>
+          <div class="title-text">
+            <h5>{{ 'COURT.LABEL_CONSIDER_APPEAL' | translate }}</h5>
+          </div>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="end center" fxFlex>
+          <div
+            fxLayout="row"
+            fxLayoutAlign="end center"
+            class="mr-16"
+            *ngIf="
+              (!!court.courtAppeal && !!court.courtAppeal?.appealPurpose) || !!court.courtAppeal?.approverDecision
+            ">
+            <ng-container *ngIf="!!court.courtAppeal?.appealPurpose">
+              <span>{{ 'COURT.LABEL_COMMENTS_OF_LAWYER' | translate }}:</span>
+              <h6 class="ml-6">
+                {{
+                  decreeTasks.includes(taskCode) && statusCode === 'PENDING'
+                    ? '-'
+                    : (court.courtAppeal?.appealPurpose | appealPurpose)
+                }}
+              </h6>
+            </ng-container>
+            <ng-container *ngIf="!!court.courtAppeal?.approverDecision">
+              <span class="divider-vertical"></span>{{ 'COURT.LABEL_APPROVER_COMMENT' | translate }}:
+              <h6 class="ml-6">
+                {{
+                  decreeTasks.includes(taskCode) && statusCode === 'PENDING'
+                    ? '-'
+                    : (court.courtAppeal?.approverDecision | approverDecision)
+                }}
+              </h6>
+            </ng-container>
+          </div>
+          <div class="description">
+            <ng-container [ngSwitch]="taskCode">
+              <ng-container *ngSwitchCase="'CONSIDER_APPEAL'">
+                <ng-container
+                  *ngIf="
+                    !!court.courtAppeal?.finishedAppeal && !!court.courtAppeal?.appealPurpose;
+                    else addEditCourtAppeal
+                  "
+                  [ngTemplateOutlet]="statusCode === 'IN_PROGRESS' ? editBtn : viewBtn"
+                  [ngTemplateOutletContext]="{
+                    id: court?.litigationCaseId,
+                    text: statusCode === 'IN_PROGRESS' ? 'COURT.BTN_EDIT_COURT_APPEAL' : 'COMMON.BUTTON_VIEW_DETAIL',
+                  }">
+                </ng-container>
+                <ng-template #addEditCourtAppeal>
+                  <ng-container
+                    *ngIf="!!!court.courtAppeal?.appealPurpose"
+                    [ngTemplateOutlet]="createBtn"
+                    [ngTemplateOutletContext]="{ id: court?.litigationCaseId, text: 'COURT.BTN_CREATE_COURT_APPEAL' }">
+                  </ng-container>
+                  <ng-container
+                    *ngIf="!!court.courtAppeal?.appealPurpose"
+                    [ngTemplateOutlet]="editBtn"
+                    [ngTemplateOutletContext]="{ id: court?.litigationCaseId, text: 'COURT.BTN_EDIT_COURT_APPEAL' }">
+                  </ng-container>
+                </ng-template>
+              </ng-container>
+              <ng-container *ngSwitchCase="'APPROVE_APPEAL'">
+                <ng-container
+                  *ngIf="isTaskOwner && !!!court.courtAppeal?.approverDecision"
+                  [ngTemplateOutlet]="createBtn"
+                  [ngTemplateOutletContext]="{ id: court?.litigationCaseId, text: 'COURT.BTN_APPROVE_COURT_APPEAL' }">
+                </ng-container>
+                <ng-container
+                  *ngIf="isTaskOwner && !!court.courtAppeal?.approverDecision"
+                  [ngTemplateOutlet]="editBtn"
+                  [ngTemplateOutletContext]="{ id: court?.litigationCaseId, text: 'COURT.BTN_EDIT_COURT_APPEAL' }">
+                </ng-container>
+              </ng-container>
+              <ng-container *ngSwitchCase="'CONDITIONAL_APPEAL'">
+                <ng-container
+                  *ngIf="!!!court.courtAppeal?.conditionalAppeal"
+                  [ngTemplateOutlet]="createBtn"
+                  [ngTemplateOutletContext]="{
+                    id: court?.litigationCaseId,
+                    text: 'COURT.BTN_CREATE_CONDITIONAL_APPEAL',
+                  }">
+                </ng-container>
+                <ng-container
+                  *ngIf="!!court.courtAppeal?.conditionalAppeal"
+                  [ngTemplateOutlet]="editBtn"
+                  [ngTemplateOutletContext]="{
+                    id: court?.litigationCaseId,
+                    text: 'COURT.BTN_EDIT_CONDITIONAL_APPEAL',
+                  }">
+                </ng-container>
+              </ng-container>
+              <ng-container *ngSwitchDefault>
+                <ng-container
+                  [ngTemplateOutlet]="viewBtn"
+                  [ngTemplateOutletContext]="{ id: court?.litigationCaseId, text: 'COMMON.BUTTON_VIEW_DETAIL' }">
+                </ng-container>
+              </ng-container>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </mat-card>
+
+    <!-- [LEX2-40] การบันทึกขอพิจารณายื่นฎีกา -->
+    <mat-card
+      appearance="outlined"
+      class="bg-blue-00 mat-elevation-z0 no-horizontal-padding"
+      *ngIf="
+        court.courtLevel === 'APPEAL' &&
+        (supremeTasks.includes(taskCode) ||
+          decreeTasks.includes(taskCode) ||
+          paymentExecutionFee.includes(taskCode) ||
+          !taskCode)
+      ">
+      <!-- taskCode {{taskCode | courtConsiderAction: court.courtAppeal}} -->
+      <div
+        fxLayout="row"
+        fxLayoutAlign="space-between"
+        class="title-content"
+        [ngClass]="(taskCode | courtConsiderAction: court.courtAppeal) === 'ADD' ? 'bg-blue-50' : 'bg-green-50'">
+        <div fxLayout="row" fxLayoutAlign="start center" fxFlex="40">
+          <mat-icon
+            [svgIcon]="
+              (taskCode | courtConsiderAction: court.courtAppeal) === 'ADD' ? 'icon-Error' : 'icon-Product-Selected'
+            "
+            class="icon icon-small-xl"
+            [ngClass]="
+              (taskCode | courtConsiderAction: court.courtAppeal) === 'ADD' ? 'fill-blue' : 'fill-krungthai-green'
+            "></mat-icon>
+          <div class="title-text">
+            <h5>{{ 'COURT.LABEL_CONSIDER_SUPREME' | translate }}</h5>
+          </div>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="end center" fxFlex="60">
+          <div
+            fxLayout="row"
+            fxLayoutAlign="end center"
+            class="mr-16"
+            *ngIf="
+              (!!court.courtAppeal && !!court.courtAppeal?.appealPurpose) || !!court.courtAppeal?.approverDecision
+            ">
+            <ng-container *ngIf="!!court.courtAppeal?.appealPurpose">
+              <span>{{ 'COURT.LABEL_COMMENTS_OF_LAWYER' | translate }}:</span>
+              <h6 class="ml-6">{{ court.courtAppeal?.appealPurpose | appealPurpose }}</h6>
+            </ng-container>
+            <ng-container *ngIf="!!court.courtAppeal?.approverDecision">
+              <span class="divider-vertical"></span>{{ 'COURT.LABEL_APPROVER_COMMENT' | translate }}:
+              <h6 class="ml-6">
+                {{ court.courtAppeal?.approverDecision | approverDecision }}
+              </h6>
+            </ng-container>
+          </div>
+          <div class="description">
+            <ng-container [ngSwitch]="taskCode">
+              <ng-container *ngSwitchCase="'CONSIDER_SUPREME_COURT'">
+                <ng-container
+                  *ngIf="
+                    !!court.courtAppeal?.finishedAppeal && !!court.courtAppeal?.appealPurpose;
+                    else addEditCourtAppeal
+                  "
+                  [ngTemplateOutlet]="statusCode === 'IN_PROGRESS' ? editBtn : viewBtn"
+                  [ngTemplateOutletContext]="{
+                    id: court?.litigationCaseId,
+                    text:
+                      statusCode === 'IN_PROGRESS'
+                        ? 'COURT.BTN_EDIT_CONSIDER_SUPREME_COURT'
+                        : 'COMMON.BUTTON_VIEW_DETAIL',
+                  }">
+                </ng-container>
+                <ng-template #addEditCourtAppeal>
+                  <ng-container
+                    *ngIf="!!!court.courtAppeal?.appealPurpose"
+                    [ngTemplateOutlet]="createBtn"
+                    [ngTemplateOutletContext]="{ id: court?.litigationCaseId, text: 'COURT.BTN_CREATE_COURT_APPEAL' }">
+                  </ng-container>
+                  <ng-container
+                    *ngIf="!!court.courtAppeal?.appealPurpose"
+                    [ngTemplateOutlet]="editBtn"
+                    [ngTemplateOutletContext]="{
+                      id: court?.litigationCaseId,
+                      text: 'COURT.BTN_EDIT_CONSIDER_SUPREME_COURT',
+                    }">
+                  </ng-container>
+                </ng-template>
+              </ng-container>
+              <ng-container *ngSwitchCase="'APPROVE_SUPREME_COURT'">
+                <ng-container
+                  *ngIf="!!court.courtAppeal"
+                  [ngTemplateOutlet]="!!court.courtAppeal.approverDecision ? editBtn : createBtn"
+                  [ngTemplateOutletContext]="{
+                    id: court?.litigationCaseId,
+                    text: !!court.courtAppeal.approverDecision
+                      ? 'COURT.BTN_EDIT_CONSIDER_SUPREME_COURT'
+                      : 'COURT.BTN_APPROVE_CONSIDER_SUPREME_COURT',
+                  }">
+                </ng-container>
+              </ng-container>
+              <ng-container *ngSwitchCase="'CONDITIONAL_SUPREME_COURT'">
+                <ng-container
+                  *ngIf="!!!court.courtAppeal?.conditionalAppeal"
+                  [ngTemplateOutlet]="createBtn"
+                  [ngTemplateOutletContext]="{
+                    id: court?.litigationCaseId,
+                    text: 'COURT.BTN_CREATE_CONDITIONAL_SUPREME_COURT',
+                  }">
+                </ng-container>
+                <ng-container
+                  *ngIf="!!court.courtAppeal?.conditionalAppeal"
+                  [ngTemplateOutlet]="editBtn"
+                  [ngTemplateOutletContext]="{
+                    id: court?.litigationCaseId,
+                    text: 'COURT.BTN_EDIT_CONDITIONAL_SUPREME_COURT',
+                  }">
+                </ng-container>
+              </ng-container>
+              <ng-container *ngSwitchDefault>
+                <ng-container
+                  [ngTemplateOutlet]="viewBtn"
+                  [ngTemplateOutletContext]="{ id: court?.litigationCaseId, text: 'COMMON.BUTTON_VIEW_DETAIL' }">
+                </ng-container>
+              </ng-container>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </mat-card>
+
+    <!-- แก้อุทธรณ์ -->
+    <mat-card appearance="outlined" class="bg-blue-00 mat-elevation-z0 no-padding mt-8" *ngIf="court.showDispute">
+      <div fxLayout="row" fxLayoutAlign="space-between center" class="title-content bg-blue-00">
+        <div fxLayout="row" fxLayoutAlign="start center">
+          <mat-icon svgIcon="icon-Error" class="icon icon-medium fill-blue"></mat-icon>
+          <div class="title-text">
+            <h5 *ngIf="court.courtLevel === 'CIVIL'">{{ 'COURT.DISPUTE' | translate }}</h5>
+            <h5 *ngIf="court.courtLevel === 'APPEAL'">{{ 'COURT.DISPUTE_SUPREME' | translate }}</h5>
+          </div>
+        </div>
+        <div fxLayout="row">
+          <button
+            mat-flat-button
+            color="primary"
+            class="medium-aw-button overflow-ellipsis primary-button"
+            (click)="goToDispute(null, court, MODE.ADD)">
+            {{ court.courtLevel === 'CIVIL' ? ('COURT.CONFIRM_DISPUTE' | translate) : '' }}
+            {{ court.courtLevel === 'APPEAL' ? ('COURT.CONFIRM_DISPUTE_SUPREME' | translate) : '' }}
+          </button>
+        </div>
+      </div>
+    </mat-card>
+    <!-- แก้ไขยื่นแก้อุทธรณ์ -->
+    <div *ngIf="!this.taskCode">
+      <mat-card appearance="outlined" class="bg-green-50 mat-elevation-z0 no-padding mt-8" *ngFor="let disputeAppeal of court.disputeAppeals">
+        <div fxLayout="row" fxLayoutAlign="space-between center" class="title-content bg-green-50">
+          <div fxLayout="row" fxLayoutAlign="start center">
+            <mat-icon svgIcon="icon-Product-Selected" class="icon icon-medium fill-green-600"></mat-icon>
+            <div class="title-text">
+              <h5 *ngIf="court.courtLevel === 'CIVIL'">{{ 'COURT.DISPUTE' | translate }}</h5>
+              <h5 *ngIf="court.courtLevel === 'APPEAL'">{{ 'COURT.DISPUTE_SUPREME' | translate }}</h5>
+            </div>
+          </div>
+          <div fxLayout="row" fxLayoutGap="16">
+            <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="8">
+              <span>{{ 'COURT.LABEL_DEFENDANT_NAME' | translate }}</span>
+              <h6>{{ getCommaSeparatedDefendantNames(disputeAppeal.disputeDefendants || []) }}</h6>
+            </div>
+            <button
+              *ngIf="!disputeAppeal.finishEfilling"
+              mat-stroked-button
+              class="success medium-aw-button overflow-ellipsis"
+              (click)="goToDispute(disputeAppeal, court, MODE.EDIT)">
+              <mat-icon svgIcon="icon-Edit" class="icon icon-medium fill-green-600"></mat-icon>
+              {{ court.courtLevel === 'CIVIL' ? ('COURT.EDIT_DISPUTE' | translate) : '' }}
+              {{ court.courtLevel === 'APPEAL' ? ('COURT.EDIT_DISPUTE_SUPREME' | translate) : '' }}
+            </button>
+            <button
+              *ngIf="disputeAppeal.finishEfilling"
+              mat-stroked-button
+              class="success medium-aw-button overflow-ellipsis"
+              (click)="goToDispute(disputeAppeal, court, MODE.VIEW)">
+              <mat-icon svgIcon="icon-Edit" class="icon icon-medium fill-green-600"></mat-icon>
+              {{ 'COMMON.BUTTON_VIEW_DETAIL' | translate }}
+            </button>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+
+    <div class="mat-elevation-z0 no-horizontal-padding">
+      <div fxLayout="row" class="title-content" fxLayoutGap="8px">
+        <div fxLayout="row" fxLayoutAlign=" center">
+          <mat-icon svgIcon="icon-Window" class="icon icon-medium"></mat-icon>
+          <div class="title-text">
+            <h6>{{ 'COURT.VERDICT_LIST' | translate }}</h6>
+          </div>
+        </div>
+        <div fxFlex></div>
+        <div
+          fxLayout="row"
+          fxLayoutAlign=" center"
+          fxLayoutGap="8px"
+          class="no-padding mr-16"
+          *ngIf="court.courtLevel === 'CIVIL' || court.courtLevel === 'APPEAL'">
+          <span class="thin-letter" *ngIf="court.courtLevel === 'CIVIL'">
+            <!-- วันที่ครบกำหนดยื่นอุทธรณ์ล่าสุด -->
+            {{ 'COURT.LAST_DISPUTE_DATE' | translate }}:
+          </span>
+          <span class="thin-letter" *ngIf="court.courtLevel === 'APPEAL'">
+            <!-- วันที่ครบกำหนดยื่นฎีกาล่าสุด: -->
+            {{ 'COURT.LAST_DISPUTE_DATE_SUPREME' | translate }}:
+          </span>
+          <h6>{{ (court?.latestAppealDueDate | buddhistEra: 'DD/MM/yyyy') || '-' }}</h6>
+        </div>
+        <!-- การขยายระยะเวลาอุทธรณ์ -->
+        <button
+          mat-stroked-button
+          class="medium-aw-button overflow-ellipsis neutral"
+          *ngIf="
+            !ignoreExtendBtn.includes(taskCode) &&
+            !(['CONSIDER_APPEAL', 'CONSIDER_SUPREME_COURT'].includes(taskCode) && statusCode === 'IN_PROGRESS') &&
+            (court.courtLevel === 'CIVIL' || court.courtLevel === 'APPEAL')
+          "
+          [disabled]="
+            court?.checkApproverDecision === 'Y' ||
+            court?.checkCaseEnd ||
+            (court?.courtVerdicts)![0].courtVerdictTypeCode === '2' ||
+            (court?.courtVerdicts)![0].courtVerdictTypeCode === '4'
+          "
+          (click)="onClickFirstBtn(court, court?.checkApproverDecision === 'Y' || court?.checkCaseEnd)">
+          <mat-icon [svgIcon]="'icon-Edit'" class="icon icon-medium mr-10"></mat-icon>
+          <span *ngIf="court.courtLevel === 'CIVIL'">
+            {{ 'COURT.EXTEND_APPEAL' | translate }}
+          </span>
+          <span *ngIf="court.courtLevel === 'APPEAL'">
+            {{ 'COURT.EXTEND_SUPREME' | translate }}
+          </span>
+        </button>
+        <!-- บันทึกค่าฤชาธรรมเนียม -->
+        <button mat-stroked-button class="medium-aw-button overflow-ellipsis neutral" *ngIf="false">
+          <mat-icon [svgIcon]="'icon-save-primary'" class="icon icon-medium mr-10"></mat-icon>
+          {{ textOnScreen.secondButtonText | translate }}
+        </button>
+      </div>
+    </div>
+
+    <!-- รายการผลการดำเนินคดี -->
+    <div class="data-table-content">
+      <div class="table-scroll" table-scroll>
+        <table mat-table [dataSource]="court.courtVerdicts || []">
+          <ng-container matColumnDef="no" sticky>
+            <th mat-header-cell *matHeaderCellDef columnElevationLeft class="text-center">
+              {{ 'COMMON.LABEL_NO' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let element; let verdictIndex = index" columnElevationLeft class="text-center">
+              {{ verdictIndex + 1 }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="caseNo">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'COURT.RED_BLACK_NO' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let element" class="new-line">
+              <div *ngIf="element.blackCaseNo || element.redCaseNo">
+                <span class="link" (click)="link(MODE.VIEW, element)">{{ element.blackCaseNo }}</span>
+                <br />
+                <span class="fill-red">{{ element.redCaseNo || '-' }}</span>
+              </div>
+              <div *ngIf="!element.blackCaseNo && !element.redCaseNo">
+                {{ 'COURT.WAIT_TO_IDENTIFY' | translate }}
+              </div>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="courtName">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'COMMON.LABEL_COURT' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let element">
+              {{ element?.courtName || '-' }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="courtVerdictType">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'COURT.VERDICT_TYPE' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let element">
+              {{ element?.courtVerdictTypeDesc || '-' }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="courtVerdict">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'COURT.VERDICT_TYPE_ORDER' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let element">{{ element.courtVerdictDesc || '-' }}</td>
+          </ng-container>
+          <ng-container matColumnDef="courtVerdictDate">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'COMMON.LABEL_COURT_VERDICT_DATE' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let element">
+              {{ (element.courtVerdictDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="firstVerdict">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'COURT.FIRST_VERDICT' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let element">
+              <span
+                *ngIf="
+                  !(element.firstVerdictUserId && element.firstVerdictUserFirstName && element.firstVerdictUserLastName)
+                ">
+                -
+              </span>
+              <span
+                *ngIf="
+                  element.firstVerdictUserId && element.firstVerdictUserFirstName && element.firstVerdictUserLastName
+                ">
+                {{ element.firstVerdictUserId || '-' }}/{{ element.firstVerdictUserFirstName || '-' }}
+                {{ element.firstVerdictUserLastName || '-' }}
+              </span>
+              <br />
+              {{ (element.firstVerdictDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="lastVerdict">
+            <th mat-header-cell *matHeaderCellDef>
+              {{ 'COURT.LAST_VERDICT' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let element">
+              <span
+                *ngIf="
+                  !(element.lastVerdictUserId && element.lastVerdictUserFirstName && element.lastVerdictUserLastName)
+                ">
+                -
+              </span>
+              <span
+                *ngIf="
+                  element.lastVerdictUserId && element.lastVerdictUserFirstName && element.lastVerdictUserLastName
+                ">
+                {{ element.lastVerdictUserId || '-' }}/{{ element.lastVerdictUserFirstName || '-' }}
+                {{ element.lastVerdictUserLastName || '-' }}
+              </span>
+              <br />
+              {{ (element.lastVerdictDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="status" stickyEnd>
+            <th mat-header-cell *matHeaderCellDef class="text-center" columnElevationRight>
+              {{ 'COURT.TESTIMONY_STATUS' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let element" fxLayout="row" fxLayoutAlign="center" columnElevationRight>
+              <div fxLayout="row">
+                <div
+                  class="status-label pd-12"
+                  [class.status-pending]="
+                    element.testimonyStatus === 'PENDING' ||
+                    element.testimonyStatus === 'PENDING_CORRECTION' ||
+                    element.testimonyStatus === 'PENDING_APPROVAL' ||
+                    element.testimonyStatus === 'DRAFT' ||
+                    element.testimonyStatus === 'AWAITING_KTB'
+                  "
+                  [class.status-normal]="element.testimonyStatus === 'AWAITING_ACKNOWLEDGE'"
+                  [class.status-success]="element.testimonyStatus === 'FINISHED'">
+                  <mat-icon *ngIf="element.testimonyStatus === 'FINISHED'" svgIcon="icon-Mark" class="icon icon-small">
+                  </mat-icon>
+                  <span
+                    *ngIf="
+                      element.testimonyStatus === 'PENDING' ||
+                      element.testimonyStatus === 'DRAFT' ||
+                      element.testimonyStatus === 'PENDING_CORRECTION'
+                    ">
+                    {{ 'COURT.PENDING' | translate }}
+                  </span>
+                  <span *ngIf="element.testimonyStatus === 'PENDING_APPROVAL'">
+                    {{ 'COURT.PENDING_APPROVAL' | translate }}
+                  </span>
+                  <span *ngIf="element.testimonyStatus === 'AWAITING_KTB'">
+                    {{ 'COURT.AWAITING_KTB' | translate }}
+                  </span>
+                  <span *ngIf="element.testimonyStatus === 'AWAITING_ACKNOWLEDGE'">
+                    {{ 'COURT.AWAITING_ACKNOWLEDGE' | translate }}
+                  </span>
+                  <span *ngIf="element.testimonyStatus === 'FINISHED'">
+                    {{ 'COURT.FINISHED' | translate }}
+                  </span>
+                  <span *ngIf="!element.testimonyStatus"> - </span>
+                </div>
+              </div>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="action" stickyEnd>
+            <th mat-header-cell *matHeaderCellDef class="text-center">
+              {{ 'COMMON.LABEL_COMMAND' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let element; let i = index" class="text-center">
+              <!-- END CASE -->
+              <button
+                *ngIf="
+                  !(court?.litigationCaseId?.toString() === taskDetail.litigationCaseId && !element?.redCaseNo) &&
+                  element.testimonyStatus === 'FINISHED' && !!element.caseEnd
+                "
+                type="button"
+                mat-flat-button
+                color="primary"
+                class="medium-fw-button"
+                (click)="link(MODE.EDIT, element)">
+                {{ 'COURT.BUTTON_SAVE_CASE_END' | translate }}
+              </button>
+              <!-- NOT END CASE -->
+              <button
+                *ngIf="
+                  court?.litigationCaseId?.toString() === taskDetail.litigationCaseId &&
+                  !element?.redCaseNo &&
+                  ((element.testimonyStatus !== 'FINISHED' && !!!element.caseEnd) ||
+                    element.testimonyStatus === 'DRAFT')
+                "
+                type="button"
+                mat-flat-button
+                color="primary"
+                class="medium-fw-button"
+                (click)="link(MODE.EDIT, element)">
+                {{ textButtonAction }}
+              </button>
+              <button
+                *ngIf="
+                  court?.litigationCaseId?.toString() === taskDetail.litigationCaseId &&
+                  element?.redCaseNo &&
+                  ((element.testimonyStatus !== 'FINISHED' && !!!element.caseEnd) ||
+                    ['DRAFT', 'PENDING_CORRECTION'].includes(element.testimonyStatus))
+                "
+                type="button"
+                mat-flat-button
+                color="primary"
+                class="medium-fw-button"
+                (click)="link(MODE.EDIT, element)">
+                {{ 'COMMON.BUTTON_EDIT' | translate }}
+              </button>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="getDisplayColumn(court)"></tr>
+          <tr mat-row *matRowDef="let row; columns: getDisplayColumn(court)"></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- รายการคำบังคับ -->
+    <div
+      class="mat-elevation-z0 no-horizontal-padding pt-16 pb-16"
+      *ngIf="court.courtDecrees && court.courtDecrees!.length > 0">
+      <div fxLayout="row" class="title-content" fxLayoutGap="8px" fxLayoutAlign="start center">
+        <div fxLayout="row" fxLayoutAlign="center">
+          <mat-icon svgIcon="icon-Window" class="icon icon-medium"></mat-icon>
+          <div class="title-text">
+            <h6>{{ 'COURT.DECREE.TITLE' | translate }}</h6>
+          </div>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="start center" *ngIf="court.notDecree">
+          <div class="status-label status-success mt-0 mb-0">
+            <mat-icon svgIcon="icon-Mark" class="icon-xmedium fill-green"> </mat-icon
+            >{{ 'COURT.DECREE.NOT_DECREE' | translate }}
+          </div>
+          <span class="divider-vertical mr-20"></span>
+          <div>
+            <span
+              >{{ 'COURT.DECREE.MAKER_NAME' | translate }}:
+              <span class="bold">{{ court.lawyerId }}-{{ court.lawyerName }}</span></span
+            >
+          </div>
+        </div>
+        <div fxFlex></div>
+      </div>
+    </div>
+    <div class="data-table-content" *ngIf="!court.notDecree && court.courtDecrees && court.courtDecrees!.length > 0">
+      <div class="table-scroll" table-scroll>
+        <table
+          mat-table
+          [dataSource]="court.courtDecrees || []"
+          id="decree-table"
+          class="fixed-table"
+          multiTemplateDataRows>
+          <ng-container matColumnDef="no" sticky>
+            <th mat-header-cell *matHeaderCellDef class="text-center cell-xxs" columnElevationLeft>
+              {{ 'COMMON.LABEL_NO' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let element; let decreeIndex = dataIndex" class="text-center" columnElevationLeft>
+              {{ decreeIndex + 1 }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="requestDecreeDate">
+            <th mat-header-cell *matHeaderCellDef class="cell-xs">
+              {{ 'COURT.DECREE.TABLE_HEADER_REQUEST_DECREE_DATE' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let element; let decreeIndex = dataIndex" class="cell-xs">
+              <span
+                *ngIf="element.decreeResultStatus !== 'DECREE_RECORD'"
+                class="link"
+                (click)="goToDecreeDetail(court, element, 'VIEW', decreeIndex)">
+                {{ (element.requestDecreeDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+              </span>
+              <span *ngIf="!element.decreeResultStatus || element.decreeResultStatus === 'DECREE_RECORD'">
+                {{ (element.requestDecreeDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+              </span>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="defendantName">
+            <th mat-header-cell *matHeaderCellDef class="cell-m">
+              {{ 'COURT.DECREE.TABLE_HEADER_DEFENDANT' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let element" class="cell-m"></td>
+          </ng-container>
+          <ng-container matColumnDef="sendStatus">
+            <th mat-header-cell *matHeaderCellDef class="cell-xs">
+              {{ 'COURT.DECREE.TABLE_HEADER_SEND_STATUS' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let element" class="cell-xs"></td>
+          </ng-container>
+          <ng-container matColumnDef="sendType">
+            <th mat-header-cell *matHeaderCellDef class="cell-xs">
+              {{ 'COURT.DECREE.TABLE_HEADER_SEND_TYPE' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let element" class="cell-xs"></td>
+          </ng-container>
+          <ng-container matColumnDef="acceptDecreeDate">
+            <th mat-header-cell *matHeaderCellDef class="cell-xs">
+              {{ 'COURT.DECREE.TABLE_HEADER_ACCEPT_DECREE_DATE' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let element" class="cell-xs"></td>
+          </ng-container>
+          <ng-container matColumnDef="decreeDueDate">
+            <th mat-header-cell *matHeaderCellDef class="cell-xs">
+              {{ 'COURT.DECREE.TABLE_HEADER_DECREE_DUE_DATE' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let element" class="cell-xs"></td>
+          </ng-container>
+          <ng-container matColumnDef="saveStatus" stickyEnd>
+            <th mat-header-cell *matHeaderCellDef class="text-center cell-s" columnElevationRight>
+              {{ 'COURT.DECREE.TABLE_HEADER_SAVE_STATUS' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let element" class="text-center cell-s" columnElevationRight>
+              <div
+                *ngIf="
+                  !element.decreeUpdateStatus ||
+                  (element.decreeUpdateStatus !== 'PAID' && element.decreeUpdateStatus !== 'RECEIPT_UPLOADED')
+                "
+                class="status-label status-pending m-auto">
+                {{
+                  element.decreeUpdateStatus === 'WAITING_PAY' ? ('COURT.DECREE.STATUS_WAITING_PAY' | translate) : ''
+                }}
+                {{
+                  element.decreeUpdateStatus === 'PARTIAL_PAY' ? ('COURT.DECREE.STATUS_PARTIAL_PAY' | translate) : ''
+                }}
+              </div>
+              <div
+                *ngIf="element.decreeUpdateStatus === 'PAID' || element.decreeUpdateStatus === 'RECEIPT_UPLOADED'"
+                class="status-label status-success m-auto">
+                <mat-icon svgIcon="icon-Mark" class="icon icon-small"> </mat-icon>
+                {{ 'COURT.DECREE.STATUS_PAID' | translate }}
+              </div>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="action" stickyEnd>
+            <th mat-header-cell *matHeaderCellDef class="text-center cell-m">
+              {{ 'COMMON.LABEL_COMMAND' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let element; let decreeIndex = dataIndex" class="text-center cell-m">
+              <div *ngIf="element.decreeUpdateStatus === 'RECEIPT_UPLOADED'">
+                <button
+                  mat-flat-button
+                  color="primary"
+                  class="medium-aw-button overflow-ellipsis primary-button"
+                  *ngIf="!element.decreeResultStatus || element.decreeResultStatus === 'DECREE_RECORD'"
+                  (click)="goToDecreeDetail(court, element, 'ADD', decreeIndex)">
+                  {{ 'COURT.DECREE.ACTION_DECREE_RECORD' | translate }}
+                </button>
+                <button
+                  mat-stroked-button
+                  class="medium-aw-button overflow-ellipsis neutral"
+                  *ngIf="element.decreeResultStatus === 'DECREE_UPDATE'"
+                  (click)="goToDecreeDetail(court, element, 'EDIT', decreeIndex)">
+                  {{ 'COURT.DECREE.ACTION_DECREE_EDIT' | translate }}
+                </button>
+                <button
+                  mat-flat-button
+                  color="primary"
+                  class="medium-aw-button overflow-ellipsis primary-button"
+                  *ngIf="element.decreeResultStatus === 'DECREE_UPDATE_R'"
+                  (click)="goToDecreeDetail(court, element, 'EDIT', decreeIndex)">
+                  {{ 'COURT.DECREE.ACTION_DECREE_EDIT' | translate }}
+                </button>
+              </div>
+              <!-- SP5 -->
+              <button
+                *ngIf="element.decreeUpdateStatus !== 'PAID' && element.decreeUpdateStatus !== 'RECEIPT_UPLOADED'"
+                mat-flat-button
+                color="primary"
+                class="medium-aw-button overflow-ellipsis primary-button"
+                (click)="payExecutionFee(element)">
+                {{
+                  element.decreeUpdateStatus === 'WAITING_PAY'
+                    ? ('COURT.DECREE.ACTION_PAY_EXECUTION_FEE' | translate)
+                    : ''
+                }}
+                {{ element.decreeUpdateStatus === 'PARTIAL_PAY' ? ('COMMON.BUTTON_CONTINUE' | translate) : '' }}
+              </button>
+              <button
+                *ngIf="element.decreeUpdateStatus === 'PAID'"
+                mat-flat-button
+                color="primary"
+                class="medium-aw-button overflow-ellipsis primary-button"
+                (click)="uploadExecutionReceipt(element, court)">
+                {{ 'COURT.DECREE.ACTION_UPLOAD_EXECUTION_RECEIPT' | translate }}
+              </button>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="expandedDetail">
+            <td mat-cell *matCellDef="let element" [attr.colspan]="decreeColumns.length" class="detail-row-wrapper">
+              <div
+                class="detail-table-div"
+                *ngIf="element.decreeUpdateStatus === 'PAID' || element.decreeUpdateStatus === 'RECEIPT_UPLOADED'">
+                <table mat-table [dataSource]="element.defendants" class="detail-table fixed-table">
+                  <ng-container matColumnDef="no" sticky>
+                    <th mat-header-cell *matHeaderCellDef columnElevationLeft class="cell-xxs detail-table-head"></th>
+                    <td mat-cell *matCellDef="let def" columnElevationLeft class="text-center cell-xxs">
+                      <mat-icon svgIcon="icon-corner" class="icon icon-hide-show fill-black-30"> </mat-icon>
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="requestDecreeDate">
+                    <th mat-header-cell *matHeaderCellDef class="cell-xs"></th>
+                    <td mat-cell *matCellDef="let element" class="cell-xs"></td>
+                  </ng-container>
+                  <ng-container matColumnDef="defendantName">
+                    <th mat-header-cell *matHeaderCellDef class="cell-m detail-table-head"></th>
+                    <td mat-cell *matCellDef="let def" class="cell-m">
+                      <span
+                        *ngIf="def.decreePersonResultStatus === 'SEND_RESULT_UPDATE'"
+                        class="link"
+                        (click)="goToExecutionDetail(court, def, element, 'VIEW')">
+                        {{ def.firstName }} {{ def.lastName }}
+                      </span>
+                      <span
+                        *ngIf="!def.decreePersonResultStatus || def.decreePersonResultStatus === 'SEND_RESULT_RECORD'">
+                        {{ def.firstName }} {{ def.lastName }}
+                      </span>
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="sendStatus">
+                    <th mat-header-cell *matHeaderCellDef class="cell-xs detail-table-head"></th>
+                    <td mat-cell *matCellDef="let def" class="cell-xs">
+                      {{ (def.sendStatus && sendStatusMap[def.sendStatus]) || '-' }}
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="sendType">
+                    <th mat-header-cell *matHeaderCellDef class="cell-xs detail-table-head"></th>
+                    <td mat-cell *matCellDef="let def" class="cell-xs">
+                      {{
+                        def.sendType
+                          ? sendTypeMap[def.sendType]
+                          : def.sendRemark === 'DEFENDANT'
+                            ? 'มาฟังด้วยตัวเอง'
+                            : '-'
+                      }}
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="acceptDecreeDate">
+                    <th mat-header-cell *matHeaderCellDef class="cell-xs detail-table-head"></th>
+                    <td mat-cell *matCellDef="let def" class="cell-xs">
+                      {{
+                        def.sendStatus === 'SEND'
+                          ? def.sendResultDate
+                            ? (def.sendResultDate | buddhistEra: 'DD/MM/yyyy')
+                            : '-'
+                          : '-'
+                      }}
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="decreeDueDate">
+                    <th mat-header-cell *matHeaderCellDef class="cell-xs detail-table-head"></th>
+                    <td mat-cell *matCellDef="let def" class="cell-xs">
+                      {{
+                        def.sendStatus === 'SEND'
+                          ? def.decreeDueDate
+                            ? (def.decreeDueDate | buddhistEra: 'DD/MM/yyyy')
+                            : '-'
+                          : '-'
+                      }}
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="saveStatus" stickyEnd>
+                    <th
+                      mat-header-cell
+                      *matHeaderCellDef
+                      class="text-center cell-s detail-table-head"
+                      columnElevationRight>
+                      {{ 'COURT.DECREE.TABLE_HEADER_SAVE_STATUS' | translate }}
+                    </th>
+                    <td mat-cell *matCellDef="let def" class="cell-s text-center" columnElevationRight>
+                      <div
+                        *ngIf="!def.decreePersonStatus || def.decreePersonStatus === 'PENDING'"
+                        class="status-label status-pending m-auto">
+                        {{ 'COURT.DECREE.STATUS_SEND_PENDING' | translate }}
+                      </div>
+                      <div
+                        *ngIf="def.decreePersonStatus === 'PENDING_SEND_RESULT'"
+                        class="status-label status-pending m-auto">
+                        {{ 'COURT.DECREE.STATUS_SEND_PENDING_RESULT' | translate }}
+                      </div>
+                      <div *ngIf="def.decreePersonStatus === 'FINISHED'" class="status-label status-success m-auto">
+                        <mat-icon svgIcon="icon-Mark" class="icon icon-small"> </mat-icon>
+                        {{ 'COURT.DECREE.STATUS_SEND_FINISHED' | translate }}
+                      </div>
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="action" stickyEnd>
+                    <th mat-header-cell *matHeaderCellDef class="text-center cell-m detail-table-head"></th>
+                    <td mat-cell *matCellDef="let def" class="text-center cell-m">
+                      <button
+                        mat-flat-button
+                        color="primary"
+                        class="medium-aw-button overflow-ellipsis primary-button"
+                        *ngIf="
+                          element.decreeResultStatus === 'FINISHED' &&
+                          (!def.decreePersonResultStatus || def.decreePersonResultStatus === 'SEND_RESULT_RECORD')
+                        "
+                        (click)="goToExecutionDetail(court, def, element, 'ADD')">
+                        {{ 'COURT.DECREE.ACTION_SEND_RECORD' | translate }}
+                      </button>
+                      <button
+                        mat-stroked-button
+                        class="medium-aw-button overflow-ellipsis neutral"
+                        *ngIf="
+                          element.decreeResultStatus === 'FINISHED' &&
+                          def.decreePersonResultStatus === 'SEND_RESULT_UPDATE'
+                        "
+                        (click)="goToExecutionDetail(court, def, element, 'EDIT')">
+                        {{ 'COURT.DECREE.ACTION_SEND_EDIT' | translate }}
+                      </button>
+                    </td>
+                  </ng-container>
+                  <!-- PLEASE keep the columns of the sub-table and the main table the same or they will not align -->
+                  <tr
+                    mat-header-row
+                    *matHeaderRowDef="
+                      court.litigationCaseId === litigationCaseId ? decreeColumns : decreeNoActionColumns
+                    "></tr>
+                  <tr
+                    mat-row
+                    *matRowDef="
+                      let row;
+                      columns: court.litigationCaseId === litigationCaseId ? decreeColumns : decreeNoActionColumns
+                    "></tr>
+                </table>
+              </div>
+            </td>
+          </ng-container>
+          <tr
+            mat-header-row
+            *matHeaderRowDef="court.litigationCaseId === litigationCaseId ? decreeColumns : decreeNoActionColumns"></tr>
+          <tr
+            mat-row
+            *matRowDef="
+              let row;
+              columns: court.litigationCaseId === litigationCaseId ? decreeColumns : decreeNoActionColumns
+            "></tr>
+          <!-- TODO: SP5: add condition for displaying defendant sub-table -->
+          <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-row"></tr>
+        </table>
+      </div>
+    </div>
+  </mat-expansion-panel>
+</div>
+<app-message-empty
+  *ngIf="courtResults && courtResults.length === 0"
+  [bgColor]="'bg-gray'"
+  [message]="'COURT.COURT_RESULT_NOT_FOUND'"></app-message-empty>
+
+<ng-template #createBtn let-id="id" let-text="text">
+  <button
+    mat-flat-button
+    color="primary"
+    [disabled]="taskDetail.litigationCaseId?.toString() !== id.toString()"
+    class="medium-aw-button overflow-ellipsis primary-button"
+    (click)="onClickConsiderAppeal('ADD', id)">
+    {{ text || 'UPDATE_FLAG.A' | translate }}
+  </button>
+</ng-template>
+<ng-template #editBtn let-id="id" let-text="text">
+  <button
+    *ngIf="taskDetail.litigationCaseId?.toString() === id.toString()"
+    mat-stroked-button
+    color="primary"
+    class="medium-aw-button overflow-ellipsis green-stroked"
+    (click)="onClickConsiderAppeal('EDIT', id)">
+    <mat-icon [svgIcon]="'icon-Edit'" class="icon icon-medium mr-10"></mat-icon>
+    {{ text || 'UPDATE_FLAG.U' | translate }}
+  </button>
+  <ng-container
+    *ngIf="taskDetail.litigationCaseId?.toString() !== id.toString()"
+    [ngTemplateOutlet]="viewBtn"
+    [ngTemplateOutletContext]="{ id: id, text: 'COMMON.BUTTON_VIEW_DETAIL' }">
+  </ng-container>
+</ng-template>
+<ng-template #viewBtn let-id="id" let-text="text">
+  <button
+    mat-stroked-button
+    class="medium-aw-button overflow-ellipsis green-stroked"
+    (click)="onClickConsiderAppeal('VIEW', id)">
+    <mat-icon [svgIcon]="'icon-Expand'" class="icon icon-medium mr-10"></mat-icon>
+    {{ text || 'COMMON.BUTTON_VIEW_DETAIL' | translate }}
+  </button>
+</ng-template>

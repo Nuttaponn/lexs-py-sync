@@ -1,0 +1,624 @@
+<div>
+  <div class="table-scroll mt-2" table-scroll>
+    <table mat-table [dataSource]="list.length > 0 ? list : [{ isUpload: false }]" [class.empty]="list.length === 0">
+      <ng-container matColumnDef="no" sticky>
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          class="text-center width-pct-5"
+          [columnElevationLeft]="!!uploadFor && uploadFor === 'DEFERMENT_STATEMENT'">
+          {{ 'COMMON.LABEL_NO' | translate }}
+        </th>
+        <td
+          mat-cell
+          *matCellDef="let element; let rowNo = index"
+          class="text-center width-pct-5"
+          [columnElevationLeft]="!!uploadFor && uploadFor === 'DEFERMENT_STATEMENT'">
+          <ng-container *ngIf="element?.indexOnly; else otherTemp">
+            {{ rowNo + 1 }}
+          </ng-container>
+          <ng-template #otherTemp>
+            <ng-container *ngIf="!element?.isSubContract && !element?.uploadRequired && !readonly">
+              <div class="elm-form d-inti">
+                <input
+                  class="elm-check md-line"
+                  [ngClass]="{
+                    inactive: (element?.active && readonly) || (element?.multipleUpload && element?.imageId),
+                    disabled: !element?.active && readonly,
+                  }"
+                  [disabled]="readonly || (element?.multipleUpload && element?.imageId)"
+                  [checked]="element?.active"
+                  type="checkbox"
+                  [id]="rowNo"
+                  (change)="onCheck(element)" />
+                <label [for]="rowNo"></label>
+              </div>
+            </ng-container>
+            <ng-container *ngIf="!element?.isSubContract && (element?.uploadRequired || readonly)">
+              {{ rowNo + 1 }}
+            </ng-container>
+            <div *ngIf="!!element?.isSubContract" class="mb-8 flex-align-self-center">
+              <mat-icon svgIcon="icon-corner" class="icon icon-hide-show fill-black-30"> </mat-icon>
+            </div>
+          </ng-template>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="documentName" [sticky]="uploadFor !== 'DEFERMENT_STATEMENT'">
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          class="name-column mx-width-pct-55"
+          [columnElevationLeft]="uploadFor !== 'DEFERMENT_STATEMENT'">
+          {{
+            (isAdvance ? 'UPLOAD_FILE.MULTI_COLUMN_DOCUMENT_TRIAL_RESULT' : 'UPLOAD_FILE.MULTI_COLUMN_DOCUMENT_NAME')
+              | translate
+          }}
+        </th>
+        <td
+          mat-cell
+          *matCellDef="let element; let i = index"
+          class="name-column mx-width-pct-55"
+          [columnElevationLeft]="uploadFor !== 'DEFERMENT_STATEMENT'">
+          <div fxLayout="row">
+            <div
+              [class.link]="
+                !(contractList.includes(element?.documentTemplateId) && !!!element?.isSubContract) &&
+                (element?.isUpload || element?.imageId)
+              "
+              (click)="onViewDocument(i)">
+              {{ element?.documentTemplate?.documentName || '-' }}
+              {{ element?.runningNo ? ('UPLOAD_FILE.COPY_NO' | translate: { INDEX: element?.runningNo }) : '' }}
+              <ng-container *ngIf="isOptionalDocument(element?.documentTemplateId)"> (ถ้ามี)</ng-container>
+              <label
+                *ngIf="!element?.isUpload && element?.uploadRequired && !readonly && !element?.imageId"
+                class="color-red"
+                >*</label
+              >
+            </div>
+            <app-tooltip
+              *ngIf="uploadFor === 'COURT_TRIAL'"
+              [params]="[
+                {
+                  title: 'LAWSUIT.TRIAL.DOCUMENT_SUGGESTION_TITLE' | translate,
+                  content: 'LAWSUIT.TRIAL.DOCUMENT_SUGGESTION_MSG' | translate,
+                },
+              ]"
+              [iconClass]="['icon-small', 'fill-blue']"></app-tooltip>
+            <app-tooltip
+              *ngIf="(uploadFor === 'AUCTION_OWNERSHIP' && element?.active) || element?.tooltip"
+              [params]="element?.paramsMsg || []"
+              [iconClass]="['icon-small', 'fill-blue']"></app-tooltip>
+          </div>
+          <span
+            *ngIf="
+              uploadFor === 'CIVIL' &&
+              (element?.documentTemplateId === docTemplate.LEXSF073 ||
+                element?.documentTemplateId === docTemplate.LEXSF074)
+            ">
+            {{ 'UPLOAD_FILE.REMARK_EXPENSE_DOCUMENTS' | translate }}
+          </span>
+          <div
+            *ngIf="taskCode === 'CONFIRM_COURT_FEES_PAYMENT' && confirmationForm"
+            class="upload-file-detail color-biz-black-60">
+            {{ 'UPLOAD_FILE.LABEL_PAYMENT_AMOUNT' | translate }}:
+            <span class="color-biz-black-100">{{ confirmationForm.courtFee || '' }}</span>
+          </div>
+          <div
+            class="error-msg"
+            *ngIf="
+              isSubmited && element?.uploadRequired && (exceedFileSize || !element?.imageId || element?.imageId === null)
+            ">
+            {{ 'UPLOAD_FILE.ERROR_UPLOAD_REQUIRED' | translate }}
+          </div>
+          <span *ngIf="element?.documentTemplateId === docTemplate.LEXSD222">
+            {{ 'INVESTIGATE_PROPERTY.REMARK_DOCS_FROM_INVESTIGATE_PROPERTY' | translate }}
+          </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="collateralIds">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'AUCTION_LED_CARD.DEFERMENT_DEBT.COLLATERAL_NUMBER' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <span>{{ element?.attributes?.collateralIds[0] || '-' }}</span>
+          <app-tooltip
+            *ngIf="element?.attributes?.collateralIds?.length > 1"
+            [params]="[
+              {
+                title: 'AUCTION_LED_CARD.DEFERMENT_DEBT.RELATED_COLLATERAL_NUMBER' | translate,
+                content: '<b>' + getOtherCollateralId(element?.attributes?.collateralIds) + '</b>',
+              },
+            ]"
+            [iconClass]="['icon-small', 'fill-blue']"></app-tooltip>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="ledName">
+        <th mat-header-cell *matHeaderCellDef>{{ 'LAWSUIT.LEGAL_EXECUTION_OFFICE' | translate }}</th>
+        <td mat-cell *matCellDef="let element">{{ element?.attributes?.ledName || '-' }}</td>
+      </ng-container>
+      <ng-container matColumnDef="redCaseNo">
+        <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_RED_CASE_NO_2' | translate }}</th>
+        <td mat-cell *matCellDef="let element">
+          <div class="fill-red">{{ element?.attributes?.redCaseNo || '-' }}</div>
+        </td>
+      </ng-container>
+
+      <!-- =================== Execution Related Documents ================= -->
+      <ng-container matColumnDef="executionCollateralId">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'AUCTION_LED_CARD.DEFERMENT_DEBT.COLLATERAL_NUMBER' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <span>{{ element?.attributes?.collateralIds[0] || '-' }}</span>
+          <app-tooltip
+            *ngIf="element?.attributes?.collateralIds?.length > 1"
+            [params]="[
+              {
+                title: 'AUCTION_LED_CARD.DEFERMENT_DEBT.RELATED_COLLATERAL_NUMBER' | translate,
+                content: '<b>' + getOtherCollateralId(element?.attributes?.collateralIds) + '</b>',
+              },
+            ]"
+            [iconClass]="['icon-small', 'fill-blue']"></app-tooltip>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="executionOwnerName">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'CUSTOMER.COMMON_LABEL_OWNERSHIP' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{
+            element?.attributes?.collateralOwnerName ||
+              (element?.attributes?.ownerName === '' ? '-' : element?.attributes?.ownerName) ||
+              '-'
+          }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="executionLedName">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'LAWSUIT.LEGAL_EXECUTION_OFFICE' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element?.attributes?.ledName || '-' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="executionRedCaseNo">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'COMMON.LABEL_RED_CASE_NO_2' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div class="fill-red">{{ element?.attributes?.redCaseNo || '-' }}</div>
+        </td>
+      </ng-container>
+
+      <ng-container
+        matColumnDef="suspendAuctionEndDate"
+        *ngIf="!!uploadFor && uploadFor === 'DEFERMENT_STATEMENT'"
+        [stickyEnd]="!!uploadFor && uploadFor === 'DEFERMENT_STATEMENT'">
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          class="new-line"
+          [columnElevationRight]="!!uploadFor && uploadFor === 'DEFERMENT_STATEMENT'">
+          {{ 'LAWSUIT.DEFERMENT.SUSPEND_AUCTION_END_DATE' | translate }}
+        </th>
+        <td
+          mat-cell
+          *matCellDef="let element; let i = index"
+          [columnElevationRight]="!!uploadFor && uploadFor === 'DEFERMENT_STATEMENT'">
+          <spig-datepicker
+            class="date-picker-block"
+            [classInput]="'input-s icon'"
+            [defaultDate]="element?.attributes?.suspendAuctionEndDate"
+            [required]="true"
+            (inputChange)="onSuspendAuctionEndDateChange($event, i)"
+            [label]="'COMMON.LABEL_DATE'">
+          </spig-datepicker>
+        </td>
+      </ng-container>
+      <!-- =================== end Execution Related Documents ================= -->
+
+      <ng-container
+        matColumnDef="uploadDate"
+        [stickyEnd]="displayedColumns.length > 4 && uploadFor !== 'DEFERMENT_STATEMENT'">
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          [columnElevationRight]="displayedColumns.length > 4 && uploadFor !== 'DEFERMENT_STATEMENT'">
+          {{ 'UPLOAD_FILE.MULTI_COLUMN_UPLOAD_DATE_2' | translate }}
+        </th>
+        <td
+          mat-cell
+          *matCellDef="let element; let i = index"
+          [columnElevationRight]="displayedColumns.length > 4 && uploadFor !== 'DEFERMENT_STATEMENT'">
+          {{
+            element?.isSubContract && element?.commitmentAccounts?.length === 0
+              ? '-'
+              : (element?.uploadDate || element?.documentDate | buddhistEra: 'DD/MM/yyyy') ||
+                (element?.multipleUpload && !element?.active ? '' : '-')
+          }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="command" stickyEnd>
+        <th
+          mat-header-cell
+          *matHeaderCellDef
+          class="text-center width-pct-25"
+          [columnElevationRight]="
+            (displayedColumns[displayedColumns.length - 2] !== 'uploadDate' &&
+              displayedColumns[displayedColumns.length - 2] !== 'suspendAuctionEndDate') ||
+            displayedColumns.length <= 4
+          ">
+          {{ 'COMMON.LABEL_COMMAND' | translate }}
+        </th>
+        <td
+          mat-cell
+          *matCellDef="let element; let i = index"
+          class="width-pct-25"
+          [ngClass]="
+            uploadFor === 'APPROVE_APPEAL' || uploadFor === 'APPROVE_SUPREME_COURT' ? 'text-end' : 'text-center'
+          "
+          [columnElevationRight]="
+            (displayedColumns[displayedColumns.length - 2] !== 'uploadDate' &&
+              displayedColumns[displayedColumns.length - 2] !== 'suspendAuctionEndDate') ||
+            displayedColumns.length <= 4
+          ">
+          <mat-icon
+            *ngIf="
+              !readonly &&
+              (element?.isUpload || element?.imageId) &&
+              element?.removeDocument &&
+              (element?.active || element?.uploadRequired) &&
+              !!!element?.disabled
+            "
+            svgIcon="icon-Bin"
+            class="icon btn-icon fill-red icon-xmedium mr-24"
+            (click)="onRemoveDocument(i, element?.isSubContract)"></mat-icon>
+          <ng-container
+            *ngIf="
+              (element?.active || element?.uploadRequired) &&
+                (!!!uploadFor ||
+                  ![
+                    'DEFERMENT',
+                    'APPROVE_APPEAL',
+                    'APPROVE_SUPREME_COURT',
+                    'ADVANCE_PAYMENT_EFILING',
+                    'SUBMIT_AUCTION_RESULT',
+                  ].includes(uploadFor));
+              else elseEmptyTemplate
+            ">
+            <input type="file" #fileUpload name="fileUpload" [accept]="acceptFile.toString()" class="hidden" />
+            <button
+              *ngIf="!(element?.isUpload || element?.imageId) || !!element?.disabled"
+              type="button"
+              mat-flat-button
+              color="primary"
+              [disabled]="!!element?.disabled"
+              class="medium-fw-button"
+              [ngClass]="
+                !readonly &&
+                (element?.isUpload || element?.imageId) &&
+                element?.removeDocument &&
+                (element?.active || element?.uploadRequired) &&
+                !!!element?.disabled
+                  ? 'medium-7w-button'
+                  : 'medium-fw-button'
+              "
+              (click)="onUploadDocument(i, element?.documentTemplateId)">
+              <mat-icon
+                [svgIcon]="!!!element?.disabled ? 'icon-Arrow-Upload' : 'icon-Mark'"
+                class="icon-xmedium"></mat-icon>
+              {{ btnUpload[0] | translate }}
+            </button>
+            <button
+              *ngIf="(element?.isUpload || element?.imageId) && !!!element?.disabled"
+              type="button"
+              mat-stroked-button
+              (click)="onUploadDocument(i, element?.documentTemplateId)"
+              [ngClass]="
+                !readonly &&
+                (element?.isUpload || element?.imageId) &&
+                element?.removeDocument &&
+                (element?.active || element?.uploadRequired) &&
+                !!!element?.disabled
+                  ? 'medium-7w-button'
+                  : 'medium-fw-button'
+              ">
+              <mat-icon svgIcon="icon-Arrow-Upload" class="icon-xmedium"></mat-icon>
+              {{ btnUpload[1] | translate }}
+            </button>
+          </ng-container>
+          <ng-template #elseEmptyTemplate>
+            <ng-container
+              *ngIf="
+                (!element?.active || !element?.uploadRequired) &&
+                  (!!!uploadFor ||
+                    ![
+                      'DEFERMENT',
+                      'APPROVE_APPEAL',
+                      'APPROVE_SUPREME_COURT',
+                      'ADVANCE_PAYMENT_EFILING',
+                      'SUBMIT_AUCTION_RESULT',
+                    ].includes(uploadFor));
+                else elseBlankTemplate
+              ">
+              <span>-</span>
+            </ng-container>
+            <ng-template #elseBlankTemplate>
+              <span></span>
+            </ng-template>
+          </ng-template>
+
+          <!-- <ng-container
+            *ngIf="
+              (element?.active || element?.uploadRequired) &&
+              (!!!uploadFor ||
+                ![
+                  'DEFERMENT',
+                  'APPROVE_APPEAL',
+                  'APPROVE_SUPREME_COURT',
+                  'ADVANCE_PAYMENT_EFILING',
+                  'SUBMIT_AUCTION_RESULT'
+                ].includes(uploadFor))
+            ">
+            <input type="file" #fileUpload name="fileUpload" [accept]="acceptFile.toString()" class="hidden" />
+            <button
+              *ngIf="!(element?.isUpload || element?.imageId) || !!element?.disabled"
+              type="button"
+              mat-flat-button
+              color="primary"
+              [disabled]="!!element?.disabled"
+              class="medium-fw-button"
+              (click)="onUploadDocument(i, element?.documentTemplateId)">
+              <mat-icon
+                [svgIcon]="!!!element?.disabled ? 'icon-Arrow-Upload' : 'icon-Mark'"
+                class="icon-xmedium"></mat-icon>
+              {{ btnUpload[0] | translate }}
+            </button>
+            <button
+              *ngIf="(element?.isUpload || element?.imageId) && !!!element?.disabled"
+              type="button"
+              mat-stroked-button
+              class="medium-7w-button"
+              (click)="onUploadDocument(i, element?.documentTemplateId)">
+              <mat-icon svgIcon="icon-Arrow-Upload" class="icon-xmedium"></mat-icon>
+              {{ btnUpload[1] | translate }}
+            </button>
+          </ng-container> -->
+
+          <ng-container
+            *ngIf="!!uploadFor && (uploadFor === 'APPROVE_APPEAL' || uploadFor === 'APPROVE_SUPREME_COURT')">
+            <!-- have gen file -->
+            <ng-container *ngIf="element?.generateFile.isAllow">
+              <mat-icon
+                *ngIf="element?.generateFile.isDownload"
+                svgIcon="icon-Arrow-Download"
+                class="icon-xmedium mr-24"
+                color="primary"
+                (click)="onDownloadConclusionDocument(i)"></mat-icon>
+              <mat-icon
+                *ngIf="element?.generateFile.isDownload && (element?.isUpload || element?.imageId)"
+                svgIcon="icon-Arrow-Upload"
+                class="icon-xmedium mr-24"
+                color="primary"
+                (click)="onUploadDocument(i, element?.documentTemplateId)"></mat-icon>
+              <button
+                *ngIf="!element?.generateFile.isDownload"
+                type="button"
+                mat-flat-button
+                color="primary"
+                class="medium-fw-button"
+                (click)="onDownloadConclusionDocument(i)">
+                <mat-icon svgIcon="icon-Arrow-Download" class="icon-xmedium"></mat-icon>
+                {{ btnUpload[0] | translate }}
+              </button>
+              <input type="file" #fileUpload name="fileUpload" [accept]="acceptFile.toString()" class="hidden" />
+              <button
+                *ngIf="element?.generateFile.isDownload && !(element?.isUpload || element?.imageId)"
+                type="button"
+                mat-flat-button
+                color="accent"
+                class="medium-aw-button"
+                (click)="onUploadDocument(i, element?.documentTemplateId)">
+                {{ btnUpload[1] | translate }}
+              </button>
+            </ng-container>
+            <!-- no gen file -->
+            <ng-container *ngIf="!element?.generateFile.isAllow">
+              <mat-icon
+                *ngIf="element?.generateFile.isDownload && (element?.isUpload || element?.imageId)"
+                svgIcon="icon-Arrow-Upload"
+                class="icon-xmedium mr-24"
+                color="primary"
+                (click)="onUploadDocument(i, element?.documentTemplateId)"></mat-icon>
+              <button
+                *ngIf="!element?.generateFile.isDownload"
+                type="button"
+                mat-flat-button
+                color="primary"
+                class="medium-fw-button"
+                (click)="onDownloadConclusionDocument(i)">
+                <mat-icon svgIcon="icon-Arrow-Download" class="icon-xmedium"></mat-icon>
+                {{ btnUpload[0] | translate }}
+              </button>
+              <input type="file" #fileUpload name="fileUpload" [accept]="acceptFile.toString()" class="hidden" />
+              <button
+                *ngIf="element?.generateFile.isDownload && !(element?.isUpload || element?.imageId)"
+                type="button"
+                mat-flat-button
+                color="accent"
+                class="medium-aw-button"
+                (click)="onUploadDocument(i, element?.documentTemplateId)">
+                {{ btnUpload[1] | translate }}
+              </button>
+            </ng-container>
+            <span
+              class="link"
+              *ngIf="element?.generateFile.isDownload && (element?.isUpload || element?.imageId)"
+              (click)="onViewDocument(i)"
+              >{{ btnUpload[2] | translate }}</span
+            >
+          </ng-container>
+
+          <ng-container *ngIf="!!uploadFor && uploadFor === 'DEFERMENT'">
+            <ng-container
+              *ngIf="element?.active && !contractList?.includes(element?.documentTemplate?.documentTemplateId)">
+              <input type="file" #fileUpload name="fileUpload" [accept]="acceptFile.toString()" class="hidden" />
+              <button
+                *ngIf="!(element?.isUpload || element?.imageId)"
+                type="button"
+                mat-flat-button
+                color="primary"
+                class="medium-fw-button"
+                (click)="onUploadDocument(i, element?.documentTemplateId)">
+                <mat-icon svgIcon="icon-Arrow-Upload" class="icon-xmedium"></mat-icon>
+                {{ btnUpload[0] | translate }}
+              </button>
+              <button
+                *ngIf="element?.isUpload || element?.imageId"
+                type="button"
+                mat-stroked-button
+                class="medium-7w-button"
+                (click)="onUploadDocument(i, element?.documentTemplateId)">
+                <mat-icon svgIcon="icon-Arrow-Upload" class="icon-xmedium"></mat-icon>
+                {{ btnUpload[1] | translate }}
+              </button>
+            </ng-container>
+
+            <ng-container
+              *ngIf="element?.active && contractList?.includes(element?.documentTemplate?.documentTemplateId)">
+              <button
+                *ngIf="element?.total > 0 && !element?.isSubContract"
+                type="button"
+                mat-stroked-button
+                class="medium-7w-button"
+                (click)="onUploadDocContract(element)">
+                <mat-icon svgIcon="icon-Search" class="icon-xmedium"></mat-icon>
+                แก้ไข ({{ element?.total }})
+              </button>
+              <button
+                *ngIf="!(element?.isUpload || element?.imageId) && !element?.isSubContract && element?.total === 0"
+                type="button"
+                mat-flat-button
+                color="primary"
+                class="medium-fw-button"
+                (click)="onUploadDocContract(element)">
+                <mat-icon svgIcon="icon-Search" class="icon-xmedium"></mat-icon>
+                เลือกสัญญา
+              </button>
+              <button
+                *ngIf="element?.isSubContract && element?.commitmentAccounts?.length === 0"
+                color="accent"
+                type="button"
+                mat-flat-button
+                class="medium-fw-button fill-green"
+                (click)="onUploadCommitmentAcc(element)">
+                <mat-icon svgIcon="icon-Credit-Search" class="icon icon-md"></mat-icon>
+                เลือกวงเงิน
+              </button>
+              <button
+                *ngIf="element?.isSubContract && element?.commitmentAccounts?.length > 0"
+                type="button"
+                mat-stroked-button
+                class="medium-fw-button"
+                (click)="onUploadCommitmentAcc(element)">
+                <mat-icon svgIcon="icon-Search-Doc" class="icon-xmedium"></mat-icon>
+                เลือกวงเงิน ({{ element?.commitmentAccounts?.length }})
+              </button>
+            </ng-container>
+          </ng-container>
+
+          <ng-container *ngIf="!!uploadFor && uploadFor === 'ADVANCE_PAYMENT_EFILING'">
+            <input type="file" #fileUpload name="fileUpload" [accept]="acceptFile.toString()" class="hidden" />
+            <button
+              *ngIf="!(element?.isUpload || element?.imageId)"
+              type="button"
+              mat-flat-button
+              color="primary"
+              class="medium-fw-button"
+              (click)="onUploadAdvancePayment(i)">
+              <mat-icon svgIcon="icon-Arrow-Upload" class="icon-xmedium"></mat-icon>
+              {{ btnUpload[0] | translate }}
+            </button>
+            <button
+              *ngIf="!element?.active && element?.imageId"
+              type="button"
+              mat-stroked-button
+              class="medium-fw-button"
+              (click)="onUploadAdvancePayment(i)">
+              <mat-icon svgIcon="icon-Arrow-Upload" class="icon-xmedium"></mat-icon>
+              {{ btnUpload[0] | translate }}
+            </button>
+            <button
+              *ngIf="element?.active && element?.imageId"
+              type="button"
+              mat-flat-button
+              class="medium-fw-button"
+              (click)="onUploadAdvancePayment(i)"
+              [disabled]="element?.active">
+              <mat-icon svgIcon="icon-Mark" class="icon-xmedium"></mat-icon>
+              {{ btnUpload[0] | translate }}
+            </button>
+          </ng-container>
+          <ng-container *ngIf="!!uploadFor && uploadFor === 'SUBMIT_AUCTION_RESULT'">
+            <input type="file" #fileUpload name="fileUpload" [accept]="acceptFile.toString()" class="hidden" />
+            <button
+              *ngIf="!(element?.isUpload || element?.imageId)"
+              type="button"
+              mat-flat-button
+              color="primary"
+              class="medium-fw-button"
+              (click)="onUploadAuctionResult(i, element)">
+              <mat-icon svgIcon="icon-Arrow-Upload" class="icon-xmedium"></mat-icon>
+              {{ btnUpload[0] | translate }}
+            </button>
+            <button
+              *ngIf="!element?.active && element?.imageId"
+              type="button"
+              mat-stroked-button
+              class="medium-7w-button"
+              (click)="onUploadAuctionResult(i, element)">
+              <mat-icon svgIcon="icon-Arrow-Upload" class="icon-xmedium"></mat-icon>
+              {{ btnUpload[0] | translate }}
+            </button>
+            <button
+              *ngIf="element?.active && element?.imageId"
+              type="button"
+              mat-flat-button
+              class="medium-7w-button"
+              (click)="onUploadAuctionResult(i, element)"
+              [disabled]="element?.active">
+              <mat-icon svgIcon="icon-Mark" class="icon-xmedium"></mat-icon>
+              {{ btnUpload[0] | translate }}
+            </button>
+          </ng-container>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+    <ng-container *ngIf="list && list.length === 0" [ngTemplateOutlet]="dataNotFound"> </ng-container>
+  </div>
+</div>
+<mat-divider class="no-margin"></mat-divider>
+<div
+  [ngClass]="isErrorFiletypeOrFileSize ? 'error-msg sub-desc' : ''"
+  class="label mt-8"
+  *ngIf="!isPreference && labelAcceptFile && !readonly && !isAdvance">
+  {{ labelAcceptFile | translate }}
+</div>
+<div
+  [ngClass]="isErrorFiletypeOrFileSize ? 'error-msg sub-desc' : ''"
+  class="label mt-8"
+  *ngIf="isPreference">
+  {{ "*รองรับไฟล์ PDF, JPG และ JPEG ขนาดไม่เกิน 30MB" }}
+</div>
+<ng-template #dataNotFound>
+  <app-message-empty [message]="'DOC_PREP.NOT_FOUND_DOC'"></app-message-empty>
+</ng-template>

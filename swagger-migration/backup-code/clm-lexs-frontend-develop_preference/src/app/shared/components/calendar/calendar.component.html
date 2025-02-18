@@ -1,0 +1,40 @@
+<form>
+  <div class="title-content" fxLayout="row" fxLayoutAlign="space-between center">
+    <spig-month-picker
+      class="mb-20"
+      [control]="monthControl"
+      (inputChange)="onMonthChange($event)"
+      [minDate]="minDate"
+      [maxDate]="maxDate"></spig-month-picker>
+
+    <button mat-stroked-button class="medium-aw-button neutral" (click)="goToToday()">วันนี้</button>
+  </div>
+  <table class="calendar">
+    <thead>
+      <th class="calendar-header">อาทิตย์</th>
+      <th class="calendar-header">จันทร์</th>
+      <th class="calendar-header">อังคาร</th>
+      <th class="calendar-header">พุธ</th>
+      <th class="calendar-header">พฤหัส</th>
+      <th class="calendar-header">ศุกร์</th>
+      <th class="calendar-header">เสาร์</th>
+    </thead>
+    <tbody>
+      <tr *ngFor="let row of rows">
+        <td
+          *ngFor="let day of row"
+          class="calendar-cell"
+          [class.current-month]="day.isOfCurrentMonth && day.isAfterMinDate && day.isBeforeMaxDate"
+          [ngClass]="day.cssClass"
+          [class.today]="day.isToday"
+          [class.selected]="isDateEqual(day.date, selectedDate)"
+          (click)="onDateSelect(day.date)">
+          <div class="date-number">{{ day.dateNumber }}</div>
+          <div *ngFor="let event of day.events" [class]="'status-label ' + event.labelStyle">
+            {{ event.text }}
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</form>

@@ -1,0 +1,60 @@
+<!-- ส่วนมอบหมายงาน -->
+<ng-container>
+    <form [formGroup]="dataForm">
+    <div class="content-container mt-16"> <!-- เพิ่ม margin-top เพื่อเว้นระยะ -->
+        <div class="inner-container-padding-24">
+
+
+          <app-preference-header
+          [title]="'มอบหมายงาน' | translate"
+          [isMain]="true"
+          [expanded]="isOpened"
+          (expand)="isOpened = !isOpened">
+          </app-preference-header>
+
+
+        </div>
+        <mat-accordion>
+        <mat-expansion-panel [expanded]="isOpened" hideToggle>
+
+            <mat-divider class="no-margin"></mat-divider>
+            <div class="p-32 pb-24">
+                <div fxLayout="row" class="mb-16">
+                <div fxFlex="20" class="text-align-right pt-18 pl-18">
+                    <h6>{{ 'มอบหมายงานให้ทนายความฝ่ายบังคับคดี' | translate }}</h6>
+                </div>
+                <div fxFlex="70">
+                    <div class="label" fxLayout="row" fxLayoutGap="16px" class="mb-16 pt-18">
+                    <div class="sub-label" fxFlex="49">
+                      <span class="thin-letter">สำนักงานทนายความ</span>
+                      <div class="pt-14">{{ 'COMMON.MAIN_BRANCE_KTB_OFFICE_CODE_NAME' | translate }}</div>
+                    </div>
+                    <div fxFlex="49">
+                        <ng-container *ngIf="!isViewMode">
+                            <spig-dropdown
+                            [config]="lawyerConfig"
+                            [options]="lawyerList"
+                            formControlName="lawyerId"
+                            [classInput]="'input-normal elevation-e1 border-black-40'"
+                            (selectedOption)="onSelectDropdown($event)">
+                            </spig-dropdown>
+                        <spig-error-msg
+                        [control]="dataForm.get('lawyerId')"
+                        [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+                        </spig-error-msg>
+                        </ng-container>
+                        <ng-container *ngIf="isViewMode">
+                            <span class="thin-letter"> {{ 'ทนายความ' | translate }}</span>
+                            <div>{{ preferenceDetail.lawyerId || ''}} - {{ preferenceDetail.lawyerName || ''}}</div>
+                        </ng-container>
+                    </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </mat-expansion-panel>
+        </mat-accordion>
+    </div>
+    </form>
+</ng-container>
+

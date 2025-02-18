@@ -1,0 +1,123 @@
+
+  <div class="content-container search-filter-content">
+    <ng-container>
+      <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px">
+        <div fxFlex="20">
+          <h5>รายการเอกสารส่งกรมบังคับคดี</h5>
+        </div>
+        <div>
+          <div fxLayout="row" fxLayoutGap="10px">
+            <button *ngIf="isedit" mat-raised-button class="long-button header-text-button" (click)="cancel()">
+              ยกเลิก
+            </button>
+            <button *ngIf="isedit" type="button" mat-flat-button color="primary" class="medium-button" (click)="save()"
+              cdkFocusInitial>
+              <mat-icon svgIcon="icon-save-primary" class="icon icon-md"></mat-icon>
+              บันทึก
+            </button>
+            <button *ngIf="!isedit" mat-stroked-button class="medium-button overflow-ellipsis" fxFlex
+              (click)="savesenddoc()">
+              <mat-icon svgIcon="icon-verify-doc" class="icon icon-md"></mat-icon>บันทึกการส่งเอกสาร
+            </button>
+          </div>
+        </div>
+      </div>
+      <hr class="mt-20 mb-20" />
+      <app-message-banner *ngIf="isedit" type="black-info"
+        message="กรุณาบันทึกวันที่นำส่งเอกสาร และกดปุ่ม “บันทึก” เพื่อดำเนินการต่อไป"></app-message-banner>
+      <div class="data-table-content">
+        <ng-container *ngTemplateOutlet="docData.length === 0 ? searchEmpty : mainTable; context: { list: docData }">
+        </ng-container>
+      </div>
+    </ng-container>
+  </div>
+  <ng-template #mainTable let-dataSource="list">
+    <div class="table-scroll section" table-scroll>
+      <table mat-table [dataSource]="dataSource">
+        <ng-container matColumnDef="no">
+          <th mat-header-cell *matHeaderCellDef>
+            ลำดับ
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{element.no}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="docdetail">
+          <th mat-header-cell *matHeaderCellDef>
+            รายการเอกสาร
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{element.docdetail}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="docdate">
+          <th mat-header-cell *matHeaderCellDef>
+            วันที่นำส่งกรมบังคับคดี
+          </th>
+          <td mat-cell *matCellDef="let element; let idx = dataIndex">
+              <div *ngIf="!isedit">{{(element.docdate | buddhistEra: 'DD/MM/yyyy') || '-'}}</div>
+              <div *ngIf="isedit">
+                <spig-datepicker class="date-picker-block" [classInput]="'input-s icon no-border'"
+                  label="วันที่นำส่งเอกสาร" [required]="true" [defaultDate]="element?.docdate"
+                  (inputChange)="onDateChange(element.no, $event)"></spig-datepicker>
+              </div>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="saveas">
+          <th mat-header-cell *matHeaderCellDef>
+            ผู้บันทึก
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{element.saveas}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="savedate">
+          <th mat-header-cell *matHeaderCellDef>
+            วันที่บันทึก
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{(element.savedate | buddhistEra: 'DD/MM/yyyy') || '-'}}
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let element; columns: displayedColumns"></tr>
+      </table>
+    </div>
+  </ng-template>
+
+  <ng-template #searchEmpty>
+    <div class="table-scroll" table-scroll>
+      <table mat-table>
+        <ng-container matColumnDef="no">
+          <th mat-header-cell *matHeaderCellDef>
+            ลำดับ
+          </th>
+        </ng-container>
+        <ng-container matColumnDef="docdetail">
+          <th mat-header-cell *matHeaderCellDef>
+            รายการเอกสาร
+          </th>
+        </ng-container>
+        <ng-container matColumnDef="docdate">
+          <th mat-header-cell *matHeaderCellDef>
+            วันที่นำส่งกรมบังคับคดี
+          </th>
+        </ng-container>
+        <ng-container matColumnDef="saveas">
+          <th mat-header-cell *matHeaderCellDef>
+            ผู้บันทึก
+          </th>
+        </ng-container>
+        <ng-container matColumnDef="savedate">
+          <th mat-header-cell *matHeaderCellDef>
+            วันที่บันทึก
+          </th>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      </table>
+    </div>
+    <div>
+      <app-message-empty [message]="'COMMON.SEARCH_EMPTY'"></app-message-empty>
+    </div>
+  </ng-template>
+

@@ -1,0 +1,20 @@
+<div class="container">
+  <app-message-banner type="warn-normal" [message]="messageBanner"></app-message-banner>
+  <div class="mt-24" fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="16px">
+    <div fxFlex="25" fxLayout="column">
+      <h6>ประเภทค่าใช้จ่าย</h6>
+    </div>
+    <div fxLayout="column" fxFlex="80">
+      <div>
+        <spig-dropdown
+          [required]="true"
+          [formControl]="selectedDropdownValue"
+          classInput="input-normal icon"
+          [placeholder]="'เลือกประเภทค่าใช้จ่าย'"
+          [config]="auctionPaymentEfilingdropdownConfig"
+          [options]="auctionPaymentEfilingOptions"></spig-dropdown>
+        <spig-error-msg [control]="selectedDropdownValue" [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'"></spig-error-msg>
+      </div>
+    </div>
+  </div>
+</div>

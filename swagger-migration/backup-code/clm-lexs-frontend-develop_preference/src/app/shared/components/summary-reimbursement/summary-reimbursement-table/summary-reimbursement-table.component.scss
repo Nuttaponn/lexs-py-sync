@@ -1,0 +1,45 @@
+@import '/src/styles/colors';
+
+.example-detail-row {
+  height: 0;
+}
+
+.example-detail-td {
+  height: 0;
+}
+
+.example-element-detail {
+  background: map-get($ktb-palette-biz-gray, 100);
+  overflow: hidden;
+  display: flex;
+}
+
+.detail-table {
+  background: #b7b7b773;
+}
+
+.status-normal {
+  background-color: map-get($ktb-palette-blue, 10) !important;
+}
+
+.total-cell {
+  font-weight: bold;
+}
+
+.content-form {
+  margin: 10px 52px 10px 52px;
+}
+
+.h-56 {
+  height: 56px !important;
+}
+
+.preserve-breaks {
+  white-space-collapse: preserve-breaks;
+}
+
+.remark-style {
+  min-width: 150px;
+  max-width: 150px;
+  padding: unset;
+}

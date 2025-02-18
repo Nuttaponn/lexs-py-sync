@@ -1,0 +1,40 @@
+@import './colors';
+
+.badge-notification {
+  width: 32px;
+  height: 32px;
+  background-color: $krungthai-red;
+  color: $white;
+  cursor: pointer;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+  font-weight: 400;
+  margin-right: 10px;
+  line-height: 1px;
+}
+
+.badge-without-cursor {
+  @extend .badge-notification;
+  cursor: default;
+}
+
+@mixin layoutBadge() {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.badge-24 {
+  @include layoutBadge;
+  width: 24px;
+  height: 24px;
+  color: map-get($ktb-palette-biz-gray, 900);
+  &.circle-gray {
+    background: map-get($ktb-palette-biz-gray, 200);
+    border-radius: 50%;
+  }
+}

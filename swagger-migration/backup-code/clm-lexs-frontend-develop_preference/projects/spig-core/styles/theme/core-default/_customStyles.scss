@@ -1,0 +1,2402 @@
+@import "./variables";
+@import "../../global/customStyles";
+@import "./breakpoints";
+@import "./typography";
+
+body {
+  @extend .font-body;
+}
+
+$btn-warn-bg-color: $krungthai-golden-yellow-400;
+
+input {
+  line-height: 25px !important;
+}
+
+@mixin normalButtonMq() {
+  @include normalButton();
+  @extend .font-btn-md;
+  padding-left: 20px;
+  padding-right: 20px;
+
+  @include breakpoint(ktb-lte-md) {
+    height: 36px;
+    line-height: 36px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+}
+
+@mixin longButtonMq() {
+  @include longButton();
+  @extend .font-btn-lg;
+  padding-left: 20px;
+  padding-right: 20px;
+
+  @include breakpoint(ktb-lte-md) {
+    height: 44px;
+    line-height: 44px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+}
+
+@mixin smallButtonMq() {
+  @include smallButton();
+  @extend .font-btn-sm;
+  padding-left: 20px;
+  padding-right: 20px;
+
+  @include breakpoint(ktb-lte-md) {
+    height: 28px;
+    line-height: 28px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+}
+
+button {
+  &.mat-warn {
+
+    /* FIXED(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
+    .mat-mdc-focus-indicator {
+      background-color: $btn-warn-bg-color;
+    }
+  }
+
+  &.mat-mdc-button {
+    @include normalButtonMq();
+
+    &.long-button {
+      @include longButtonMq();
+    }
+
+    &.small-button {
+      @include smallButtonMq();
+    }
+  }
+
+  &.mat-mdc-raised-button {
+    @include normalButtonMq();
+
+    &.long-button {
+      @include longButtonMq();
+    }
+
+    &.small-button {
+      @include smallButtonMq();
+    }
+
+    &.mat-warn {
+      background-color: $btn-warn-bg-color;
+    }
+
+    &.mat-primary[disabled] {
+      background: map_get($ktb-palette-biz-gray, 300) !important;
+      color: $white;
+    }
+
+    &.mat-warn[disabled] {
+      background: map_get($ktb-palette-biz-gray, 300) !important;
+      color: $white;
+    }
+
+    &.bg-gradient {
+      @if ($button-allow-gradient) {
+        &.mat-primary {
+          background: linear-gradient(to right,
+              map_get($palette-primary, 400),
+              map_get($palette-primary, 600));
+        }
+
+        &.mat-accent {
+          background: linear-gradient(to right,
+              map_get($palette-accent, 400),
+              map_get($palette-accent, 600));
+        }
+
+        &.mat-warn {
+          background: linear-gradient(to right,
+              map_get($palette-warn, 300),
+              map_get($palette-warn, 500));
+        }
+
+        &.mat-secondary {
+          background: linear-gradient(to right,
+              map_get($palette-secondary, 400),
+              map_get($palette-secondary, 600));
+        }
+      }
+    }
+  }
+
+  &.mat-mdc-outlined-button {
+    @include normalButtonMq();
+    border-color: map_get($ktb-palette-biz-black, 50) !important;
+
+    &.long-button {
+      @include longButtonMq();
+    }
+
+    &.small-button {
+      @include smallButtonMq();
+    }
+
+    &.mat-primary {
+      &[disabled] {
+        color: $button-disabled-color;
+      }
+    }
+
+    &.success {
+      border-color: map_get($ktb-palette-green, 600) !important;
+      color: map_get($ktb-palette-green, 600) !important;
+    }
+  }
+
+  &.mat-mdc-unelevated-button {
+    @include normalButtonMq();
+
+    &.long-button {
+      @include longButtonMq();
+    }
+
+    &.small-button {
+      @include smallButtonMq();
+    }
+
+    &.mat-warn {
+      background-color: $btn-warn-bg-color;
+    }
+
+    &.bg-gradient {
+      @if ($button-allow-gradient) {
+        &.mat-primary {
+          background: linear-gradient(to right,
+              map_get($palette-primary, 400),
+              map_get($palette-primary, 600));
+        }
+
+        &.mat-accent {
+          background: linear-gradient(to right,
+              map_get($palette-accent, 400),
+              map_get($palette-accent, 600));
+        }
+
+        &.mat-warn {
+          background: linear-gradient(to right,
+              map_get($palette-warn, 300),
+              map_get($palette-warn, 600));
+        }
+      }
+    }
+
+    &.elevation-e2 {
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.16) !important;
+    }
+
+    &.elevation-e2:hover {
+      box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.16) !important;
+    }
+
+    &.mat-primary {
+      &[disabled] {
+        background-color: $button-disabled-color;
+        color: white;
+      }
+    }
+
+    @if ($button-flat-force-drop-shadow) {
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.16) !important;
+    }
+  }
+
+  &.mat-mdc-unelevated-button:hover {
+    @if ($button-flat-force-drop-shadow) {
+      box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.16) !important;
+    }
+  }
+
+  &.mat-mdc-fab {
+    &.mat-warn {
+      background-color: $btn-warn-bg-color;
+    }
+
+    &.bg-gradient {
+      @if ($button-allow-gradient) {
+        &.mat-primary {
+          background: linear-gradient(to right,
+              map_get($palette-primary, 400),
+              map_get($palette-primary, 600));
+        }
+
+        &.mat-accent {
+          background: linear-gradient(to right,
+              map_get($palette-accent, 400),
+              map_get($palette-accent, 600));
+        }
+
+        &.mat-warn {
+          background: linear-gradient(to right,
+              map_get($palette-warn, 300),
+              map_get($palette-warn, 600));
+        }
+      }
+    }
+  }
+
+  &.mat-mdc-mini-fab {
+    &.mat-warn {
+      background-color: $btn-warn-bg-color;
+    }
+
+    &.bg-gradient {
+      @if ($button-allow-gradient) {
+        &.mat-primary {
+          background: linear-gradient(to right,
+              map_get($palette-primary, 400),
+              map_get($palette-primary, 600));
+        }
+
+        &.mat-accent {
+          background: linear-gradient(to right,
+              map_get($palette-accent, 400),
+              map_get($palette-accent, 600));
+        }
+
+        &.mat-warn {
+          background: linear-gradient(to right,
+              map_get($palette-warn, 300),
+              map_get($palette-warn, 600));
+        }
+      }
+    }
+  }
+
+  /* FIXED(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
+  .mdc-button__label {
+    .mat-icon {
+      display: inline-flex;
+      align-items: center;
+      padding-right: 0.1em;
+    }
+  }
+}
+
+.mat-mdc-dialog-actions {
+  button {
+
+    /* FIXED(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
+    &.mdc-button {
+      font-size: 16px;
+
+      .mat-icon svg {
+        width: auto;
+        height: 21px;
+      }
+    }
+  }
+}
+
+a {
+  &.mat-mdc-button {
+    @include normalButtonMq();
+
+    &.long-button {
+      @include longButtonMq();
+    }
+
+    &.small-button {
+      @include smallButtonMq();
+    }
+  }
+
+  &.mat-mdc-raised-button {
+    @include normalButtonMq();
+
+    &.long-button {
+      @include longButtonMq();
+    }
+
+    &.small-button {
+      @include smallButton();
+    }
+
+    &.mat-warn {
+      background-color: $btn-warn-bg-color;
+    }
+
+    &.bg-gradient {
+      @if ($button-allow-gradient) {
+        &.mat-primary {
+          background: linear-gradient(to right,
+              map_get($palette-primary, 400),
+              map_get($palette-primary, 600));
+        }
+
+        &.mat-accent {
+          background: linear-gradient(to right,
+              map_get($palette-accent, 400),
+              map_get($palette-accent, 600));
+        }
+
+        &.mat-warn {
+          background: linear-gradient(to right,
+              map_get($palette-warn, 300),
+              map_get($palette-warn, 600));
+        }
+      }
+    }
+  }
+
+  &.mat-mdc-outlined-button {
+    border-color: map_get($ktb-palette-biz-black, 50) !important;
+    @include normalButtonMq();
+
+    &.long-button {
+      @include longButtonMq();
+    }
+
+    &.small-button {
+      @include smallButtonMq();
+    }
+
+    &.medium-aw-button {
+      width: auto !important;
+      height: 56px !important;
+    }
+  }
+
+  &.mat-mdc-unelevated-button {
+    @include normalButtonMq();
+
+    &.long-button {
+      @include longButtonMq();
+    }
+
+    &.small-button {
+      @include smallButtonMq();
+    }
+
+    &.mat-warn {
+      background-color: $btn-warn-bg-color;
+    }
+
+    &.bg-gradient {
+      @if ($button-allow-gradient) {
+        &.mat-primary {
+          background: linear-gradient(to right,
+              map_get($palette-primary, 400),
+              map_get($palette-primary, 600));
+        }
+
+        &.mat-accent {
+          background: linear-gradient(to right,
+              map_get($palette-accent, 400),
+              map_get($palette-accent, 600));
+        }
+
+        &.mat-warn {
+          background: linear-gradient(to right,
+              map_get($palette-warn, 300),
+              map_get($palette-warn, 600));
+        }
+      }
+    }
+  }
+
+  &.overflow-ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &.mat-mdc-fab {
+    &.mat-warn {
+      background-color: $btn-warn-bg-color;
+    }
+
+    &.bg-gradient {
+      @if ($button-allow-gradient) {
+        &.mat-primary {
+          background: linear-gradient(to right,
+              map_get($palette-primary, 400),
+              map_get($palette-primary, 600));
+        }
+
+        &.mat-accent {
+          background: linear-gradient(to right,
+              map_get($palette-accent, 400),
+              map_get($palette-accent, 600));
+        }
+
+        &.mat-warn {
+          background: linear-gradient(to right,
+              map_get($palette-warn, 300),
+              map_get($palette-warn, 600));
+        }
+      }
+    }
+  }
+
+  &.mat-mdc-mini-fab {
+    &.mat-warn {
+      background-color: $btn-warn-bg-color;
+    }
+
+    &.bg-gradient {
+      @if ($button-allow-gradient) {
+        &.mat-primary {
+          background: linear-gradient(to right,
+              map_get($palette-primary, 400),
+              map_get($palette-primary, 600));
+        }
+
+        &.mat-accent {
+          background: linear-gradient(to right,
+              map_get($palette-accent, 400),
+              map_get($palette-accent, 600));
+        }
+
+        &.mat-warn {
+          background: linear-gradient(to right,
+              map_get($palette-warn, 300),
+              map_get($palette-warn, 600));
+        }
+      }
+    }
+  }
+}
+
+/* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+.mat-mdc-form-field .mat-mdc-floating-label.mdc-floating-label mat-label {
+  color: rgba(0, 0, 0, 0.6);
+  font-family: "KrungthaiFastRegular";
+
+  span {
+    font-family: Thonburi;
+    line-height: 18px;
+    color: #D0082C !important;
+  }
+}
+
+/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+.mat-form-field-infix .mat-form-field-label-wrapper .mat-form-field-label .mat-placeholder-required {
+  color: #D0082C;
+}
+
+// Custom form field
+/* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+.mat-mdc-form-field.mat-focused .mdc-floating-label {
+  mat-label {
+    color: #00A6E6;
+  }
+}
+
+/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+.mat-form-field-appearance-outline .mat-form-field-outline-thick {
+  color: map_get($palette-primary, 500);
+}
+
+.mat-form-field-appearance-fill {
+
+  /* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+  .mat-mdc-text-field-wrapper {
+    border-radius: $login-form-input-border-radius !important;
+    border: 1px solid #f9f9f900;
+  }
+
+  /* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+  .mdc-line-ripple {
+    display: none;
+  }
+}
+
+.mat-form-field-appearance-fill.ng-dirty,
+.mat-form-field-appearance-fill.mat-focused {
+
+  /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+  .mat-form-field-flex {
+    border-radius: $login-form-input-border-radius !important;
+    border: 1px solid #ffffff00;
+  }
+}
+
+.mat-mdc-tab-group .mat-tab-group.tab-group-container {
+  // sub tab group
+  margin-top: 8px;
+}
+
+.mat-mdc-tab-group.default {
+  >.mat-mdc-tab-header {
+    border-bottom: none;
+
+    /* FIXED(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.*/
+    .mat-mdc-tab {
+      min-width: 25px !important;
+      height: 40px !important;
+      padding: 0 !important;
+      margin: 0 16px !important;
+      background-color: transparent !important;
+      color: map-get($ktb-palette-blue, 500);
+      border-radius: 6px 6px 0 0;
+      margin-right: 10px;
+      font-family: KrungthaiFastBold;
+      font-size: 16px;
+
+      &:first-child {
+        margin-left: 0 !important;
+      }
+
+      .tab-topic-label {
+        @extend .font-body;
+      }
+
+      .tab-number-label {
+        font-size: 14px;
+      }
+
+      @include breakpoint(ktb-lte-md) {
+        height: 28px !important;
+
+        .tab-number-label {
+          font-size: 12px;
+        }
+      }
+    }
+
+    /* Styles for the active tab label */
+    /* FIXED(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.*/
+    .mat-mdc-tab.mdc-tab--active {
+      min-width: 25px !important;
+      border-radius: 6px 6px 0 0;
+      background-color: map-get($ktb-palette-blue, 500);
+      color: white;
+      font-family: KrungthaiFastBold;
+
+      .tab-number-label {
+        font-family: KrungthaiFastRegular;
+        color: $krungthai-blue-200;
+      }
+    }
+  }
+}
+
+/* Styles for the ink bar */
+.mat-ink-bar {
+  background-color: transparent !important;
+}
+
+// For Toast / Flash banner
+@mixin snackBarCommon() {
+  min-width: 64vw;
+  min-height: 60px;
+  display: inline-flex;
+  margin-top: 104px;
+  padding: 14px 20px 14px 16px;
+
+  @include breakpoint(ktb-lte-md) {
+    min-width: 79vw;
+    min-height: 44px;
+    padding: 10px 20px 10px 16px;
+  }
+
+  spig-flash-banner {
+    display: flex;
+    align-items: center;
+
+    .icon-fill-white {
+      fill: $white;
+    }
+
+    .icon-pull-right {
+      right: 16px;
+      position: fixed;
+    }
+
+    .flash-msg-font {
+      @extend .font-heading4;
+    }
+
+    .mat-icon {
+      @include breakpoint(ktb-gte-lg) {
+        width: 32px !important;
+        height: 32px !important;
+
+        svg {
+          width: 32px !important;
+          height: 32px !important;
+        }
+      }
+
+      @include breakpoint(ktb-lte-md) {
+        width: 24px !important;
+        height: 24px !important;
+
+        svg {
+          width: 24px !important;
+          height: 24px !important;
+        }
+      }
+
+      &.icon-xs {
+        width: 24px !important;
+        height: 24px !important;
+
+        svg {
+          width: 20px !important;
+          height: 20px !important;
+        }
+      }
+    }
+  }
+}
+
+.mat-mdc-snack-bar-container {
+
+  min-width: max-content !important;
+  max-width: max-content !important;
+
+  &.custom-snack-bar-container-info {
+    @include snackBarCommon();
+    background: $krungthai-green-300;
+    color: $white;
+  }
+
+  &.custom-snack-bar-container-warning {
+    @include snackBarCommon();
+    background: $krungthai-golden-yellow-400;
+    color: $black;
+  }
+
+  &.custom-snack-bar-container-error {
+    @include snackBarCommon();
+    background: $krungthai-red-300;
+    color: $white;
+  }
+
+  &.custom-snack-bar-container-primary {
+    @include snackBarCommon();
+    background: map-get($ktb-palette-blue, 50);
+    color: $krungthai-blue;
+  }
+
+  &.custom-snack-bar-container-general {
+    @include snackBarCommon();
+    background: map-get($ktb-palette-biz-gray, 700);
+    color: $white;
+  }
+
+  .mat-icon {
+    width: unset;
+    height: unset;
+  }
+}
+
+/* For modal */
+@mixin dialogCommon() {
+  padding: 0;
+
+  .mat-mdc-dialog-title {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 24px;
+    margin-bottom: 0;
+    font-family: KrungthaiFastBold;
+    font-size: 18px;
+
+    .dialog-title-margin {
+      margin-bottom: 24px;
+
+      @include breakpoint(ktb-lte-md) {
+        font-size: 18px;
+        margin-bottom: 0px;
+        margin-top: 0px;
+        line-height: 20px;
+      }
+    }
+  }
+
+  .mat-mdc-dialog-content {
+    padding: 24px 0 !important;
+    padding-bottom: 0px !important;
+    text-align: center;
+  }
+
+  .mat-mdc-dialog-actions {
+    justify-content: center;
+    min-height: unset;
+    padding: 10px 0;
+    margin: 0;
+
+    button.mat-mdc-unelevated-button,
+    button.mat-mdc-outlined-button {
+      @include breakpoint(ktb-lte-md) {
+        font-size: 14px;
+        height: 28px;
+        line-height: 28px;
+      }
+    }
+  }
+
+  .alert-modal-title-icon {
+    svg {
+      max-height: 20px;
+      max-width: 20px;
+
+      @include breakpoint(ktb-lte-md) {
+        height: 20px;
+        width: 20px;
+      }
+    }
+  }
+}
+
+.custom-dialog-xlarge>mat-dialog-container {
+  @include dialogCommon();
+  width: 1200px;
+
+  @include breakpoint(ktb-lte-md) {
+    font-size: 14px;
+    width: 960px;
+  }
+}
+
+.custom-dialog-large>mat-dialog-container {
+  @include dialogCommon();
+  width: 960px;
+
+  @include breakpoint(ktb-lte-md) {
+    font-size: 14px;
+    width: 840px;
+  }
+}
+
+.custom-dialog-normal>mat-dialog-container {
+  @include dialogCommon();
+  width: 840px;
+
+  @include breakpoint(ktb-lte-md) {
+    font-size: 14px;
+    width: 760px;
+  }
+}
+
+.custom-dialog-small>mat-dialog-container {
+  @include dialogCommon();
+  width: 760px;
+
+  @include breakpoint(ktb-lte-md) {
+    font-size: 14px;
+    width: 640px;
+  }
+}
+
+.custom-dialog-xsmall>mat-dialog-container {
+  @include dialogCommon();
+  width: 480px;
+  font-size: 16px;
+
+  @include breakpoint(ktb-lte-md) {
+    font-size: 14px;
+    width: 400px;
+  }
+}
+
+.custom-dialog-min-xsmall>mat-dialog-container {
+  @include dialogCommon();
+  min-width: 480px;
+  font-size: 16px;
+
+  @include breakpoint(ktb-lte-md) {
+    font-size: 14px;
+    width: 400px;
+  }
+}
+
+.custom-dialog-xxsmall>mat-dialog-container {
+  @include dialogCommon();
+  width: 400px;
+  font-size: 16px;
+
+  @include breakpoint(ktb-lte-md) {
+    font-size: 14px;
+    width: 350px;
+  }
+}
+
+.custom-dialog-center>mat-dialog-container {
+  @include dialogCommon();
+  width: 480px;
+
+  @include breakpoint(ktb-lte-md) {
+    font-size: 14px;
+    width: 400px;
+  }
+
+  .mat-mdc-dialog-title {
+    font-family: KrungthaiFastBold;
+    text-align: center;
+    padding: 0 24px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+.custom-dialog-xlarge>mat-dialog-container,
+.custom-dialog-large>mat-dialog-container,
+.custom-dialog-normal>mat-dialog-container,
+.custom-dialog-small>mat-dialog-container,
+.custom-dialog-xsmall>mat-dialog-container,
+.custom-dialog-min-xsmall>mat-dialog-container,
+.custom-dialog-xxsmall>mat-dialog-container {
+
+  .mat-mdc-dialog-container {
+    border-radius: 8px;
+  }
+
+  .mat-mdc-dialog-content {
+    text-align: left !important;
+    font-size: $font-description !important;
+    color: map-get($ktb-palette-biz-gray, 900) !important;
+    border-top: 1px solid map-get($ktb-palette-biz-black, 10);
+    margin: 24px !important;
+    margin-bottom: 0;
+    line-height: 1.5rem;
+    &.no-padding {
+      padding: 0 !important;
+    }
+
+    @include breakpoint(ktb-lte-md) {
+      margin: 10px 0 0 0;
+    }
+  }
+
+  .mat-mdc-dialog-actions {
+    padding: 24px !important;
+    justify-content: end !important;
+
+    &.space_between {
+      justify-content: space-between !important;
+    }
+
+    &.pt-0 {
+      padding: 0px 24px 24px 24px !important;
+    }
+
+    @include breakpoint(ktb-lte-md) {
+      padding: 24px 0;
+    }
+
+    @include btn-common();
+  }
+
+  .mat-mdc-dialog-title {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: flex-start !important;
+    padding: 0 !important;
+    margin-left: 24px;
+    line-height: 1;
+
+    strong {
+      font-size: $font-sub-content;
+      color: map-get($ktb-palette-biz-gray, 900) !important;
+    }
+
+    .alert-modal-title-icon {
+      margin-right: 14px;
+    }
+
+    .dialog-title-margin {
+      margin-bottom: 0 !important;
+    }
+  }
+
+  .alert-modal-title-icon {
+    margin-top: 10px;
+
+    svg {
+      height: 24px;
+      width: 24px;
+    }
+  }
+
+  .alert-modal-title-icon {
+    @include breakpoint(ktb-lte-md) {
+      margin-top: 5px;
+      margin-bottom: 5px;
+    }
+  }
+}
+
+.custom-dialog-auto-width>mat-dialog-container {
+  width: auto !important;
+
+  .mat-mdc-dialog-content {
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    .form-content {
+      opacity: 100%;
+      padding-top: 0px !important;
+    }
+  }
+}
+
+// center aligned dialog
+.custom-dialog-center>mat-dialog-container {
+  width: 450px !important;
+  border-radius: 8px;
+
+  .mat-mdc-dialog-container {
+    border-radius: 8px;
+  }
+
+  .mat-mdc-dialog-actions {
+    padding: 24px !important;
+    @include btn-common();
+  }
+
+  .mat-mdc-dialog-actions.actions-right-full-width {
+    #actions-right-button {
+      width: 100%;
+    }
+  }
+
+  .mat-mdc-dialog-title .dialog-title-margin {
+    font-size: $font-sub-content !important;
+    margin-bottom: 0;
+  }
+
+  .mat-mdc-dialog-content {
+    padding-top: 8px;
+    margin: 0 24px !important;
+  }
+}
+
+.custom-dialog-sales-list>mat-dialog-container {
+  @include dialogCommon();
+  width: 600px !important;
+  height: 484px !important;
+  font-size: 16px !important;
+  text-align: left !important;
+
+  @include breakpoint(ktb-lte-md) {
+    font-size: 14px;
+    width: 520px !important;
+    height: 454px !important;
+  }
+
+  .mat-mdc-dialog-content {
+    border-top: 1px solid $krungthai-biz-gray-400;
+    height: 285px;
+    border-bottom: 1px solid $krungthai-biz-gray-400;
+    text-align: left !important;
+    margin: 0;
+
+    @include breakpoint(ktb-lte-md) {
+      height: 291px;
+    }
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  .mat-mdc-dialog-title {
+    margin: 0;
+    line-height: 52px;
+    height: 52px;
+
+    .dialog-title-margin {
+      margin: 0;
+    }
+  }
+
+  button.mat-mdc-unelevated-button,
+  button.mat-mdc-outlined-button {
+    @include breakpoint(ktb-lte-md) {
+      width: 80px !important;
+    }
+  }
+
+  .mat-mdc-dialog-actions {
+    padding: 30px 0;
+
+    @include breakpoint(ktb-lte-md) {
+      padding: 24px 0;
+    }
+  }
+}
+
+/* for login screen */
+.login {
+  position: absolute;
+  top: 0;
+  left: 0;
+  min-width: 100%;
+  height: 100%;
+  min-height: 500px;
+
+  &.error {
+    color: $krungthai-red-300;
+
+    input {
+      color: $black !important;
+    }
+  }
+
+  .required-error {
+    margin-top: -1.35em;
+    text-align: left;
+    color: $krungthai-red-300 !important;
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  @if $login-bg-style==image {
+    background: $login-bg-image;
+  }
+
+  @else {
+    @if $login-bg-gradient {
+      background: linear-gradient(to right,
+          $login-bg-gradient-color-left,
+          $login-bg-gradient-color-right );
+    }
+
+    @else {
+      background: $login-bg-color;
+    }
+  }
+
+  .login-area {
+    min-height: 500px;
+
+    @include breakpoint(ktb-lte-md) {
+      min-height: 380px;
+    }
+
+    display: inline-flex;
+    @include centerSelf();
+    background-color: $login-area-bg-color;
+    border-radius: $login-area-border-radius;
+
+    @if $login-area-drop-shadow {
+      box-shadow: 0px 4px 8px rgb(0 0 0 / 16%);
+    }
+
+    .login-campaign {
+      width: $login-campaign-width;
+      background: $login-campaign-image;
+      border-top-left-radius: $login-area-border-radius;
+      border-bottom-left-radius: $login-area-border-radius;
+
+      @include breakpoint(ktb-lte-md) {
+        width: 374px;
+        height: 380px;
+      }
+    }
+
+    .login-form {
+      width: $login-form-width;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+
+      @include breakpoint(ktb-lte-md) {
+        width: 374px;
+        height: 380px;
+      }
+
+      .login-form-titlebar {
+        display: none;
+      }
+
+      .login-form-body {
+        width: 100%;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+
+        .hiddenTooltip {
+          position: absolute;
+          visibility: hidden;
+          left: 0;
+          width: 100%;
+          top: 0;
+        }
+      }
+
+      .login-form-area {
+        width: $login-form-area-width;
+
+        @include breakpoint(ktb-lte-md) {
+          width: 270px;
+        }
+
+        height: auto;
+
+        .login-form-logo {
+          height: $login-height-logo;
+          width: 100%;
+          margin-top: 24px;
+          margin-bottom: 30px;
+          background: $login-form-logo;
+
+          @include breakpoint(ktb-lte-md) {
+            height: 74px;
+            margin-bottom: 30px;
+          }
+
+          .login-form-head {
+            text-align: center;
+            margin: 0;
+          }
+
+          .grey-text {
+            font-family: KrungthaiFastLight;
+            font-size: 24px;
+            color: $login-head-text-color-welcome;
+
+            @include breakpoint(ktb-md) {
+              font-size: 18px;
+            }
+          }
+
+          .ktb-text {
+            font-family: KrungthaiFastBold;
+            font-size: 24px;
+            color: $login-head-text-color-title;
+
+            @include breakpoint(ktb-md) {
+              font-size: 18px;
+            }
+          }
+        }
+
+        .login-input-area {
+          display: inline-flex;
+          width: 100%;
+          height: 70%;
+          justify-content: center;
+
+          form {
+            display: inline-flex;
+            flex-direction: column;
+            width: 100%;
+            justify-content: space-evenly;
+            align-items: center;
+
+            mat-form-field {
+              width: 100%;
+            }
+
+            .mat-mdc-form-field {
+
+              /* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+              .mat-mdc-text-field-wrapper {
+                padding: 0em 0.75em 0 0.75em !important;
+              }
+            }
+
+            /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+            .mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label {
+              top: 1.7em;
+              font-family: KrungthaiFastRegular !important;
+              font-size: 12px !important;
+              color: map-get($ktb-palette-biz-gray, 700) !important;
+              letter-spacing: 0 !important;
+              transform: translateY(-1.5em) scale(1) !important;
+              width: auto;
+              background-color: #f9f9f9 !important;
+              padding-right: 2px;
+            }
+
+            button {
+              width: 100% !important;
+            }
+
+            .mat-mdc-form-field.password-padding {
+
+              /* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+              .mat-mdc-text-field-wrapper {
+                padding-bottom: 0px !important;
+              }
+            }
+          }
+
+          mat-icon {
+            width: 18px;
+            height: 18px;
+            display: inline-flex;
+          }
+
+          mat-error {
+            color: $danger;
+            font-family: KrungthaiFastRegular !important;
+            letter-spacing: 0 !important;
+            padding-bottom: 20px;
+          }
+
+          /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+          .login-password-field.mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-outline-gap {
+            width: 50px !important;
+          }
+        }
+
+        .login-remark-text {
+          font-family: KrungthaiFastRegular !important;
+          font-size: 16px;
+          color: $login-remark-text-color;
+          text-align: center;
+          padding-top: 24px;
+        }
+
+        .login-contact {
+          font-family: KrungthaiFastRegular !important;
+          font-size: 16px;
+          color: $login-remark-text-color;
+          text-align: center;
+          padding-top: 15px;
+          padding-bottom: 24px;
+        }
+      }
+
+      .separator {
+        display: inline-block;
+        height: 1px;
+        border-bottom: 1px solid $krungthai-biz-gray-400;
+        width: 100%;
+      }
+    }
+  }
+
+  /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+  .mat-form-field-appearance-outline.mat-form-field-invalid.mat-form-field-invalid .mat-form-field-outline-thick {
+    color: $krungthai-red-300;
+  }
+
+  // mat-input error carent color
+  .mat-form-field-invalid .mat-mdc-input-element,
+  .mat-warn .mat-input-element {
+    caret-color: $krungthai-red-300;
+  }
+
+  // mat-label focused style
+  /* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+  .mat-mdc-form-field.mat-focused .mdc-floating-label {
+    color: $krungthai-red-300 !important;
+  }
+
+  // mat-label error style
+  /* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+  .mat-mdc-form-field.mat-form-field-invalid .mdc-floating-label {
+    color: $krungthai-red-300 !important;
+
+    /* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+    .mat-mdc-form-field-required-marker {
+      color: $krungthai-red-300 !important;
+    }
+  }
+
+  /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+  .mat-form-field-appearance-outline .mat-form-field-subscript-wrapper {
+    margin-top: 0px !important;
+    padding: 0 0 0 1em !important;
+  }
+
+  &.error {
+
+    /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+    .login-username-field.mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-outline-gap {
+      width: 70px !important;
+    }
+
+    /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+    .login-password-field.mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-outline-gap {
+      width: 50px !important;
+    }
+
+    /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+    .mat-mdc-form-field .mat-form-field-wrapper .mat-form-field-flex .mat-form-field-suffix {
+      align-items: center !important;
+      padding: 10px !important;
+    }
+  }
+}
+
+.timeout-warning {
+  white-space: pre-line;
+}
+
+.error-tooltip {
+  .mat-mdc-tooltip-surface {
+    max-width: $login-form-width !important;
+    width: $login-form-width - 12px;
+    height: auto;
+    font-size: 16px;
+    display: inline-flex;
+    align-items: center;
+    padding-top: 10px; // including tooltip style from version 13
+    padding-bottom: 10px; // including tooltip style from version 13
+    padding-left: 2.5em !important;
+    color: map-get($ktb-palette-red, 600) !important;
+    background: url(/assets/images/icons/exclamation_24.svg) left/contain no-repeat $krungthai-red-100;
+    background-size: inherit;
+    border-radius: $login-area-border-radius;
+
+    @if $login-area-drop-shadow {
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.16);
+    }
+  }
+}
+
+/* For Title bar */
+.main-titlebar {
+  min-height: 50px !important;
+  height: 50px;
+  position: fixed;
+  z-index: 99;
+  top: 0;
+
+  @if $title-bar-bg-gradient {
+    background: linear-gradient(to right,
+        $title-bar-gradient-color-left,
+        $title-bar-gradient-color-right );
+  }
+
+  @else {
+    background: $title-bar-bg-color;
+  }
+
+  .main-titlebar-row {
+    min-height: 50px !important;
+    justify-content: space-between;
+    padding: 0 30px;
+    font-size: $title-bar-text-size;
+    color: $title-bar-text-color;
+    letter-spacing: 0;
+
+    .title-text {
+      @include centerInRow();
+      @extend .font-heading4;
+    }
+
+    &.button-left {
+      padding-left: 20px !important;
+    }
+
+    .user-info-block {
+      display: inline-flex;
+      align-items: center;
+
+      /* FIXED(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
+      .mat-mdc-icon-button.cdk-program-focused .mat-mdc-focus-indicator {
+        opacity: 0 !important;
+      }
+
+      .separator {
+        display: inline-block;
+        height: 25px;
+
+        @if ($title-bar-show-separator) {
+          width: 1px;
+          border-left: 1px solid $krungthai-biz-gray-400;
+          margin: 0 20px;
+        }
+
+        @else {
+          width: 0;
+          border: 0;
+          margin: 0 0 0 5px;
+        }
+      }
+
+      .mat-mdc-icon-button {
+        .mat-icon {
+          height: $title-bar-icon-height-lg !important;
+          width: $title-bar-icon-height-lg !important;
+
+          svg {
+            height: $title-bar-icon-height-lg !important;
+            width: $title-bar-icon-height-lg !important;
+            fill: $title-bar-icon-color !important;
+          }
+
+          @include breakpoint(ktb-lte-md) {
+            height: $title-bar-icon-height-md !important;
+            width: $title-bar-icon-height-md !important;
+
+            svg {
+              height: $title-bar-icon-height-md !important;
+              width: $title-bar-icon-height-md !important;
+              fill: $title-bar-icon-color !important;
+            }
+          }
+        }
+      }
+
+      app-icon {
+        svg {
+          fill: $title-bar-icon-color;
+        }
+      }
+    }
+
+    .titlebar-icon {
+      font-size: 32px;
+    }
+
+    .titlebar-logo {
+      width: 150px;
+      height: $title-bar-logo-height;
+      background: $title-bar-logo;
+      margin: 10px 10px 0 0;
+      display: inline-block;
+    }
+  }
+}
+
+/* For Menu panel in Title bar */
+// $menu-panel-width: 272px;
+$menu-panel-width: 360px;
+$menu-user-info-width: 250px;
+$bar-height: 50px;
+
+.app-menu-panel {
+  min-width: $menu-panel-width !important;
+  max-width: unset !important;
+  min-height: 100vh !important;
+  max-height: unset !important;
+  position: fixed;
+  // left: calc(97vw - #{$menu-panel-width});
+  top: 30;
+  right: 0;
+  border-radius: 0 !important;
+
+  .top-bar {
+    height: $bar-height;
+    border-bottom: 1px solid $krungthai-biz-gray-600;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: -8px;
+    padding-right: 15px;
+  }
+
+  .bottom-bar {
+    height: $bar-height;
+    border-top: 1px solid $krungthai-biz-gray-600;
+    bottom: 0;
+    position: fixed;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding-left: 15px;
+
+    app-icon {
+      margin-right: 10px;
+    }
+
+    .more-logout-desc {
+      font-size: 12px;
+    }
+  }
+
+  .more-info {
+    &.bottom-display {
+      position: fixed;
+      bottom: $bar-height;
+      border-top: 1px solid $krungthai-biz-gray-600;
+    }
+  }
+
+  .menu-user-info {
+    border: lightgray 1px solid;
+    display: inline-flex;
+    justify-content: center;
+    width: $menu-user-info-width;
+    min-height: 80px;
+    padding: 5px;
+    margin: 5px;
+  }
+}
+
+.nav-bar {
+  @include breakpoint(ktb-gte-lg) {
+    min-height: 60px !important;
+    height: 60px;
+  }
+
+  @include breakpoint(ktb-lte-md) {
+    min-height: 50px !important;
+    height: 50px;
+  }
+
+  position: fixed;
+  width: 100%;
+  top: 50px;
+  z-index: 99;
+
+  @if $nav-bar-bg-gradient {
+    background: linear-gradient(to right,
+        $nav-bar-gradient-color-left,
+        $nav-bar-gradient-color-right );
+  }
+
+  @else {
+    background: $nav-bar-bg-color;
+  }
+}
+
+.back-arrow {
+  svg {
+    height: 24px;
+    width: 24px;
+
+    @include breakpoint(ktb-lte-md) {
+      height: 14px;
+      width: 14px;
+    }
+  }
+}
+
+.hide {
+  display: none !important;
+}
+
+/** Style for combo box **/
+.search-combo-box-container .combo-box-form .drop-down-box {
+  &.mat-mdc-form-field.mat-focused {
+    background-color: map-get($ktb-palette-precious-blue, 00) !important;
+
+    mat-icon {
+      color: map-get($ktb-palette-precious-blue, 50) !important;
+    }
+  }
+}
+
+.search-combo-box-container {
+  .combo-box-content-viewport {
+    .combo-box-form .combo-box-content-viewport {
+      border: none !important;
+      box-shadow: 0px 8px 16px rgb(0 0 0 / 16%);
+      border-radius: 8px;
+    }
+  }
+}
+
+.combo-box-container,
+.search-combo-box-container {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+
+  .hide {
+    display: none !important;
+  }
+
+  .combo-box-form {
+    .drop-down-box {
+      width: 100%;
+
+      &.open {
+
+        /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+        .mat-form-field-outline {
+          color: $primary !important;
+        }
+      }
+
+      /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+      .mat-form-field-outline {
+        color: $krungthai-biz-gray-600;
+      }
+
+      input {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: calc(100% - 30px);
+      }
+
+      .disabled {
+        color: $krungthai-biz-gray-800 !important;
+        fill: $krungthai-biz-gray-400 !important;
+      }
+    }
+
+    .combo-box-content-viewport {
+      position: fixed;
+      background: $white;
+      z-index: 99;
+      border-top-right-radius: 6px;
+      border-top-left-radius: 6px;
+
+      .combo-box-search-content {
+        width: 100%;
+        border: 1px solid $krungthai-biz-gray-400;
+        border-top-right-radius: 6px;
+        border-top-left-radius: 6px;
+        background-color: $krungthai-blue-50;
+        border-bottom: none;
+
+        &.hide-seach {
+          display: none;
+        }
+
+        .mat-mdc-form-field {
+          box-shadow: none !important;
+          width: 100% !important;
+
+          /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+          .mat-form-field-outline {
+            background-color: $krungthai-blue-50;
+          }
+
+          /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+          .mat-mdc-form-field-flex {
+            margin-top: 0px;
+            padding-top: 0 !important;
+            min-height: 44px !important;
+          }
+        }
+
+        /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+        .mat-form-field-infix {
+          border: none !important;
+          padding: 0;
+          align-self: center;
+        }
+
+        /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+        .mat-form-field-outline-start,
+        .mat-form-field-outline-end {
+          border: none !important;
+          border-top-right-radius: 6px !important;
+          border-top-left-radius: 6px !important;
+        }
+      }
+
+      .combo-box-list-viewport {
+        height: 250px;
+        width: 100%;
+        border: 1px solid $krungthai-biz-gray-400 !important;
+        border-bottom-right-radius: 6px;
+        border-bottom-left-radius: 6px;
+
+        &.mat-elevation-e3 {
+          border: none !important;
+          box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.16);
+          border-bottom-right-radius: 8px;
+          border-bottom-left-radius: 8px;
+        }
+
+        &.top-box {
+          .combo-box-list-item {
+            border-bottom: none !important;
+            border-top: 1px solid $krungthai-biz-gray-400 !important;
+          }
+        }
+
+        &.hide-seach {
+          margin-top: 1px;
+          border-radius: 6px;
+        }
+
+        .combo-box-list-item {
+          min-height: 40px;
+          line-height: 40px;
+          padding-left: 10px;
+          height: auto;
+          border-bottom: 1px solid $krungthai-biz-gray-400 !important;
+          word-wrap: break-word;
+          white-space: initial;
+          color: $krungthai-biz-gray-800 !important;
+          font-family: KrungthaiFastRegular;
+
+          &.mat-mdc-option {
+            @extend .font-body;
+          }
+        }
+      }
+
+      /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+      .mat-form-field-wrapper {
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+
+      /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+      .mat-form-field-infix {
+        display: inherit;
+      }
+    }
+
+    /* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+    .mat-mdc-form-field-flex {
+      width: 100%;
+    }
+
+    .mat-mdc-form-field {
+
+      /* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+      .mat-mdc-text-field-wrapper {
+
+        /* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+        .mat-mdc-form-field-flex {
+          width: 100% !important;
+          border: 1px solid #ffffff00;
+        }
+      }
+
+      &.result-invalid,
+      .search-invalid {
+
+        /* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+        .mat-mdc-text-field-wrapper {
+          background-color: #fff2f5 !important;
+          border: 1px solid #d0082c !important;
+
+          /* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+          .mat-mdc-form-field-flex .mat-mdc-form-field-infix input {
+            caret-color: #d0082c !important;
+          }
+        }
+      }
+    }
+
+    mat-icon {
+
+      &.icon-drop-down {
+        fill: $info;
+        top: -2px;
+        fill: $krungthai-biz-gray-700 !important;
+      }
+
+      &.icon-delete {
+        top: 0;
+        right: 0;
+        fill: $primary;
+        height: 24px;
+        width: 24px;
+
+        svg {
+          height: 24px;
+          width: 24px;
+        }
+
+        @include breakpoint(ktb-lte-md) {
+          top: 2px;
+          height: 20px;
+          width: 20px;
+
+          svg {
+            height: 20px;
+            width: 20px;
+          }
+        }
+      }
+
+      &.invalid-icon {
+        width: 20px !important;
+        height: 20px !important;
+
+        svg {
+          vertical-align: top;
+          width: 20px !important;
+          height: 20px !important;
+          transform: none;
+        }
+
+        right: 0px;
+        top: 2px;
+      }
+    }
+  }
+}
+
+.search-combo-box-container .combo-box-form .drop-down-box .mat-mdc-text-field-wrapper .mat-mdc-form-field-flex .mat-mdc-form-field-infix {
+  display: flex;
+  align-content: center;
+}
+
+.combo-box-content-viewport {
+  position: fixed;
+  background: $white;
+  z-index: 99;
+  margin-top: 24px;
+
+  &.search-viewport {
+    margin-top: 0;
+  }
+
+  .combo-box-search-content {
+    width: 100%;
+    border: 1px solid $krungthai-biz-gray-400;
+    border-top-right-radius: 6px;
+    border-top-left-radius: 6px;
+    background-color: $krungthai-blue-50;
+    border-bottom: none;
+
+    &.hide-seach {
+      display: none;
+    }
+
+    .mat-mdc-form-field {
+      box-shadow: none !important;
+      width: 100% !important;
+
+      /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+      .mat-form-field-outline {
+        background-color: $krungthai-blue-50;
+      }
+
+      /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+      .mat-form-field-flex {
+        margin-top: 0px;
+        padding-top: 0 !important;
+        min-height: 44px !important;
+      }
+    }
+
+    /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+    .mat-form-field-infix {
+      border: none !important;
+      padding: 0;
+      align-self: center;
+    }
+
+    /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+    .mat-form-field-outline-start,
+    .mat-form-field-outline-end {
+      border: none !important;
+      border-top-right-radius: 6px !important;
+      border-top-left-radius: 6px !important;
+    }
+  }
+
+  .combo-box-list-viewport {
+    height: 250px;
+    width: 100%;
+    border: 1px solid $krungthai-biz-gray-400 !important;
+    border-bottom-right-radius: 6px;
+    border-bottom-left-radius: 6px;
+
+    &.mat-elevation-e3 {
+      border: none !important;
+      box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.16);
+      border-bottom-right-radius: 8px;
+      border-bottom-left-radius: 8px;
+    }
+
+    &.top-box {
+      .combo-box-list-item {
+        border-bottom: none !important;
+        border-top: 1px solid $krungthai-biz-gray-400 !important;
+      }
+    }
+
+    &.hide-seach {
+      margin-top: 1px;
+      border-radius: 6px;
+    }
+
+    .combo-box-list-item {
+      min-height: 40px;
+      line-height: 40px;
+      padding-left: 10px;
+      height: auto;
+      word-wrap: break-word;
+      white-space: initial;
+      color: $krungthai-biz-gray-800 !important;
+      font-family: KrungthaiFastRegular;
+
+      &.mat-mdc-option {
+        @extend .font-body;
+      }
+    }
+  }
+
+  /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+  .mat-form-field-wrapper {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+  .mat-form-field-infix {
+    display: inherit;
+  }
+}
+
+/* FIXED(mdc-migration): The following rule targets internal classes of option that may no longer apply for the MDC version.*/
+.mat-mdc-option:hover {
+  background: $bg-almost-white !important;
+}
+
+::ng-deep .cdk-overlay-pane {
+  right: 0 !important;
+}
+
+spig-menu .container {
+  font-size: $menu-item-font-size;
+}
+
+spig-combo-box.ng-touched.ng-invalid .combo-box-container {
+  .combo-box-form {
+    .drop-down-box {
+
+      /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+      .mat-form-field-outline {
+        color: $krungthai-red-300 !important;
+      }
+    }
+  }
+}
+
+.show-error {
+
+  /* FIXED(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version.*/
+  .mdc-radio__outer-circle {
+    border-color: $krungthai-red-300 !important;
+  }
+
+  /* FIXED(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version.*/
+  .mdc-label {
+    color: $krungthai-red-300 !important;
+  }
+}
+
+.cust-info-panel {
+  .show-error {
+
+    /* FIXED(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version.*/
+    .mdc-radio__outer-circle {
+      border-color: $krungthai-red-300 !important;
+    }
+
+    /* FIXED(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version.*/
+    .mdc-label {
+      color: $krungthai-red-300 !important;
+    }
+  }
+
+  /* TODO(mdc-migration): The following rule targets internal classes of list that may no longer apply for the MDC version.*/
+  .mat-list-item-content {
+    padding-left: 0px !important;
+  }
+
+  .travel-next-check-box {
+
+    /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
+    .mat-checkbox-inner-container {
+      width: 24px !important;
+      height: 24px !important;
+    }
+  }
+
+  /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
+  .mat-checkbox-checked.mat-accent .mat-checkbox-background {
+    background-color: $krungthai-blue !important;
+  }
+}
+
+.form-bg-color {
+  .show-error {
+
+    /* FIXED(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version.*/
+    .mdc-radio__outer-circle {
+      border-color: $krungthai-red-300 !important;
+    }
+
+    /* FIXED(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version.*/
+    .mdc-label {
+      color: $krungthai-red-300 !important;
+    }
+  }
+}
+
+::ng-deep .mat-mdc-form-field {
+
+  /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+  .mat-form-field-wrapper {
+
+    /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+    .mat-form-field-flex {
+      min-height: 54px;
+      min-width: 100%;
+      padding: 0.25em 0.75em 0 0.75em !important;
+
+      /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+      .mat-form-field-suffix {
+        top: 0;
+      }
+    }
+  }
+
+  .mat-mdc-input-element:disabled {
+    color: map_get($ktb-palette-biz-gray, 800);
+  }
+
+  .mat-mdc-input-element:disabled.highlight:first-line {
+    background-color: map_get($ktb-palette-golden-yellow, 100);
+  }
+}
+
+::ng-deep .mat-mdc-form-field.mat-focused {
+
+  /* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+  .mdc-floating-label {
+    color: map_get($ktb-palette-biz-gray, 800);
+  }
+
+  /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+  .mat-form-field-ripple {
+    background-color: map_get($ktb-palette-biz-gray, 800);
+  }
+
+  /* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+  .mat-mdc-form-field-required-marker {
+    color: map_get($ktb-palette-biz-gray, 800);
+  }
+
+  .mat-mdc-input-element {
+    color: map_get($ktb-palette-biz-gray, 800);
+  }
+}
+
+::ng-deep .no-label.mat-mdc-form-field {
+
+  /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+  .mat-form-field-infix {
+    border-top: none !important;
+    width: 100% !important;
+    align-self: center;
+    padding: 0;
+  }
+
+  /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+  .mat-form-field-flex {
+    margin-top: 0px !important;
+    padding-top: 0 !important;
+    min-height: 44px !important;
+  }
+
+  /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+  .mat-form-field-suffix {
+    align-self: center;
+  }
+
+  /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+  .mat-form-field-outline {
+    top: 0;
+  }
+}
+
+// mat-input error outline color
+/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+::ng-deep .mat-form-field-appearance-outline.mat-form-field-invalid.mat-form-field-invalid .mat-form-field-outline-thick {
+  color: map_get($ktb-palette-red, 300);
+
+  /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+  .mat-form-field-outline-start,
+  .mat-form-field-outline-end,
+  .mat-form-field-outline-gap {
+    border-width: 1px;
+  }
+}
+
+// mat-input error carent color
+::ng-deep .mat-form-field-invalid .mat-mdc-input-element,
+.mat-warn .mat-input-element {
+  caret-color: map_get($ktb-palette-red, 300);
+}
+
+// mat-label focused style
+/* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+::ng-deep .mat-mdc-form-field.mat-focused .mdc-floating-label {
+  color: map_get($ktb-palette-red, 300) !important;
+}
+
+// mat-label error style
+/* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+::ng-deep .mat-mdc-form-field.mat-form-field-invalid .mdc-floating-label {
+  color: map_get($ktb-palette-red, 300) !important;
+}
+
+.cust-info-panel {
+  .savings-check-box {
+
+    /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
+    .mat-checkbox-inner-container {
+      width: 24px !important;
+      height: 24px !important;
+    }
+  }
+
+  /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
+  .mat-checkbox-disabled.mat-checkbox-checked .mat-checkbox-background {
+    background-color: $button-disabled-color !important;
+  }
+}
+
+.cust-info-panel {
+  &.prod-details {
+    .travel-next-check-box {
+
+      /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
+      .mat-checkbox-inner-container {
+        width: 24px !important;
+        height: 24px !important;
+      }
+    }
+
+    /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
+    .mat-checkbox-checked.mat-accent .mat-checkbox-background {
+      background-color: $krungthai-blue !important;
+    }
+  }
+}
+
+.cust-info-panel {
+  .savings-check-box {
+
+    /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
+    .mat-checkbox-inner-container {
+      width: 24px !important;
+      height: 24px !important;
+    }
+  }
+
+  /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version.*/
+  .mat-checkbox-disabled.mat-checkbox-checked .mat-checkbox-background {
+    background-color: $button-disabled-color !important;
+  }
+}
+
+.mat-mdc-form-field-error {
+  color: $krungthai-red-300;
+  line-height: normal;
+  font-family: Thonburi;
+}
+
+.sign-layout {
+  .sign-approve-reject {
+    button[mat-stroked-button].small-button {
+      color: $krungthai-blue-400 !important;
+    }
+
+    button[mat-flat-button][disabled].small-button {
+      background-color: $button-disabled-color !important;
+
+      /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
+      .mat-button-wrapper {
+        color: $white;
+      }
+    }
+
+    button[mat-stroked-button][disabled].small-button {
+      color: $button-disabled-color !important;
+    }
+
+    /* FIXED(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
+    .small-button.btn-resign.mat-mdc-outlined-button.mat-primary .mat-mdc-focus-indicator {
+      background-color: Transparent !important;
+    }
+  }
+}
+
+.document-action-button-container {
+  .mat-icon {
+    svg {
+      height: 22px !important;
+      width: 20px !important;
+    }
+  }
+}
+
+.navigation-container {
+
+  /* FIXED(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
+  button.cdk-program-focused .mat-mdc-focus-indicator {
+    opacity: 0;
+  }
+}
+
+/* FIXED(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version.*/
+.mat-radio-container,
+.mdc-radio__outer-circle,
+.mdc-radio__inner-circle {
+  width: 30px;
+  height: 30px;
+
+  @include breakpoint(ktb-lte-md) {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+$radio-button-color: map-get($map: $ktb-palette-blue,
+    $key: 600,
+  );
+
+.mat-mdc-radio-button {
+  font-family: "KrungthaiFastRegular";
+}
+
+/* FIXED(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version.*/
+.mat-mdc-radio-button.mat-accent.mat-mdc-radio-checked .mdc-radio__outer-circle {
+  border-color: $radio-button-color !important;
+}
+
+/* FIXED(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version.*/
+.mat-mdc-radio-button.mat-primary.mat-mdc-radio-checked .mdc-radio__outer-circle {
+  border-color: #279400;
+}
+
+/* FIXED(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version.*/
+.mat-mdc-radio-button.mat-warn.mat-mdc-radio-checked .mdc-radio__outer-circle {
+  border-color: #d0082c;
+}
+
+/* FIXED(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version.*/
+.mat-mdc-radio-button.mat-accent .mdc-radio__inner-circle {
+  color: $radio-button-color;
+  background-color: $radio-button-color;
+}
+
+/* FIXED(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version.*/
+.mat-mdc-radio-button.mat-primary .mdc-radio__inner-circle {
+  color: #279400;
+  background-color: #279400;
+}
+
+/* FIXED(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version.*/
+.mat-mdc-radio-button.mat-warn .mdc-radio__inner-circle {
+  color: #d0082c;
+  background-color: #d0082c;
+}
+
+.mat-mdc-radio-button.mat-accent.mat-radio-disabled,
+.mat-radio-button.mat-warn.mat-radio-disabled,
+.mat-radio-button.mat-primary.mat-radio-disabled,
+.mat-radio-button.mat-mdc-radio-checked.mat-radio-disabled {
+
+  /* FIXED(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version.*/
+  .mdc-label {
+    color: $krungthai-biz-gray-800;
+  }
+
+  /* FIXED(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version.*/
+  .mdc-radio__outer-circle {
+    border-color: map_get($ktb-palette-biz-gray, 300) !important;
+  }
+
+  /* FIXED(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version.*/
+  .mdc-radio__inner-circle {
+    background-color: map_get($ktb-palette-biz-gray, 300);
+  }
+}
+
+.tooltip-form {
+  &.mat-mdc-tooltip {
+    margin: -1.34375em 8px 8px 8px !important;
+  }
+}
+
+.form-padding-vert {
+  .mat-mdc-form-field {
+
+    /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+    .mat-form-field-wrapper {
+
+      /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+      .mat-form-field-flex {
+        min-height: 44px !important;
+      }
+    }
+  }
+
+  /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+  .combo-box-container .combo-box-form .mat-mdc-form-field .mat-form-field-wrapper .mat-form-field-flex {
+    min-height: 44px !important;
+  }
+}
+
+/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+.mat-form-field-appearance-outline .mat-form-field-infix {
+  padding: 0.8em 0 0.8em 0;
+}
+
+.mat-expansion-panel-header-title {
+  margin-right: 26px !important;
+}
+
+.loader-overlay {
+  h4 {
+    @extend .font-heading4-important;
+  }
+
+  .mat-mdc-progress-spinner {
+    @include breakpoint(ktb-lte-md) {
+      width: 36px !important;
+      height: 36px !important;
+
+      svg {
+        width: 36px !important;
+        height: 36px !important;
+      }
+    }
+  }
+}
+
+::ng-deep .overlay .mat-icon.large {
+  width: 60px;
+  height: 60px !important;
+
+  svg {
+    width: 60px;
+    height: 60px;
+  }
+
+  @include breakpoint(ktb-lte-md) {
+    width: 48px;
+    height: 48px;
+
+    svg {
+      width: 48px;
+      height: 48px;
+    }
+  }
+}
+
+.font-sub-description,
+.cust-info-panel-header .title-desc {
+  @include breakpoint(ktb-lte-md) {
+    font-size: 13px;
+  }
+}
+
+.warn-icon-dialog.custom-dialog-standard>mat-dialog-container {
+  .alert-modal-title-icon svg {
+    fill: $krungthai-golden-yellow-400 !important;
+  }
+}
+
+.flex-end-container {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.no-wrap {
+  white-space: nowrap
+}

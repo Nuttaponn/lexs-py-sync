@@ -1,0 +1,197 @@
+[
+  {
+    "roleCode": "STRAREGY_AMD",
+    "subRoleCode": "VIEWER",
+    "subRoleName": "Viewer"
+  },
+  {
+    "roleCode": "AMD_RESTRUCTURE",
+    "subRoleCode": "MAKER",
+    "subRoleName": "Maker"
+  },
+  {
+    "roleCode": "AMD_RESTRUCTURE",
+    "subRoleCode": "APPROVER",
+    "subRoleName": "Approver"
+  },
+  {
+    "roleCode": "AMD_RESTRUCTURE",
+    "subRoleCode": "VIEWER",
+    "subRoleName": "Viewer"
+  },
+  {
+    "roleCode": "BC",
+    "subRoleCode": "MAKER",
+    "subRoleName": "Maker"
+  },
+  {
+    "roleCode": "BC",
+    "subRoleCode": "APPROVER",
+    "subRoleName": "Approver"
+  },
+  {
+    "roleCode": "BC",
+    "subRoleCode": "VIEWER",
+    "subRoleName": "Viewer"
+  },
+  {
+    "roleCode": "CBC",
+    "subRoleCode": "MAKER",
+    "subRoleName": "Maker"
+  },
+  {
+    "roleCode": "CBC",
+    "subRoleCode": "APPROVER",
+    "subRoleName": "Approver"
+  },
+  {
+    "roleCode": "CBC",
+    "subRoleCode": "VIEWER",
+    "subRoleName": "Viewer"
+  },
+  {
+    "roleCode": "KLAW_USER",
+    "subRoleCode": "MAKER",
+    "subRoleName": "Maker"
+  },
+  {
+    "roleCode": "KLAW_USER",
+    "subRoleCode": "APPROVER",
+    "subRoleName": "Approver"
+  },
+  {
+    "roleCode": "KLAW_USER",
+    "subRoleCode": "VIEWER",
+    "subRoleName": "Viewer"
+  },
+  {
+    "roleCode": "KLAW_FINANCIAL",
+    "subRoleCode": "MAKER",
+    "subRoleName": "Maker"
+  },
+  {
+    "roleCode": "KLAW_FINANCIAL",
+    "subRoleCode": "APPROVER",
+    "subRoleName": "Approver"
+  },
+  {
+    "roleCode": "KLAW_FINANCIAL",
+    "subRoleCode": "VIEWER",
+    "subRoleName": "Viewer"
+  },
+  {
+    "roleCode": "KLAW_SECRETARY",
+    "subRoleCode": "MAKER",
+    "subRoleName": "Maker"
+  },
+  {
+    "roleCode": "KLAW_SECRETARY",
+    "subRoleCode": "APPROVER",
+    "subRoleName": "Approver"
+  },
+  {
+    "roleCode": "KLAW_SECRETARY",
+    "subRoleCode": "VIEWER",
+    "subRoleName": "Viewer"
+  },
+  {
+    "roleCode": "PROSECUTION_DEPARTMENT",
+    "subRoleCode": "MAKER",
+    "subRoleName": "Maker"
+  },
+  {
+    "roleCode": "PROSECUTION_DEPARTMENT",
+    "subRoleCode": "APPROVER",
+    "subRoleName": "Approver"
+  },
+  {
+    "roleCode": "PROSECUTION_DEPARTMENT",
+    "subRoleCode": "VIEWER",
+    "subRoleName": "Viewer"
+  },
+  {
+    "roleCode": "EXECUTION_DEPARTMENT",
+    "subRoleCode": "MAKER",
+    "subRoleName": "Maker"
+  },
+  {
+    "roleCode": "EXECUTION_DEPARTMENT",
+    "subRoleCode": "APPROVER",
+    "subRoleName": "Approver"
+  },
+  {
+    "roleCode": "EXECUTION_DEPARTMENT",
+    "subRoleCode": "VIEWER",
+    "subRoleName": "Viewer"
+  },
+  {
+    "roleCode": "FINANCIAL1",
+    "subRoleCode": "MAKER",
+    "subRoleName": "Maker"
+  },
+  {
+    "roleCode": "FINANCIAL1",
+    "subRoleCode": "APPROVER",
+    "subRoleName": "Approver"
+  },
+  {
+    "roleCode": "FINANCIAL2",
+    "subRoleCode": "MAKER",
+    "subRoleName": "Maker"
+  },
+  {
+    "roleCode": "FINANCIAL2",
+    "subRoleCode": "APPROVER",
+    "subRoleName": "Approver"
+  },
+  {
+    "roleCode": "FINANCIAL3",
+    "subRoleCode": "MAKER",
+    "subRoleName": "Maker"
+  },
+  {
+    "roleCode": "FINANCIAL3",
+    "subRoleCode": "APPROVER",
+    "subRoleName": "Approver"
+  },
+  {
+    "roleCode": "ALLOTMENT",
+    "subRoleCode": "MAKER",
+    "subRoleName": "Maker"
+  },
+  {
+    "roleCode": "ALLOTMENT",
+    "subRoleCode": "APPROVER",
+    "subRoleName": "Approver"
+  },
+  {
+    "roleCode": "ADMIN",
+    "subRoleCode": "ADMIN",
+    "subRoleName": "Admin"
+  },
+  {
+    "roleCode": "INTERNAL_AUDITOR",
+    "subRoleCode": "VIEWER",
+    "subRoleName": "Viewer"
+  },
+  {
+    "roleCode": "EXTERNAL_AUDITOR",
+    "subRoleCode": "VIEWER",
+    "subRoleName": "Viewer"
+  },
+  {
+    "roleCode": "AMD_PREVENTION",
+    "subRoleCode": "MAKER",
+    "subRoleName": "Maker"
+  },
+  {
+    "roleCode": "AMD_PREVENTION",
+    "subRoleCode": "APPROVER",
+    "subRoleName": "Approver"
+  },
+  {
+    "roleCode": "AMD_PREVENTION",
+    "subRoleCode": "VIEWER",
+    "subRoleName": "Viewer"
+  }
+]

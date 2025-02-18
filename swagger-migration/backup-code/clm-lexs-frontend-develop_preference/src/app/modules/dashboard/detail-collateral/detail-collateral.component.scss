@@ -1,0 +1,34 @@
+.dashboard-content {
+  padding: 24px;
+}
+
+.content-container {
+  margin: 0 !important;
+  overflow: hidden;
+}
+
+.data-table-content {
+  padding: 24px 16px;
+}
+
+.search-filter-content {
+  padding: 0 16px;
+}
+
+.status-label {
+  max-width: 140px;
+  white-space: initial;
+
+  &:first-child {
+    margin-top: 0;
+  }
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.status-cell {
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+}

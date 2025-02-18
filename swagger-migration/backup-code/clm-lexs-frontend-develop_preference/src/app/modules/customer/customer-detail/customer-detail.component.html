@@ -1,0 +1,86 @@
+<app-action-bar
+  [disabledBackButton]="false"
+  [hasCancelButton]="false"
+  [showNavBarInformation]="true"
+  (backButtonHandler)="onBack($event)"
+  [subButtonList]="subButtonList"
+  (subButtonHandler)="golink($event)"
+  [maxSubButton]="2">
+  <ng-container navBarInformationTemplate>
+    <mat-icon svgIcon="icon-Customer" class="icon icon-xmedium default-cursor"></mat-icon
+    ><span class="ml-8">{{ 'CUSTOMER.CUSTOMER_DETAIL' | translate }}</span>
+  </ng-container>
+</app-action-bar>
+
+<div class="content-below-action-bar-area">
+  <div class="customer-detail-container">
+    <h3>{{ customerDetail.name }}</h3>
+    <div class="info-container">
+      <div class="info-section" fxLayout="row" fxLayoutAlign="space-between center">
+        <div class="info-content" fxLayout="row" fxLayoutAlign="start center">
+          <mat-icon class="icon icon-medium default-cursor fill-blue information-icon" svgIcon="icon-Person-Board">
+          </mat-icon>
+          <div class="pl-8">
+            <div class="label">{{ 'COMMON.LABEL_CIF_NO' | translate }}</div>
+            <div class="sub-label">{{ customerDetail.customerId }}</div>
+          </div>
+        </div>
+        <div class="info-content" fxLayout="row" fxLayoutAlign="start center">
+          <mat-icon class="icon icon-medium default-cursor fill-blue pr-8" svgIcon="icon-rd-Party"></mat-icon>
+          <div class="pl-8">
+            <div class="label">{{ 'CUSTOMER.LABEL_RESPONSE_UNIT' | translate }}</div>
+            <div class="sub-label">
+              {{
+                customerDetail.amdResponseUnitCode && customerDetail.amdResponseUnitName
+                  ? customerDetail.amdResponseUnitCode + ' - ' + customerDetail.amdResponseUnitName
+                  : customerDetail.responseUnitCode + ' - ' + customerDetail.responseUnitName
+              }}
+              <app-tooltip
+                [params]="[
+                  {
+                    title: 'CUSTOMER.TOOLTIP.TITLE_RESPONSE_UNIT' | translate,
+                    content: customerDetail.responseUnitCode + ' - ' + customerDetail.responseUnitName,
+                  },
+                ]"
+                [iconClass]="'icon-xsmall fill-blue'"></app-tooltip>
+            </div>
+          </div>
+        </div>
+        <div class="info-content" fxLayout="row" fxLayoutAlign="start center">
+          <mat-icon class="icon icon-medium default-cursor fill-blue pr-8" svgIcon="icon-Home-Person"></mat-icon>
+          <div class="pl-8">
+            <div class="label">{{ 'CUSTOMER.LABEL_BRANCE_BOOKING_COST_CENTER' | translate }}</div>
+            <div class="sub-label">
+              {{ (customerDetail.branchCode || '') + '-' + (customerDetail.branchName || '') }}
+            </div>
+          </div>
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="status-section" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="12px">
+        <div class="status-label">{{ 'CUSTOMER.LABEL_CUSTOMER_STATUS' | translate }}:</div>
+        <div class="status-label status-normal" *ngIf="customerDetail?.customerStatus">
+          {{ 'CUSTOMER.' + customerDetail.customerStatus | translate }}
+        </div>
+        <div class="status-label status-pending" *ngIf="customerDetail?.defermentStatus">
+          {{ 'CUSTOMER.' + customerDetail.defermentStatus | translate }}
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-24 mb-24">
+      <nav mat-tab-nav-bar [tabPanel]="tabPanel">
+        <a
+          mat-tab-link
+          *ngFor="let tab of tabsInfo; let i = index"
+          (click)="onRouterLink(tab)"
+          [active]="tab.index === tabIndex"
+          >{{ tab.label | translate }}
+        </a>
+      </nav>
+      <mat-tab-nav-panel #tabPanel>
+        <router-outlet></router-outlet>
+      </mat-tab-nav-panel>
+    </div>
+  </div>
+</div>

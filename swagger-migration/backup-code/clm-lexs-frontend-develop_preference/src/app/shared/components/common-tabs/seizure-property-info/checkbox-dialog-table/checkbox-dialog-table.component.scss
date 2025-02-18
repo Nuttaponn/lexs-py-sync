@@ -1,0 +1,84 @@
+@import '/src/styles/variables';
+
+.dialog-content {
+  width: 700px;
+
+  .sub-content {
+    padding: 0 0 24px 0;
+    border-bottom: solid 1px #1212121a;
+
+    .detail {
+      font-weight: bold;
+      font-size: 18px;
+    }
+  }
+}
+
+.table-scroll {
+  overflow-y: scroll;
+  max-height: 480px;
+}
+
+.blackCaseNo {
+  border-right: solid 1px map-get($ktb-palette-biz-black, B010);
+  float: left;
+  padding: 3px;
+  margin-right: 10px;
+
+  .labelValue {
+    font-weight: bold;
+    margin-right: 10px;
+  }
+}
+
+.redCaseNo {
+  padding: 3px;
+
+  .labelValue {
+    font-weight: bold;
+    color: $krungthai-red;
+  }
+}
+
+::ng-deep .greaterCurrent {
+  color: map_get($ktb-palette-biz-gray, 900);
+  opacity: 0.33;
+}
+
+:host ::ng-deep {
+
+  /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version. */
+  .lg-checkbox-checked.mat-accent .mat-checkbox-background {
+    background-color: map-get($ktb-palette-blue, 30);
+    border: 2.2px solid map-get($ktb-palette-precious-blue, 50);
+
+    /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version. */
+    svg .mat-checkbox-checkmark-path {
+      stroke: map-get($ktb-palette-precious-blue, 50) !important;
+      stroke-dashoffset: 0;
+    }
+  }
+
+  /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version. */
+  .lg-checkbox-checked.mat-accent .mat-checkbox-frame {
+    border: 2.2px solid map-get($ktb-palette-precious-blue, 50);
+  }
+
+  /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version. */
+  .lg-checkbox-unchecked.mat-accent .mat-checkbox-background {
+    background-color: transparent !important;
+    border: 2.2px solid map-get($ktb-palette-biz-black, 40);
+    border-radius: 3px;
+
+    /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version. */
+    svg .mat-checkbox-checkmark-path {
+      stroke: white !important;
+    }
+  }
+
+  /* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version. */
+  .lg-checkbox-unchecked.mat-accent .mat-checkbox-frame {
+    border: 2.2px solid map-get($ktb-palette-biz-black, 40);
+    border-radius: 3px;
+  }
+}

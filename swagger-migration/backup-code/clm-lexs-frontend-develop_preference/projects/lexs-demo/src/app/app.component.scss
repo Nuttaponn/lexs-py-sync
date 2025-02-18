@@ -1,0 +1,20 @@
+.container {
+  padding: 0 20px;
+}
+
+.block {
+  margin-bottom: 30px;
+
+  .item {
+    display: inline-block;
+    padding: 10px;
+    text-align: center;
+    margin: 5px;
+    border: 1px solid grey;
+  }
+
+  * {
+    margin: 0 3px;
+  }
+}
+

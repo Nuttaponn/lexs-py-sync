@@ -1,0 +1,31 @@
+<div fxLayout="row" fxFill fxLayoutAlign="space-around center">
+  <div fxFlex="20">
+    <p class="bold">เงื่อนไข</p>
+  </div>
+  <div fxFlex="80">
+    <mat-radio-group [formControl]="eFilingControl">
+      <mat-radio-button type="radio" color="accent" class="radio-btn mr-20" [value]="eFilingPaymentMethod.E_FILING"
+        >จ่าย e-filing ได้</mat-radio-button
+      >
+      <mat-radio-button type="radio" color="accent" class="radio-btn mr-20" [value]="eFilingPaymentMethod.NONE_E_FILING"
+        >ไม่จ่าย e-filing</mat-radio-button
+      >
+    </mat-radio-group>
+  </div>
+</div>
+
+<div fxLayout="row" fxFill fxLayoutAlign="space-around center">
+  <div fxFlex="20">
+    <p class="bold">{{ 'COMMON.LABEL_LEGAL_EXECUTION_DEPARTMENT_NAME' | translate }}</p>
+  </div>
+  <div fxFlex="80">
+    <spig-dropdown
+      [formControl]="officeControl"
+      placeholder="สำนักงานบังคับคดี"
+      classInput="input-normal icon"
+      [config]="statusConfig"
+      [options]="statusOptions"
+      (selectedOption)="onSelectedOption($event)">
+    </spig-dropdown>
+  </div>
+</div>

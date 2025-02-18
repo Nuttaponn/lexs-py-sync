@@ -1,0 +1,89 @@
+<div class="table-setup">
+  <table class="table-list-accout-document" mat-table [dataSource]="documentObject" #uploadTable>
+    <ng-container matColumnDef="no">
+      <th mat-header-cell *matHeaderCellDef class="no-col-normal text-center">{{ 'COMMON.LABEL_NO' | translate }}</th>
+      <td mat-cell *matCellDef="let element; let rowNo = index" class="no-col-normal text-center">
+        <ng-container>
+          {{ rowNo + 1 }}
+        </ng-container>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="documentName">
+      <th mat-header-cell *matHeaderCellDef>{{ 'DOC_PREP.DOC_NAME' | translate }}</th>
+      <td mat-cell *matCellDef="let element; let rowNo = index">
+        <div *ngIf="element.imageId" class="link" fxLayoutAlign="space-between center" fxLayoutGap="8">
+          <span (click)="openDoc(element)" class="break-word"
+            >{{ element.documentTemplate.documentName
+            }}<label *ngIf="element.uploadRequired" class="color-red">*</label></span
+          >
+        </div>
+        <div *ngIf="!element.imageId" fxLayoutAlign="space-between center" fxLayoutGap="8">
+          <span class="break-word"
+            >{{ element.documentTemplate.documentName
+            }}<label *ngIf="element.uploadRequired" class="color-red">*</label></span
+          >
+        </div>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="action">
+      <th mat-header-cell *matHeaderCellDef class="text-center width-pct-25">
+        {{ 'EXECUTION_WARRANT.LIST_ACCOUNT_DOCUMENT.DOC_NAME' | translate }}
+      </th>
+      <td mat-cell *matCellDef="let element; let i = index" class="new-line">
+        <div *ngIf="element.imageId">
+          <ng-container *ngIf="element.documentTemplate.documentTemplateId === docTemplate.LEXSF118">
+            <input type="file" #fileUpload name="fileUpload" [accept]="acceptFile.toString()" class="hidden" />
+            <button
+              *ngIf="!element.imageId"
+              type="button"
+              mat-flat-button
+              color="primary"
+              class="medium-fw-button"
+              (click)="selectDocument(i)">
+              <mat-icon svgIcon="icon-Arrow-Upload" class="icon-xmedium"></mat-icon>
+              {{ 'COMMON.BUTTON_UPLOAD' | translate }}
+            </button>
+            <button
+              *ngIf="element.imageId"
+              type="button"
+              mat-stroked-button
+              class="medium-7w-button"
+              (click)="selectDocument(i)">
+              <mat-icon svgIcon="icon-Arrow-Upload" class="icon-xmedium"></mat-icon>
+              {{ 'COMMON.BUTTON_UPLOAD' | translate }}
+            </button>
+          </ng-container>
+        </div>
+        <div fxLayout="row" *ngIf="!element.imageId">
+          <ng-container
+            *ngIf="element.documentTemplate.documentTemplateId === docTemplate.LEXSF118; else errorTemplate">
+            <input type="file" #fileUpload name="fileUpload" [accept]="acceptFile.toString()" class="hidden" />
+            <button
+              *ngIf="!element.imageId"
+              type="button"
+              mat-flat-button
+              color="primary"
+              class="medium-fw-button"
+              (click)="selectDocument(i)">
+              <mat-icon svgIcon="icon-Arrow-Upload" class="icon-xmedium"></mat-icon>
+              {{ 'COMMON.BUTTON_UPLOAD' | translate }}
+            </button>
+          </ng-container>
+          <ng-template #errorTemplate>
+            <div>-</div>
+          </ng-template>
+        </div>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="columns"></tr>
+    <tr mat-row *matRowDef="let row; columns: columns"></tr>
+  </table>
+  <div>
+    <p class="color-red" *ngIf="isUploadFail === true">
+      {{ 'EXECUTION_WARRANT.LIST_ACCOUNT_DOCUMENT.UPLOAD_FAIL' | translate }}
+    </p>
+    <p *ngIf="isChecked">
+      {{ 'EXECUTION_WARRANT.LIST_ACCOUNT_DOCUMENT.HINT_DOC' | translate }}
+    </p>
+  </div>
+</div>

@@ -1,0 +1,86 @@
+@import "./breakpoints";
+
+$font-sizes: (
+    super-headline: 56px,
+    headline: 32px,
+    sub-headline: 28px,
+    title: 24px,  // currently used
+    sub-title: 22px,
+    content: 20px, // currently used
+    sub-content: 18px, // currently used
+    description: 16px, // currently used
+    sub-description: 14px, // currently used
+    tag: 12px, // currently used
+    sub-tag: 10px // currently used
+);
+@each $name, $value in $font-sizes {
+    .font-#{$name} {
+        font-size: $value;
+    }
+}
+
+$font-sizes-mq: (
+    heading1: (
+      normal: 24px,
+      large: 36px,
+    ),
+    heading2: (
+      normal: 20px,
+      large: 30px
+    ),
+    heading3: (
+      normal: 18px,
+      large: 24px
+    ),
+    heading4: (
+      normal: 16px,
+      large: 20px
+    ),
+    btn-lg: (
+      normal: 18px,
+      large: 20px
+    ),
+    btn-md: (
+      normal: 16px,
+      large: 18px
+    ),
+    btn-sm: (
+      normal: 14px,
+      large: 16px
+    ),
+    field-label: (
+      normal: 14px,
+      large: 16px
+    ),
+    table-label: (
+      normal: 14px,
+      large: 14px
+    ),
+    body: (
+      normal: 14px,
+      large: 16px
+    ),
+    helper: (
+      normal: 11px,
+      large: 14px
+    ),
+    caption: (
+      normal: 10px,
+      large: 12px
+    )
+);
+
+@each $name, $value in $font-sizes-mq {
+  .font-#{$name} {
+      font-size: map-get($map: $value, $key: normal);
+      @include breakpoint(ktb-gte-lg) {
+        font-size: map-get($map: $value, $key: large);
+      }
+  }
+  .font-#{$name}-important {
+    font-size: map-get($map: $value, $key: normal) !important;
+    @include breakpoint(ktb-gte-lg) {
+      font-size: map-get($map: $value, $key: large) !important;
+    }
+}
+}

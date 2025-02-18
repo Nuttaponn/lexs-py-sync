@@ -1,0 +1,103 @@
+@import '/src/styles/colors';
+
+/* I gave up using chart.js so here I am. */
+/*
+--c = color
+*/
+.pie {
+  max-width: 480px;
+  width: 80%;
+  aspect-ratio: 1;
+  position: relative;
+  display: inline-grid;
+  place-content: center;
+}
+.pie-section-wrap {
+  pointer-events: none;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 0 10px transparent);
+  transition: all 0.3s ease-in-out;
+  &.on-hover {
+    filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.3));
+  }
+  &.on-hover .pie-section {
+    width: 105%;
+    height: 105%;
+    z-index: 200;
+  }
+}
+.pie-section {
+  cursor: pointer;
+  pointer-events: auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: var(--c);
+  width: 100%;
+  height: 100%;
+  transition: all 0.3s ease-in-out;
+}
+.pie-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: $white;
+  width: 50%;
+  height: 50%;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 90;
+  text-align: center;
+  .pie-center-text {
+    pointer-events: auto;
+    cursor: pointer;
+  }
+  z-index: 100;
+}
+
+.legend {
+  cursor: pointer;
+}
+
+.legend-color {
+  width: 40px;
+  height: 40px;
+  background: var(--c);
+  border-radius: 4px;
+}
+
+.tooltip {
+  position: absolute;
+  border-radius: 8px;
+  background-color: map_get($ktb-palette-precious-blue, 00);
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.3);
+  padding: 16px;
+  transform: translate(-50%, -50%);
+  z-index: 300;
+  min-width: fit-content;
+  opacity: 0;
+  transition: opacity 0.1s ease-in-out;
+  pointer-events: none;
+  span:not(.bold) {
+    white-space: nowrap;
+    color: #121212b2;
+  }
+  &.active {
+    opacity: 1;
+  }
+}
+
+// .debug-point {
+//   position: absolute;
+//   width: 2px;
+//   height: 2px;
+//   background: red;
+//   opacity: 0.5;
+// }

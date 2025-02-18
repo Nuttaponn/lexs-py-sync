@@ -1,0 +1,152 @@
+<div fxLayout class="space-around content mt-20" [formGroup]="control" *ngIf="control">
+  <div fxLayout="column" fxFlex="20">
+    <div class="collateral-info header mx-width-pct-60">
+      {{ 'CUSTOMER.STOCK_INFO' | translate }}
+    </div>
+  </div>
+  <div fxLayout="column" fxFlex>
+    <div fxLayout fxLayoutAlign="space-between ">
+      <ng-container *ngIf="mode === MODE.ADD || mode === MODE.EDIT">
+        <div fxFlex="49" fxLayout="column">
+          <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+            <mat-label>{{ 'CUSTOMER.ISSUER' | translate }}</mat-label>
+            <input
+              type="text"
+              maxlength="60"
+              formControlName="issuer"
+              matInput
+              [placeholder]="'CUSTOMER.ISSUER' | translate" />
+          </mat-form-field>
+          <spig-error-msg [control]="getControl('issuer')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+          </spig-error-msg>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="mode === MODE.VIEW">
+        <div fxFlex="49">
+          <div class="collateral-info title">
+            {{ 'CUSTOMER.ISSUER' | translate }}
+          </div>
+          <div class="collateral-info detail">
+            {{ getControl('issuer')?.value || '-' }}
+          </div>
+        </div>
+      </ng-container>
+    </div>
+    <div fxLayout fxLayoutAlign="space-between center" class="mt-20">
+      <ng-container *ngIf="mode === MODE.ADD || mode === MODE.EDIT">
+        <div fxFlex="49">
+          <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+            <mat-label>{{ 'CUSTOMER.PRICE_PAR' | translate }}</mat-label>
+            <input
+              type="text"
+              matInput
+              formControlName="parValue"
+              appNumberOnly="integer"
+              maxlength="16"
+              [placeholder]="'CUSTOMER.PRICE_PAR' | translate" />
+          </mat-form-field>
+        </div>
+        <div fxFlex="49">
+          <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+            <mat-label>{{ 'CUSTOMER.PRICE_BOOKING' | translate }}</mat-label>
+            <input
+              type="text"
+              matInput
+              formControlName="bookingValue"
+              appNumberOnly="integer"
+              maxlength="8"
+              [placeholder]="'CUSTOMER.PRICE_BOOKING' | translate" />
+          </mat-form-field>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="mode === MODE.VIEW">
+        <div fxFlex="49">
+          <div class="collateral-info title">
+            {{ 'CUSTOMER.PRICE_PAR' | translate }}
+          </div>
+          <div class="collateral-info detail">
+            {{ (getControl('parValue')?.value | numberDecimal) || '-' }}
+          </div>
+        </div>
+        <div fxFlex="49">
+          <div class="collateral-info title">
+            {{ 'CUSTOMER.PRICE_BOOKING' | translate }}
+          </div>
+          <div class="collateral-info detail">
+            {{ (getControl('bookingValue')?.value | numberDecimal) || '-' }}
+          </div>
+        </div>
+      </ng-container>
+    </div>
+    <div fxLayout fxLayoutAlign="space-between " class="mt-20">
+      <ng-container *ngIf="mode === MODE.ADD || mode === MODE.EDIT">
+        <div fxFlex="49" fxLayout="column">
+          <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+            <mat-label>{{ 'CUSTOMER.TOTAL_STOCK' | translate }}</mat-label>
+            <input
+              type="text"
+              matInput
+              formControlName="unitAmount"
+              [placeholder]="'CUSTOMER.TOTAL_STOCK' | translate" />
+          </mat-form-field>
+          <spig-error-msg [control]="getControl('unitAmount')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+          </spig-error-msg>
+        </div>
+        <div fxFlex="49" fxLayout="column">
+          <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+            <mat-label>{{ 'CUSTOMER.PRICE_STOCK_BATH' | translate }}</mat-label>
+            <input
+              type="text"
+              matInput
+              formControlName="priceValue"
+              appNumberOnly="integer"
+              maxlength="8"
+              [placeholder]="'CUSTOMER.PRICE_STOCK_BATH' | translate" />
+          </mat-form-field>
+          <spig-error-msg [control]="getControl('priceValue')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+          </spig-error-msg>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="mode === MODE.VIEW">
+        <div fxFlex="49">
+          <div class="collateral-info title">
+            {{ 'CUSTOMER.TOTAL_STOCK' | translate }}
+          </div>
+          <div class="collateral-info detail">
+            {{ (getControl('unitAmount')?.value | number) || '-' }}
+          </div>
+        </div>
+        <div fxFlex="49">
+          <div class="collateral-info title">
+            {{ 'CUSTOMER.PRICE_STOCK_BATH' | translate }}
+          </div>
+          <div class="collateral-info detail">
+            {{ (getControl('priceValue')?.value | numberDecimal) || '-' }}
+          </div>
+        </div>
+      </ng-container>
+    </div>
+    <div fxLayout fxLayoutAlign="space-between center " class="mt-20">
+      <ng-container *ngIf="mode === MODE.ADD || mode === MODE.EDIT">
+        <div fxFlex="49">
+          <spig-datepicker
+            formControlName="dueDate"
+            [classInput]="'input-s icon border-black-40'"
+            [label]="'CUSTOMER.DUE_DATE'"
+            class="display-grid">
+          </spig-datepicker>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="mode === MODE.VIEW">
+        <div fxFlex="49">
+          <div class="collateral-info title">
+            {{ 'CUSTOMER.DUE_DATE' | translate }}
+          </div>
+          <div class="collateral-info detail">
+            {{ getControl('dueDate')?.value || '-' }}
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>

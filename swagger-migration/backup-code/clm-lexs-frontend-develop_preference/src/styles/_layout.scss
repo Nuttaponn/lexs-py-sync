@@ -1,0 +1,887 @@
+@import './variables';
+
+body {
+  background-color: $body-bg;
+}
+
+h5 {
+  margin-block-start: 0;
+  margin-block-end: 0;
+}
+
+h6 {
+  margin-block-start: 0;
+  margin-block-end: 0;
+}
+
+h6,
+span,
+div,
+u,
+a {
+  &.fill-black-100 {
+    color: map_get($ktb-palette-biz-gray, 900);
+  }
+
+  &.fill-black-70 {
+    color: map_get($ktb-palette-biz-black, 70);
+  }
+
+  &.fill-blue {
+    color: map_get($ktb-palette-blue, 500);
+  }
+
+  &.fill-red {
+    color: $krungthai-red;
+  }
+
+  &.size-md {
+    font-size: $font-description;
+  }
+}
+
+span.thin-letter {
+  &.ft-w-2 {
+    font-weight: 200;
+  }
+
+  font-weight: 400;
+  font-size: 14px;
+  color: map-get($ktb-palette-biz-black, 70);
+}
+
+a {
+  &.text-underline {
+    text-decoration: underline;
+  }
+}
+
+/* Login screen */
+.login {
+  background: $login-bg-image,
+    linear-gradient(to right, $login-bg-gradient-color-left, $login-bg-gradient-color-right, transparent) !important;
+
+  .login-area {
+    background-color: unset !important;
+    border-radius: unset !important;
+    box-shadow: none !important;
+
+    .login-form {
+      width: $login-form-width !important;
+      background-color: $login-area-bg-color;
+      border-radius: 6px;
+      box-shadow: 0 4px 8px #00000029;
+
+      .login-form-area {
+        .login-input-area form mat-form-field {
+          padding-bottom: 16px;
+        }
+
+        .login-form-logo {
+          margin-top: 40px !important;
+          margin-bottom: 40px !important;
+        }
+
+        .login-remark-text {
+          padding-top: 32px !important;
+          padding-bottom: 20px !important;
+        }
+
+        .login-contact {
+          padding-top: 25px !important;
+        }
+      }
+    }
+
+    .login-campaign {
+      filter: drop-shadow(0px 8px 16px rgba(0, 0, 0, 0.16));
+    }
+  }
+}
+
+.bold,
+lable .bold {
+  font-family: KrungthaiFastBold !important;
+}
+
+.force-login-content {
+  padding-left: 10px !important;
+  padding-right: 10px !important;
+}
+
+/* Title bar */
+.mat-toolbar {
+  box-shadow: 0px 0.8px 0px rgba(15, 15, 15, 0.15);
+}
+
+spig-title-bar {
+  .main-titlebar {
+    box-shadow: none !important;
+  }
+
+  .main-titlebar .main-titlebar-row {
+    background: #00446b;
+    background: linear-gradient(90deg, #04baee 0%, #00446b 100%);
+    color: white;
+  }
+}
+
+.main-titlebar .main-titlebar-row .user-info-block .mat-mdc-icon-button .mat-icon svg {
+  fill: white !important;
+}
+
+.title-bar-icon-highlight {
+  .main-titlebar .main-titlebar-row .user-info-block .mat-mdc-icon-button .mat-icon svg {
+    fill: map_get($ktb-palette-blue, 800) !important;
+  }
+}
+
+.user-view {
+  @include font-style(description, KrungthaiFastBold);
+  letter-spacing: 0;
+  line-height: 25px;
+  text-align: left;
+  display: inline-flex;
+
+  .view-label {
+    display: inline-flex;
+    align-items: center;
+    padding-right: 15px;
+  }
+}
+
+.user-details {
+  @include font-style(description, KrungthaiFastBold);
+  letter-spacing: 0;
+  line-height: 16px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.user-details-light {
+  @include font-style(tag, KrungthaiFastLight);
+  cursor: pointer;
+  position: relative;
+}
+
+.profile-circle {
+  background-color: transparent;
+  height: 39px;
+  width: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.profile-circle mat-icon {
+  padding-bottom: 4px;
+  padding-right: 2px;
+  padding-left: 2px;
+}
+
+.profile-circle img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
+.chevron::before {
+  border-style: solid;
+  border-width: 0.15em 0.15em 0 0;
+  content: '';
+  display: inline-block;
+  height: 0.45em;
+  left: 0.15em;
+  position: relative;
+  top: 0.15em;
+  transform: rotate(-45deg);
+  width: 0.45em;
+  cursor: pointer;
+}
+
+.chevron.bottom:before {
+  top: 0;
+  transform: rotate(135deg);
+  cursor: pointer;
+}
+
+.pull-down-row {
+  justify-content: flex-end;
+
+  .slide {
+    clear: both;
+    width: 20em;
+    height: 0px;
+    position: fixed;
+    right: 0;
+    margin-top: 58px;
+    margin-right: 8px;
+    z-index: 99;
+    overflow: hidden;
+    text-align: center;
+    transition: height 0.4s ease;
+    font-size: $font-sub-description;
+    color: map_get($ktb-palette-biz-gray, 900);
+    background: $white;
+    box-shadow: 0px 8px 16px map-get($ktb-palette-biz-black, B016);
+    border-radius: 8px;
+
+    &.show {
+      height: 75px;
+    }
+
+    .slide-row {
+      width: 100%;
+      height: 100%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 0 18px 0 18px;
+      font-size: $font-description;
+
+      .icon {
+        padding-right: 18px;
+      }
+    }
+
+    .show-hover {
+      &:hover {
+        background-color: $bg-almost-white;
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Content layout */
+.content-container-no-bg {
+  margin: 24px;
+}
+
+.content-container {
+  margin: 24px;
+
+  &.gap-top {
+    margin: 24px 0 0 0;
+  }
+
+  &.no-horizontal-gap {
+    margin: 24px 0;
+  }
+
+  &.mt-16-only {
+    margin: 16px 0 0 0;
+  }
+
+  background: $white;
+  border: 1px solid map-get($ktb-palette-biz-black, 10);
+  box-shadow: 0px 2px 4px map-get($ktb-palette-biz-black, B008);
+  border-radius: 8px;
+
+  .title-content {
+    padding: 1em;
+
+    .title-text {
+      margin: 0 1em;
+    }
+  }
+
+  .tab-group-content {
+    .search-filter-content {
+      padding: 1em;
+
+      .second-section {
+        padding-top: 8px;
+      }
+    }
+
+    .data-table-content {
+      margin: 1em;
+    }
+  }
+
+  .mat-divider {
+    margin: 0 16px;
+
+    &.no-margin {
+      margin: 0;
+    }
+
+    &.mr-24 {
+      margin: 0 24px;
+    }
+  }
+
+  .inner-container-padding {
+    padding: 20px;
+  }
+
+  .inner-container-padding-16 {
+    padding: 16px;
+  }
+
+  .inner-container-padding-24 {
+    padding: 24px;
+  }
+}
+
+.body-container {
+  margin: 24px;
+  padding-top: 10px;
+}
+
+.status-container {
+  margin: 10px;
+  padding-bottom: 10px;
+}
+
+.tab-group-container {
+  margin: 24px 0;
+}
+
+.label {
+  font-size: $font-sub-description;
+  color: map-get($ktb-palette-biz-black, 70);
+}
+
+.label-normal {
+  font-size: $font-description;
+  color: map-get($ktb-palette-biz-black, 100);
+}
+
+.label-black {
+  font-size: $font-sub-description;
+  color: map-get($ktb-palette-biz-black, 100);
+}
+
+.sub-label {
+  font-size: $font-description;
+  color: map-get($ktb-palette-biz-black, 100);
+  padding-top: 4px;
+}
+
+.sub-label-bold {
+  @include font-style(description, KrungthaiFastBold);
+  color: map-get($ktb-palette-biz-black, 100);
+}
+
+.status-label {
+  border-radius: 4px;
+  margin: 12px 0;
+  padding: 10px 12px;
+  width: fit-content;
+  display: inline-block;
+  text-align: center;
+  box-sizing: border-box;
+
+  &.no-margin {
+    margin: 0;
+  }
+
+  &.mr-tb-8 {
+    margin: 8px 0;
+  }
+
+  &.pd-12 {
+    padding: 12px;
+  }
+
+  &.status-normal {
+    color: $krungthai-blue !important;
+    background-color: $bg-almost-white !important;
+  }
+
+  &.status-pending {
+    color: map-get($ktb-palette-golden-yellow, 700) !important;
+    background-color: map-get($ktb-palette-golden-yellow, 100) !important;
+  }
+
+  &.status-success {
+    color: $krungthai-green;
+    background-color: map-get($ktb-palette-green, 100);
+  }
+
+  &.status-info {
+    color: map-get($ktb-palette-biz-gray, 700);
+    background-color: map-get($ktb-palette-biz-gray, 100);
+  }
+
+  &.status-failed {
+    color: $krungthai-red;
+    background-color: map-get($ktb-palette-red, 100);
+  }
+
+  // size
+  &.size-small {
+    white-space: initial;
+    min-width: 128px;
+  }
+
+  &.size-normal {
+    white-space: initial;
+    min-width: 152px;
+  }
+
+  &.size-xl {
+    white-space: initial;
+    min-width: 180px;
+  }
+
+  &.size-fill-available {
+    white-space: initial;
+    width: -webkit-fill-available;
+  }
+
+  &.size-auto {
+    width: auto;
+  }
+
+  &.text-left {
+    text-align: left;
+  }
+}
+
+.view-mode-label {
+  color: map-get($ktb-palette-biz-black, 70);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+}
+
+.mat-mdc-card {
+  display: block;
+  position: relative;
+  padding: 16px;
+  border-radius: 8px !important;
+}
+
+.mat-mdc-card-outlined {
+  // background-color: unset !important;
+  border: none !important;
+  box-shadow: unset !important;
+}
+
+.card-container {
+  padding-top: 16px;
+  @include mat-card-content-box;
+  border-radius: 8px;
+
+  .title-content {
+    padding-left: 1em;
+    padding-right: 1em;
+
+    .title-text {
+      margin: 0 0.5em;
+      @include font-style(sub-content, KrungthaiFastBold);
+      display: flex;
+      align-items: center;
+    }
+  }
+}
+
+.divider-vertical {
+  border-right-width: 1px;
+  border-right-style: solid;
+  margin-right: 15px;
+  padding-left: 20px;
+  height: 30px;
+  border-right-color: map-get($ktb-palette-biz-black, B012);
+
+  &.align-margin {
+    margin-right: 16px;
+    margin-left: 16px;
+    padding-left: 0px;
+  }
+}
+
+.divider-horizontal {
+  width: 100%;
+  height: 1px;
+  background: map-get($ktb-palette-biz-black, 10);
+}
+
+.card-content {
+  @include font-style;
+  align-items: center;
+  background-color: $white;
+
+  .row-content {
+    .list-row {
+      padding: 0 20px;
+      font-weight: 400;
+      color: map_get($ktb-palette-biz-gray, 900);
+      border-bottom: 1px solid map_get($ktb-palette-biz-gray, 400);
+      height: 74px;
+
+      &.heading {
+        display: flex;
+        align-items: flex-start;
+        flex-direction: row;
+        background: map_get($ktb-palette-blue, 50);
+        border-top: 1.5px solid map_get($ktb-palette-blue, 100);
+        border-bottom: 1.5px solid map_get($ktb-palette-blue, 100);
+        font-family: KrungthaiFastBold !important;
+      }
+
+      .left-align-col {
+        text-align: left;
+        padding-top: 15px;
+      }
+
+      .right-align-col {
+        text-align: right;
+        padding-top: 15px;
+      }
+    }
+  }
+
+  .content-container {
+    padding: 10px 0;
+  }
+
+  .subcontent-container {
+    border-top: 1px solid map_get($ktb-palette-biz-gray, 900);
+  }
+}
+
+.customer-info-card {
+  @include mat-card-content-box;
+
+  .related-info-header {
+    .title {
+      padding: 0 12px;
+
+      .grade-label {
+        background: map-get($ktb-palette-biz-gray, 100);
+        border-radius: 4px;
+        font-size: $font-sub-description;
+        padding: 4px 8px;
+        color: map-get($ktb-palette-biz-gray, 700);
+      }
+    }
+
+    .sub-title {
+      padding: 12px;
+
+      span {
+        font-size: $font-sub-description;
+      }
+
+      div {
+        color: map-get($ktb-palette-biz-black, 100);
+      }
+    }
+  }
+
+  .mat-mdc-card-content {
+    .table-content {
+      padding: 16px 0;
+
+      .header {
+        font-size: $font-description;
+        padding-bottom: 16px;
+      }
+    }
+  }
+}
+
+.content-card-info {
+  margin: 16px 0;
+  @include font-style;
+
+  .header {
+    font-weight: 700;
+    font-size: $font-sub-content;
+  }
+
+  .detail {
+    font-weight: 400;
+  }
+}
+
+.content-below-action-bar-area {
+  padding-top: $action-bar-container-height;
+}
+
+.main-info-container {
+  background: $white;
+  border-radius: 16px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-end {
+  text-align: end;
+}
+
+.align-items-baseline {
+  align-items: baseline;
+}
+
+.align-items-initial {
+  align-items: initial;
+}
+
+.collateral-info {
+  &.header {
+    @include font-style(description, KrungthaiFastRegular, 700);
+  }
+
+  &.title {
+    @include font-style(sub-description, KrungthaiFastRegular, 700);
+    color: map_get($ktb-palette-biz-black, 70);
+  }
+
+  &.detail {
+    @include font-style(description, KrungthaiFastRegular, 400);
+  }
+}
+
+.display-grid {
+  display: grid;
+}
+
+.display-flex-column {
+  @include flex-column;
+}
+
+.display-flex-wrap {
+  flex-wrap: wrap;
+}
+
+.content-form {
+  .header {
+    font-weight: 400;
+    font-size: $font-sub-description;
+    color: map-get($ktb-palette-biz-black, 70);
+
+    &.black-100 {
+      color: map-get($ktb-palette-biz-gray, 900);
+    }
+  }
+
+  .detail {
+    font-weight: 400;
+    font-size: $font-description;
+    color: map-get($ktb-palette-biz-gray, 900);
+  }
+}
+
+/* fill color class */
+@each $name, $code in $ktb-palette-biz-black {
+  .color-biz-black-#{$name} {
+    color: $code;
+  }
+}
+
+.color-red {
+  color: $krungthai-red;
+}
+
+.text-gray-900 {
+  color: map-get($ktb-palette-biz-gray, 900);
+
+  &.opacity-70-percent {
+    opacity: 0.7;
+  }
+
+  &.opacity-60-percent {
+    opacity: 0.6;
+  }
+}
+
+.text-gray-700 {
+  color: map-get($ktb-palette-biz-gray, 700);
+}
+
+// bg-blue
+.bg-blue-00 {
+  background-color: map-get($ktb-palette-precious-blue, 00);
+}
+
+.bg-blue-50 {
+  background-color: map_get($ktb-palette-blue, 50);
+}
+
+.bg-blue-60 {
+  background-color: $krungthai-blue;
+}
+
+// bg-green
+.bg-green-40 {
+  background-color: map-get($ktb-palette-green, 400);
+}
+
+.bg-green-0 {
+  background-color: $krungthai-green;
+}
+
+.bg-green-50 {
+  background-color: map_get($ktb-palette-green, 50);
+}
+
+.bg-green-80 {
+  background-color: map-get($ktb-palette-green, 800);
+}
+
+// bg-golden
+.bg-golden-60 {
+  background-color: map-get($ktb-palette-golden-yellow, 500);
+}
+
+.bg-golden-80 {
+  background-color: map-get($ktb-palette-golden-yellow, 700);
+}
+
+.bg-golden-70 {
+  background-color: map-get($ktb-palette-golden-yellow, 600);
+}
+
+.bg-golden-100 {
+  background-color: map-get($ktb-palette-golden-yellow, 900);
+}
+
+// bg-red
+.bg-red {
+  background-color: $krungthai-red;
+}
+
+.bg-red-40 {
+  background-color: map-get($ktb-palette-red, 400);
+}
+
+// bg-gray
+.bg-gray-80 {
+  background-color: map-get($ktb-palette-biz-gray, 700);
+}
+
+.bg-gray-70 {
+  background-color: map-get($ktb-palette-biz-gray, 600);
+}
+
+.bg-gray-50 {
+  background-color: map-get($ktb-palette-biz-gray, 400);
+}
+
+.bg-gray-900 {
+  background-color: map-get($ktb-palette-biz-gray, 50);
+}
+
+.full-width {
+  width: 100%;
+}
+
+.advance-search-content {
+  place-content: center space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.search-section {
+  .mat-mdc-form-field {
+    &.mat-focused {
+
+      /* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
+      ::ng-deep .mat-mdc-text-field-wrapper {
+        background: map-get($ktb-palette-precious-blue, 00);
+      }
+    }
+  }
+
+  &.fit-to-screen {
+
+    /* FIXED(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
+    .mat-mdc-form-field-infix {
+      width: auto !important;
+    }
+  }
+}
+
+.search-input-field {
+
+  /* FIXD(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
+  .mat-mdc-text-field-wrapper {
+
+    /* FIXD(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
+    .mat-mdc-form-field-flex .mat-mdc-form-field-icon-suffix {
+      right: 8px;
+
+      .mat-icon {
+        padding: 0;
+      }
+    }
+  }
+
+  &.placeholder-black-100 {
+    ::placeholder {
+      color: map-get($ktb-palette-biz-black, 100);
+      opacity: 1;
+    }
+
+    :-ms-input-placeholder {
+      color: map-get($ktb-palette-biz-black, 100);
+    }
+
+    ::-ms-input-placeholder {
+      color: map-get($ktb-palette-biz-black, 100);
+    }
+  }
+
+  &.normal-text-size {
+    ::placeholder {
+      font-size: $font-sub-description;
+    }
+
+    :-ms-input-placeholder {
+      font-size: $font-sub-description;
+    }
+
+    ::-ms-input-placeholder {
+      font-size: $font-sub-description;
+    }
+  }
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+hr {
+  border: 1px solid map-get($ktb-palette-biz-black, 10);
+}
+
+.dialog-content {
+  &.min-xsm {
+    min-width: 560px;
+  }
+
+  &.min-xl {
+    min-width: 760px;
+  }
+
+  &.normal-ssm {
+    width: 480px;
+  }
+
+  &.normal-xsm {
+    width: 560px;
+  }
+
+  &.normal-md {
+    width: 720px;
+  }
+}
+
+.accordion-label-hide-show {
+  font-size: $font-sub-description;
+  color: map_get($ktb-palette-blue, 500);
+}

@@ -1,0 +1,30 @@
+<app-action-bar
+  (backButtonHandler)="onBack()"
+  [hasCancelButton]="actionBar.hasCancel"
+  (cancelButtonHandler)="onCancel()"
+  [hasSaveButton]="actionBar.hasSave"
+  [saveButtonText]="actionBar.saveText || 'COMMON.BUTTON_SAVE'"
+  (saveButtonHandler)="onSave()"
+  [hasRejectButton]="actionBar.hasReject"
+  [rejectButtonText]="actionBar.rejectText || 'COMMON.BUTTON_REJECT'"
+  [rejectButtonIcon]="actionBar.rejectIcon || 'icon-Dismiss-Square'"
+  (rejectButtonHandler)="onReject()"
+  [hasPrimaryButton]="actionBar.hasPrimary"
+  [primaryButtonText]="actionBar.primaryText || ''"
+  [primaryButtonIcon]="actionBar.primaryIcon || 'icon-Selected'"
+  (primaryButtonHandler)="onSubmit()"
+  [showNavBarInformation]="true">
+  <ng-container navBarInformationTemplate>
+    <mat-icon svgIcon="icon-Finance" class="icon icon-xmedium default-cursor"></mat-icon>
+    <span class="ml-05em">{{ 'FINANCE.ADVANCE_PAYMENT' | translate }}</span>
+  </ng-container>
+</app-action-bar>
+<div class="content-below-action-bar-area">
+  <app-advance-detail-payment
+    *ngIf="isChildComponentVisible"
+    [dataForm]="dataForm"
+    [statusCode]="statusCode"
+    [isCreate]="isCreate"
+    [isOwnTaskEdit]="isOwnTaskEdit"
+    [isSubmit]="isSubmit"></app-advance-detail-payment>
+</div>

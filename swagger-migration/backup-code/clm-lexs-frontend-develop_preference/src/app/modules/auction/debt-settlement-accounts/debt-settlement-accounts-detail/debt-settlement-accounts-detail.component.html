@@ -1,0 +1,672 @@
+<div class="content-container">
+  <div class="inner-container-padding-24">
+    <app-auction-header
+      [title]="'DEBT_SETTLEMENT_ACCOUNTS.DETAIL.TITLE' | translate"
+      [expanded]="isOpened"
+      [isMain]="true"
+      (expand)="isOpened = !isOpened">
+    </app-auction-header>
+  </div>
+  <mat-accordion>
+    <mat-expansion-panel class="expansion-inside" [expanded]="isOpened" hideToggle>
+      <mat-divider class="no-margin"></mat-divider>
+      <ng-container>
+        <div class="pt-24" [formGroup]="form">
+          <div class="mt-16 sub-expansion" formArrayName="litigationsList">
+            <app-auction-header
+              [title]="'DEBT_SETTLEMENT_ACCOUNTS.DETAIL.TITLE' | translate"
+              [titleClass]="'text-gray-700 fn-16'"
+              [isMain]="true"
+              [isMainSub]="true"
+              [expanded]="isOpened1"
+              [iconName]="'icon-Warning-Circle'"
+              [showIcon]="true"
+              (expand)="isOpened1 = !isOpened1"
+              [classInput]="'pl-16 pr-16'">
+            </app-auction-header>
+            <mat-accordion>
+              <mat-expansion-panel class="expansion-inside" [expanded]="isOpened1" hideToggle>
+                <div fxLayout="row" class="pt-32 pb-20 padded-container" fxLayoutAlign=" center">
+                  <div class="badge-24 circle-gray mr-12 ml-12">1</div>
+                  <div class="title-text pl-20 pr-10" fxLayout="row">
+                    <h6>ยอดเงินสำหรับตัดบัญชีชำระหนี้</h6>
+                  </div>
+                </div>
+                <div class="data-table-content">
+                  <div class="table-scroll" table-scroll>
+                    <div class="table">
+                      <table mat-table [dataSource]="debitData">
+                        <ng-container matColumnDef="no">
+                          <th class="text-center width-pct-5" mat-header-cell *matHeaderCellDef>
+                            {{ 'COMMON.LABEL_NO' | translate }}
+                          </th>
+                          <td class="text-center width-pct-5" mat-cell *matCellDef="let element; let i = index">
+                            {{ i + 1 }}
+                          </td>
+                          <td mat-footer-cell *matFooterCellDef="let element"></td>
+                        </ng-container>
+                        <ng-container matColumnDef="summary">
+                          <th mat-header-cell *matHeaderCellDef class="text-start">รายการ</th>
+                          <td mat-cell *matCellDef="let element">
+                            {{ element.name }}
+                            <app-tooltip
+                              *ngIf="element?.collateralGroupsMsg?.length > 0"
+                              [params]="element?.collateralGroupsMsg"></app-tooltip>
+                          </td>
+                          <td mat-footer-cell *matFooterCellDef="let element" class="text-end">รวม (บาท)</td>
+                        </ng-container>
+                        <ng-container matColumnDef="debit">
+                          <th mat-header-cell *matHeaderCellDef class="debtAmount new-line">
+                            {{ 'DEBT_SETTLEMENT_ACCOUNTS.DETAIL.DEBT_PAYMENT_DEDUCTED_AMOUNT' | translate }}
+                          </th>
+                          <td mat-cell *matCellDef="let element" class="text-end">
+                            {{ element.debitAmount | numberDecimal }}
+                          </td>
+                          <td mat-footer-cell *matFooterCellDef="let element" class="bold text-end">
+                            {{ debitData | expenseAmount: 'DEBIT' | numberDecimal }}
+                          </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="paymentCutOffColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: paymentCutOffColumns"></tr>
+                        <tr mat-footer-row *matFooterRowDef="paymentCutOffColumns"></tr>
+                      </table>
+                    </div>
+
+                    <div fxLayout="row" class="pt-32 pb-20 padded-container" #summaryElement>
+                      <div class="badge-24 circle-gray mr-12 ml-12">2</div>
+                      <div class="title-text" fxLayout="row">
+                        <h6>สรุปรายการที่ตัดบัญชีชำระหนี้</h6>
+                      </div>
+                    </div>
+                    <div class="table mb-20">
+                      <table mat-table [dataSource]="summaryDebtList" class="table-fixed" multiTemplateDataRows>
+                        <ng-container matColumnDef="no">
+                          <th class="text-center cell-xxs" mat-header-cell *matHeaderCellDef>
+                            {{ 'COMMON.LABEL_NO' | translate }}
+                          </th>
+                          <td class="text-center cell-xxs" mat-cell *matCellDef="let element; let i = dataIndex">
+                            {{ i + 1 }}
+                          </td>
+                        </ng-container>
+                        <ng-container matColumnDef="list">
+                          <th mat-header-cell *matHeaderCellDef class="new-line cell-l">รายการ</th>
+                          <td mat-cell *matCellDef="let element" class="cell-l">
+                            {{ element.paymentGroupName }}
+                          </td>
+                        </ng-container>
+                        <ng-container matColumnDef="expand">
+                          <th mat-header-cell *matHeaderCellDef class="new-line cell-xxs"></th>
+                          <td mat-cell *matCellDef="let element" class="cell-xxs">
+                            <div
+                              (click)="onExpand(element)"
+                              class="description"
+                              *ngIf="expandGroup.includes(element.paymentGroupType)">
+                              <mat-icon
+                                [svgIcon]="element.expanded ? 'icon-Direction-Up' : 'icon-Direction-Down'"
+                                class="icon icon-md icon-hide-show fill-blue"></mat-icon>
+                              {{
+                                (element.expanded ? 'COMMON.ICON_EXPANSION_HIDE' : 'COMMON.ICON_EXPANSION_SHOW')
+                                  | translate
+                              }}
+                            </div>
+                          </td>
+                        </ng-container>
+                        <ng-container matColumnDef="debt">
+                          <th mat-header-cell *matHeaderCellDef class="new-line cell-s debt-cell">
+                            ภาระหนี้
+                            <br />
+                            (บาท)
+                          </th>
+                          <td mat-cell *matCellDef="let element" class="cell-s text-end">
+                            <span *ngIf="!expandGroup.includes(element.paymentGroupType)">
+                              {{ element?.debtAmountTotal | numberDecimal }}
+                            </span>
+                            <span *ngIf="expandGroup.includes(element.paymentGroupType) && !element.expanded">
+                              {{ element?.debtAmountTotal | numberDecimal }}
+                            </span>
+                          </td>
+                        </ng-container>
+                        <ng-container matColumnDef="cutOff">
+                          <th mat-header-cell *matHeaderCellDef class="cell-s text-end cutOff-cell new-line">
+                            {{ 'DEBT_SETTLEMENT_ACCOUNTS.DETAIL.DEBT_PAYMENT_DEDUCTED_AMOUNT' | translate }}
+                          </th>
+                          <td mat-cell *matCellDef="let element" class="cell-s text-end">
+                            <span *ngIf="!expandGroup.includes(element.paymentGroupType)">
+                              {{ element?.debtSettlementAmountTotal || 0 | numberDecimal }}
+                            </span>
+                            <span *ngIf="expandGroup.includes(element.paymentGroupType) && !element.expanded">
+                              {{ element?.debtSettlementAmountTotal || 0 | numberDecimal }}
+                            </span>
+                          </td>
+                        </ng-container>
+                        <ng-container matColumnDef="expandedDetail">
+                          <td
+                            mat-cell
+                            *matCellDef="let element"
+                            [attr.colspan]="paymentCutOffListColumns.length"
+                            [@detailExpand]="element.expanded ? 'expanded' : 'collapsed'"
+                            class="detail-row-wrapper">
+                            <div
+                              class="detail-table-div"
+                              *ngIf="element.expanded && expandGroup.includes(element.paymentGroupType)">
+                              <table
+                                mat-table
+                                [dataSource]="element.struturedDebtList"
+                                class="detail-table table-fixed">
+                                <ng-container matColumnDef="no" sticky>
+                                  <td
+                                    mat-cell
+                                    *matCellDef="let def"
+                                    columnElevationLeft
+                                    class="cell-xxs pl-0 text-center">
+                                    <mat-icon svgIcon="icon-corner" class="icon icon-hide-show fill-black-30">
+                                    </mat-icon>
+                                  </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="list">
+                                  <td mat-cell *matCellDef="let def" class="cell-l">
+                                    {{ def.paymentName || '-' }}
+                                    <app-tooltip *ngIf="def.paymentType === '1A'" [params]="msg1A"></app-tooltip>
+                                  </td>
+                                </ng-container>
+                                <ng-container matColumnDef="expand">
+                                  <td mat-cell *matCellDef="let def" class="cell-xxs"></td>
+                                </ng-container>
+                                <ng-container matColumnDef="debt">
+                                  <td mat-cell *matCellDef="let def" class="cell-s text-end">
+                                    {{ def.debtAmountTotal || 0 | numberDecimal }}
+                                  </td>
+                                </ng-container>
+                                <ng-container matColumnDef="cutOff">
+                                  <td mat-cell *matCellDef="let def" class="cell-s text-end">
+                                    {{ def.debtSettlementAmountTotal || 0 | numberDecimal }}
+                                  </td>
+                                </ng-container>
+                                <tr
+                                  mat-row
+                                  *matRowDef="let row; columns: paymentCutOffListColumns"
+                                  class="example-element-row"
+                                  [class.example-expanded-row]="row.expanded"></tr>
+                              </table>
+                            </div>
+                          </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="paymentCutOffListColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: paymentCutOffListColumns"></tr>
+                        <ng-container>
+                          <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-row"></tr>
+                        </ng-container>
+                      </table>
+                    </div>
+                    <ng-container *ngIf="debtSettlement.debitPercentage === '85'">
+                      <div fxLayout="row" class="pt-32 pb-20 padded-container" fxLayoutAlign=" center">
+                        <div class="badge-24 circle-gray mr-12 ml-12">3</div>
+                        <div class="title-text" fxLayout="row">
+                          <h6>รายการประมาณการค่าใช้จ่าย</h6>
+                        </div>
+                      </div>
+                      <div class="table mb-20">
+                        <table mat-table [dataSource]="paymentList">
+                          <ng-container matColumnDef="no">
+                            <th class="text-center width-pct-5" mat-header-cell *matHeaderCellDef>
+                              {{ 'COMMON.LABEL_NO' | translate }}
+                            </th>
+                            <td class="text-center width-pct-5" mat-cell *matCellDef="let element; let i = index">
+                              {{ i + 1 }}
+                            </td>
+                          </ng-container>
+                          <ng-container matColumnDef="name">
+                            <th mat-header-cell *matHeaderCellDef class="new-line">รายการ</th>
+                            <td mat-cell *matCellDef="let element">
+                              ยอดตามประมาณการค่าใช้จ่าย จำนวนไม่น้อยกว่า 15% ของราคาทรัพย์ที่ธนาคารซื้อได้
+                            </td>
+                          </ng-container>
+                          <ng-container matColumnDef="payment">
+                            <th mat-header-cell *matHeaderCellDef class="text-right">จำนวนค่าใช้จ่าย (บาท)</th>
+                            <td mat-cell *matCellDef="let element" class="text-right">
+                              {{ element.debtAmount15 | numberDecimal }}
+                            </td>
+                          </ng-container>
+
+                          <tr mat-header-row *matHeaderRowDef="paymentColumn"></tr>
+                          <tr mat-row *matRowDef="let row; columns: paymentColumn"></tr>
+                        </table>
+                      </div>
+                    </ng-container>
+                  </div>
+                </div>
+                <div #bannerElement [class.sticky]="isSticky" class="full-width mb-20" *ngIf="showBanner">
+                  <app-message-banner
+                    class="full-width mt-10 text-right"
+                    [messageClass]="'text-right'"
+                    actionButton="ไปตารางสรุป"
+                    actionButtonIcon="icon-Arrow-Up"
+                    (actionButtonHandler)="actionButtonHandler()"
+                    actionButtonClass="bold icon-black full-width max-w-fit"
+                    [actionButtonBorder]="false"
+                    type="warn-normal"
+                    iconClass="icon-xmedium"
+                    [message]="
+                      'ยอดเงินคงเหลือสำหรับตัดชำระหนี้ (​บาท): startbold' +
+                      (debitBalance === 0 || !debitBalance ? '0.00' : (debitBalance | numberDecimal)) +
+                      'endbold'
+                    "></app-message-banner>
+                </div>
+                <ng-container *ngFor="let item of litigationsList; let lg = index" [formGroupName]="lg">
+                  <div class="pt-24">
+                    <div class="title-content bg-blue bdr-8" fxLayout="row" fxLayoutAlign="space-between center">
+                      <div fxLayout="column">
+                        <div fxLayoutAlign="start center">
+                          <mat-icon svgIcon="icon-Window" class="icon icon-xmedium mr-8"></mat-icon>
+                          <h6>รายการตัดชำระหนี้ LG ID {{ item?.litigationId || '-' }}</h6>
+                          <div class="divider-vertical"></div>
+                          <span class="mr-5">คดีหมายเลขดำ:</span>
+                          <h6>{{ item?.blackCaseNo || '-' }}</h6>
+                          <div class="divider-vertical"></div>
+                          <span class="mr-5">คดีหมายเลขแดง:</span>
+                          <h6 class="fill-red">{{ item?.redCaseNo || '-' }}</h6>
+                        </div>
+                        <div class="mt-16" fxLayout="row" fxLayoutAlign="start center">
+                          <div class="fill-black-70 mr-8">สถานะดำเนินคดีปัจจุบัน:</div>
+                          <div class="status-label no-margin status-normal">{{ item?.legalStatusName || '-' }}</div>
+                          <div class="divider-vertical"></div>
+                          <div class="fill-black-70 mr-8">วันที่ดึงข้อมูล:</div>
+                          <div>
+                            {{ (debtSettlement.fetchAccountTimestamp | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                          </div>
+                        </div>
+                      </div>
+                      <div class="mr-4" fxLayout="row">
+                        <div class="description" (click)="item.expanded = !item.expanded">
+                          <mat-icon
+                            [svgIcon]="item.expanded ? 'icon-Slide-Hide' : 'icon-Expand'"
+                            class="icon icon-xmedium icon-hide-show fill-blue mr-4"></mat-icon>
+                          <span>
+                            {{
+                              item.expanded
+                                ? ('COMMON.ICON_EXPANSION_HIDE' | translate)
+                                : ('COMMON.ICON_EXPANSION_SHOW' | translate)
+                            }}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <mat-accordion>
+                    <mat-expansion-panel
+                      class="expansion-inside"
+                      [expanded]="item.expanded"
+                      hideToggle
+                      formArrayName="debtSettlementAccounts">
+                      <div class="data-table-content mb-20">
+                        <div class="table-scroll" table-scroll>
+                          <table mat-table [dataSource]="item?.mainBorrowers || []" id="ref-table">
+                            <ng-container matColumnDef="no" sticky>
+                              <th class="text-center width-pct-5" mat-header-cell *matHeaderCellDef>
+                                {{ 'COMMON.LABEL_NO' | translate }}
+                              </th>
+                              <td class="text-center width-pct-5" mat-cell *matCellDef="let element; let i = index">
+                                {{ i + 1 }}
+                              </td>
+                            </ng-container>
+                            <ng-container matColumnDef="mainBorrowerPersonName" sticky>
+                              <th mat-header-cell *matHeaderCellDef>ผู้กู้หลัก</th>
+                              <td mat-cell *matCellDef="let element; let i = index">
+                                {{ element?.mainBorrowerName || '-' }}
+                              </td>
+                            </ng-container>
+                            <ng-container matColumnDef="courtName" sticky>
+                              <th mat-header-cell *matHeaderCellDef>ศาล</th>
+                              <td mat-cell *matCellDef="let element">
+                                {{ element?.courtName }}
+                              </td>
+                            </ng-container>
+                            <ng-container matColumnDef="responseUnit">
+                              <th mat-header-cell *matHeaderCellDef>Response Unit</th>
+                              <td mat-cell *matCellDef="let element">
+                                {{ element?.responseUnitCode }} - {{ element?.responseUnitName }}
+                              </td>
+                            </ng-container>
+                            <ng-container matColumnDef="branch">
+                              <th mat-header-cell *matHeaderCellDef>สาขา</th>
+                              <td mat-cell *matCellDef="let element">
+                                {{ element?.bookingCode }} - {{ element?.bookingName }}
+                              </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="mainBorrowerColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: mainBorrowerColumns"></tr>
+                            <div *ngIf="mainBorrowers?.length === 0">
+                              <app-message-empty [message]="'COMMON.SEARCH_EMPTY'"></app-message-empty>
+                            </div>
+                          </table>
+                        </div>
+                      </div>
+                      <div>
+                        <div
+                          *ngFor="let i of item.debtSettlementAccounts; let ii = index"
+                          [formGroupName]="ii"
+                          class="mt-10">
+                          <ng-container *ngIf="i?.forDetail">
+                            <app-auction-header
+                              [title]="i?.paymentGroupName || ''"
+                              [iconName]="'icon-Warning-Circle'"
+                              [isMain]="false"
+                              [isMainSub]="true"
+                              [showIcon]="true"
+                              [ready]="i.ready || false"
+                              [details]="i.billDetails || []"
+                              [expanded]="i.expanded || false"
+                              (expand)="i.expanded = !i.expanded"
+                              [titleClass]="'text-gray-700'">
+                            </app-auction-header>
+                            <mat-accordion>
+                              <mat-expansion-panel
+                                class="expansion-inside"
+                                [expanded]="i.expanded"
+                                hideToggle
+                                formArrayName="struturedDebtList">
+                                <!-- account table  LEX2-32775 -->
+                                <ng-container *ngIf="i?.isAccNo">
+                                  <div class="table mb-20">
+                                    <table mat-table [dataSource]="i.struturedDebtList || []">
+                                      <ng-container matColumnDef="no">
+                                        <th class="text-center width-pct-5" mat-header-cell *matHeaderCellDef>
+                                          {{ 'COMMON.LABEL_NO' | translate }}
+                                        </th>
+                                        <td
+                                          class="text-center width-pct-5"
+                                          mat-cell
+                                          *matCellDef="let element; let i = index">
+                                          <span *ngIf="element.isHeader && !element.isLastest">
+                                            {{ element.index + 1 }}
+                                          </span>
+                                          <span *ngIf="!element.isHeader && !element.isLastest">
+                                            <mat-icon svgIcon="icon-corner" class="icon icon-hide-show fill-black-30">
+                                            </mat-icon>
+                                          </span>
+                                        </td>
+                                        <td mat-footer-cell *matFooterCellDef></td>
+                                      </ng-container>
+                                      <ng-container matColumnDef="list">
+                                        <th mat-header-cell *matHeaderCellDef class="new-line width-pct-40">
+                                          ประเภทหนี้
+                                        </th>
+                                        <td mat-cell *matCellDef="let element" class="width-pct-40">
+                                          <div *ngIf="!element?.isLastest" class="">
+                                            <span *ngIf="!element.isHeader">
+                                              {{ element?.paymentName }}
+                                            </span>
+                                            <span *ngIf="element.isHeader">
+                                              {{ element?.paymentGroupName }}
+
+                                              <span *ngIf="element?.paymentGroupType === 3" class="thin-letter">
+                                                &nbsp; * ตัดได้เฉพาะที่ศาลสั่ง
+                                              </span>
+                                            </span>
+                                          </div>
+                                          <div *ngIf="element?.isLastest" class="text-end">รวม (บาท)</div>
+                                        </td>
+                                        <td mat-footer-cell *matFooterCellDef></td>
+                                      </ng-container>
+                                      <ng-container matColumnDef="debt">
+                                        <th mat-header-cell *matHeaderCellDef class="new-line width-pct-20 debt-cell">
+                                          ภาระหนี้
+                                          <br />
+                                          (บาท)
+                                        </th>
+                                        <td mat-cell *matCellDef="let element" class="width-pct-20 text-end">
+                                          <div *ngIf="!element?.isLastest && element?.showTotal" class="">
+                                            {{ element?.debtAmountTotal | numberDecimal }}
+                                          </div>
+                                          <div *ngIf="element?.isLastest" class="bold">
+                                            {{
+                                              (i.struturedDebtList | expenseAmount: 'DEBT_TOTAL' | numberDecimal) || '-'
+                                            }}
+                                          </div>
+                                        </td>
+                                      </ng-container>
+                                      <ng-container matColumnDef="cutOff">
+                                        <th
+                                          mat-header-cell
+                                          *matHeaderCellDef
+                                          class="width-pct-20 text-end cutOff-cell new-line">
+                                          {{
+                                            'DEBT_SETTLEMENT_ACCOUNTS.DETAIL.DEBT_PAYMENT_DEDUCTED_AMOUNT' | translate
+                                          }}
+                                        </th>
+                                        <td
+                                          mat-cell
+                                          *matCellDef="let element; let dtIndex = index; let l = last"
+                                          [formGroupName]="dtIndex"
+                                          class="text-right error-msg">
+                                          <ng-container
+                                            *ngIf="!isViewMode && !element?.isViewOnly && element?.isLastest">
+                                            <mat-form-field
+                                              class="no-label input-sm-icon search-input-field"
+                                              [class.mt-12]="
+                                                getDebtAccountControl(item.index, i.index, dtIndex)?.invalid
+                                              ">
+                                              <input
+                                                matInput
+                                                appNumberOnly="qualitative"
+                                                (blur)="onDebtAccChange($event, element, item, i)"
+                                                formControlName="debtSettlementAmountTotal"
+                                                placeholder="ยอดรวมตัดชำระหนี้"
+                                                class="text-right" />
+                                            </mat-form-field>
+                                            <spig-error-msg
+                                              [control]="
+                                                getDebtAccountControl(item.index, i.index, dtIndex)
+                                              "></spig-error-msg>
+                                          </ng-container>
+                                          <ng-container
+                                            *ngIf="!element?.isLastest && element?.showTotal"
+                                            class="text-right">
+                                            <ng-container
+                                              *ngIf="
+                                                (!isViewMode && element?.isFirstTime) ||
+                                                (isViewMode && auctionStatus === 'R2E09-10-01_CREATE')
+                                              ">
+                                              -
+                                            </ng-container>
+                                            <ng-container
+                                              *ngIf="
+                                                !element?.isFirstTime ||
+                                                (isViewMode && auctionStatus !== 'R2E09-10-01_CREATE')
+                                              ">
+                                              {{ (element?.debtSettlementAmountTotal | numberDecimal) || '-' }}
+                                            </ng-container>
+                                          </ng-container>
+                                          <div *ngIf="isViewMode && element?.isLastest" class="bold">
+                                            {{ (i?.debtSettlementAmountTotal | numberDecimal) || '-' }}
+                                          </div>
+                                        </td>
+                                      </ng-container>
+                                      <tr mat-header-row *matHeaderRowDef="summaryAccColumns"></tr>
+                                      <tr mat-row *matRowDef="let row; columns: summaryAccColumns"></tr>
+                                    </table>
+                                  </div>
+                                </ng-container>
+                                <ng-container *ngIf="!i.isAccNo">
+                                  <div *ngFor="let j of i.struturedDebtList; let jj = index" [formGroupName]="jj">
+                                    <ng-container *ngIf="!ignorePaymentTypeSubList.includes(j?.paymentType || '')">
+                                      <app-auction-header
+                                        [title]="j?.paymentName || ''"
+                                        [iconName]="'icon-Warning-Circle'"
+                                        [isMain]="false"
+                                        [isMainSub]="false"
+                                        [showIcon]="true"
+                                        [ready]="j.ready || false"
+                                        [expanded]="j.expanded || false"
+                                        (expand)="j.expanded = !j.expanded"
+                                        [titleClass]="'text-gray-700'"
+                                        [classInput]="
+                                          'pr-16 ' + (jj === 0 ? '' : 'mt-10 ') + (j.ready ? 'bg-l-green' : 'bg-l-gray')
+                                        ">
+                                      </app-auction-header>
+                                    </ng-container>
+                                    <mat-accordion>
+                                      <mat-expansion-panel
+                                        class="expansion-inside"
+                                        [expanded]="
+                                          ignorePaymentTypeSubList.includes(j?.paymentType || '')
+                                            ? i.expanded
+                                            : j.expanded
+                                        "
+                                        hideToggle>
+                                        <div class="table-scroll" table-scroll>
+                                          <div class="table">
+                                            <table
+                                              mat-table
+                                              [dataSource]="j.accountsList || []"
+                                              formArrayName="accountsList">
+                                              <ng-container matColumnDef="no">
+                                                <th class="text-center width-pct-5" mat-header-cell *matHeaderCellDef>
+                                                  {{ 'COMMON.LABEL_NO' | translate }}
+                                                </th>
+                                                <td
+                                                  class="text-center width-pct-5"
+                                                  mat-cell
+                                                  *matCellDef="let element; let i = index">
+                                                  {{ i + 1 }}
+                                                </td>
+                                                <td mat-footer-cell *matFooterCellDef></td>
+                                              </ng-container>
+                                              <ng-container matColumnDef="accountNo">
+                                                <th mat-header-cell *matHeaderCellDef class="new-line">เลขที่บัญชี</th>
+                                                <td mat-cell *matCellDef="let element">
+                                                  {{ element?.accountNo || '-' }}
+                                                </td>
+                                                <td mat-footer-cell *matFooterCellDef></td>
+                                              </ng-container>
+                                              <ng-container matColumnDef="billNo">
+                                                <th mat-header-cell *matHeaderCellDef>เลขที่ Bill</th>
+                                                <td mat-cell *matCellDef="let element">
+                                                  {{ element?.billNo || '-' }}
+                                                </td>
+                                                <td mat-footer-cell *matFooterCellDef></td>
+                                              </ng-container>
+                                              <ng-container matColumnDef="accountTypeDesc">
+                                                <th mat-header-cell *matHeaderCellDef>ประเภทบัญชี</th>
+                                                <td mat-cell *matCellDef="let element">
+                                                  {{ ACCOUNT_TYPE_NAME_MAP[element?.accountType!] || '-' }}
+                                                </td>
+                                                <td mat-footer-cell *matFooterCellDef>รวม (บาท)</td>
+                                              </ng-container>
+                                              <ng-container matColumnDef="debtAmount">
+                                                <th mat-header-cell *matHeaderCellDef class="text-right">
+                                                  ภาระหนี้ (บาท)
+                                                </th>
+                                                <td mat-cell *matCellDef="let element" class="text-end">
+                                                  {{
+                                                    (element?.debtAmount | numberDecimal) === '0.00'
+                                                      ? '-'
+                                                      : (element?.debtAmount | numberDecimal) || '-'
+                                                  }}
+                                                </td>
+                                                <td
+                                                  mat-footer-cell
+                                                  *matFooterCellDef="let element"
+                                                  class="text-end bold">
+                                                  {{ (j.accountsList | expenseAmount: 'DEBT' | numberDecimal) || '-' }}
+                                                </td>
+                                              </ng-container>
+                                              <ng-container matColumnDef="writeOffAmount">
+                                                <th mat-header-cell *matHeaderCellDef class="text-right">
+                                                  จำนวนเงินตัดหักชำระหนี้
+                                                  <span *ngIf="j?.hasHeaderSuffix"> คงเหลือ </span>
+                                                  (บาท)
+                                                </th>
+                                                <td
+                                                  mat-cell
+                                                  *matCellDef="let element; let dtIndex = index"
+                                                  [formGroupName]="dtIndex"
+                                                  class="text-end">
+                                                  <ng-container *ngIf="!isViewMode && !element?.isViewOnly">
+                                                    <mat-form-field
+                                                      class="no-label input-sm-icon search-input-field"
+                                                      [class.mt-12]="
+                                                        getDebtSettlementAmount(item.index, i.index, j.index)
+                                                          .at(dtIndex)
+                                                          .get('debtSettlementAmount')?.invalid
+                                                      ">
+                                                      <input
+                                                        matInput
+                                                        appNumberOnly="qualitative"
+                                                        (blur)="
+                                                          onPaymentChange(
+                                                            $event,
+                                                            element,
+                                                            item.index,
+                                                            i.index,
+                                                            j.index,
+                                                            dtIndex
+                                                          )
+                                                        "
+                                                        formControlName="debtSettlementAmount"
+                                                        placeholder="ระบุ"
+                                                        class="text-right" />
+                                                    </mat-form-field>
+                                                    <spig-error-msg
+                                                      [control]="
+                                                        getDebtSettlementAmount(item.index, i.index, j.index)
+                                                          .at(dtIndex)
+                                                          .get('debtSettlementAmount')
+                                                      "></spig-error-msg>
+                                                  </ng-container>
+                                                  <ng-container
+                                                    *ngIf="isViewMode || element?.isViewOnly"
+                                                    class="text-right">
+                                                    {{ (element?.debtSettlementAmount | numberDecimal) || '-' }}
+                                                  </ng-container>
+                                                </td>
+                                                <td
+                                                  mat-footer-cell
+                                                  *matFooterCellDef="let element"
+                                                  class="text-end bold">
+                                                  {{
+                                                    (j.accountsList
+                                                      | expenseAmount: 'DEBT_SETTLEMENT'
+                                                      | numberDecimal) || '-'
+                                                  }}
+                                                </td>
+                                              </ng-container>
+
+                                              <tr mat-header-row *matHeaderRowDef="accountsListListColumns"></tr>
+                                              <tr mat-row *matRowDef="let row; columns: accountsListListColumns"></tr>
+                                              <ng-container *ngIf="!j.isEmpty">
+                                                <tr mat-footer-row *matFooterRowDef="accountsListListColumns"></tr>
+                                              </ng-container>
+                                            </table>
+                                            <ng-container *ngIf="j.isEmpty" [ngTemplateOutlet]="dataNotFound">
+                                            </ng-container>
+                                          </div>
+                                        </div>
+                                      </mat-expansion-panel>
+                                    </mat-accordion>
+                                  </div>
+                                </ng-container>
+                              </mat-expansion-panel>
+                            </mat-accordion>
+                          </ng-container>
+                        </div>
+                      </div>
+                    </mat-expansion-panel>
+                  </mat-accordion>
+                </ng-container>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </div>
+        </div>
+      </ng-container>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>
+
+<ng-template #dataNotFound>
+  <app-message-empty message="ไม่พบบัญชีที่เกี่ยวข้อง"></app-message-empty>
+</ng-template>

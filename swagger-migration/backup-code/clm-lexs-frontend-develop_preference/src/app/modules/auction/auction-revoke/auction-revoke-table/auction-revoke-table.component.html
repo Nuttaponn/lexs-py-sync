@@ -1,0 +1,65 @@
+<form>
+  <div class="elm-form mt-16 ele-checkbox" fxLayoutAlign="start start">
+    <input
+      class="elm-check md-line"
+      [checked]="showOnlyIncomplete"
+      type="checkbox"
+      (change)="onCheckShowOnlyIncomplete()" />
+    <label for="">{{ 'AUCTION_REVOKE.CHECKBOX_INPUT_INCOMPLETE_ONLY' | translate }}</label>
+  </div>
+  <div class="mt-8">
+    <div class="table-scroll" table-scroll>
+      <table mat-table [dataSource]="collaterals">
+        <ng-container matColumnDef="order" sticky>
+          <th mat-header-cell *matHeaderCellDef class="text-center" columnElevationLeft>
+            {{ 'COMMON.LABEL_NO' | translate }}
+          </th>
+          <td mat-cell *matCellDef="let element; let i = index" class="text-center" columnElevationLeft>
+            {{ i + 1 }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="fsubbidnum">
+          <th mat-header-cell *matHeaderCellDef>{{ 'AUCTION_REVOKE.LABEL_PROPERTY_SET' | translate }}</th>
+          <td mat-cell *matCellDef="let element">
+            {{ 'AUCTION_REVOKE.LABEL_PROPERTY_SET_NO' | translate }} {{ element.fsubbidnum }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="revokeReason">
+          <th mat-header-cell *matHeaderCellDef>{{ 'AUCTION_REVOKE.LABEL_REASON' | translate }}</th>
+          <td mat-cell *matCellDef="let element; let i = index">
+            <div *ngIf="!editMode">
+              {{ element.revokeReason || '-' }}
+            </div>
+            <div *ngIf="editMode">
+              <mat-form-field class="full-width mt-8 mb-8">
+                <mat-label>{{ 'AUCTION_REVOKE.INPUT_REASON' | translate }}</mat-label>
+                <textarea
+                  class="input-full-field pt-0"
+                  type="text"
+                  matInput
+                  cdkTextareaAutosize
+                  [value]="element.revokeReason"
+                  cdkAutosizeMinRows="3"
+                  autocomplete="off"
+                  [required]="true"
+                  (change)="onReasonChange(i, $event)"
+                  [attr.maxlength]="500"></textarea>
+              </mat-form-field>
+            </div>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_COMMAND' | translate }}</th>
+          <td mat-cell *matCellDef="let element; let i = index">
+            <div class="cursor-pointer" fxLayout="row" fxLayoutGap="8" (click)="onDelete(element.collateralId)">
+              <mat-icon svgIcon="icon-Bin" class="icon-md btn-icon fill-red"></mat-icon>
+              <span class="fill-red bold">{{ 'COMMON.BUTTON_DELETE' | translate }}</span>
+            </div>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="tableColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: tableColumns"></tr>
+      </table>
+    </div>
+  </div>
+</form>

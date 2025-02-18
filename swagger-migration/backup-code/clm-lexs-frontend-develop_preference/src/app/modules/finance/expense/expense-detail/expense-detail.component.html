@@ -1,0 +1,56 @@
+<app-action-bar
+  (backButtonHandler)="onBack()"
+  [hasCancelButton]="actionBar.hasCancel"
+  (cancelButtonHandler)="onCancel()"
+  [hasSaveButton]="actionBar.hasSave"
+  [saveButtonText]="actionBar.saveText || 'COMMON.BUTTON_SAVE'"
+  (saveButtonHandler)="onSave()"
+  [hasRejectButton]="actionBar.hasReject"
+  [rejectButtonText]="actionBar.rejectText || 'COMMON.BUTTON_REJECT'"
+  [rejectButtonIcon]="actionBar.rejectIcon || 'icon-Dismiss-Square'"
+  (rejectButtonHandler)="onReject()"
+  [hasPrimaryButton]="actionBar.hasPrimary"
+  [primaryButtonText]="actionBar.primaryText || ''"
+  [primaryButtonIcon]="actionBar.primaryIcon || 'icon-Selected'"
+  (primaryButtonHandler)="onSubmit()"
+  [subButtonList]="subButtonList"
+  (subButtonHandler)="subButtonHandler($event)"
+  [maxSubButton]="maxSubButton"
+  [showNavBarInformation]="true">
+  <ng-container navBarInformationTemplate>
+    <div>
+      <mat-icon svgIcon="icon-Finance" class="icon icon-xmedium default-cursor"></mat-icon>
+      <span class="ml-05em">{{ title | translate }}</span>
+    </div>
+    <!-- <mat-icon svgIcon="icon-Arrow-Revert" class="icon icon-medium default-cursor"></mat-icon> -->
+  </ng-container>
+</app-action-bar>
+
+<!--  LEX2-204 CLOSED_LG_EXPENSE_CLAIM_CONSIDERATION &
+      LEX2-5328 EXPENSE_CLAIM_PAYMENT_APPROVAL &
+      LEX2-105 EXPENSE_CLAIM_AUTO_PAYMENT_APPROVAL &
+      LEX2-106 EXPENSE_CLAIM_RECEIPT_UPLOAD &
+      EXPENSE_CLAIM_NEWS_RECEIPT_UPLOAD
+-->
+<ng-container *ngIf="taskCodeExpensePaymentDetail.includes(taskCode); else createPaymentTempate">
+  <app-expense-payment-detail
+    [currentAssigneeId]="currentAssigneeId"
+    [currentAssigneeName]="currentAssigneeName"
+    [taskCode]="taskCode"
+    [dataForm]="paymentBookForm"
+    [statusCode]="statusCode"
+    [actionBarEventName]="actionBarEventName"></app-expense-payment-detail>
+</ng-container>
+<ng-template #createPaymentTempate>
+  <!-- หนังสือเบิกจ่ายเงิน -->
+  <app-create-payment-book
+    #createPaymentBook
+    [mode]="paymentMode"
+    [dataForm]="paymentBookForm"
+    [statusName]="statusName"
+    [actionBarEventName]="actionBarEventName"
+    [taskCode]="taskCode"
+    [statusCode]="statusCode"
+    [currentAssigneeId]="currentAssigneeId"
+    [currentAssigneeName]="currentAssigneeName"></app-create-payment-book>
+</ng-template>

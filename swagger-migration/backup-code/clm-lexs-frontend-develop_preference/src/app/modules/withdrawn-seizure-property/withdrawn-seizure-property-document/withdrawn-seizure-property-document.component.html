@@ -1,0 +1,44 @@
+<div class="content-container mt-0 mb-0">
+  <ng-container *ngIf="returnReason; else step2Banner">
+    <app-message-banner [type]="'black-info'" [message]="messageReturnBaner + returnReason"></app-message-banner>
+  </ng-container>
+  <ng-template #step2Banner>
+    <app-message-banner [type]="'black-info'" [message]="messageBanner1"></app-message-banner>
+  </ng-template>
+</div>
+
+<div class="content-container mt-4 mb-4">
+  <app-message-banner [type]="'info'" [message]="messageBanner2"></app-message-banner>
+</div>
+
+<div class="content-container mt-4">
+  <app-message-banner
+    [type]="'warn-normal'"
+    actionButtonIcon="icon-Arrow-Download"
+    actionButtonClass="icon-black icon-small-xm w-400"
+    [actionButton]="downloadBtn"
+    [actionButtonBorder]="false"
+    (actionButtonHandler)="downLoadForm()">
+    <span [innerHTML]="messageBannerDownload"></span>
+  </app-message-banner>
+</div>
+
+<ng-container *ngIf="propertyDataSources.length > 0">
+  <ng-container *ngFor="let group of propertyDataSources; let i = index">
+    <app-withdrawn-seizure-property-asset-list
+      [title]="group.groupName"
+      [collateralColumns]="collateralColumns"
+      [assetColumns]="assetColumns"
+      [lgPersonColumn]="lgPersonColumn"
+      [collaterals]="group.collaterals || []"
+      [asset]="group.asset || []"
+      [contactPersons]="group.contactPersons || []"
+      [config]="tableConfig"
+      (onDownLoadForm)="downLoadForm()"
+      [formGroup]="getControls(i)"
+      [formGroupAsset]="getControlsAsset(i)"
+      [uploadMultiInfo]="uploadMultiInfo"
+      [consentDocuments]="group.consentDocuments || []"
+      (onUploadFileEvent)="uploadFileEvent($event, group)"></app-withdrawn-seizure-property-asset-list>
+  </ng-container>
+</ng-container>

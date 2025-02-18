@@ -1,0 +1,396 @@
+<app-action-bar
+  [hasBackButton]="actionBar.hasBackButton"
+  [disabledBackButton]="actionBar.disabledBackButton"
+  [hasCancelButton]="actionBar.hasCancelButton"
+  [disabledCancelButton]="actionBar.disabledCancelButton"
+  [cancelButtonText]="actionBar.cancelButtonText"
+  [hasPrimaryButton]="actionBar.hasPrimaryButton"
+  [primaryButtonText]="actionBar.primaryButtonText"
+  [primaryButtonIcon]="actionBar.primaryButtonIcon"
+  [hasEditButton]="actionBar.hasEditButton"
+  [editButtonText]="actionBar.editButtonText"
+  [hasDeleteButton]="actionBar.hasDeleteButton"
+  [deleteButtonText]="actionBar.deleteButtonText"
+  [deleteButtonIcon]="actionBar.deleteButtonIcon"
+  [deleteButtonPositive]="actionBar.deleteButtonPositive"
+  (editButtonHandler)="edit()"
+  (backButtonHandler)="back()"
+  (primaryButtonHandler)="save()"
+  (deleteButtonHandler)="deleteBtn()"
+  (cancelButtonHandler)="cancel()"
+  [showNavBarInformation]="actionBar.showNavBarInformation">
+  <ng-container navBarInformationTemplate>
+    <mat-icon *ngIf="mode === MODE.ADD" svgIcon="icon-user-add" class="icon icon-xmedium"></mat-icon>
+    <span *ngIf="mode === MODE.ADD" class="ml-05em"> {{ 'USER.ADD_USER' | translate }}</span>
+    <mat-icon *ngIf="mode === MODE.EDIT" svgIcon="icon-Edit" class="icon icon-xmedium"></mat-icon>
+    <span *ngIf="mode === MODE.EDIT" class="ml-05em"> {{ 'USER.EDIT_USER' | translate }}</span>
+    <mat-icon *ngIf="mode === MODE.VIEW" svgIcon="icon-User" class="icon icon-xmedium"></mat-icon>
+    <span *ngIf="mode === MODE.VIEW" class="ml-05em"> {{ 'USER.DETAIL_USER' | translate }}</span>
+  </ng-container>
+</app-action-bar>
+
+<div class="content-below-action-bar-area">
+  <div class="content-container">
+    <div class="inner-container-padding">
+      <h5>{{ 'USER.NEW_USER' | translate }}</h5>
+      <hr class="mt-30 mb-30" />
+      <div class="pb-20" fxLayoutGap="20" fxFlexFill *ngIf="mode === MODE.ADD">
+        <div fxFlex="15" fxLayoutAlign="top">
+          <h5>{{ 'USER.USER_INFO' | translate }}</h5>
+        </div>
+        <div fxFlex="35" class="content-form">
+          <mat-radio-group [(ngModel)]="userType" (change)="switch($event)">
+            <mat-radio-button color="accent" value="PERSON">
+              {{ 'USER.RADIO_BTN_PERSON' | translate }}
+            </mat-radio-button>
+            &nbsp; &nbsp;
+            <mat-radio-button color="accent" value="BULK"> {{ 'USER.RADIO_BTN_BULK' | translate }} </mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </div>
+      <form [formGroup]="dataForm">
+        <ng-container *ngIf="userType === 'PERSON'">
+          <div class="pb-20" fxLayoutGap="20" fxFlexFill>
+            <div fxFlex="15" fxLayoutAlign="top">
+              <h5 *ngIf="mode === MODE.EDIT || mode === MODE.VIEW">{{ 'USER.USER_INFO' | translate }}</h5>
+            </div>
+            <div fxFlex="35" class="content-form">
+              <spig-search-combo-box
+                *ngIf="mode === MODE.ADD"
+                [config]="dropDownUserConfig"
+                [options]="users"
+                formControlName="userInput"
+                [resultControl]="getControl('userId')"
+                (onClick)="onSearch($event)"
+                (selectedOption)="onSelectPhoneBookUser($event)">
+              </spig-search-combo-box>
+              <spig-error-msg [control]="getControl('userId')" [customErrorMsg]="'USER.ERROR_MSG_USER_ID_INVALID'">
+              </spig-error-msg>
+              <div class="header black-100 pb-10" *ngIf="mode === MODE.VIEW || mode === MODE.EDIT">
+                {{ 'USER.HEADER_COLUMN_USER_ID' | translate }}
+              </div>
+              <div class="detail pb-30" *ngIf="mode === MODE.VIEW || mode === MODE.EDIT">
+                {{ getControl('userId')?.value || '-' }}
+              </div>
+            </div>
+          </div>
+          <div class="pb-40" fxLayoutGap="20" fxFlexFill>
+            <div fxFlex="15"></div>
+            <div fxFlex="35" class="content-form">
+              <div class="header black-100 pb-10">{{ 'COMMON.LABEL_FULL_NAME' | translate }}</div>
+              <div class="detail pb-30">{{ getControl('fullName')?.value || '-' }}</div>
+              <div class="header black-100 pb-10">{{ 'USER.TEAM_FIELD' | translate }}</div>
+              <div class="detail pb-30">{{ getControl('originalOrganizationName')?.value || '-' }}</div>
+              <mat-form-field
+                class="input-full-field"
+                *ngIf="mode !== MODE.VIEW"
+                [class.border-black-40]="getControl('mobileNumber')?.value">
+                <mat-label class="required">{{ 'USER.HEADER_COLUMN_PHONE' | translate }}</mat-label>
+                <input
+                  matInput
+                  type="text"
+                  appNumberOnly
+                  maxlength="20"
+                  class="input-lg"
+                  formControlName="mobileNumber" />
+              </mat-form-field>
+              <spig-error-msg [control]="getControl('mobileNumber')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+              </spig-error-msg>
+              <span *ngIf="mode === MODE.VIEW">
+                <div class="header black-100 pb-10">{{ 'USER.HEADER_COLUMN_PHONE' | translate }}</div>
+                <div class="detail pb-30">{{ getControl('mobileNumber')?.value || '-' }}</div>
+              </span>
+            </div>
+            <div fxFlex="35" class="content-form">
+              <div class="header black-100 pb-10">{{ 'USER.EMAIL' | translate }}</div>
+              <div class="detail pb-30">{{ getControl('email')?.value || '-' }}</div>
+              <div class="header black-100 pb-10">{{ 'USER.POSITION' | translate }}</div>
+              <div class="detail pb-30">{{ getControl('position')?.value || '-' }}</div>
+              <ng-container *ngIf="getControl('roleCode')?.value === 'KLAW_USER'">
+                <mat-form-field
+                  class="input-full-field"
+                  *ngIf="mode !== MODE.VIEW"
+                  [class.border-black-40]="getControl('lawyerCode')?.value">
+                  <mat-label class="required">{{ 'USER.HEADER_COLUMN_LAWYER' | translate }}</mat-label>
+                  <input matInput type="text" maxlength="13" class="input-lg" formControlName="lawyerCode" />
+                </mat-form-field>
+                <spig-error-msg [control]="getControl('lawyerCode')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+                </spig-error-msg>
+                <span *ngIf="mode === MODE.VIEW">
+                  <div class="header black-100 pb-10">{{ 'USER.HEADER_COLUMN_LAWYER' | translate }}</div>
+                  <div class="detail pb-30">{{ getControl('lawyerCode')?.value || '-' }}</div>
+                </span>
+              </ng-container>
+            </div>
+          </div>
+          <div class="pb-20" fxLayoutGap="20" fxFlexFill>
+            <div fxFlex="15" fxLayoutAlign="top">
+              <h5>{{ 'USER.LEAD_INFO' | translate }}</h5>
+            </div>
+            <div fxFlex="35" class="content-form">
+              <div class="header black-100 pb-10">
+                {{ 'USER.HEADER_COLUMN_SUPER_USER_ID' | translate }}
+              </div>
+              <div class="detail pb-30">
+                {{ getControl('supervisorId')?.value || '-' }}
+              </div>
+            </div>
+            <div fxFlex="35" class="content-form">
+              <div class="header black-100 pb-10">{{ 'COMMON.LABEL_FULL_NAME' | translate }}</div>
+              <div class="detail pb-30">{{ getControl('supervisorName')?.value || '-' }}</div>
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="userType === 'BULK'">
+          <div class="pb-20" fxLayoutGap="20" fxFlexFill>
+            <div fxFlex="15"></div>
+            <div fxFlex="35" class="content-form">
+              <spig-dropdown
+                [required]="true"
+                classInput="input-normal"
+                formControlName="orgCode"
+                (selectedOption)="onSelectOrg($event)"
+                [config]="dropDownOgConfig"
+                [options]="listKTB">
+              </spig-dropdown>
+              <spig-error-msg [control]="getControl('orgCode')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+              </spig-error-msg>
+            </div>
+          </div>
+          <div class="pb-20" fxLayoutGap="20" fxFlexFill *ngIf="userType === 'BULK' && getControl('orgCode').value">
+            <section class="data-table-content">
+              <div class="table-scroll">
+                <ng-container formArrayName="dataTable">
+                  <table mat-table [dataSource]="tableDataSource">
+                    <ng-container matColumnDef="select">
+                      <th mat-header-cell *matHeaderCellDef>
+                        <mat-checkbox
+                          [checked]="selection.hasValue() && isAllSelected()"
+                          (change)="selectAllMultiple($event)">
+                        </mat-checkbox>
+                      </th>
+                      <td mat-cell *matCellDef="let element; let index = index" class="fil-blue">
+                        <mat-checkbox
+                          color="primary"
+                          (change)="selectMultipleFiles(element, index)"
+                          [id]="index"
+                          [disabled]="element.disabled"
+                          [checked]="selection.isSelected(element)">
+                        </mat-checkbox>
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="fullName">
+                      <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_FULL_NAME' | translate }}</th>
+                      <td mat-cell *matCellDef="let element" [formGroup]="element">
+                        {{ element.get('fullName')?.value || '-' }}
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="email">
+                      <th mat-header-cell *matHeaderCellDef>{{ 'USER.HEADER_COLUMN_EMAIL' | translate }}</th>
+                      <td mat-cell *matCellDef="let element" [formGroup]="element">
+                        {{ element.get('email')?.value || '-' }}
+                      </td>
+                    </ng-container>
+                    <ng-container matColumnDef="team">
+                      <th mat-header-cell *matHeaderCellDef>{{ 'USER.TEAM_FIELD' | translate }}</th>
+                      <td mat-cell *matCellDef="let element" [formGroup]="element">
+                        {{ element.get('team')?.value || '-' }}
+                      </td>
+                    </ng-container>
+                    <ng-container matColumnDef="supervisorId">
+                      <th mat-header-cell *matHeaderCellDef>{{ 'USER.HEADER_COLUMN_SUPER_USER_ID' | translate }}</th>
+                      <td mat-cell *matCellDef="let element" [formGroup]="element">
+                        {{ element.get('supervisorId')?.value || '-' }}
+                      </td>
+                    </ng-container>
+                    <ng-container matColumnDef="supervisorName">
+                      <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_FULL_NAME' | translate }}</th>
+                      <td mat-cell *matCellDef="let element" [formGroup]="element">
+                        {{ element.get('supervisorName')?.value || '-' }}
+                      </td>
+                    </ng-container>
+                    <ng-container matColumnDef="position">
+                      <th mat-header-cell *matHeaderCellDef>{{ 'USER.LABEL_POSITION' | translate }}</th>
+                      <td mat-cell *matCellDef="let element" [formGroup]="element">
+                        {{ element.get('position')?.value || '-' }}
+                      </td>
+                    </ng-container>
+                    <ng-container matColumnDef="mobileNumber">
+                      <th mat-header-cell *matHeaderCellDef>{{ 'USER.HEADER_COLUMN_PHONE' | translate }}</th>
+                      <td mat-cell *matCellDef="let element" [formGroup]="element">
+                        <ng-container *ngIf="selection.isSelected(element)">
+                          <mat-form-field class="input-full-field">
+                            <mat-label>{{ 'USER.HEADER_COLUMN_PHONE' | translate }}</mat-label>
+                            <input matInput type="text" appNumberOnly maxlength="20" formControlName="mobileNumber" />
+                          </mat-form-field>
+                          <spig-error-msg [control]="element" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+                          </spig-error-msg>
+                        </ng-container>
+                      </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+                  </table>
+                  <ng-container *ngIf="dataTable && dataTable.length === 0" [ngTemplateOutlet]="dataNotFound">
+                  </ng-container>
+                </ng-container>
+              </div>
+            </section>
+          </div>
+          <span
+            class="error pt-10 pb-10"
+            *ngIf="
+              ((selection.selected?.length === 0 && userType === 'BULK' && getControl('orgCode')?.value) ||
+                dataTable.invalid) &&
+              dataTable.touched
+            ">
+            {{ 'COMMON.ERROR_MSG_TABLE_REQUIRED' | translate }}
+          </span>
+        </ng-container>
+
+        <ng-container *ngIf="(userType === 'BULK' && getControl('orgCode').value) || userType === 'PERSON'">
+          <div class="pb-20 pt-20" fxLayoutGap="20" fxFlexFill>
+            <div fxFlex="15">
+              <h5>{{ 'USER.DUTY_PERMISSION_VIEW' | translate }}</h5>
+            </div>
+            <div fxFlex="35" class="content-form">
+              <spig-dropdown
+                *ngIf="mode !== MODE.VIEW && role.length > 1"
+                [required]="true"
+                classInput="input-normal"
+                formControlName="roleCode"
+                (selectedOption)="onSelectRole($event)"
+                [config]="dropDownRoleConfig"
+                [options]="role">
+              </spig-dropdown>
+              <spig-error-msg [control]="getControl('roleCode')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+              </spig-error-msg>
+              <span *ngIf="mode === MODE.VIEW || (mode !== MODE.VIEW && role.length <= 1)">
+                <div class="header black-100 pb-10">{{ 'USER.HEADER_COLUMN_LEXS_ROLE' | translate }}</div>
+                <div class="detail pb-30">{{ getControl('roleName')?.value || '-' }}</div>
+              </span>
+            </div>
+          </div>
+          <div class="pb-20" fxLayoutGap="20" fxFlexFill>
+            <div fxFlex="15"></div>
+            <div fxFlex="35" class="content-form">
+              <spig-dropdown
+                *ngIf="mode !== MODE.VIEW"
+                classInput="input-normal"
+                [required]="true"
+                formControlName="subRoleCode"
+                [config]="dropDownSubRoleConfig"
+                [options]="subRole"
+                (selectedOption)="selectSubRole($event)">
+              </spig-dropdown>
+              <spig-error-msg [control]="getControl('subRoleCode')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+              </spig-error-msg>
+              <span *ngIf="mode === MODE.VIEW">
+                <div class="header black-100 pb-10">{{ 'USER.HEADER_COLUMN_LEXS_SUB_ROLE' | translate }}</div>
+                <div class="detail pb-30">{{ getControl('subRoleName')?.value || '-' }}</div>
+              </span>
+            </div>
+            <div fxFlex="35" class="content-form">
+              <spig-dropdown
+                *ngIf="mode !== MODE.VIEW"
+                classInput="input-normal"
+                [required]="true"
+                (selectedOption)="selectDataScope($event)"
+                formControlName="dataScopeCode"
+                [config]="dropDownDataScopeConfig"
+                [options]="DataScopeList">
+              </spig-dropdown>
+              <spig-error-msg [control]="getControl('dataScopeCode')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+              </spig-error-msg>
+              <span *ngIf="mode === MODE.VIEW">
+                <div class="header black-100 pb-10">{{ 'USER.PERMISSION_INFO' | translate }}</div>
+                <div class="detail pb-30">{{ getControl('dataScopeName')?.value || '-' }}</div>
+              </span>
+            </div>
+          </div>
+          <div class="pb-20" *ngIf="mode !== MODE.VIEW" fxLayoutGap="20" fxFlexFill>
+            <div fxFlex="15"></div>
+            <div fxFlex="35">
+              <div class="sub-header">
+                {{ 'USER.SUB_HEADER_1' | translate }}
+              </div>
+            </div>
+            <div fxFlex="35">
+              <div class="sub-header">
+                {{ 'USER.SUB_HEADER_2' | translate }}
+              </div>
+            </div>
+          </div>
+          <div class="pb-40" fxLayoutGap="20" fxFlexFill>
+            <div fxFlex="15"></div>
+            <div fxFlex="35" class="content-form">
+              <spig-dropdown
+                *ngIf="mode !== MODE.VIEW"
+                classInput="input-normal"
+                [required]="true"
+                formControlName="levelCode"
+                [config]="dropDownLevelConfig"
+                [options]="level"
+                (selectedOption)="selectLevel($event)">
+              </spig-dropdown>
+              <spig-error-msg [control]="getControl('levelCode')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+              </spig-error-msg>
+
+              <span *ngIf="mode === MODE.VIEW">
+                <div class="header black-100 pb-10">
+                  {{ 'USER.LEVEL' | translate }}
+                </div>
+                <div class="detail pb-30">
+                  {{ getControl('levelName')?.value || '-' }}
+                </div>
+              </span>
+            </div>
+            <div fxFlex="35" class="content-form">
+              <spig-dropdown
+                *ngIf="mode !== MODE.VIEW"
+                classInput="input-normal"
+                [required]="true"
+                formControlName="detailCode"
+                [config]="dropDownDetailConfig"
+                [options]="detail"
+                (selectedOption)="selectDetail($event)">
+              </spig-dropdown>
+              <spig-error-msg [control]="getControl('detailCode')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+              </spig-error-msg>
+              <span *ngIf="mode === MODE.VIEW">
+                <div class="header black-100 pb-10">
+                  {{ 'USER.SPECIFY' | translate }}
+                </div>
+                <div class="detail pb-30">
+                  {{ getControl('detailName')?.value || '-' }}
+                </div>
+              </span>
+            </div>
+          </div>
+          <div class="pb-20" fxLayoutGap="20" fxFlexFill>
+            <div fxFlex="15"></div>
+            <div fxFlex="35" class="content-form">
+              <button
+                id="btn-detail"
+                type="button"
+                (click)="openPopup()"
+                class="long-button btn-detail"
+                [disabled]="!getControl('roleCode')?.value || !getControl('subRoleCode')?.value"
+                mat-stroked-button
+                color="primary">
+                <mat-icon svgIcon="icon-Expand" class="icon"></mat-icon>
+                {{ 'USER.USER_PERMISSION_DETAIL' | translate }}
+              </button>
+            </div>
+          </div>
+        </ng-container>
+      </form>
+    </div>
+  </div>
+</div>
+<ng-template #dataNotFound>
+  <app-message-empty [message]="'DOC_PREP.NOT_FOUND_DOC'"></app-message-empty>
+</ng-template>

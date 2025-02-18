@@ -1,0 +1,42 @@
+<form [formGroup]="formgroup">
+  <div class="content" fxLayoutGap="10">
+    <div fxFlex="45" class="content-form">
+      <div class="header black-100 pl-0 pb-10">{{ 'NOTI.DEFENDANT_NAME' | translate }}</div>
+      <div class="detail pb-30">{{ litigationNoticeDto.personName ?? '-' }}</div>
+    </div>
+    <div fxFlex="50" class="content-form">
+      <div class="header black-100 pl-0 pb-10">{{ 'NOTI.NOTI_DOCNUMBER' | translate }}</div>
+      <div class="detail pb-30">{{ litigationNoticeDto.noticeNo ?? '-' }}</div>
+    </div>
+  </div>
+  <div class="content">
+    <app-upload-file-content
+      [title]="'NOTI.NOTI_TEXT_UPLOAD'"
+      [isRequired]="true"
+      [isSubmited]="isSubmited"
+      [uploadInfo]="uploadInfo"
+      (uploadSession)="setuploadSessionId($event)">
+    </app-upload-file-content>
+    <div fxLayoutAlign="top" class="content-form">
+      <p class="header black-100 pl-0 pb-10">&nbsp;&nbsp; {{ 'NOTI.NOTI_SUPPORT_UPLOAD' | translate }}</p>
+    </div>
+  </div>
+  <div class="content" fxLayoutGap="10">
+    <div fxFlex="30" fxLayoutAlign="end"></div>
+    <div fxlayout="column" fxFlex="70">
+      <mat-form-field class="input-full-field">
+        <mat-label>{{ 'NOTI.NOTI_DAY' | translate }}</mat-label>
+        <input matInput type="text" appNumberOnly="integer" maxlength="4" formControlName="NOTI_DAY" />
+      </mat-form-field>
+      <spig-error-msg [control]="getControl('NOTI_DAY')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+      </spig-error-msg>
+    </div>
+  </div>
+  <div class="content" fxLayoutGap="10">
+    <div fxFlex="50" fxLayoutAlign="end"></div>
+    <div fxFlex="50" fxlayout="column" class="content-form">
+      <div class="header black-100 pl-0 pb-10 text-right">{{ 'NOTI.NOTI_DATE' | translate }}</div>
+      <div class="detail pb-30 text-right">{{ (litigationNoticeDto.noticeDate | buddhistEra: 'DD/MM/yyyy') || '-' }}</div>
+    </div>
+  </div>
+</form>

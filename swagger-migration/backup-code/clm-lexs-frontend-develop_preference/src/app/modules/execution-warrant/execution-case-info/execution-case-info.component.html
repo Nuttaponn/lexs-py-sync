@@ -1,0 +1,8 @@
+<app-case-details [data]="litigationCaseShortDetail" [hidelawyer]="true"></app-case-details>
+<app-decision-detail [data]="courtResult" [litigationCaseId]="litigationCaseId"></app-decision-detail>
+<app-responsible-lawyer
+  [data]="litigationCaseShortDetail"
+  [dataForm]="dataLawyerForm"
+  [mode]="
+    mode === 'EDIT' && hasSubmitPermission && taskCode === 'R2E04-01-2B' ? 'EDIT' : 'VIEW'
+  "></app-responsible-lawyer>

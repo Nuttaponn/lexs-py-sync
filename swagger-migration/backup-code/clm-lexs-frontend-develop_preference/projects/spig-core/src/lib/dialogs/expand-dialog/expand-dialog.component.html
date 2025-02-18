@@ -1,0 +1,10 @@
+<div *ngIf="context.message" id="dailog-message" class="message">
+    {{  context.message }} 
+    <a href="#" *ngIf="!showDetail" (click)="expand($event)">{{ 'DIALOG.EXPAND_MORE_INFO_TEXT' | translate }}</a>
+</div>
+<div *ngIf="showDetail && context.descriptions" class="description">
+    <span>{{ !!context.detailTitle ? context.detailTitle : 'DIALOG.EXPAND_DEFAULT_DETAIL_TITLE' | translate }}</span>
+    <ol id="dailog-descriptions">
+        <li *ngFor="let item of context.descriptions">{{ item }}</li>
+    </ol>
+</div>

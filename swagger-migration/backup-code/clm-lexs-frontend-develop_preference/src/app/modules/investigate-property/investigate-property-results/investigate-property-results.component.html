@@ -1,0 +1,28 @@
+<mat-card appearance="outlined" class="content-container pt-24 pb-24 pl-24 pr-24">
+  <mat-card-title>
+    <h5 class="mb-20">
+      {{ 'LAWSUIT.INVESTIGATES_PROPERTY.INVESTIGATE_PROPERTY_RESULTS_LIST' | translate }}
+    </h5>
+  </mat-card-title>
+  <mat-tab-group
+    class="tab-group-content"
+    mat-align-tabs="start"
+    (selectedTabChange)="onTabChanged($event)"
+    [selectedIndex]="tabIndex">
+    <mat-tab label="0">
+      <ng-template mat-tab-label>{{ 'LAWSUIT.INVESTIGATES_PROPERTY.DEPARTMENT_OF_LANDS' | translate }}</ng-template>
+      <app-investigate-property-results-table
+        [tabIndex]="0"
+        [inspectionAssets]="assetList || []"
+        [tabIndexChange]="currentTabIndex"></app-investigate-property-results-table>
+    </mat-tab>
+    <mat-tab label="1">
+      <ng-template mat-tab-label>{{ 'LAWSUIT.INVESTIGATES_PROPERTY.DEPARTMENT_OF_TRANSPORT' | translate }}</ng-template>
+      <app-investigate-property-results-table
+        [tabIndex]="1"
+        [inspectionAssets]="venhicleList || []"
+        [mode]="'VENHICLE'"
+        [tabIndexChange]="currentTabIndex"></app-investigate-property-results-table>
+    </mat-tab>
+  </mat-tab-group>
+</mat-card>

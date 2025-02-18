@@ -1,0 +1,289 @@
+<div *ngFor="let groupByCase of groupByCaseList; let groupIndex = index" class="card-container content-container">
+  <mat-accordion class="accordion-headers-align">
+    <mat-card appearance="outlined" class="bg-blue-00 mat-elevation-z0">
+      <div fxLayout="row" fxLayoutAlign="space-between center" class="title-content bg-blue-00">
+        <div fxLayout="row">
+          <mat-icon svgIcon="icon-Stack" class="icon icon-medium"></mat-icon>
+          <div class="title-text">
+            <!-- คดีความ -->
+            <h5>{{ 'LAWSUIT.SUIT.LIGITATION_CASE_TITLE' | translate }} {{ groupByCase?.caseGroupNo }}</h5>
+          </div>
+        </div>
+        <div fxLayout="row">
+          <div class="description" (click)="isOpenedList[groupIndex] = !isOpenedList[groupIndex]">
+            <mat-icon
+              [svgIcon]="isOpenedList[groupIndex] ? 'icon-Slide-Hide' : 'icon-Expand'"
+              class="icon icon-hide-show fill-blue">
+            </mat-icon
+            >{{
+              isOpenedList[groupIndex]
+                ? ('COMMON.ICON_EXPANSION_HIDE' | translate)
+                : ('COMMON.ICON_EXPANSION_SHOW' | translate)
+            }}
+          </div>
+        </div>
+      </div>
+    </mat-card>
+  </mat-accordion>
+
+  <mat-expansion-panel [expanded]="isOpenedList[groupIndex]" hideToggle>
+    <ng-container *ngIf="groupByCase.cases?.length ?? -1 > 0">
+      <div class="mat-elevation-z0 no-horizontal-padding">
+        <div fxLayout="row" class="title-content no-horizontal-padding" fxLayoutGap="5px">
+          <div fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="5px" class="no-padding">
+            <h6 class="text-gray-900 opacity-70-percent">
+              <!-- สำนักงานทนาย -->
+              {{ 'COMMON.LABEL_OFFICE_LAWYER' | translate }}:
+            </h6>
+            <h5>{{ (groupByCase.lawyerOfficeCode ?? '') + ' - ' + (groupByCase.lawyerOfficeName ?? '') }}</h5>
+            <span class="divider-vertical"></span>
+          </div>
+          <div fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="5px">
+            <h6 class="text-gray-900 opacity-70-percent">
+              <!-- ทนายความปัจจุบัน -->
+              {{ 'LAWSUIT.SUIT.LAWYER' | translate }}:
+            </h6>
+            <h5>{{ (groupByCase.lawyerId ?? '') + ' - ' + (groupByCase.lawyerName ?? '') }}</h5>
+          </div>
+        </div>
+      </div>
+
+      <mat-divider class="no-margin"></mat-divider>
+
+      <ng-container *ngFor="let courtCase of groupByCase?.courtCaseList; let mainCaseIndex = index">
+        <div class="mat-elevation-z0 no-horizontal-padding">
+          <div fxLayout="row" class="title-content no-horizontal-padding" fxLayoutGap="5px">
+            <div fxLayout="row" fxLayoutAlign=" center">
+              <mat-icon svgIcon="icon-Window" class="icon icon-medium"></mat-icon>
+              <div class="title-text">
+                <h6>
+                  {{
+                    'LAWSUIT.SUIT.SUIT_EFILING.TITILE.' + courtCase.appealSide + '_' + courtCase.courtLevel | translate
+                  }}
+                </h6>
+              </div>
+            </div>
+            <div fxFlex></div>
+            <button
+              *ngIf="courtCase.isShowAddEfilingBtn"
+              type="button"
+              color="primary"
+              mat-flat-button
+              class="overflow-ellipsis medium-aw-button"
+              (click)="onClickEfiling(courtCase)">
+              <mat-icon svgIcon="icon-save-primary" class="icon-xmedium"></mat-icon>
+              <ng-container>
+                {{
+                  'LAWSUIT.SUIT.SUIT_EFILING.ADD_BTN.' + courtCase.appealSide + '_' + courtCase.courtLevel | translate
+                }}
+              </ng-container>
+            </button>
+          </div>
+        </div>
+        <!-- isEditable: editCourtLevel === courtCase.courtLevel && groupByCase.suitLitigationCaseId === courtCase?.case?.id, -->
+        <ng-container
+          [ngTemplateOutlet]="suitTable"
+          [ngTemplateOutletContext]="{
+            list: courtCase?.case?.litigationCaseSubCase ?? [],
+            mainCase: courtCase?.case,
+            groupIndex,
+            mainCaseIndex,
+            isEditable: !!courtCase?.isShowColumnBtn && !isViewMode,
+            courtCase: courtCase,
+          }">
+        </ng-container>
+        <ng-container
+          *ngIf="(courtCase?.case?.litigationCaseSubCase ?? []).length <= 0"
+          [ngTemplateOutlet]="searchEmpty"
+          [ngTemplateOutletContext]="{
+            emptyText: 'LAWSUIT.SUIT.SUIT_EFILING.TABLE_EMPTY.' + courtCase.appealSide + '_' + courtCase.courtLevel,
+          }">
+        </ng-container>
+      </ng-container>
+
+      <!-- ตารางฟ้อง -->
+      <app-suit-efiling-civil
+        [civilCases]="groupByCase.civilCases || []"
+        [groupIndex]="groupIndex"
+        (checkBannerUploadCourtFeesReceipt)="passEmitCheckBannerUploadCourtFeesReceipt()"
+        (refreshTaskDetailWithoutRefresh)="passEmitRefreshTaskDetail($event)"
+        (triggerSetNewCaseGroups)="triggerSetNewCaseGroups()"></app-suit-efiling-civil>
+    </ng-container>
+  </mat-expansion-panel>
+</div>
+
+<ng-template
+  #suitTable
+  let-dataSource="list"
+  let-groupIndex="groupIndex"
+  let-mainCaseIndex="mainCaseIndex"
+  let-mainCase="mainCase"
+  let-courtCase="courtCase"
+  let-isEditable="isEditable">
+  <div class="table-scroll" table-scroll>
+    <table mat-table [dataSource]="dataSource">
+      <ng-container matColumnDef="no">
+        <th class="text-center" mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_NO' | translate }}</th>
+        <td class="text-center" mat-cell *matCellDef="let element; let i = index">
+          {{ i + 1 }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="referenceNo">
+        <th mat-header-cell *matHeaderCellDef>{{ 'LAWSUIT.SUIT.HEAD_REFERENCE_NO' | translate }}</th>
+        <td mat-cell *matCellDef="let element; let i = index">
+          <ng-container>
+            <span
+              *ngIf="mode === 'VIEW' || element.statusSubCase === 'FINISH'; else noLinkReferenceNoTemplate"
+              class="link"
+              (click)="onClickId(element, groupIndex, mainCaseIndex, i)">
+              {{ mainCase.referenceNo || '-' }}
+            </span>
+          </ng-container>
+          <ng-template #noLinkReferenceNoTemplate>
+            <span>
+              {{ mainCase.referenceNo || '-' }}
+            </span>
+          </ng-template>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="caseDate">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'COMMON.LABEL_CASE_DATE' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ (element.caseDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="blackCaseNo">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'COMMON.LABEL_BLACK_CASE_NO' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.civilBlackCaseNo || mainCase.civilCourtBlackCaseNo || mainCase.blackCaseNo || '-' }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="capitalAmount">
+        <th mat-header-cell *matHeaderCellDef class="text-right">
+          {{ 'LAWSUIT.SUIT.HEAD_CAPITAL_AMOUNT' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" class="text-right">
+          {{ (element.capitalAmount | numberDecimal) ?? '-' }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="court">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'COMMON.LABEL_COURT' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ getCourtName(element.courtCode ?? '') }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="sla">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'LAWSUIT.SUIT.HEAD_SLA' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ (element.sla || mainCase.sla | buddhistEra: 'DD/MM/yyyy') || '-' }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="paymentAuditingStatus" stickyEnd>
+        <th class="text-center" columnElevationRight mat-header-cell *matHeaderCellDef>
+          <!-- สถานะชำระค่าธรรมเนียมศาล -->
+          {{ 'LAWSUIT.SUIT.HEAD_PAYMENT_AUDITING_STATUS' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" columnElevationRight>
+          <div fxLayout="row" fxLayoutAlign="center center">
+            <div
+              *ngIf="!!element.courtFeeStatus; else noCourtFeeStatusTemplate"
+              class="status-label"
+              [ngClass]="element.courtFeeStatus === COURT_FEE_STATUS.PAY_SUCCESS ? 'status-success' : 'status-pending'">
+              <mat-icon
+                *ngIf="mainCase.courtFeeStatus === COURT_FEE_STATUS.PAY_SUCCESS"
+                svgIcon="icon-Mark"
+                class="icon icon-small">
+              </mat-icon>
+              {{ 'LAWSUIT.MAPPING.COURT_FEE_STATUS.' + element.courtFeeStatus | translate }}
+            </div>
+            <ng-template #noCourtFeeStatusTemplate>
+              <span> - </span>
+            </ng-template>
+          </div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="button" stickyEnd>
+        <th class="text-center" mat-header-cell *matHeaderCellDef>
+          <!-- คำสั่ง -->
+          {{ 'COMMON.LABEL_COMMAND' | translate }}
+        </th>
+        <td class="text-center" mat-cell *matCellDef="let element; let i = index">
+          <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="32px">
+            <!-- condition ของเก่า : *ngIf="element.buttonAction === buttonActionEnum.PendingPayCourtFee && element.courtFeeStatus === COURT_FEE_STATUS.NEW" -->
+            <!-- *ngIf="!!taskCodeFromTaskDetail && ['RECORD_OF_APPEAL', 'RECORD_OF_SUPREME_COURT'].includes(taskCodeFromTaskDetail)" -->
+            <!-- *ngIf="!element.buttonAction" -->
+            <span
+              *ngIf="
+                isShowLinkEdit &&
+                (element.statusSubCase || 'FINISH') !== 'FINISH' &&
+                isEditableSubCase(element, courtCase.courtLevel)
+              "
+              class="link"
+              (click)="processToNavigateEFilingForm(groupIndex, mainCaseIndex, i, element)">
+              <!-- แก้ไข -->
+              {{ 'COMMON.BUTTON_EDIT' | translate }}
+            </span>
+
+            <!-- *ngIf="!isUploadReceiptEnable && element.appealSide !== 'CUSTOMER'" -->
+            <button
+              *ngIf="isShowUploadCourtFeeMockBtn && (element.statusSubCase || 'FINISH') !== 'FINISH'"
+              [disabled]="true"
+              type="button"
+              color="primary"
+              mat-flat-button
+              class="medium-fw-button">
+              <!-- อัปโหลดใบเสร็จรับเงิน -->
+              อัปโหลดใบเสร็จรับเงิน
+            </button>
+            <!-- LEX2-182 อัปโหลดใบเสร็จ -->
+            <!-- *ngIf="!isViewMode && isUploadReceiptEnable" -->
+            <!-- *ngIf="isPrimaryColorBtnUploadCourtFee; else btnIsNotPrimary" -->
+            <ng-container *ngIf="isShowUploadCourtFeeBtn && (element.statusSubCase || 'FINISH') !== 'FINISH'">
+              <ng-container *ngIf="isPrimaryColorUploadCourtFeeBtn; else btnIsNotPrimary">
+                <button
+                  type="button"
+                  color="primary"
+                  mat-flat-button
+                  class="medium-fw-button"
+                  (click)="callUploadReceipt(groupIndex, mainCaseIndex, i, element)">
+                  <!-- อัปโหลดใบเสร็จรับเงิน -->
+                  {{ 'LAWSUIT.SUIT.BTN_UPLOAD_PAYMENT_DOC' | translate }}
+                </button>
+              </ng-container>
+              <ng-template #btnIsNotPrimary>
+                <button
+                  mat-stroked-button
+                  class="medium-fw-button overflow-ellipsis"
+                  (click)="callUploadReceipt(groupIndex, mainCaseIndex, i, element)">
+                  <!-- อัปโหลดใบเสร็จรับเงิน -->
+                  {{ 'LAWSUIT.SUIT.BTN_UPLOAD_PAYMENT_DOC' | translate }}
+                </button>
+              </ng-template>
+            </ng-container>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="isEditable ? displayedColumns : viewDisplayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: isEditable ? displayedColumns : viewDisplayedColumns"></tr>
+    </table>
+  </div>
+</ng-template>
+
+<ng-template #searchEmpty let-emptyText="emptyText">
+  <div>
+    <app-message-empty [message]="emptyText"></app-message-empty>
+  </div>
+</ng-template>

@@ -1,0 +1,1047 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "KTB Backend for Frontend APIs.",
+    "description": "Microservice: configuration",
+    "contact": {
+      "name": "Krungthai Bank Public Company Limited",
+      "url": "https://krungthai.com",
+      "email": ""
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://lexsdev.krungthai/ktb/rest/lexs",
+      "description": "Generated server url"
+    }
+  ],
+  "tags": [
+    {
+      "name": "ConfigurationController",
+      "description": "/v1/configuration"
+    }
+  ],
+  "paths": {
+    "/v1/configuration/response-unit-map-tasks": {
+      "get": {
+        "tags": [
+          "ConfigurationController"
+        ],
+        "operationId": "inquiryResponseUnitMapTasks",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "responseUnitCode",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "taskId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageResponseUnitUserDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "ConfigurationController"
+        ],
+        "operationId": "postResponseUnitMapTasks",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseUnitMapTasksRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseUnitMapTasksResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/configuration/lexs-config": {
+      "get": {
+        "tags": [
+          "ConfigurationController"
+        ],
+        "operationId": "inquiryConfig",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LexsConfigDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "ConfigurationController"
+        ],
+        "operationId": "updateConfig",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LexsConfigRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LexsConfigResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/configuration/sub-role-map": {
+      "get": {
+        "tags": [
+          "ConfigurationController"
+        ],
+        "operationId": "inquirySubRoleMap",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LexsSubRole"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/configuration/role": {
+      "get": {
+        "tags": [
+          "ConfigurationController"
+        ],
+        "operationId": "inquiryRole",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LexsRole"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/configuration/role-permission-template": {
+      "get": {
+        "tags": [
+          "ConfigurationController"
+        ],
+        "operationId": "inquiryRoleTemplate",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RolePermissionTemplateDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/configuration/role-organization-maps": {
+      "get": {
+        "tags": [
+          "ConfigurationController"
+        ],
+        "operationId": "inquiryRoleOrganizationMaps",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InquiryRoleOrganizationMapsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/configuration/role-level-map": {
+      "get": {
+        "tags": [
+          "ConfigurationController"
+        ],
+        "operationId": "inquiryRoleLevelMap",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RoleLevelMap"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/configuration/response-unit-users": {
+      "get": {
+        "tags": [
+          "ConfigurationController"
+        ],
+        "operationId": "inquiryResponsibleUsers",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "responseUnitCode",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageResponseUnitUserDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/configuration/organization-map": {
+      "get": {
+        "tags": [
+          "ConfigurationController"
+        ],
+        "operationId": "inquiryOrganizationMap",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OrganizationMap"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/configuration/expense-config/{expenseTypeCode}": {
+      "get": {
+        "tags": [
+          "ConfigurationController"
+        ],
+        "operationId": "getExpenseTypeCode",
+        "parameters": [
+          {
+            "name": "expenseTypeCode",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExpenseConfigDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ResponseUnitMapTasksRequest": {
+        "required": [
+          "headerFlag",
+          "responseUnitRequest",
+          "taskId"
+        ],
+        "type": "object",
+        "properties": {
+          "headerFlag": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "SUBMIT",
+              "APPROVE",
+              "REJECT",
+              "CANCEL",
+              "DELETE",
+              "UPDATE",
+              "SUBMIT1",
+              "SUBMIT2",
+              "SAVE"
+            ]
+          },
+          "taskId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "responseUnitRequest": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResponseUnitRequest"
+            }
+          }
+        }
+      },
+      "ResponseUnitRequest": {
+        "required": [
+          "effectiveDate",
+          "responseUnitCode",
+          "updateFlag",
+          "userId"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "responseUnitCode": {
+            "type": "string"
+          },
+          "effectiveDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "updateFlag": {
+            "type": "string"
+          }
+        }
+      },
+      "ResponseUnitMapTasksResponse": {
+        "type": "object",
+        "properties": {
+          "headerFlag": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "SUBMIT",
+              "APPROVE",
+              "REJECT",
+              "CANCEL",
+              "DELETE",
+              "UPDATE",
+              "SUBMIT1",
+              "SUBMIT2",
+              "SAVE"
+            ]
+          },
+          "taskId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "responseUnitRequest": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResponseUnitRequest"
+            }
+          }
+        }
+      },
+      "KlawConfigs": {
+        "required": [
+          "code",
+          "name",
+          "userId"
+        ],
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          }
+        }
+      },
+      "LexsConfig": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        }
+      },
+      "LexsConfigRequest": {
+        "required": [
+          "configs",
+          "klawConfigs",
+          "responseUnitRequest"
+        ],
+        "type": "object",
+        "properties": {
+          "configs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LexsConfig"
+            }
+          },
+          "klawConfigs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/KlawConfigs"
+            }
+          },
+          "responseUnitRequest": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResponseUnitRequest"
+            }
+          }
+        }
+      },
+      "LexsConfigResponse": {
+        "type": "object",
+        "properties": {
+          "configs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LexsConfig"
+            }
+          },
+          "klawConfigs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/KlawConfigs"
+            }
+          },
+          "responseUnitResponse": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResponseUnitResponse"
+            }
+          }
+        }
+      },
+      "ResponseUnitResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "responseUnitCode": {
+            "type": "string"
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "effectiveDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "updateFlag": {
+            "type": "string"
+          }
+        }
+      },
+      "LexsSubRole": {
+        "type": "object",
+        "properties": {
+          "roleCode": {
+            "type": "string"
+          },
+          "subRoleCode": {
+            "type": "string"
+          },
+          "subRoleName": {
+            "type": "string"
+          }
+        }
+      },
+      "LexsRole": {
+        "type": "object",
+        "properties": {
+          "roleCode": {
+            "type": "string"
+          },
+          "roleName": {
+            "type": "string"
+          }
+        }
+      },
+      "RolePermissionTemplateDto": {
+        "type": "object",
+        "properties": {
+          "roleCode": {
+            "type": "string"
+          },
+          "subRoleCode": {
+            "type": "string"
+          },
+          "permissionCodeSet": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "InquiryRoleOrganizationMapsDto": {
+        "type": "object",
+        "properties": {
+          "roleCode": {
+            "type": "string"
+          },
+          "roleName": {
+            "type": "string"
+          },
+          "organizationCode": {
+            "type": "string"
+          },
+          "organizationName": {
+            "type": "string"
+          }
+        }
+      },
+      "InquiryRoleOrganizationMapsResponse": {
+        "type": "object",
+        "properties": {
+          "inquiryRoleOrganizationMapsDtos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InquiryRoleOrganizationMapsDto"
+            }
+          }
+        }
+      },
+      "RoleLevelMap": {
+        "type": "object",
+        "properties": {
+          "roleCode": {
+            "type": "string"
+          },
+          "levelCode": {
+            "type": "string"
+          },
+          "levelName": {
+            "type": "string"
+          },
+          "dashboardScope": {
+            "type": "string"
+          },
+          "taskPoolScope": {
+            "type": "string"
+          },
+          "taskUserScope": {
+            "type": "string"
+          },
+          "taskTeamScope": {
+            "type": "string"
+          },
+          "taskOrgScope": {
+            "type": "string"
+          },
+          "litigationUserScope": {
+            "type": "string"
+          },
+          "litigationTeamScope": {
+            "type": "string"
+          },
+          "litigationOrgScope": {
+            "type": "string"
+          },
+          "customerUserScope": {
+            "type": "string"
+          },
+          "customerTeamScope": {
+            "type": "string"
+          },
+          "customerOrgScope": {
+            "type": "string"
+          },
+          "expenseUserScope": {
+            "type": "string"
+          },
+          "expenseTeamScope": {
+            "type": "string"
+          },
+          "expenseOrgScope": {
+            "type": "string"
+          },
+          "expenseFinishedScope": {
+            "type": "string"
+          },
+          "receiveOrgScope": {
+            "type": "string"
+          },
+          "receiveTeamScope": {
+            "type": "string"
+          },
+          "receiveUserScope": {
+            "type": "string"
+          },
+          "receiveFinishedScope": {
+            "type": "string"
+          },
+          "advanceReceiveOrgScope": {
+            "type": "string"
+          },
+          "advanceReceiveFinishedScope": {
+            "type": "string"
+          }
+        }
+      },
+      "PageResponseUnitUserDto": {
+        "type": "object",
+        "properties": {
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResponseUnitUserDto"
+            }
+          },
+          "number": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sort": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SortObject"
+            }
+          },
+          "numberOfElements": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageable": {
+            "$ref": "#/components/schemas/PageableObject"
+          },
+          "first": {
+            "type": "boolean"
+          },
+          "last": {
+            "type": "boolean"
+          },
+          "empty": {
+            "type": "boolean"
+          }
+        }
+      },
+      "PageableObject": {
+        "type": "object",
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "sort": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SortObject"
+            }
+          },
+          "paged": {
+            "type": "boolean"
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "unpaged": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ResponseUnitUserDetailsDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "surName": {
+            "type": "string"
+          },
+          "statusCode": {
+            "type": "string"
+          },
+          "statusName": {
+            "type": "string"
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "effectiveDate": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
+      "ResponseUnitUserDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "surName": {
+            "type": "string"
+          },
+          "responseUnitCode": {
+            "type": "string"
+          },
+          "responseUnitName": {
+            "type": "string"
+          },
+          "teamName": {
+            "type": "string"
+          },
+          "ktbBossUserId": {
+            "type": "string"
+          },
+          "ktbBossName": {
+            "type": "string"
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "effectiveDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "responseUnitUserDetailsDto": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResponseUnitUserDetailsDto"
+            }
+          }
+        }
+      },
+      "SortObject": {
+        "type": "object",
+        "properties": {
+          "direction": {
+            "type": "string"
+          },
+          "nullHandling": {
+            "type": "string"
+          },
+          "ascending": {
+            "type": "boolean"
+          },
+          "property": {
+            "type": "string"
+          },
+          "ignoreCase": {
+            "type": "boolean"
+          }
+        }
+      },
+      "OrganizationMap": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "roleCode": {
+            "type": "string"
+          },
+          "organizationCode": {
+            "type": "string"
+          },
+          "organizationName": {
+            "type": "string"
+          },
+          "groupCode": {
+            "type": "string"
+          },
+          "groupName": {
+            "type": "string"
+          },
+          "factionCode": {
+            "type": "string"
+          },
+          "factionName": {
+            "type": "string"
+          },
+          "teamCode": {
+            "type": "string"
+          },
+          "teamName": {
+            "type": "string"
+          },
+          "authorityCode": {
+            "type": "string"
+          },
+          "authorityName": {
+            "type": "string"
+          }
+        }
+      },
+      "KlawConfigDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          }
+        }
+      },
+      "LexsConfigDto": {
+        "type": "object",
+        "properties": {
+          "configs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LexsConfig"
+            }
+          },
+          "klawConfigs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/KlawConfigDto"
+            }
+          }
+        }
+      },
+      "AddressDto": {
+        "type": "object",
+        "properties": {
+          "addressLine": {
+            "type": "string"
+          },
+          "subdistrictCode": {
+            "type": "string"
+          },
+          "subdistrictName": {
+            "type": "string"
+          },
+          "districtCode": {
+            "type": "string"
+          },
+          "districtName": {
+            "type": "string"
+          },
+          "provinceCode": {
+            "type": "string"
+          },
+          "provinceName": {
+            "type": "string"
+          },
+          "countryCode": {
+            "type": "string"
+          },
+          "postalCode": {
+            "type": "string"
+          }
+        }
+      },
+      "ConfigsDto": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        }
+      },
+      "ExpenseConfigDto": {
+        "type": "object",
+        "properties": {
+          "configs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ConfigsDto"
+            }
+          },
+          "address": {
+            "$ref": "#/components/schemas/AddressDto"
+          }
+        }
+      }
+    }
+  }
+}

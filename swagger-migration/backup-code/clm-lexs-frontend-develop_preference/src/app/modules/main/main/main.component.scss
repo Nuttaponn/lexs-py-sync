@@ -1,0 +1,206 @@
+@import '/src/styles/variables';
+
+/* Side menu */
+spig-menu {
+  spig-menu-item {
+    font-family: KrungthaiFastRegular;
+  }
+}
+
+.example-container {
+  min-height: 1024px;
+}
+
+.mat-sidenav {
+  overflow: hidden;
+  top: 50px !important;
+
+  &.collapse {
+    width: $side-nav-width-collapse;
+  }
+
+  &.expand {
+    width: $side-nav-width-expand;
+  }
+}
+
+.main-content {
+  margin-left: $side-nav-width-collapse !important;
+}
+
+mat-sidenav-content {
+  overflow: hidden !important; // fixed scroll bar issues
+}
+
+.mat-drawer-container {
+  top: 50px !important;
+
+  .mat-drawer:not(.mat-drawer-side) {
+    box-shadow: none !important;
+    border-right: 1px solid #0f0f0f1f;
+  }
+}
+
+.sample-menu {
+  display: flex;
+  align-items: center;
+  padding: 4px 10px;
+  margin: 4px 0;
+  font-size: 16px;
+  font-family: KrungthaiFastBold !important;
+
+  &:first-child {
+    margin-top: 8px;
+  }
+
+  mat-icon.icon-medium svg {
+    width: 24px !important;
+    height: 24px !important;
+  }
+
+  &.selected {
+    background-color: $bg-almost-white;
+    border-left-style: solid;
+    border-left-color: map_get($ktb-palette-precious-blue, 50);
+    color: $krungthai-blue;
+
+    .mat-icon {
+      color: $krungthai-blue;
+    }
+  }
+}
+
+.sample-menu:hover {
+  background-color: $bg-almost-white;
+  border-left-style: solid;
+  border-left-color: map_get($ktb-palette-precious-blue, 50);
+  cursor: pointer;
+
+  .mat-icon {
+    color: $krungthai-blue;
+  }
+}
+
+.sample-menu:active {
+  background-color: $bg-almost-white;
+  border-left-style: solid;
+  border-left-color: map_get($ktb-palette-precious-blue, 50);
+  cursor: pointer;
+}
+
+.sample-menu p {
+  display: inline;
+  margin-left: 20px;
+  margin-block-start: 0;
+  margin-block-end: 0;
+}
+
+.sample-sub-menu {
+  &.selected {
+    color: $krungthai-blue;
+
+    .mat-icon {
+      color: $krungthai-blue;
+    }
+  }
+}
+
+::ng-deep .mat-drawer-backdrop {
+  display: none !important;
+}
+
+.icon-end {
+  position: absolute;
+  right: 0;
+}
+
+.sub-menu-container {
+  cursor: pointer;
+  padding-left: 70px;
+  display: block;
+  position: inherit;
+  padding-top: inherit;
+}
+
+::ng-deep .cdk-overlay-container .menu + * > .cdk-overlay-pane {
+  padding-top: 0;
+  position: absolute !important;
+  top: -50px;
+}
+
+::ng-deep .mat-mdc-menu-panel {
+  margin-left: 64px;
+  border-radius: 8px !important;
+
+  &.deb-menu-item {
+    margin-left: 0px;
+    font-size: 16px;
+    font-weight: 700;
+    font-family: KrungthaiFastRegular;
+    margin-top: -3vh;
+  }
+}
+
+::ng-deep.mat-mdc-menu-item:hover:not([disabled]) {
+  background: $bg-almost-white;
+}
+
+::ng-deep .mat-mdc-menu-content:not(:empty) {
+  padding: 8px 0px;
+  box-shadow: 0px 8px 16px map-get($ktb-palette-biz-black, B016);
+  border-radius: 8px;
+}
+
+::ng-deep .mat-mdc-tooltip.menu-tooltip {
+  margin-top: -16px;
+
+  .mat-mdc-tooltip-surface {
+    padding: 10px;
+    background-color: map-get($ktb-palette-precious-blue, 00);
+    color: map-get($ktb-palette-biz-black, 100);
+    font-size: $font-description;
+  }
+}
+
+::ng-deep spig-title-bar .title-bar-dropdown {
+  background: white;
+  color: map-get($ktb-palette-biz-black, 100);
+  border-radius: 8px;
+}
+
+/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
+::ng-deep spig-title-bar .title-bar-dropdown .mat-form-field-wrapper .mat-form-field-flex {
+  border: none !important;
+
+  /* FIXED(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
+  .mat-mdc-select-value {
+    font-size: 14px !important;
+    padding-left: 0 !important;
+  }
+}
+
+.mat-drawer-container .custom-notification-sidenav.expand.mat-drawer {
+  box-shadow: -3px 0px 2px rgba(0, 0, 0, 0.12) !important;
+  width: 560px;
+  transition: width 300ms ease-in-out;
+}
+
+.custom-notification-sidenav.side {
+  width: 0px;
+  transition: width 300ms ease-in-out;
+}
+
+.notification-badge {
+  width: 32px;
+  height: 32px;
+  border-radius: 16px;
+  background-color: $krungthai-red;
+  color: $white;
+  text-align: center;
+  margin: 4px;
+  font-family: KrungthaiFastRegular;
+  font-weight: normal;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

@@ -1,0 +1,157 @@
+<div class="m-20 pt-0">
+  <div class="content-container mat-elevation-z0 dispute-detail-container">
+    <div class="title-content">
+      <h5 *ngIf="courtLevel === 'CIVIL'">{{ 'COURT.CONFIRM_DISPUTE' | translate }}</h5>
+      <h5 *ngIf="courtLevel === 'APPEAL'">{{ 'COURT.CONFIRM_DISPUTE_SUPREME' | translate }}</h5>
+    </div>
+    <mat-divider></mat-divider>
+    <!-- ข้อมูลจำเลย -->
+    <div fxLayout="row" class="p-32 pb-0">
+      <div fxFlex="15" class="text-align-right pr-64">
+        <h6>{{ 'COURT.LABEL_DEFENDANT_INFO' | translate }}</h6>
+      </div>
+      <div fxFlex="70">
+        <app-defendant-table
+          [defendants]="defendantsData"
+          [showId]="true"
+          [showOrder]="isViewMode || isEditMode"
+          [isSelectable]="!isViewMode && !isEditMode"
+          (onSelectionChange)="onDefendantSelection($event)"></app-defendant-table>
+        <div
+          class="mt-8"
+          *ngIf="
+            disputeForm.controls['disputeDefendants'].touched &&
+            this.disputeForm.controls['disputeDefendants'].value.length === 0
+          ">
+          <span class="error">
+            {{ 'COMMON.ERROR_MSG_TABLE_REQUIRED' | translate }}
+          </span>
+        </div>
+      </div>
+      <div fxFlex="15"></div>
+    </div>
+    <!-- ข้อมูลเพิ่มเติม -->
+    <div fxLayout="row" class="p-32">
+      <div fxFlex="15" class="text-align-right pr-64">
+        <h6>{{ 'COURT.LABEL_MORE_INFO' | translate }}</h6>
+      </div>
+      <div fxFlex="70">
+        <form [formGroup]="disputeForm">
+          <div fxLayout="column" fxLayoutGap="12">
+            <div fxLayout="row" fxLayoutGap="16" class="full-width">
+              <div fxFlex="50">
+                <spig-datepicker
+                  *ngIf="!isViewMode"
+                  classInput="date-picker-block input-xsm full-width"
+                  [max]="today"
+                  formControlName="defendantAppealDate"
+                  [label]="
+                    courtLevel === 'CIVIL'
+                      ? 'COURT.LABEL_DEFENDANT_DISPUTE_DATE'
+                      : 'COURT.LABEL_DEFENDANT_DISPUTE_DATE_SUPREME'
+                  ">
+                </spig-datepicker>
+                <div *ngIf="isViewMode">
+                  <span class="thin-letter">
+                    {{
+                      courtLevel === 'CIVIL'
+                        ? ('COURT.LABEL_DEFENDANT_DISPUTE_DATE' | translate)
+                        : ('COURT.LABEL_DEFENDANT_DISPUTE_DATE_SUPREME' | translate)
+                    }}
+                  </span>
+                  <div class="mt-4">
+                    {{
+                      disputeDetail?.defendantAppealDate
+                        ? (disputeDetail?.defendantAppealDate | buddhistEra: 'DD/MM/yyyy')
+                        : '-'
+                    }}
+                  </div>
+                </div>
+              </div>
+              <div fxFlex="50">
+                <spig-dropdown
+                  classInput="ex-min-height full-width"
+                  *ngIf="!isViewMode"
+                  [config]="requestDeferConfig"
+                  [options]="requestDeferOptions"
+                  formControlName="requestDefer"></spig-dropdown>
+                <div *ngIf="isViewMode">
+                  <span class="thin-letter">{{ 'COURT.REQUEST_DEFER_LABEL' | translate }}</span>
+                  <div class="mt-4">
+                    {{
+                      disputeDetail?.requestDefer
+                        ? 'COURT.DEFENDANT_FILED'
+                        : ('COURT.DEFENDANT_DID_NOT_FILED' | translate)
+                    }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <mat-form-field class="full-width" *ngIf="!isViewMode">
+                <mat-label>{{ 'COURT.LABEL_LAWYER_COMMENTS' | translate }}</mat-label>
+                <textarea
+                  maxlength="10000"
+                  matInput
+                  formControlName="disputeAppealDescription"
+                  class="large form-control no-resize"></textarea>
+              </mat-form-field>
+              <div *ngIf="isViewMode" class="mt-24 mb-24">
+                <span class="thin-letter">{{ 'COURT.LABEL_LAWYER_COMMENTS' | translate }}</span>
+                <div class="mt-4">{{ disputeDetail?.disputeAppealDescription || '-' }}</div>
+              </div>
+            </div>
+            <div fxLayout="column" fxLayoutGap="8">
+              <app-upload-multi-file-content
+                [uploadMultiInfo]="uploadMultiInfo"
+                [readonly]="isViewMode"
+                (uploadFileEvent)="uploadFileEvent($event)"
+                [list]="documentUpload"
+                [column]="documentColumns"
+                [labelAcceptFile]="''">
+              </app-upload-multi-file-content>
+              <span
+                *ngIf="
+                  disputeForm.controls['disputeAppealDocuments'].invalid &&
+                  disputeForm.controls['disputeAppealDocuments'].touched
+                "
+                class="fill-red">
+                {{ 'COURT.UPLOAD_INCOMPLETE' | translate }}
+              </span>
+            </div>
+            <div>
+              <div fxLayout="row">
+                <div fxFlex="50">
+                  <spig-datepicker
+                    *ngIf="!isViewMode"
+                    classInput="date-picker-block input-xsm full-width"
+                    [min]="today"
+                    formControlName="lastDisputeAppealDate"
+                    [label]="
+                      courtLevel === 'CIVIL' ? 'COURT.LABEL_DISPUTE_DUE_DATE' : 'COURT.LABEL_DISPUTE_DUE_DATE_SUPREME'
+                    ">
+                  </spig-datepicker>
+                  <div *ngIf="isViewMode" class="mt-24">
+                    <span class="thin-letter">{{
+                      courtLevel === 'CIVIL'
+                        ? ('COURT.LABEL_DISPUTE_DUE_DATE' | translate)
+                        : ('COURT.LABEL_DISPUTE_DUE_DATE_SUPREME' | translate)
+                    }}</span>
+                    <div class="mt-4">
+                      {{
+                        disputeDetail?.lastDisputeAppealDate
+                          ? (disputeDetail?.lastDisputeAppealDate | buddhistEra: 'DD/MM/yyyy')
+                          : '-'
+                      }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div fxFlex="15"></div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,51 @@
+<app-action-bar
+  (backButtonHandler)="onBack()"
+  [hasCancelButton]="actionBar.hasCancel"
+  [hasSaveButton]="actionBar.hasSave"
+  [saveButtonText]="actionBar.saveText || 'COMMON.BUTTON_SAVE'"
+  [hasPrimaryButton]="actionBar.hasPrimary"
+  [primaryButtonText]="actionBar.primaryText || ''"
+  [primaryButtonIcon]="actionBar.primaryIcon || 'icon-Selected'"
+  (primaryButtonHandler)="onSubmit()"
+  [showNavBarInformation]="true">
+  <ng-container navBarInformationTemplate *ngIf="!showDispute">
+    <ng-container [ngSwitch]="taskCode">
+      <ng-container *ngSwitchCase="'CONSIDER_APPEAL'">
+        <mat-icon svgIcon="icon-Drafts" class="icon icon-xmedium default-cursor"></mat-icon>
+        <span class="ml-8">{{ 'COURT.LABEL_CONSIDER_APPEAL' | translate }}</span>
+      </ng-container>
+      <ng-container *ngSwitchCase="'APPROVE_APPEAL'">
+        <mat-icon svgIcon="icon-Drafts" class="icon icon-xmedium default-cursor"></mat-icon>
+        <span class="ml-8">{{ 'COURT.LABEL_CONSIDER_APPEAL' | translate }}</span>
+      </ng-container>
+      <ng-container *ngSwitchCase="'APPROVE_SUPREME_COURT'">
+        <mat-icon svgIcon="icon-Drafts" class="icon icon-xmedium default-cursor"></mat-icon>
+        <span class="ml-8">{{ 'COURT.LABEL_CONSIDER_SUPREME' | translate }}</span>
+      </ng-container>
+      <ng-container *ngSwitchCase="'CONSIDER_SUPREME_COURT'">
+        <mat-icon svgIcon="icon-Drafts" class="icon icon-xmedium default-cursor"></mat-icon>
+        <span class="ml-8">{{ 'COURT.LABEL_CONSIDER_SUPREME' | translate }}</span>
+      </ng-container>
+      <ng-container *ngSwitchCase="'CONDITIONAL_APPEAL'">
+        <mat-icon svgIcon="icon-Drafts" class="icon icon-xmedium default-cursor"></mat-icon>
+        <span class="ml-8">{{ 'COURT.LABEL_APPEAL_WITH_CONDITION' | translate }}</span>
+      </ng-container>
+      <ng-container *ngSwitchCase="'CONDITIONAL_SUPREME_COURT'">
+        <mat-icon svgIcon="icon-Drafts" class="icon icon-xmedium default-cursor"></mat-icon>
+        <span class="ml-8">{{ 'COURT.LABEL_SUPREME_WITH_CONDITION' | translate }}</span>
+      </ng-container>
+      <ng-container *ngSwitchDefault>
+        <mat-icon svgIcon="icon-save-primary" class="icon icon-xmedium default-cursor"></mat-icon>
+        <span class="ml-8">{{ 'COURT.RESULT_LEVEL' | translate }}{{ courtLevelText | translate }} </span>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+  <ng-container navBarInformationTemplate *ngIf="showDispute">
+    <mat-icon svgIcon="icon-Edit" class="icon icon-xmedium default-cursor"></mat-icon>
+    <span class="ml-8" *ngIf="courtVDetail.courtLevel === 'CIVIL'">{{ 'COURT.DISPUTE' | translate }} </span>
+    <span class="ml-8" *ngIf="courtVDetail.courtLevel === 'APPEAL'">{{ 'COURT.DISPUTE_SUPREME' | translate }} </span>
+  </ng-container>
+</app-action-bar>
+
+<app-court-result *ngIf="courtVDetail" [consAppealCtrl]="consAppealCtrl"></app-court-result>
+<app-dispute-detail *ngIf="showDispute" [disputeForm]="disputeAppealForm"></app-dispute-detail>

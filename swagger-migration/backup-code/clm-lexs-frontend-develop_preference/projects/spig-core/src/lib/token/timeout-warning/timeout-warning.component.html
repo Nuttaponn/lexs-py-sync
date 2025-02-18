@@ -1,0 +1,6 @@
+<ng-container>
+  <div class="timeout-warning">
+    {{ "TIMEOUT_WARNING.PREFIX_MSG" | translate }} {{ timeout ? '0:00' : (showAsMinutes ? ((seconds | async)! | sec2min) : ((seconds | async)!)) }} {{ ((showAsMinutes ? "TIMEOUT_WARNING.MINS" : "TIMEOUT_WARNING.SECS") | translate)}}
+    {{ "TIMEOUT_WARNING.SUFFIX_MSG" | translate }}<br>
+  </div>
+</ng-container>

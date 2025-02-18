@@ -1,0 +1,186 @@
+<div class="content-container">
+  <div class="inner-container-padding pl-24 pr-24">
+    <app-auction-header
+      [title]="'รายละเอียดการนัดหมาย'"
+      [isMain]="true"
+      (expand)="isOpened = !isOpened"
+      [expanded]="isOpened">
+    </app-auction-header>
+  </div>
+  <mat-accordion>
+    <mat-expansion-panel [expanded]="isOpened" hideToggle>
+      <mat-divider class="no-margin"></mat-divider>
+      <ng-container>
+        <div>
+          <div class="mt-16 mb-16 sub-expansion" *ngFor="let data of mainList; let i = index">
+            <app-auction-header
+              [title]="'ครั้งที่ ' + (data?.appointmentRound || '')"
+              [titleClass]="'bold text-gray-700'"
+              [isMain]="false"
+              [isMainSub]="true"
+              [showIcon]="true"
+              iconName="icon-Warning-Circle"
+              [iconClass]="data?.iconClass"
+              [ready]="data?.iconClass === 'fill-krungthai-green'"
+              [details]="data.details"
+              [expanded]="data.expand"
+              (expand)="data.expand = !data.expand">
+            </app-auction-header>
+            <mat-accordion>
+              <mat-expansion-panel class="expansion-inside" [expanded]="data.expand" hideToggle>
+                <div fxLayout="row" class="mb-35 mt-30 align-items-initial">
+                  <div fxLayout="column" fxFlex="15">
+                    <h6>ชุดทรัพย์ที่โอนกรรมสิทธิ์</h6>
+                  </div>
+                  <div fxLayout="column" fxFlex="30" fxLayoutGap="12px">
+                    <span class="thin-letter">ชุดทรัพย์</span>
+                    <div class="link" (click)="onClickProperty(data)">ชุดทรัพย์ที่ {{ data?.fsubbidnum }}</div>
+                  </div>
+                </div>
+                <div fxLayout="row" class="mb-35 mt-30 align-items-initial">
+                  <div fxLayout="column" fxFlex="15">
+                    <h6>ผู้กู้หลัก</h6>
+                  </div>
+                  <div fxLayout="column" fxFlex="30" fxLayoutGap="12px">
+                    <span class="thin-letter">CIF</span>
+                    <div>{{ data?.cifNo }}</div>
+                  </div>
+                  <div fxLayout="column" fxFlex="30 " fxLayoutGap="12px">
+                    <span class="thin-letter">ชื่อ-นามสกุล/ชื่อนิติบุคคล</span>
+                    <div>{{ data?.customerName || '-' }}</div>
+                  </div>
+                  <div fxLayout="column" fxFlex="30" fxLayoutGap="12px">
+                    <span class="thin-letter">เลขประจำตัวประชาชน/เลขผู้เสียภาษีอากร</span>
+                    <div>{{ data?.identificationNo || '-' }}</div>
+                  </div>
+                </div>
+
+                <div fxLayout="row" class="mb-35 mt-30 align-items-initial">
+                  <div fxLayout="column" fxFlex="15">
+                    <h6>วันนัดโอนกรรมสิทธิ์</h6>
+                  </div>
+                  <div fxLayout="column" fxFlex="85">
+                    <div class="table-scroll" table-scroll>
+                      <table mat-table [dataSource]="data.appointmentList">
+                        <ng-container matColumnDef="id" sticky>
+                          <th class="text-center" mat-header-cell *matHeaderCellDef>
+                            {{ 'COMMON.LABEL_NO' | translate }}
+                          </th>
+                          <td class="text-center" mat-cell *matCellDef="let row; let i = index">
+                            {{ i + 1 }}
+                          </td>
+                        </ng-container>
+                        <ng-container matColumnDef="date" sticky>
+                          <th class="text-start" mat-header-cell *matHeaderCellDef columnElevationLeft>
+                            {{ 'COMMON.LABEL_DATE' | translate }}
+                          </th>
+                          <td class="text-start" mat-cell *matCellDef="let row" columnElevationLeft>
+                            {{ (row?.masAppointDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                          </td>
+                        </ng-container>
+                        <ng-container matColumnDef="time">
+                          <th class="text-start" mat-header-cell *matHeaderCellDef>เวลาปฏิบัติงาน</th>
+                          <td class="text-start" mat-cell *matCellDef="let row">
+                            <div [ngSwitch]="row.masAppointPeriod">
+                              <ng-container *ngSwitchCase="'AM'"> เช้า </ng-container>
+                              <ng-container *ngSwitchCase="'PM'"> บ่าย </ng-container>
+                            </div>
+                          </td>
+                        </ng-container>
+                        <ng-container matColumnDef="store">
+                          <th class="text-start new-line preserve-breaks" mat-header-cell *matHeaderCellDef>
+                            ศูนย์นิติกรรม
+                          </th>
+                          <td class="text-start" mat-cell *matCellDef="let row">
+                            {{ row.masCostCenterName || '-' }} <br />
+                            {{ row.masLocationName || '-' }}
+                          </td>
+                        </ng-container>
+                        <ng-container matColumnDef="branch">
+                          <th class="text-start new-line preserve-breaks" mat-header-cell *matHeaderCellDef>
+                            สาขาที่ทำนิติกรรม
+                          </th>
+                          <td class="text-start" mat-cell *matCellDef="let row">
+                            {{ row.masBranchName || '-' }}
+                          </td>
+                        </ng-container>
+                        <ng-container matColumnDef="owner" stickyEnd>
+                          <th
+                            class="text-start new-line preserve-breaks"
+                            mat-header-cell
+                            *matHeaderCellDef
+                            columnElevationRight>
+                            ผู้ทำนิติกรรม
+                          </th>
+                          <td class="text-start" mat-cell *matCellDef="let row" columnElevationRight>
+                            {{ row.masAppointUserId }} - {{ row.masAppointUserName }}
+                          </td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="displayCalendar"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayCalendar"></tr>
+                      </table>
+                      <ng-container *ngIf="data.appointmentList?.length === 0" [ngTemplateOutlet]="dataNotFound">
+                      </ng-container>
+                    </div>
+                  </div>
+                </div>
+                <div fxLayout="row" class="mb-35 mt-30">
+                  <div fxLayout="column" fxFlex="15">
+                    <h6>{{ 'COMMON.LABEL_REMARKS' | translate }}</h6>
+                  </div>
+                  <div fxLayout="column" fxFlex="30 " fxLayoutGap="12px">
+                    <span class="thin-letter">{{ 'COMMON.LABEL_REMARKS' | translate }}</span>
+                    <div>{{ data?.masPostponeReason || '-' }}</div>
+                  </div>
+                </div>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </div>
+        </div>
+      </ng-container>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>
+
+<div class="content-container">
+  <div class="inner-container-padding-24">
+    <app-auction-header
+      [title]="'รายการเอกสารประกอบการนัดโอนกรรมสิทธิ์'"
+      [isMain]="true"
+      [expanded]="isOpened1"
+      (expand)="isOpened1 = !isOpened1">
+    </app-auction-header>
+  </div>
+  <mat-accordion>
+    <mat-expansion-panel [expanded]="isOpened1" hideToggle>
+      <mat-divider class="no-margin"></mat-divider>
+      <ng-container>
+        <div>
+          <div class="mt-16 mb-16 sub-expansion">
+            <app-common-document-table
+              [_documents]="documentAsset"
+              [displayedColumns]="displayAsset"
+              [details]="[]"
+              [config]="docAssetConfig"></app-common-document-table>
+          </div>
+          <div class="mt-16 mb-16 sub-expansion">
+            <app-common-document-table
+              [config]="reportConfig"
+              [_documents]="appraisalDocuments"
+              [displayedColumns]="displayReport"></app-common-document-table>
+          </div>
+          <div class="mt-16 mb-16 sub-expansion">
+            <app-common-document-table
+              [config]="deedConfig"
+              [_documents]="documentDeed"
+              [displayedColumns]="displayDeed"></app-common-document-table>
+          </div>
+        </div>
+      </ng-container>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>
+
+<ng-template #dataNotFound>
+  <app-message-empty [message]="'COMMON.SEARCH_NOT_FOUND'"></app-message-empty>
+</ng-template>

@@ -1,0 +1,230 @@
+<div fxLayout class="space-around content mt-20" [formGroup]="control" *ngIf="control">
+  <div fxLayout="column" fxFlex="20">
+    <div class="collateral-info header mx-width-pct-60">
+      {{ 'CUSTOMER.COOPERATIVE_STOCK_INFO' | translate }}
+    </div>
+  </div>
+  <div fxLayout="column" fxFlex>
+    <div fxLayout fxLayoutAlign="space-between ">
+      <ng-container *ngIf="mode === MODE.ADD || mode === MODE.EDIT">
+        <div fxFlex="49" fxLayout="column">
+          <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+            <mat-label>{{ 'CUSTOMER.WORK_ORGANIZATION' | translate }}</mat-label>
+            <input
+              type="text"
+              maxlength="40"
+              matInput
+              [placeholder]="'CUSTOMER.PLACEHOLDER_WORK_ORGANIZATION' | translate"
+              formControlName="workOrganization" />
+          </mat-form-field>
+          <spig-error-msg [control]="getControl('workOrganization')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+          </spig-error-msg>
+        </div>
+        <div fxFlex="49">
+          <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+            <mat-label>{{ 'CUSTOMER.PAYER_ORGANIZATION' | translate }}</mat-label>
+            <input
+              type="text"
+              maxlength="40"
+              matInput
+              [placeholder]="'CUSTOMER.PLACEHOLDER_PAYER_ORGANIZATION' | translate"
+              formControlName="payerOrganization" />
+          </mat-form-field>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="mode === MODE.VIEW">
+        <div fxFlex="49">
+          <div class="collateral-info title">{{ 'CUSTOMER.WORK_ORGANIZATION' | translate }}</div>
+          <div class="collateral-info detail">{{ getControl('workOrganization')?.value || '-' }}</div>
+        </div>
+        <div fxFlex="49">
+          <div class="collateral-info title">{{ 'CUSTOMER.PAYER_ORGANIZATION' | translate }}</div>
+          <div class="collateral-info detail">{{ getControl('payerOrganization')?.value || '-' }}</div>
+        </div>
+      </ng-container>
+    </div>
+    <div fxLayout fxLayoutAlign="space-between center" class="mt-20">
+      <ng-container *ngIf="mode === MODE.ADD || mode === MODE.EDIT">
+        <div fxFlex>
+          <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+            <mat-label>{{ 'CUSTOMER.OFFICE_ADDRESS' | translate }}</mat-label>
+            <input
+              type="text"
+              maxlength="40"
+              matInput
+              [placeholder]="'CUSTOMER.OFFICE_ADDRESS' | translate"
+              formControlName="address1" />
+          </mat-form-field>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="mode === MODE.VIEW">
+        <div fxFlex>
+          <div class="collateral-info title">{{ 'CUSTOMER.OFFICE_ADDRESS' | translate }}</div>
+          <div class="collateral-info detail">{{ getControl('address1')?.value || '-' }}</div>
+        </div>
+      </ng-container>
+    </div>
+    <div fxLayout fxLayoutAlign="space-between center" class="mt-20">
+      <ng-container *ngIf="mode === MODE.ADD || mode === MODE.EDIT">
+        <div fxFlex="49">
+          <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+            <mat-label>{{ 'CUSTOMER.OFFICE_ADDRESS_CONT' | translate }}</mat-label>
+            <input
+              type="text"
+              maxlength="40"
+              matInput
+              [placeholder]="'CUSTOMER.OFFICE_ADDRESS_CONT' | translate"
+              formControlName="address2" />
+          </mat-form-field>
+        </div>
+        <div fxFlex="49">
+          <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+            <mat-label>{{ 'CUSTOMER.OFFICE_ADDRESS_CONT' | translate }}</mat-label>
+            <input
+              type="text"
+              maxlength="40"
+              matInput
+              [placeholder]="'CUSTOMER.OFFICE_ADDRESS_CONT' | translate"
+              formControlName="address3" />
+          </mat-form-field>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="mode === MODE.VIEW">
+        <div fxFlex="49">
+          <div class="collateral-info title">{{ 'CUSTOMER.OFFICE_ADDRESS_CONT' | translate }}</div>
+          <div class="collateral-info detail">{{ getControl('address2')?.value || '-' }}</div>
+        </div>
+        <div fxFlex="49">
+          <div class="collateral-info title">{{ 'CUSTOMER.OFFICE_ADDRESS_CONT' | translate }}</div>
+          <div class="collateral-info detail">{{ getControl('address3')?.value || '-' }}</div>
+        </div>
+      </ng-container>
+    </div>
+
+    <div fxLayout="row" class="mt-20" fxLayoutAlign="space-between center">
+      <ng-container *ngIf="mode === MODE.ADD || mode === MODE.EDIT">
+        <div fxFlex="49">
+          <spig-dropdown
+            [classInput]="'input-s icon border-black-40'"
+            (selectedOption)="selectProvice($event)"
+            formControlName="provinceCode"
+            [config]="configProvice"
+            [options]="proviceOptions">
+          </spig-dropdown>
+        </div>
+        <div fxFlex="49" *ngIf="getControl('provinceCode')?.value">
+          <spig-dropdown
+            [classInput]="'input-s icon border-black-40'"
+            formControlName="districtCode"
+            [config]="configDistrict"
+            (selectedOption)="selectDistrict($event)"
+            [options]="districtOptions">
+          </spig-dropdown>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="mode === MODE.VIEW">
+        <div fxFlex="49">
+          <div class="collateral-info title">{{ 'CUSTOMER.PROVICE' | translate }}</div>
+          <div class="collateral-info detail">
+            {{ getControl('province')?.value || '-' }}
+          </div>
+        </div>
+        <div fxFlex="49">
+          <div class="collateral-info title">{{ 'CUSTOMER.DISTRICE' | translate }}</div>
+          <div class="collateral-info detail">
+            {{ getControl('district')?.value || '-' }}
+          </div>
+        </div>
+      </ng-container>
+    </div>
+    <div fxLayout="row" class="mt-20" fxLayoutAlign="space-between center">
+      <ng-container
+        *ngIf="
+          (mode === MODE.ADD || mode === MODE.EDIT) &&
+          getControl('provinceCode')?.value &&
+          getControl('districtCode')?.value
+        ">
+        <div fxFlex="49">
+          <spig-dropdown
+            [classInput]="'input-s icon border-black-40'"
+            formControlName="subdistrictCode"
+            (selectedOption)="selectSubDistrict($event)"
+            [config]="configSubDistrict"
+            [options]="subDistrictOptions">
+          </spig-dropdown>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="mode === MODE.VIEW">
+        <div fxFlex="49">
+          <div class="collateral-info title">{{ 'CUSTOMER.SUB_DISTRICE' | translate }}</div>
+          <div class="collateral-info detail">
+            {{ getControl('subDistrict')?.value || '-' }}
+          </div>
+        </div>
+      </ng-container>
+    </div>
+    <div fxLayout fxLayoutAlign="space-between " class="mt-20">
+      <ng-container *ngIf="mode === MODE.ADD || mode === MODE.EDIT">
+        <div fxFlex="49" fxLayout="column">
+          <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+            <mat-label>{{ 'CUSTOMER.UNIT_AMOUNT' | translate }}</mat-label>
+            <input
+              type="number"
+              maxlength="10"
+              matInput
+              [placeholder]="'CUSTOMER.UNIT_AMOUNT' | translate"
+              formControlName="unitAmount" />
+          </mat-form-field>
+          <spig-error-msg [control]="getControl('unitAmount')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+          </spig-error-msg>
+        </div>
+        <div fxFlex="49" fxLayout="column">
+          <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+            <mat-label>{{ 'CUSTOMER.PRICE_VALUE_BATH' | translate }}</mat-label>
+            <input
+              type="text"
+              matInput
+              [placeholder]="'CUSTOMER.PRICE_VALUE_BATH' | translate"
+              formControlName="priceValue" />
+          </mat-form-field>
+          <spig-error-msg [control]="getControl('priceValue')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+          </spig-error-msg>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="mode === MODE.VIEW">
+        <div fxFlex="49">
+          <div class="collateral-info title">{{ 'CUSTOMER.PRICE_VALUE' | translate }}</div>
+          <div class="collateral-info detail">{{ (getControl('unitAmount')?.value | number) || '-' }}</div>
+        </div>
+        <div fxFlex="49">
+          <div class="collateral-info title">{{ 'CUSTOMER.PRICE_VALUE_BATH' | translate }}</div>
+          <div class="collateral-info detail">{{ (getControl('priceValue')?.value | numberDecimal) || '-' }}</div>
+        </div>
+      </ng-container>
+    </div>
+    <div fxLayout fxLayoutAlign="space-between center" class="mt-20">
+      <ng-container *ngIf="mode === MODE.ADD || mode === MODE.EDIT">
+        <div fxFlex>
+          <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+            <mat-label>{{ 'CUSTOMER.ESTIMATE_FREEZE_AMOUNT' | translate }}</mat-label>
+            <input
+              type="text"
+              matInput
+              [placeholder]="'CUSTOMER.ESTIMATE_FREEZE_AMOUNT' | translate"
+              appNumberOnly="integer"
+              maxlength="18"
+              formControlName="estimateFreezeAmount" />
+          </mat-form-field>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="mode === MODE.VIEW">
+        <div fxFlex>
+          <div class="collateral-info title">{{ 'CUSTOMER.ESTIMATE_FREEZE_AMOUNT' | translate }}</div>
+          <div class="collateral-info detail">
+            {{ (getControl('estimateFreezeAmount')?.value | numberDecimal) || '-' }}
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>

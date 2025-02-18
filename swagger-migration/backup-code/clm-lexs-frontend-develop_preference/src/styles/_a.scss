@@ -1,0 +1,28 @@
+span,
+a,
+p,
+// TODO: div shoud not be applied to anchor tag
+div {
+  &.link {
+    @include txt-underline(map-get($ktb-palette-precious-blue, 50), pointer);
+  }
+
+  &.link-red {
+    @include txt-underline($krungthai-red, pointer);
+  }
+}
+
+span,
+div {
+  &.pre-line {
+    white-space: pre-line;
+  }
+}
+
+span,
+label,
+div {
+  &.wrap-line-break {
+    white-space: pre;
+  }
+}

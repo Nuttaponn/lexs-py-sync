@@ -1,0 +1,9 @@
+<div [ngClass]="contentCssClasses">
+  <mat-icon *ngIf="!opts.disabledIcon" svgIcon="{{this.opts.iconName}}" class="icon-fill-white {{this.opts.iconClass}}"
+    id="flash-icon-fill-white"></mat-icon>
+  <span *ngIf="!!this.opts.headline" id="flash-dailog-headline"><strong>{{this.opts.headline}}</strong></span>
+  <div class="flash-msg-font mr-16" [innerHtml]="this.opts.message" id="flash-dailog-message"></div>
+  <mat-icon *ngIf="!!opts.iconCrossClass" svgIcon="icon-Cross" class="icon-pull-right {{this.opts.iconCrossClass}}"
+    (click)="dismiss()" id="flash-icon-dismiss"></mat-icon>
+  <div *ngIf="!!opts.buttonText" (click)="dismiss()" class="button-pull-right">{{ opts.buttonText | translate }}</div>
+</div>

@@ -1,0 +1,161 @@
+<div class="data-table-content mt-16">
+  <ng-container *ngTemplateOutlet="auctionLEDCardAnnouncementTable"></ng-container>
+  <ng-container *ngIf="!announcementInfo.data || announcementInfo.data.length === 0" [ngTemplateOutlet]="dataNotFound">
+  </ng-container>
+  <app-paginator
+    *ngIf="announcementInfo.data.length > 0"
+    #paginator
+    [pageSize]="pageSize"
+    [length]="announcementInfo.data.length"
+    (page)="onPaging($event)"></app-paginator>
+</div>
+
+<ng-template #auctionLEDCardAnnouncementTable>
+  <div class="table">
+    <table mat-table [dataSource]="announcementInfo.filteredData" [class.empty]="announcementInfo.data.length === 0">
+      <!-- ลำดับ Column -->
+      <ng-container matColumnDef="no">
+        <th class="text-center width-pct-5" mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_NO' | translate }}</th>
+        <td class="text-center width-pct-5" mat-cell *matCellDef="let element; let i = index">
+          {{ pageSize * (pageIndex - 1) + i + 1 }}
+        </td>
+      </ng-container>
+      <!-- ใบประกาศ Column -->
+      <ng-container matColumnDef="aucLedSeq">
+        <th mat-header-cell *matHeaderCellDef class="width-pct-50 text-left">
+          {{ 'AUCTION_LED_CARD.ANNOUNCEMENT.LEGAL_ANNOUNCEMENT' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" class="width-pct-50 text-left">
+          <span class="link" (click)="navigateToAuctionDetails(element)">
+            {{ 'ครั้งที่' | translate }} {{ element.aucLedSeq || '-' }}
+          </span>
+        </td>
+      </ng-container>
+      <!-- Lot Column -->
+      <ng-container matColumnDef="aucLot">
+        <th mat-header-cell *matHeaderCellDef class="text-left">
+          {{ 'AUCTION_LED_CARD.ANNOUNCEMENT.LOT' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" class="text-left">
+          {{ element.aucLot || '-' }}
+        </td>
+      </ng-container>
+      <!-- ชุดที่ Column -->
+      <ng-container matColumnDef="aucSet">
+        <th mat-header-cell *matHeaderCellDef class="text-left">
+          {{ 'AUCTION_LED_CARD.ANNOUNCEMENT.SET' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" class="text-left">
+          {{ element.aucSet || '-' }}
+        </td>
+      </ng-container>
+      <!-- ลำดับ Column -->
+      <ng-container matColumnDef="fbidnum">
+        <th mat-header-cell *matHeaderCellDef class="text-left">
+          {{ 'COMMON.LABEL_NO' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" class="text-left">
+          {{ element.fbidnum || '-' }}
+        </td>
+      </ng-container>
+      <!-- สถานะ Column -->
+      <ng-container matColumnDef="aucStatus">
+        <th mat-header-cell *matHeaderCellDef class="text-center">
+          {{ 'AUCTION_LED_CARD.ANNOUNCEMENT.STATUS.LEGAL_ANNOUNCEMENT' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element" class="text-center">
+          <div
+            class="status-label size-normal text-center max-width line-space"
+            [class.status-success]="statusSuccess.includes(element.aucStatus)"
+            [class.status-failed]="statusFailed.includes(element.aucStatus)"
+            [class.status-normal]="statusNormal.includes(element.aucStatus)"
+            [class.status-pending]="
+              !(
+                statusSuccess.includes(element.aucStatus) ||
+                statusFailed.includes(element.aucStatus) ||
+                statusNormal.includes(element.aucStatus)
+              )
+            ">
+            <mat-icon
+              *ngIf="statusSuccess.includes(element.aucStatus)"
+              svgIcon="icon-Mark"
+              class="icon-xmedium fill-green"></mat-icon>
+            <span>{{ element.aucStatus | auctionAnnouncementStatus }}</span>
+          </div>
+        </td>
+      </ng-container>
+      <!-- คำสั่ง Column -->
+      <ng-container matColumnDef="command">
+        <th mat-header-cell *matHeaderCellDef class="text-center">{{ 'COMMON.LABEL_COMMAND' | translate }}</th>
+        <td mat-cell *matCellDef="let element" class="text-center no-pad-left">
+          <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10px">
+            <ng-container
+              *ngIf="
+                actionOnScreen.acquredAssetDoc ||
+                actionOnScreen.submitAdditionalDeposit ||
+                actionOnScreen.submitAccountAudit
+              ">
+              <button
+                class="medium-fw-button"
+                type="button"
+                [ngClass]="element.expand ? 'active' : 'inactive'"
+                (menuClosed)="element.expand = !element.expand"
+                mat-stroked-button
+                [matMenuTriggerFor]="actionMenu"
+                (click)="element.expand = !element.expand">
+                <mat-icon
+                  [svgIcon]="element.expand ? 'icon-Up-Circle' : 'icon-Down-Circle'"
+                  class="icon btn-icon icon-xmedium mr-3"></mat-icon>
+                {{ 'COMMON.LABEL_COMMAND' | translate }}
+              </button>
+              <mat-menu class="deb-menu-item" #actionMenu="matMenu" xPosition="before">
+                <div
+                  class="pt-12 pb-12 pl-16 pr-16 hover-item"
+                  (click)="onClickCash(element)"
+                  *ngIf="actionOnScreen.submitAdditionalDeposit">
+                  <div class="cursor-pointer" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+                    <div>
+                      <mat-icon svgIcon="icon-save-cash" class="icon icon-small-xl"></mat-icon>
+                    </div>
+                    <div>วางเงินเพิ่ม</div>
+                  </div>
+                </div>
+                <div
+                  class="pt-12 pb-12 pl-16 pr-16"
+                  (click)="onClickUploadDoc(element)"
+                  *ngIf="actionOnScreen.acquredAssetDoc">
+                  <div class="cursor-pointer" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+                    <div>
+                      <mat-icon svgIcon="icon-Arrow-Upload" class="icon icon-small-xl"></mat-icon>
+                    </div>
+                    <div>อัปโหลดเอกสารการซื้อทรัพย์</div>
+                  </div>
+                </div>
+                <div
+                  class="pt-12 pb-12 pl-16 pr-16"
+                  (click)="onClickVerifyAccount(element)"
+                  *ngIf="actionOnScreen.submitAccountAudit">
+                  <div class="cursor-pointer" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+                    <div>
+                      <mat-icon svgIcon="icon-Document-Text" class="icon icon-small-xl"></mat-icon>
+                    </div>
+                    <div>
+                      ตรวจสอบและรับรอง <br />
+                      บัญชี
+                    </div>
+                  </div>
+                </div>
+              </mat-menu>
+            </ng-container>
+          </div>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </div>
+</ng-template>
+
+<ng-template #dataNotFound>
+  <app-message-empty [message]="'AUCTION_LED_CARD.ANNOUNCEMENT.NOT_FOUND'"></app-message-empty>
+</ng-template>

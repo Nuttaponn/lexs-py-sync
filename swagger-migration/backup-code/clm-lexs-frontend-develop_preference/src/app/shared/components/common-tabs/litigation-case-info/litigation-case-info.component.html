@@ -1,0 +1,14 @@
+<mat-tab-group
+  class="tab-group-container"
+  [(selectedIndex)]="_tabIndex"
+  mat-align-tabs="start"
+  (selectedTabChange)="onTabChanged($event)">
+  <mat-tab>
+    <ng-template mat-tab-label>{{ 'LAWSUIT.INFO_LABEL_TAB_LITIGATION_SUMMARY' | translate }}</ng-template>
+    <app-litigation-summary [blackCaseNo]="blackCaseNo"></app-litigation-summary>
+  </mat-tab>
+  <mat-tab>
+    <ng-template mat-tab-label>{{ 'LAWSUIT.INFO_LABEL_TAB_REIMBURSEMENT_SUMMARY' | translate }}</ng-template>
+    <app-summary-reimbursement *ngIf="litigationId" [litigationId]="litigationId"></app-summary-reimbursement>
+  </mat-tab>
+</mat-tab-group>

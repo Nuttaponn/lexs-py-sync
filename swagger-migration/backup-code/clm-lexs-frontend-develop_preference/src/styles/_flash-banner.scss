@@ -1,0 +1,161 @@
+@import './variables';
+@import './colors';
+
+@mixin snackBarCommon() {
+  padding: 0 !important;
+  border-radius: 8px;
+
+  .flash-msg-font {
+    font-size: $font-description !important;
+  }
+
+  .button-pull-right {
+    font-size: $font-sub-description;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .flash-banner-info {
+    padding: 15px;
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+  }
+}
+
+.custom-snack-bar-container-info,
+.custom-snack-bar-container-error,
+.custom-snack-bar-container-warning,
+.custom-snack-bar-container-primary,
+.custom-snack-bar-container-general {
+  @include snackBarCommon();
+  width: fit-content !important;
+  min-width: max-content !important;
+  min-height: 48px !important;
+}
+
+.custom-snack-bar-container-info-large,
+.custom-snack-bar-container-error-large,
+.custom-snack-bar-container-warning-large,
+.custom-snack-bar-container-primary-large {
+  width: 360px !important;
+  display: flex;
+  @include snackBarCommon();
+
+  .button-pull-right {
+    font-size: $font-sub-description;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .flash-banner-info-large {
+    padding: 15px;
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+  }
+}
+
+.custom-snack-bar-container-info,
+.custom-snack-bar-container-info-large {
+  background-color: map-get($ktb-palette-green, 50) !important;
+  color: $krungthai-green !important;
+}
+
+.custom-snack-bar-container-error,
+.custom-snack-bar-container-error-large {
+  background-color: map-get($ktb-palette-red, 50) !important;
+  color: $krungthai-red !important;
+}
+
+.custom-snack-bar-container-warning,
+.custom-snack-bar-container-warning-large {
+  background-color: map-get($ktb-palette-golden-yellow, 50) !important;
+  color: map-get($ktb-palette-golden-yellow, 700) !important;
+}
+
+.custom-snack-bar-container-primary {
+  background-color: map-get($ktb-palette-blue, 50) !important;
+  color: $krungthai-blue !important;
+}
+
+.custom-snack-bar-container-general,
+.custom-snack-bar-container-general-large {
+  background-color: map-get($ktb-palette-biz-gray, 700) !important;
+  color: $white !important;
+}
+
+@mixin btn-common() {
+  .mat-mdc-outlined-button {
+    height: 56px;
+    width: fit-content;
+    padding: 0 24px;
+    border: 0 !important;
+    color: map-get($ktb-palette-biz-gray, 900) !important;
+
+    &.option-btn-blue {
+      border-radius: 8px !important;
+      color: #00a6e6 !important;
+      outline: 1px solid #00a6e6 !important;
+    }
+  }
+
+  .mat-mdc-outlined-button:hover {
+    background-color: map-get($ktb-palette-biz-gray, 300);
+
+    &.option-btn-blue {
+      background-color: $krungthai-blue-50 !important;
+    }
+  }
+
+  .mat-mdc-unelevated-button {
+    height: 56px;
+    width: fit-content;
+    padding: 0 24px;
+
+    &.error {
+      background: $krungthai-red;
+    }
+
+    &.primary {
+      background: $krungthai-blue;
+    }
+  }
+}
+
+.custom-dialog-small>mat-dialog-container .mat-mdc-dialog-actions .mat-mdc-outlined-button.timeout-warning-secondary-button {
+  border: 1px solid map_get($ktb-palette-biz-black, 50) !important;
+}
+
+.custom-snack-bar-container-info,
+.custom-snack-bar-container-error,
+.custom-snack-bar-container-warning,
+.custom-snack-bar-container-primary,
+.custom-snack-bar-container-general,
+.custom-snack-bar-container-info-large,
+.custom-snack-bar-container-error-large,
+.custom-snack-bar-container-warning-large,
+.custom-snack-bar-container-primary-large {
+  .mdc-snackbar__surface {
+    color: unset !important;
+    border-radius: unset !important;
+    background-color: unset !important;
+    min-width: unset !important;
+    max-width: unset !important;
+    box-shadow: unset !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .mat-mdc-snack-bar-label {
+    font-family: unset !important;
+    font-size: unset !important;
+    font-weight: unset !important;
+    line-height: unset !important;
+    width: unset !important;
+    flex-grow: unset !important;
+    box-sizing: unset !important;
+    margin: unset !important;
+    padding: unset !important;
+  }
+}

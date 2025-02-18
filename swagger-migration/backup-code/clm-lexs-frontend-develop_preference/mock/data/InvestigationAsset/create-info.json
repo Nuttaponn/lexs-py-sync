@@ -1,0 +1,152 @@
+{
+  "LitigationCaseId": "10184",
+  "litigationDocuments": [
+    {
+      "originalDocument": true,
+      "documentSeqNo": 1,
+      "documentTemplate": {
+        "documentGroup": "LITIGATION",
+        "documentTemplateId": "LEXSF052",
+        "documentName": "หนังสือรับรองคดีถึงที่สุด",
+        "optional": false
+      },
+      "documentId": 1110,
+      "imageSource": "",
+      "imageId": "",
+      "imageName": "",
+      "uploadTimestamp": ""
+    },
+    {
+      "originalDocument": true,
+      "documentSeqNo": 2,
+      "documentTemplate": {
+        "documentGroup": "LITIGATION",
+        "documentTemplateId": "LEXSF010",
+        "documentName": "คำพิพากษา",
+        "optional": true
+      },
+      "documentId": 1112,
+      "imageSource": "",
+      "imageId": "",
+      "imageName": "",
+      "uploadTimestamp": ""
+    },
+    {
+      "originalDocument": false,
+      "documentSeqNo": "",
+      "documentTemplate": {
+        "documentGroup": "ASSET_INVESTIGATION",
+        "documentTemplateId": "LEXSF193",
+        "documentName": "หนังสือยินยอมของลูกหนี้/ผู้ค้ำประกัน ให้สืบทรัพย์",
+        "optional": true
+      },
+      "documentId": 0,
+      "imageSource": "",
+      "imageId": "",
+      "imageName": "",
+      "uploadTimestamp": ""
+    }
+  ],
+  "persons": [
+    {
+      "personSeqNo": 1,
+      "activeFlag": true,
+      "personStatus": "ALIVE",
+      "orderedRecentlyFlag": true,
+      "relatedlitigations": [
+        {
+          "litigationId": "LG000000001"
+        },
+        {
+          "litigationId": "LG000000002"
+        }
+      ],
+      "cifNo": "1",
+      "taxId": "",
+      "name": "",
+      "relation": "",
+      "personDocuments": [
+        {
+          "originalDocument": true,
+          "documentSeqNo": "",
+          "documentTemplate": {
+            "documentGroup": "PERSON",
+            "documentTemplateId": "LEXSD001",
+            "documentName": "เอกสารนิติบุคคล",
+            "optional": false
+          },
+          "documentId": 0,
+          "imageSource": "",
+          "imageId": "",
+          "imageName": "",
+          "uploadTimestamp": ""
+        },
+        {
+          "originalDocument": false,
+          "documentSeqNo": "",
+          "documentTemplate": {
+            "documentGroup": "PERSON",
+            "documentTemplateId": "LEXSD007",
+            "documentName": "ใบเปลี่ยนชื่อ",
+            "optional": true
+          },
+          "documentId": 0,
+          "imageSource": "",
+          "imageId": "",
+          "imageName": "",
+          "uploadTimestamp": ""
+        }
+      ]
+    },
+    {
+      "personSeqNo": 2,
+      "activeFlag": true,
+      "personStatus": "ALIVE",
+      "orderedRecentlyFlag": true,
+      "relatedlitigations": [
+        {
+          "litigationId": "LG000000001"
+        },
+        {
+          "litigationId": "LG000000002"
+        }
+      ],
+      "cifNo": "",
+      "taxId": "99",
+      "name": "",
+      "relation": "",
+      "personDocuments": [
+        {
+          "originalDocument": true,
+          "documentSeqNo": "",
+          "documentTemplate": {
+            "documentGroup": "PERSON",
+            "documentTemplateId": "LEXSD002",
+            "documentName": "เอกสารบุคคลธรรมดา",
+            "optional": false
+          },
+          "documentId": 0,
+          "imageSource": "",
+          "imageId": "",
+          "imageName": "",
+          "uploadTimestamp": ""
+        },
+        {
+          "originalDocument": false,
+          "documentSeqNo": "",
+          "documentTemplate": {
+            "documentGroup": "PERSON",
+            "documentTemplateId": "LEXSD007",
+            "documentName": "ใบเปลี่ยนชื่อ",
+            "optional": true
+          },
+          "documentId": 0,
+          "imageSource": "",
+          "imageId": "",
+          "imageName": "",
+          "uploadTimestamp": ""
+        }
+      ]
+    }
+  ]
+}

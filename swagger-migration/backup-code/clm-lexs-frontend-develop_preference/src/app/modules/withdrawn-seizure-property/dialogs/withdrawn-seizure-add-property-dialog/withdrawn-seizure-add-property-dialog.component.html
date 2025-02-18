@@ -1,0 +1,14 @@
+<app-withdrawn-seizure-property-asset-list
+  [collateralColumns]="collateralColumns"
+  [assetColumns]="assetColumns"
+  [collaterals]="collaterals"
+  [asset]="assets"
+  [config]="tableConfig"
+  [excludeProperty]="excludeItems"
+  [excludeAsset]="excludeItemsAsset"
+  [defaultSelect]="defaultSelectItems"
+  [defaultSelectAsset]="defaultSelectItemsAsset"
+  [tablePropertyControl]="tablePropertyControl"
+  [tablePropertyAssetControl]="tablePropertyAssetControl"
+  (onUpdateSelectProperty)="updateSelectProperty($event)"
+  (onUpdateSelectPropertyAsset)="updateSelectPropertyAsset($event)"></app-withdrawn-seizure-property-asset-list>

@@ -1,0 +1,21 @@
+<div>
+  <app-message-banner type="warn-normal" [icon]="'icon-Error'" [message]="msgBanner"></app-message-banner>
+</div>
+<div class="pt-24" fxLayout="row" fxLayoutAlign="start" fxLayoutGap="16px">
+  <div class="pt-8 pb-8" fxFlex="25">รายละเอียดคดี</div>
+  <div fxFlex="25">
+    <spig-dropdown classInput="input-normal" [required]="true" [formControl]="redCaseFilterControl"
+      [options]="redCaseFilterOption" [config]="redCaseFilterConfig"></spig-dropdown>
+    <spig-error-msg [control]="redCaseFilterControl" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'"></spig-error-msg>
+  </div>
+  <div fxFlex="25">
+    <spig-dropdown classInput="input-normal" [required]="true" [formControl]="courtNameFilterControl"
+      [options]="courtNameFilterOption" [config]="courtNameFilterConfig"></spig-dropdown>
+    <spig-error-msg [control]="courtNameFilterControl" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'"></spig-error-msg>
+  </div>
+  <div fxFlex="25">
+    <spig-dropdown classInput="input-normal" [required]="true" [formControl]="ledFilterControl"
+      [options]="ledFilterOption" [config]="ledFilterConfig"></spig-dropdown>
+    <spig-error-msg [control]="ledFilterControl" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'"></spig-error-msg>
+  </div>
+</div>

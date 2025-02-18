@@ -1,0 +1,350 @@
+<div class="wrap-title" mat-dialog-title fxLayout-="row" fxLayoutAlign="space-between center">
+  <div fxLayout-="row" fxLayoutAlign="start center" fxLayoutGap="14px">
+    <mat-icon *ngIf="data.mode === MODE.EDIT" svgIcon="icon-Edit" class="icon-sm"></mat-icon>
+    <mat-icon *ngIf="data.mode === MODE.VIEW" svgIcon="icon-Information" class="icon-sm"></mat-icon>
+    <mat-icon *ngIf="data.mode === MODE.ADD" svgIcon="icon-Plus" class="icon-sm"></mat-icon>
+    <strong id="dialog-title-text" class="dialog-title-margin dialog-title" [innerHTML]="data.title"></strong>
+    <div *ngIf="data.mode === MODE.VIEW && permissionsOnScreen.canEdit">
+      <mat-icon svgIcon="icon-Edit" (click)="chageMode()" class="icon-sm fill-blue mr-8"></mat-icon>
+      <span class="fill-blue pointer" (click)="chageMode()">{{ 'CUSTOMER.LABEL_EDIT_INFORMATION' | translate }}</span>
+    </div>
+  </div>
+  <mat-icon *ngIf="data.mode === MODE.VIEW" svgIcon="icon-Cross" class="icon-sm" mat-dialog-close></mat-icon>
+</div>
+<mat-dialog-content id="contentCssClasses">
+  <div fxLayout class="space-around content">
+    <div fxLayout="column" fxFlex="20">
+      <div class="collateral-info header mx-width-pct-60">
+        {{ 'CUSTOMER.COMMON_LABEL_GENERAL_INFO' | translate }}
+      </div>
+    </div>
+    <div fxLayout="column" fxFlex [formGroup]="generalForm">
+      <div fxLayoutAlign="space-between start">
+        <ng-container *ngIf="data.mode === MODE.ADD || data.mode === MODE.EDIT">
+          <div fxFlex="49" fxLayout="column">
+            <spig-dropdown
+              [classInput]="'input-s icon border-black-40'"
+              [config]="ownershipConfig"
+              [options]="ownershipOptions"
+              (selectedOption)="ownSelected($event)"
+              formControlName="personId">
+            </spig-dropdown>
+            <spig-error-msg [control]="getControl('personId')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+            </spig-error-msg>
+          </div>
+          <div fxFlex="49" fxLayout="column">
+            <spig-dropdown
+              [classInput]="'input-s icon border-black-40'"
+              [config]="collateralConfig"
+              [options]="collateralOptions"
+              (selectedOption)="collateralSelected($event)"
+              formControlName="collateralTypeCode">
+            </spig-dropdown>
+            <spig-error-msg [control]="getControl('collateralTypeCode')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+            </spig-error-msg>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="data.mode === MODE.VIEW">
+          <div fxFlex="49">
+            <div class="collateral-info title">{{ 'CUSTOMER.COMMON_LABEL_MARGIN_OWNER' | translate }}</div>
+            <div class="collateral-info detail">{{ getGeneralControl('personName')?.value || '-' }}</div>
+          </div>
+          <div fxFlex="49">
+            <div class="collateral-info title">{{ 'CUSTOMER.COMMON_LABEL_MARGIN_TYPE' | translate }}</div>
+            <div class="collateral-info detail">{{ getGeneralControl('collateralTypeDesc')?.value || '-' }}</div>
+          </div>
+        </ng-container>
+      </div>
+      <div fxLayout="row" class="mt-20" fxLayoutAlign="space-between center">
+        <ng-container>
+          <div fxFlex="49" fxLayout="column" *ngIf="data.mode === MODE.ADD || data.mode === MODE.EDIT">
+            <spig-dropdown
+              [classInput]="'input-s icon border-black-40'"
+              [config]="legalStatusConfig"
+              (selectedOption)="legalStatusSelected($event)"
+              [options]="legalStatusOptions"
+              formControlName="externalAssetStatus">
+            </spig-dropdown>
+            <spig-error-msg
+              [control]="getControl('externalAssetStatus')"
+              [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+            </spig-error-msg>
+          </div>
+          <div fxFlex="49" *ngIf="data.mode === MODE.VIEW">
+            <div class="collateral-info title">{{ 'CUSTOMER.COMMON_LABEL_MARGIN_STATUS_FOUND' | translate }}</div>
+            <div class="collateral-info detail">{{ getGeneralControl('externalAssetStatusDesc')?.value || '-' }}</div>
+          </div>
+          <div fxFlex="49">
+            <div class="title ml-12">{{ 'CUSTOMER.COMMON_LABEL_MARGIN_STATUS' | translate }}</div>
+            <div class="detail ml-12">ไม่ถูกอายัด/ยึด/ขาย</div>
+          </div>
+        </ng-container>
+      </div>
+      <!-- MVP 2 -->
+      <!-- <ng-container *ngIf="
+                getGeneralControl('collateralTypeCode')?.value === 'OTHER' &&(
+                getGeneralControl('collateralStatusCode')?.value === 'A'
+                || getGeneralControl('collateralStatusCode')?.value === 'B')">
+                <div fxLayout fxLayoutAlign="space-between center" class="mt-20">
+                    <ng-container *ngIf="data.mode === MODE.ADD || data.mode === MODE.EDIT">
+                        <div fxFlex="49" *ngIf="getGeneralControl('collateralStatusCode')?.value === 'A' ">
+                            <spig-datepicker class="date-picker-block" label="วันที่ถูกยึด"
+                                formControlName="seizureDate"></spig-datepicker>
+                        </div>
+                        <div fxFlex="49" *ngIf="getGeneralControl('collateralStatusCode')?.value === 'B' ">
+                            <spig-datepicker class="date-picker-block" label="วันที่อายัด" formControlName="freezeDate">
+                            </spig-datepicker>
+                        </div>
+                        <div fxFlex="49">
+                            <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+                                <input type="text" matInput placeholder="คดีหมายเลขแดงที่"
+                                    formControlName="seizureRedCaseNo" />
+                            </mat-form-field>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="data.mode === MODE.VIEW">
+                        <div fxFlex="49" *ngIf="getGeneralControl('collateralStatusCode')?.value === 'A' ">
+                            <div class="collateral-info title">วันที่ถูกยึด</div>
+                            <div class="collateral-info detail"> {{getControl('seizureDate')?.value}} </div>
+                        </div>
+                        <div fxFlex="49" *ngIf="getGeneralControl('collateralStatusCode')?.value === 'B' ">
+                            <div class="collateral-info title">วันที่อายัด</div>
+                            <div class="collateral-info detail"> {{getControl('freezeDate')?.value}} </div>
+                        </div>
+                        <div fxFlex="49">
+                            <div class="collateral-info title">คดีหมายเลขแดงที่</div>
+                            <div class="collateral-info detail"> {{getControl('seizureRedCaseNo')?.value}} </div>
+                        </div>
+                    </ng-container>
+                </div>
+                <div fxLayout fxLayoutAlign="space-between center" class="mt-20"
+                    *ngIf="getGeneralControl('collateralStatusCode')?.value === 'A' || getGeneralControl('collateralStatusCode')?.value === 'B'">
+                    <ng-container *ngIf="data.mode === MODE.ADD || data.mode === MODE.EDIT">
+                        <div fxFlex="49">
+                            <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+                                <input type="text" matInput placeholder="ศาล" formControlName="court" />
+                            </mat-form-field>
+                        </div>
+                        <div fxFlex="49">
+                            <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+                                <input type="text" matInput placeholder="ผู้นำยึด" formControlName="seizurePerson" />
+                            </mat-form-field>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="data.mode === MODE.VIEW">
+                        <div fxFlex="49">
+                            <div class="collateral-info title">ศาล</div>
+                            <div class="collateral-info detail"> {{getControl('court')?.value}} </div>
+                        </div>
+                        <div fxFlex="49">
+                            <div class="collateral-info title">ผู้นำยึด</div>
+                            <div class="collateral-info detail"> {{getControl('seizurePerson')?.value}} </div>
+                        </div>
+                    </ng-container>
+                </div>
+            </ng-container>
+            <ng-container
+                *ngIf="  getGeneralControl('collateralTypeCode')?.value === 'OTHER' && getGeneralControl('collateralStatusCode')?.value === 'C' ">
+                <div fxLayout fxLayoutAlign="space-between center" class="mt-20">
+                    <ng-container *ngIf="data.mode === MODE.ADD || data.mode === MODE.EDIT">
+                        <div fxFlex="49">
+                            <spig-dropdown [classInput]="'input-s icon border-black-40'"
+                                [config]="expropriatePersonConfig" [options]="expropriatePersonOptions"
+                                formControlName="expropriatePerson">
+                            </spig-dropdown>
+                        </div>
+                        <div fxFlex="49">
+                            <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+                                <input type="text" matInput placeholder="เวนคืน" formControlName="expropriate" />
+                            </mat-form-field>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="data.mode === MODE.VIEW">
+                        <div fxFlex="49">
+                            <div class="collateral-info title">ผู้เวนคืน</div>
+                            <div class="collateral-info detail"> {{getControl('expropriatePerson')?.value}} </div>
+                        </div>
+                        <div fxFlex="49">
+                            <div class="collateral-info title">เวนคืน</div>
+                            <div class="collateral-info detail"> {{getControl('expropriate')?.value}} </div>
+                        </div>
+                    </ng-container>
+                </div>
+            </ng-container>
+            <div fxLayout fxLayoutAlign="space-between center " class="mt-20"
+                *ngIf=" getGeneralControl('collateralTypeCode')?.value === 'OTHER' && getGeneralControl('collateralStatusCode')?.value === 'C' ">
+                <ng-container *ngIf="data.mode === MODE.ADD || data.mode === MODE.EDIT ">
+                    <div fxFlex="32">
+                        <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+                            <input type="text" matInput formControlName="areaRai"
+                                [placeholder]="'CUSTOMER.RAI' | translate" />
+                        </mat-form-field>
+                    </div>
+                    <div fxFlex="32">
+                        <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+                            <input type="text" matInput formControlName="areaNgan"
+                                [placeholder]=" 'CUSTOMER.AREA' | translate" />
+                        </mat-form-field>
+                    </div>
+                    <div fxFlex="32">
+                        <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+                            <input type="text" matInput formControlName="areaSqrWa"
+                                [placeholder]=" 'CUSTOMER.SQW' | translate" />
+                        </mat-form-field>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="data.mode === MODE.VIEW">
+                    <div fxFlex="32">
+                        <div class="collateral-info title">
+                            {{
+                            'CUSTOMER.RAI' | translate
+                            }}
+                        </div>
+                        <div class="collateral-info detail">
+                            {{getControl('areaRai')?.value}}
+                        </div>
+                    </div>
+                    <div fxFlex="32">
+                        <div class="collateral-info title">
+                            {{
+                            'CUSTOMER.AREA' | translate
+                            }}
+                        </div>
+                        <div class="collateral-info detail">
+                            {{getControl('areaNgan')?.value}}
+                        </div>
+                    </div>
+                    <div fxFlex="32">
+                        <div class="collateral-info title">
+                            {{
+                            'CUSTOMER.SQW' | translate
+                            }}
+                        </div>
+                        <div class="collateral-info detail">
+                            {{getControl('areaSqrWa')?.value}}
+                        </div>
+                    </div>
+
+                </ng-container>
+
+            </div>
+            <ng-container
+                *ngIf="  getGeneralControl('collateralTypeCode')?.value === 'OTHER' && getGeneralControl('collateralStatusCode')?.value === 'C' ">
+                <div fxLayout fxLayoutAlign="space-between center" class="mt-20">
+                    <ng-container *ngIf="data.mode === MODE.ADD || data.mode === MODE.EDIT">
+                        <div fxFlex="49">
+                            <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+                                <input type="text" matInput placeholder="ค่าเวนคืนเป็นเงิน (บาท)"
+                                    formControlName="expropriateAmount" />
+                            </mat-form-field>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="data.mode === MODE.VIEW">
+                        <div fxFlex="49">
+                            <div class="collateral-info title">ค่าเวนคืนเป็นเงิน (บาท)</div>
+                            <div class="collateral-info detail"> {{getControl('expropriateAmount')?.value}} </div>
+                        </div>
+                    </ng-container>
+                </div>
+            </ng-container>
+            <ng-container
+                *ngIf=" getGeneralControl('collateralTypeCode')?.value === 'OTHER' && getGeneralControl('collateralStatusCode')?.value === 'D' ">
+                <div fxLayout fxLayoutAlign="space-between center" class="mt-20">
+                    <ng-container *ngIf="data.mode === MODE.ADD || data.mode === MODE.EDIT">
+                        <div fxFlex="49">
+                            <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+                                <input type="text" matInput placeholder="ภายใน (ปี)"
+                                    formControlName="notTransferOwnershipWithin" />
+                            </mat-form-field>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="data.mode === MODE.VIEW">
+                        <div fxFlex="49">
+                            <div class="collateral-info title">ภายใน (ปี)</div>
+                            <div class="collateral-info detail"> {{getControl('notTransferOwnershipWithin')?.value}} </div>
+                        </div>
+                    </ng-container>
+                </div>
+            </ng-container>
+            <ng-container
+                *ngIf=" getGeneralControl('collateralTypeCode')?.value === 'OTHER' && getGeneralControl('collateralStatusCode')?.value === 'E' ">
+                <div fxLayout fxLayoutAlign="space-between center" class="mt-20">
+                    <ng-container *ngIf="data.mode === MODE.ADD || data.mode === MODE.EDIT">
+                        <div fxFlex="49">
+                            <spig-datepicker class="date-picker-block" label="ตั้งแต่วันที่"
+                                formControlName="notTransferOwnershipFromDate"></spig-datepicker>
+                        </div>
+                        <div fxFlex="49">
+                            <spig-datepicker class="date-picker-block" label="ถึงวันที่"
+                                formControlName="notTransferOwnershipToDate"></spig-datepicker>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="data.mode === MODE.VIEW">
+                        <div fxFlex="49">
+                            <div class="collateral-info title">ตั้งแต่วันที่</div>
+                            <div class="collateral-info detail"> {{getControl('notTransferOwnershipFromDate')?.value}} </div>
+                        </div>
+                        <div fxFlex="49">
+                            <div class="collateral-info title">ถึงวันที่</div>
+                            <div class="collateral-info detail"> {{getControl('notTransferOwnershipToDate')?.value}} </div>
+                        </div>
+                    </ng-container>
+                </div>
+            </ng-container> -->
+      <div class="mt-20" fxLayout="row">
+        <ng-container *ngIf="data.mode === MODE.ADD || data.mode === MODE.EDIT">
+          <mat-form-field fxFlex class="border-black-40">
+            <mat-label>{{ 'CUSTOMER.COMMON_LABEL_MARGIN_DETAILS' | translate }}</mat-label>
+            <textarea
+              matInput
+              class="form-control no-resize"
+              cols="10"
+              rows="5"
+              formControlName="description"></textarea>
+          </mat-form-field>
+        </ng-container>
+        <ng-container *ngIf="data.mode === MODE.VIEW">
+          <div fxFlex="49">
+            <div class="collateral-info title">{{ 'CUSTOMER.COMMON_LABEL_DETAIL' | translate }}</div>
+            <div class="collateral-info detail">{{ getGeneralControl('description')?.value || '-' }}</div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <app-land-info
+    [mode]="data.mode"
+    [control]="subForm"
+    [collateralTypeCode]="collateral"
+    *ngIf="collateral === TYPE_CODE.LAND || collateral === TYPE_CODE.LAND_BUILDING"></app-land-info>
+  <app-building [mode]="data.mode" [control]="subForm" *ngIf="collateral === TYPE_CODE.BUILDING"></app-building>
+  <app-account [mode]="data.mode" [control]="subForm" *ngIf="collateral === TYPE_CODE.ACCOUNT"></app-account>
+  <app-machine [mode]="data.mode" [control]="subForm" *ngIf="collateral === TYPE_CODE.MACHINE"></app-machine>
+  <app-bond [mode]="data.mode" [control]="subForm" *ngIf="collateral === TYPE_CODE.BOND"></app-bond>
+  <app-stock-certification [control]="subForm" [mode]="data.mode" *ngIf="collateral === TYPE_CODE.STOCK_CER">
+  </app-stock-certification>
+  <app-condo [mode]="data.mode" [control]="subForm" *ngIf="collateral === TYPE_CODE.CONDO"></app-condo>
+  <app-salary [mode]="data.mode" [control]="subForm" *ngIf="collateral === TYPE_CODE.SALARY"></app-salary>
+  <app-vehicle [mode]="data.mode" [control]="subForm" *ngIf="collateral === TYPE_CODE.VEHICLE"></app-vehicle>
+  <app-leasehold [mode]="data.mode" [control]="subForm" *ngIf="collateral === TYPE_CODE.LEASEHOLD"></app-leasehold>
+  <app-cooperative-stock [mode]="data.mode" [control]="subForm" *ngIf="collateral === TYPE_CODE.COOPERATIVE_STOCK">
+  </app-cooperative-stock>
+  <app-other [mode]="data.mode" [control]="subForm" *ngIf="collateral === TYPE_CODE.OTHER"></app-other>
+</mat-dialog-content>
+<mat-dialog-actions class="footer" *ngIf="data.mode === MODE.EDIT || data.mode === MODE.ADD">
+  <button type="button" class="medium-button mat-ghost" (click)="cancel()" mat-button id="btn-dialog-close">
+    {{ 'COMMON.BUTTON_CANCEL' | translate }}
+  </button>
+  <button
+    type="button"
+    mat-flat-button
+    color="primary"
+    class="medium-button"
+    (click)="save()"
+    id="btn-dialog-active"
+    cdkFocusInitial>
+    <mat-icon svgIcon="icon-save-primary" class="icon icon-md"></mat-icon>
+    {{ 'COMMON.BUTTON_SAVE' | translate }}
+  </button>
+</mat-dialog-actions>

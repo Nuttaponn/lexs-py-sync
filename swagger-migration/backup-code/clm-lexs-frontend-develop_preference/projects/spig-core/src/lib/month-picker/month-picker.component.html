@@ -1,0 +1,13 @@
+<mat-form-field class="month-picker border-black-40" [ngClass]="{'date-picker-readonly': readonly }">
+    <input matInput [formControl]="dateControl"
+        [ngClass]="{'error': control && control.invalid && control.touched}"
+        [matDatepicker]="datepicker" [min]="minStartOfMonth" [max]="maxEndOfMonth"
+        [placeholder]="readonly || strValue ? '' : placeholder || 'Choose a date'"
+        (keydown)="$event.preventDefault()" (cut)="$event.preventDefault()"
+        (copy)="$event.preventDefault()" (paste)="$event.preventDefault()" [attr.disabled]="isDisabled"
+        (dateChange)="handleDateChange($event.value)">
+    <mat-icon matSuffix (click)="openPicker()" svgIcon="icon-Date" class="icon-md" [ngClass]="isDisabled ? 'fill-white' : 'icon-input-grey'"></mat-icon>
+    <mat-datepicker #datepicker [startView]="startView" (monthSelected)="handleMonthSelect($event)" (viewChanged)="onViewChanged($event)"
+        panelClass="month-picker">
+    </mat-datepicker>
+</mat-form-field>

@@ -1,0 +1,19 @@
+<app-action-bar
+  (backButtonHandler)="onBack()"
+  (cancelButtonHandler)="onCancel()"
+  [showNavBarInformation]="true"
+  [hasCancelButton]="false"
+  [hasPrimaryButton]="isEditMode"
+  [primaryButtonIcon]="'icon-save-primary'"
+  [primaryButtonText]="'COMMON.BUTTON_SAVE_INDICTMENT'"
+  (primaryButtonHandler)="onSave()">
+  <ng-container navBarInformationTemplate>
+    <mat-icon svgIcon="icon-save-primary" class="icon icon-xmedium"></mat-icon>
+    <span class="ml-05em">{{ 'COMMON.BUTTON_SAVE_INDICTMENT' | translate }}</span>
+  </ng-container>
+</app-action-bar>
+
+<div class="content-below-action-bar-area">
+  <app-indictment-detail [dataForm]="dataForm" (selectPersons)="getPersons($event)" [forceViewMode]="forceViewMode">
+  </app-indictment-detail>
+</div>

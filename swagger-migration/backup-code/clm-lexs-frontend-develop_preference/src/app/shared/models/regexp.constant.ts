@@ -1,0 +1,17 @@
+export const REG_EXP = {
+  EMAIL: new RegExp(/^[A-Z0-9]([-\._]?[A-Z0-9])+@[A-Z0-9](-?[A-Z0-9])*(\.[A-Z0-9](-?[A-Z0-9])+)+$/i),
+  EMAIL_HOST_DUP: new RegExp(/[-_.]{2}/g),
+  DIGIT_ONLY: new RegExp(/^[0-9]+$/),
+  AZ_ALL: new RegExp(/^[a-zA-Z]+$/),
+  NOT_AZ_ALL: new RegExp(/[^a-zA-Z]+$/),
+  AZ_ALL_09: new RegExp(/[a-zA-Z0-9]/),
+  NOT_AZ_ALL_09: new RegExp(/[^a-zA-Z0-9]/g),
+  PASSPORT_CITIZEN_ID: new RegExp(/^[A-Za-z0-9\-]+$/),
+  ENG_TH_NAME: new RegExp(/^[A-Za-zก-๏\-\ ]+$/),
+  ENG_TH_DIGIT: new RegExp(/^[A-Za-zก-๏0-9\-\ ]+$/),
+  PHONE_HYPHEN: new RegExp(/-/g),
+  USER_NAME: new RegExp(/^[A-Za-z0-9]*$/),
+  CURRENCY: new RegExp(/^((?!0)[0-9,]{1,19}|0|&\.\d{1,2})($|\.\d{1,2}$)/),
+  ATLEAST_3_CHAR_ALPHA_NUMBER: new RegExp(/^[a-zA-Z0-9]{3,}$/),
+  ATLEAST_3_CHAR_ALPHA_NUMBER_SPECIAL: new RegExp(/^[a-zA-Z0-9!@#$&()`.+,/"-\s]{3,}$/),
+};

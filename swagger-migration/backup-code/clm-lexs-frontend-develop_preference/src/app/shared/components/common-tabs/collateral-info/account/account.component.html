@@ -1,0 +1,169 @@
+<div fxLayout class="space-around content mt-20" [formGroup]="control" *ngIf="control">
+  <div fxLayout="column" fxFlex="20">
+    <div class="collateral-info header mx-width-pct-60">
+      {{ 'CUSTOMER.ACCOUNT_INFO' | translate }}
+    </div>
+  </div>
+  <div fxLayout="column" fxFlex>
+    <div fxLayout fxLayoutAlign="space-between ">
+      <ng-container *ngIf="mode === MODE.ADD || mode === MODE.EDIT">
+        <div fxFlex="49" fxLayout="column">
+          <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+            <mat-label>{{ 'CUSTOMER.ACCOUNT' | translate }}</mat-label>
+            <input
+              type="text"
+              maxlength="12"
+              formControlName="accountNo"
+              matInput
+              [placeholder]="'CUSTOMER.ACCOUNT' | translate" />
+          </mat-form-field>
+          <spig-error-msg [control]="getControl('accountNo')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+          </spig-error-msg>
+        </div>
+        <div fxFlex="49">
+          <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+            <mat-label>{{ 'CUSTOMER.CURRENCY_UNIT' | translate }}</mat-label>
+            <input
+              type="text"
+              formControlName="currency"
+              matInput
+              [placeholder]="'CUSTOMER.CURRENCY_UNIT' | translate" />
+          </mat-form-field>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="mode === MODE.VIEW">
+        <div fxFlex="49">
+          <div class="collateral-info title">
+            {{ 'CUSTOMER.ACCOUNT' | translate }}
+          </div>
+          <div class="collateral-info detail">
+            {{ getControl('accountNo')?.value || '-' }}
+          </div>
+        </div>
+        <div fxFlex="49">
+          <div class="collateral-info title">
+            {{ 'CUSTOMER.CURRENCY_UNIT' | translate }}
+          </div>
+          <div class="collateral-info detail">
+            {{ getControl('currency')?.value || '-' }}
+          </div>
+        </div>
+      </ng-container>
+    </div>
+    <div fxLayout fxLayoutAlign="space-between " class="mt-20">
+      <ng-container *ngIf="mode === MODE.ADD || mode === MODE.EDIT">
+        <div fxFlex="49">
+          <spig-dropdown
+            [classInput]="'input-s icon border-black-40'"
+            formControlName="collateralSubTypeCode"
+            [config]="accoutType"
+            [options]="collateralSubTypeOption">
+          </spig-dropdown>
+        </div>
+        <div fxFlex="49" fxLayout="column">
+          <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+            <mat-label>{{ 'CUSTOMER.BANK' | translate }}</mat-label>
+            <input
+              type="text"
+              maxlength="40"
+              matInput
+              formControlName="bankName"
+              [placeholder]="'CUSTOMER.BANK' | translate" />
+          </mat-form-field>
+          <spig-error-msg [control]="getControl('bankName')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+          </spig-error-msg>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="mode === MODE.VIEW">
+        <div fxFlex="49">
+          <div class="collateral-info title">
+            {{ 'CUSTOMER.ACCOUNT_TYPE' | translate }}
+          </div>
+          <div class="collateral-info detail">
+            {{ getControl('collateralSubTypeDesc')?.value || '-' }}
+          </div>
+        </div>
+        <div fxFlex="49">
+          <div class="collateral-info title">
+            {{ 'CUSTOMER.BANK' | translate }}
+          </div>
+          <div class="collateral-info detail">
+            {{ getControl('bankName')?.value || '-' }}
+          </div>
+        </div>
+      </ng-container>
+    </div>
+    <div fxLayout fxLayoutAlign="space-between center " class="mt-20">
+      <ng-container *ngIf="mode === MODE.ADD || mode === MODE.EDIT">
+        <div fxFlex>
+          <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+            <mat-label>{{ 'CUSTOMER.BANK_NAME' | translate }}</mat-label>
+            <input
+              type="text"
+              maxlength="40"
+              formControlName="accountName"
+              matInput
+              [placeholder]="'CUSTOMER.BANK_NAME' | translate" />
+          </mat-form-field>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="mode === MODE.VIEW">
+        <div fxFlex>
+          <div class="collateral-info title">
+            {{ 'CUSTOMER.BANK_NAME' | translate }}
+          </div>
+          <div class="collateral-info detail">
+            {{ getControl('accountName')?.value || '-' }}
+          </div>
+        </div>
+      </ng-container>
+    </div>
+    <div fxLayout fxLayoutAlign="space-between  " class="mt-20">
+      <ng-container *ngIf="mode === MODE.ADD || mode === MODE.EDIT">
+        <div fxFlex="49" fxLayout="column">
+          <mat-form-field fxFlex appearance="fill" class="no-label input-lg border-black-40">
+            <mat-label>{{ 'CUSTOMER.TOTAL' | translate }}</mat-label>
+            <input
+              type="text"
+              matInput
+              formControlName="totalAppraisalValue"
+              appNumberOnly="integer"
+              maxlength="15"
+              [placeholder]="'CUSTOMER.TOTAL' | translate" />
+          </mat-form-field>
+          <spig-error-msg [control]="getControl('totalAppraisalValue')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+          </spig-error-msg>
+        </div>
+        <div fxFlex="49" fxLayout="column">
+          <spig-datepicker
+            [classInput]="'input-s icon border-black-40'"
+            formControlName="dueDate"
+            [required]="true"
+            [label]="'CUSTOMER.DUE_DATE'"
+            class="display-grid">
+          </spig-datepicker>
+          <spig-error-msg [control]="getControl('dueDate')" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+          </spig-error-msg>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="mode === MODE.VIEW">
+        <div fxFlex="49">
+          <div class="collateral-info title">
+            {{ 'CUSTOMER.TOTAL' | translate }}
+          </div>
+          <div class="collateral-info detail">
+            {{ (getControl('totalAppraisalValue')?.value | numberDecimal) || '-' }}
+          </div>
+        </div>
+        <div fxFlex="49">
+          <div class="collateral-info title">
+            {{ 'CUSTOMER.DUE_DATE' | translate }}
+          </div>
+          <div class="collateral-info detail">
+            {{ getControl('dueDate')?.value || '-' }}
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>

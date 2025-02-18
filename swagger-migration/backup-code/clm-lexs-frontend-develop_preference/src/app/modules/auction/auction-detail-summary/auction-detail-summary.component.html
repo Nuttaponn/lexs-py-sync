@@ -1,0 +1,57 @@
+<div class="content-container">
+  <div class="inner-container-padding-24">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+      <div class="title-text">
+        <h5 class="mt-12 mb-12 mr-12">รายละเอียดสาระสำคัญ</h5>
+      </div>
+      <div fxLayout="row">
+        <div class="description" (click)="isOpened = !isOpened">
+          <mat-icon
+            [svgIcon]="isOpened ? 'icon-Slide-Hide' : 'icon-Expand'"
+            class="icon icon-xmedium icon-hide-show fill-blue mr-5">
+          </mat-icon
+          >{{ isOpened ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate) }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <mat-accordion>
+    <mat-expansion-panel [expanded]="isOpened" hideToggle>
+      <mat-divider class="no-margin"></mat-divider>
+      <div class="search-section pb-16 pt-16" fxLayout="row" fxLayoutAlign="center start" fxLayoutGap="12px">
+        <h6 fxLayout="column" fxFlex="15">ข้อมูล</h6>
+        <div fxLayout="column" fxFlex="100" fxLayoutGap="30px">
+          <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="20px">
+            <div fxLayout="column" fxFlex="30" fxLayoutGap="12px">
+              <span class="thin-letter">ศาล</span>
+              <div>{{ data?.lawCourtName || '-' }}</div>
+            </div>
+            <div fxLayout="column" fxFlex="30" fxLayoutGap="12px">
+              <span class="thin-letter">
+                {{
+                  (
+                    auctionCaseTypeCode === '0002' ?
+                    'COMMON.LABEL_RED_CASE_NO_EXTERNAL'
+                    : 'PROPERTY.RED_CASE'
+                  )
+                  | translate
+                }}
+              </span>
+              <div>{{ data?.redCaseNo || '-' }}</div>
+            </div>
+          </div>
+          <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="20px">
+            <div fxLayout="column" fxFlex="30" fxLayoutGap="12px">
+              <span class="thin-letter">โจทก์</span>
+              <div>ธนาคารกรุงไทย จำกัด (มหาชน)</div>
+            </div>
+            <div fxLayout="column" fxFlex="30" fxLayoutGap="12px">
+              <span class="thin-letter">จำเลย</span>
+              <div>{{ data?.defendantName || '-' }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

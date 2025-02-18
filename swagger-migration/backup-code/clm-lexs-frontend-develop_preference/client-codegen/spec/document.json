@@ -1,0 +1,2539 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "KTB Backend for Frontend APIs.",
+    "description": "Microservice: document",
+    "contact": {
+      "name": "Krungthai Bank Public Company Limited",
+      "url": "https://krungthai.com",
+      "email": ""
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://lexsdev.krungthai/ktb/rest/lexs",
+      "description": "Generated server url"
+    }
+  ],
+  "paths": {
+    "/v1/profile-direct/validate-save-batch-data": {
+      "post": {
+        "tags": [
+          "profile-direct-controller"
+        ],
+        "description": "Enhance api accountNo is meaning accountId",
+        "operationId": "validateSaveBatchData",
+        "parameters": [
+          {
+            "name": "x-request-id",
+            "in": "header",
+            "description": "36 characters unique ID used for traceability purpose. If provided on a request, the same value is echoed back. If not provided on a request, API generates and returns UUID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "f6cb2742-45ca-433f-a69b-b06deebf98e6"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchDataRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "x-request-id": {
+                "description": "36 characters unique ID used for traceability purpose. If provided on a request, the same value is echoed back. If not provided on a request, API generates and returns UUID.",
+                "style": "simple"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "headers": {
+              "x-request-id": {
+                "description": "36 characters unique ID used for traceability purpose. If provided on a request, the same value is echoed back. If not provided on a request, API generates and returns UUID.",
+                "style": "simple"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsList"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommonResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity (Business Error)",
+            "headers": {
+              "x-request-id": {
+                "description": "36 characters unique ID used for traceability purpose. If provided on a request, the same value is echoed back. If not provided on a request, API generates and returns UUID.",
+                "style": "simple"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsList"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error occurred",
+            "headers": {
+              "x-request-id": {
+                "description": "36 characters unique ID used for traceability purpose. If provided on a request, the same value is echoed back. If not provided on a request, API generates and returns UUID.",
+                "style": "simple"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsList"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "headers": {
+              "x-request-id": {
+                "description": "36 characters unique ID used for traceability purpose. If provided on a request, the same value is echoed back. If not provided on a request, API generates and returns UUID.",
+                "style": "simple"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsList"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "Gateway Timeout",
+            "headers": {
+              "x-request-id": {
+                "description": "36 characters unique ID used for traceability purpose. If provided on a request, the same value is echoed back. If not provided on a request, API generates and returns UUID.",
+                "style": "simple"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsList"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/profile-direct/save-batch-data": {
+      "post": {
+        "tags": [
+          "profile-direct-controller"
+        ],
+        "description": "Enhance api accountNo is meaning accountId",
+        "operationId": "saveBatchData",
+        "parameters": [
+          {
+            "name": "x-request-id",
+            "in": "header",
+            "description": "36 characters unique ID used for traceability purpose. If provided on a request, the same value is echoed back. If not provided on a request, API generates and returns UUID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "f6cb2742-45ca-433f-a69b-b06deebf98e6"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchDataRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "x-request-id": {
+                "description": "36 characters unique ID used for traceability purpose. If provided on a request, the same value is echoed back. If not provided on a request, API generates and returns UUID.",
+                "style": "simple"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "headers": {
+              "x-request-id": {
+                "description": "36 characters unique ID used for traceability purpose. If provided on a request, the same value is echoed back. If not provided on a request, API generates and returns UUID.",
+                "style": "simple"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsList"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchDataDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchDataDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchDataDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity (Business Error)",
+            "headers": {
+              "x-request-id": {
+                "description": "36 characters unique ID used for traceability purpose. If provided on a request, the same value is echoed back. If not provided on a request, API generates and returns UUID.",
+                "style": "simple"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsList"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error occurred",
+            "headers": {
+              "x-request-id": {
+                "description": "36 characters unique ID used for traceability purpose. If provided on a request, the same value is echoed back. If not provided on a request, API generates and returns UUID.",
+                "style": "simple"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsList"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "headers": {
+              "x-request-id": {
+                "description": "36 characters unique ID used for traceability purpose. If provided on a request, the same value is echoed back. If not provided on a request, API generates and returns UUID.",
+                "style": "simple"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsList"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "Gateway Timeout",
+            "headers": {
+              "x-request-id": {
+                "description": "36 characters unique ID used for traceability purpose. If provided on a request, the same value is echoed back. If not provided on a request, API generates and returns UUID.",
+                "style": "simple"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsList"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/document/upload/{documentTemplateId}": {
+      "post": {
+        "tags": [
+          "document-controller"
+        ],
+        "operationId": "uploadDocument",
+        "parameters": [
+          {
+            "name": "documentTemplateId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cif",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "litigationId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "file"
+                ],
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentUploadResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/document/upload/{documentTemplateId}/basic": {
+      "post": {
+        "tags": [
+          "document-controller"
+        ],
+        "operationId": "uploadBasicDocument",
+        "parameters": [
+          {
+            "name": "documentTemplateId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "objectId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "file"
+                ],
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentUploadResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/document-temp/update-attribute-on-imp": {
+      "post": {
+        "tags": [
+          "document-temp-controller"
+        ],
+        "operationId": "updateExistingDocumentAttribute",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/dims/approveRequest": {
+      "post": {
+        "tags": [
+          "dims-controller"
+        ],
+        "operationId": "approveRequest",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApproveRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApproveResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/profile-direct/{cifNo}/inquiry-profile-direct": {
+      "get": {
+        "tags": [
+          "profile-direct-controller"
+        ],
+        "description": "Enhance api accountNo is meaning accountId",
+        "operationId": "inquiryProfileDirect",
+        "parameters": [
+          {
+            "name": "cifNo",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "accountDataType",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ACCOUNT_LIST",
+                "ACCOUNT_OVERVIEW",
+                "ACCOUNT_HISTORY",
+                "INTEREST_CHANGE_SUMMARY_REPORT",
+                "STATEMENT",
+                "OUTSTANDING_REPORT"
+              ]
+            }
+          },
+          {
+            "name": "accountNo",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "litigationId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-request-id",
+            "in": "header",
+            "description": "36 characters unique ID used for traceability purpose. If provided on a request, the same value is echoed back. If not provided on a request, API generates and returns UUID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "f6cb2742-45ca-433f-a69b-b06deebf98e6"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "x-request-id": {
+                "description": "36 characters unique ID used for traceability purpose. If provided on a request, the same value is echoed back. If not provided on a request, API generates and returns UUID.",
+                "style": "simple"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "headers": {
+              "x-request-id": {
+                "description": "36 characters unique ID used for traceability purpose. If provided on a request, the same value is echoed back. If not provided on a request, API generates and returns UUID.",
+                "style": "simple"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsList"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfileDirectResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfileDirectResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfileDirectResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity (Business Error)",
+            "headers": {
+              "x-request-id": {
+                "description": "36 characters unique ID used for traceability purpose. If provided on a request, the same value is echoed back. If not provided on a request, API generates and returns UUID.",
+                "style": "simple"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsList"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error occurred",
+            "headers": {
+              "x-request-id": {
+                "description": "36 characters unique ID used for traceability purpose. If provided on a request, the same value is echoed back. If not provided on a request, API generates and returns UUID.",
+                "style": "simple"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsList"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "headers": {
+              "x-request-id": {
+                "description": "36 characters unique ID used for traceability purpose. If provided on a request, the same value is echoed back. If not provided on a request, API generates and returns UUID.",
+                "style": "simple"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsList"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "Gateway Timeout",
+            "headers": {
+              "x-request-id": {
+                "description": "36 characters unique ID used for traceability purpose. If provided on a request, the same value is echoed back. If not provided on a request, API generates and returns UUID.",
+                "style": "simple"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsList"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/profile-direct/{cifNo}/inquiry-batch-data": {
+      "get": {
+        "tags": [
+          "profile-direct-controller"
+        ],
+        "operationId": "inquiryBatchData",
+        "parameters": [
+          {
+            "name": "cifNo",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "litigationId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ACCOUNT_LIST",
+                "ACCOUNT_OVERVIEW",
+                "ACCOUNT_HISTORY",
+                "INTEREST_CHANGE_SUMMARY_REPORT",
+                "STATEMENT",
+                "OUTSTANDING_REPORT"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageBatchDataDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/profile-direct/{cifNo}/inquiry-account": {
+      "get": {
+        "tags": [
+          "profile-direct-controller"
+        ],
+        "operationId": "inquiryAccount",
+        "parameters": [
+          {
+            "name": "cifNo",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "litigationId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "accountDataType",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ACCOUNT_LIST",
+                "ACCOUNT_OVERVIEW",
+                "ACCOUNT_HISTORY",
+                "INTEREST_CHANGE_SUMMARY_REPORT",
+                "STATEMENT",
+                "OUTSTANDING_REPORT"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Account"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/profile-direct/download": {
+      "get": {
+        "tags": [
+          "profile-direct-controller"
+        ],
+        "description": "Enhance api accountNo is meaning accountId",
+        "operationId": "download",
+        "parameters": [
+          {
+            "name": "cifNo",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "accountDataType",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ACCOUNT_LIST",
+                "ACCOUNT_OVERVIEW",
+                "ACCOUNT_HISTORY",
+                "INTEREST_CHANGE_SUMMARY_REPORT",
+                "STATEMENT",
+                "OUTSTANDING_REPORT"
+              ]
+            }
+          },
+          {
+            "name": "accountNo",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "litigationId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string",
+                  "format": "byte"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/document/view/{imageSource}/{imageId}": {
+      "get": {
+        "tags": [
+          "document-controller"
+        ],
+        "operationId": "getDocument",
+        "parameters": [
+          {
+            "name": "imageSource",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "LEXS",
+                "IMP",
+                "DIMS",
+                "LG",
+                "PN",
+                "FCS",
+                "TFS",
+                "LCS",
+                "RLS"
+              ]
+            }
+          },
+          {
+            "name": "imageId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string",
+                  "format": "byte"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/document/search/{documentTemplateId}": {
+      "get": {
+        "tags": [
+          "document-controller"
+        ],
+        "operationId": "searchDocuments",
+        "parameters": [
+          {
+            "name": "documentTemplateId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "customerId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "objectType",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "PERSON",
+                "CONTRACT",
+                "COLLATERAL",
+                "BILL_NO",
+                "ACCOUNT_NO",
+                "LINKAGE",
+                "SUNDRY",
+                "SUB_ACCOUNT",
+                "DEFERMENT",
+                "CESSATION",
+                "APPEAL",
+                "SUPREME",
+                "DISPUTE_APPEAL",
+                "DISPUTE_SUPREME",
+                "EXPENSE",
+                "CONDITION_APPEAL",
+                "CONDITION_SUPREME",
+                "SEIZURE_LED",
+                "WITHDRAW_SEIZURE_LED",
+                "DEFERMENT_EXEC",
+                "AUCTION_EXPENSE",
+                "AUCTION",
+                "EXTERNAL_PAYMENT_TRACKING_DEED_GROUP",
+                "CASHIER_CHEQUE",
+                "CHEQUE_ADDITIONAL_PAYMENT",
+                "CASHIER_CHEQUE_TRANSFER_OWNERSHIP",
+                "DEED_GROUP_ID",
+                "CONV_DOC_UPLOAD_ID",
+                "CONVY_ACC_DOC_FOLLOWUP_ID",
+                "AUC_BIDDING_ID",
+                "AUC_BIDDING_DEED_GROUP_ID",
+                "WITHDRAW_SEIZURES_COLLATERALS_CONSENT_DOCUMENT",
+                "DEBT_SETTLEMENT_DOCUMENT",
+                "ACCOUNT",
+                "ASSET",
+                "ASSET_INVESTIGATION",
+                "AUCTION_CASHIER_CHEQUE_TRANSFER_OWNERSHIP",
+                "DEBT_SETTLEMENT_ACCOUNT",
+                "PREFERENCE"
+              ]
+            }
+          },
+          {
+            "name": "objectId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DocumentSearchResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/document/metadata/{uploadSessionId}": {
+      "get": {
+        "tags": [
+          "document-controller"
+        ],
+        "operationId": "getMetadata",
+        "parameters": [
+          {
+            "name": "uploadSessionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-request-id",
+            "in": "header",
+            "description": "36 characters unique ID used for traceability purpose. If provided on a request, the same value is echoed back. If not provided on a request, API generates and returns UUID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "f6cb2742-45ca-433f-a69b-b06deebf98e6"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "x-request-id": {
+                "description": "36 characters unique ID used for traceability purpose. If provided on a request, the same value is echoed back. If not provided on a request, API generates and returns UUID.",
+                "style": "simple"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "headers": {
+              "x-request-id": {
+                "description": "36 characters unique ID used for traceability purpose. If provided on a request, the same value is echoed back. If not provided on a request, API generates and returns UUID.",
+                "style": "simple"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsList"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentMetadata"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentMetadata"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentMetadata"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity (Business Error)",
+            "headers": {
+              "x-request-id": {
+                "description": "36 characters unique ID used for traceability purpose. If provided on a request, the same value is echoed back. If not provided on a request, API generates and returns UUID.",
+                "style": "simple"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsList"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error occurred",
+            "headers": {
+              "x-request-id": {
+                "description": "36 characters unique ID used for traceability purpose. If provided on a request, the same value is echoed back. If not provided on a request, API generates and returns UUID.",
+                "style": "simple"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsList"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "headers": {
+              "x-request-id": {
+                "description": "36 characters unique ID used for traceability purpose. If provided on a request, the same value is echoed back. If not provided on a request, API generates and returns UUID.",
+                "style": "simple"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsList"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "Gateway Timeout",
+            "headers": {
+              "x-request-id": {
+                "description": "36 characters unique ID used for traceability purpose. If provided on a request, the same value is echoed back. If not provided on a request, API generates and returns UUID.",
+                "style": "simple"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsList"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/dims/{imageId}": {
+      "get": {
+        "tags": [
+          "dims-controller"
+        ],
+        "operationId": "getDimsDocument",
+        "parameters": [
+          {
+            "name": "imageId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DimsDocumentResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/dims/ticket-search": {
+      "get": {
+        "tags": [
+          "dims-controller"
+        ],
+        "operationId": "searchTicket",
+        "parameters": [
+          {
+            "name": "imageId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DimsTicketResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BatchDataRequest": {
+        "type": "object",
+        "properties": {
+          "accountNo": {
+            "type": "string"
+          },
+          "profileDirectType": {
+            "type": "string",
+            "enum": [
+              "ACCOUNT_LIST",
+              "ACCOUNT_OVERVIEW",
+              "ACCOUNT_HISTORY",
+              "INTEREST_CHANGE_SUMMARY_REPORT",
+              "STATEMENT",
+              "OUTSTANDING_REPORT"
+            ]
+          },
+          "fromDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "toDate": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
+      "ErrorInfo": {
+        "required": [
+          "code",
+          "message"
+        ],
+        "type": "object",
+        "properties": {
+          "moreInfo": {
+            "type": "string",
+            "writeOnly": true
+          },
+          "code": {
+            "type": "string",
+            "description": "Error Code",
+            "example": "1234"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error Message",
+            "example": "Error message"
+          },
+          "description": {
+            "type": "string",
+            "description": "More information on the problem and solution. Or, the error message from backend.",
+            "example": "ORIGINAL ERROR: E1234 ORIGINAL ERROR MESSAGE"
+          },
+          "originalErrorCode": {
+            "type": "string",
+            "description": "Original error code from backend.",
+            "example": "E1234"
+          },
+          "originalErrorDesc": {
+            "type": "string",
+            "description": "Original error message from backend.",
+            "example": "ORIGINAL ERROR MESSAGE"
+          },
+          "traceId": {
+            "type": "string",
+            "description": "More information on the problem and solution. Or, the error message from backend.",
+            "example": "ORIGINAL ERROR: E1234 ORIGINAL ERROR MESSAGE"
+          }
+        },
+        "description": "Detailed of Error"
+      },
+      "ErrorsList": {
+        "required": [
+          "errors"
+        ],
+        "type": "object",
+        "properties": {
+          "errors": {
+            "type": "array",
+            "description": "List of ErrorInfo",
+            "items": {
+              "$ref": "#/components/schemas/ErrorInfo"
+            }
+          }
+        },
+        "description": "List of Error Information"
+      },
+      "CommonResponse": {
+        "type": "object",
+        "properties": {
+          "existing": {
+            "type": "boolean"
+          }
+        }
+      },
+      "BatchDataDto": {
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "accountNo": {
+            "type": "string"
+          },
+          "profileDirectType": {
+            "type": "string",
+            "enum": [
+              "ACCOUNT_LIST",
+              "ACCOUNT_OVERVIEW",
+              "ACCOUNT_HISTORY",
+              "INTEREST_CHANGE_SUMMARY_REPORT",
+              "STATEMENT",
+              "OUTSTANDING_REPORT"
+            ]
+          },
+          "fromDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "toDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdBy": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "DocumentUploadResponse": {
+        "type": "object",
+        "properties": {
+          "uploadSessionId": {
+            "type": "string"
+          },
+          "imageId": {
+            "type": "string"
+          }
+        }
+      },
+      "ApproveDocument": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "chronicleID": {
+            "type": "string"
+          },
+          "rejectReason": {
+            "type": "string"
+          },
+          "holderCostCenter": {
+            "type": "string"
+          },
+          "holderName": {
+            "type": "string"
+          }
+        }
+      },
+      "ApproveRequest": {
+        "type": "object",
+        "properties": {
+          "ticketBarcode": {
+            "type": "string"
+          },
+          "docList": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApproveDocument"
+            }
+          },
+          "returnFlag": {
+            "type": "string"
+          },
+          "returnLogistic": {
+            "$ref": "#/components/schemas/ReturnLogistic"
+          },
+          "returnDescription": {
+            "type": "string"
+          },
+          "rejectContactName": {
+            "type": "string"
+          },
+          "rejectTel": {
+            "type": "string"
+          }
+        }
+      },
+      "ReturnLogistic": {
+        "type": "object",
+        "properties": {
+          "sourceCostCenter": {
+            "type": "string"
+          },
+          "sendingMethod": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "contactName": {
+            "type": "string"
+          },
+          "tel": {
+            "type": "string"
+          },
+          "appointDate": {
+            "type": "string"
+          }
+        }
+      },
+      "ApproveResponse": {
+        "type": "object",
+        "properties": {
+          "responseCode": {
+            "type": "string"
+          },
+          "responseMessage": {
+            "type": "string"
+          },
+          "packageNo": {
+            "type": "string"
+          }
+        }
+      },
+      "AccountDetailDto": {
+        "type": "object",
+        "properties": {
+          "customerDetails": {
+            "type": "string"
+          },
+          "dataDate": {
+            "type": "string"
+          },
+          "viewer": {
+            "type": "string"
+          },
+          "accountSummary": {
+            "$ref": "#/components/schemas/AccountSummary"
+          },
+          "interestSummary": {
+            "$ref": "#/components/schemas/InterestSummary"
+          },
+          "paymentSummary": {
+            "$ref": "#/components/schemas/PaymentSummary"
+          },
+          "paymentRecords": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PaymentRecord"
+            }
+          },
+          "loanAccountInterest": {
+            "$ref": "#/components/schemas/LoanAccountInterest"
+          },
+          "delinquencyOptions": {
+            "$ref": "#/components/schemas/DelinquencyOptions"
+          },
+          "rateDetermination": {
+            "$ref": "#/components/schemas/RateDetermination"
+          },
+          "accountName": {
+            "type": "string"
+          },
+          "period": {
+            "type": "string"
+          },
+          "interestChangeSummaries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InterestChangeSummary"
+            }
+          }
+        }
+      },
+      "AccountList": {
+        "type": "object",
+        "properties": {
+          "accountDetailType": {
+            "type": "string"
+          },
+          "accountDetail": {
+            "type": "string"
+          },
+          "creditLimit": {
+            "type": "number"
+          },
+          "ledgerBalance": {
+            "type": "number"
+          },
+          "marketCode": {
+            "type": "string"
+          }
+        }
+      },
+      "AccountListReportDto": {
+        "type": "object",
+        "properties": {
+          "customerDetail": {
+            "type": "string"
+          },
+          "dataDateTime": {
+            "type": "string"
+          },
+          "viewerDetail": {
+            "type": "string"
+          },
+          "accountList": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccountList"
+            }
+          }
+        }
+      },
+      "AccountSummary": {
+        "type": "object",
+        "properties": {
+          "accountNumber": {
+            "type": "string"
+          },
+          "accountStatus": {
+            "type": "string"
+          },
+          "creditLimit": {
+            "type": "number"
+          },
+          "productType": {
+            "type": "string"
+          },
+          "ledgerBalance": {
+            "type": "number"
+          },
+          "marketCode": {
+            "type": "string"
+          },
+          "payoffAmount": {
+            "type": "number"
+          },
+          "openAccountDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "subAccountOptions": {
+            "type": "string"
+          },
+          "firstDisbursementDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "legalStatus": {
+            "type": "string"
+          },
+          "maturityDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "lastPaymentDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "cclassAging": {
+            "type": "string"
+          },
+          "cclassCondition": {
+            "type": "string"
+          }
+        }
+      },
+      "DelinquencyOptions": {
+        "type": "object",
+        "properties": {
+          "penaltyIndex": {
+            "type": "string"
+          },
+          "index": {
+            "type": "string"
+          },
+          "penaltySpread": {
+            "type": "number"
+          },
+          "spread": {
+            "type": "number"
+          },
+          "penaltyRate": {
+            "type": "number"
+          },
+          "rate": {
+            "type": "number"
+          },
+          "percentageOfBaseOverride": {
+            "type": "number"
+          },
+          "asOfDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "lateChargeActionDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "lateChargeEffectiveDate": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
+      "InqOutStandingReportDto": {
+        "type": "object",
+        "properties": {
+          "inqOutStandingReportRes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InqOutStandingReportRes"
+            }
+          },
+          "summaryByProdType": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SummaryByProdType"
+            }
+          },
+          "totalTxn": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalThbEquivalent": {
+            "type": "number"
+          }
+        }
+      },
+      "InqOutStandingReportRes": {
+        "type": "object",
+        "properties": {
+          "prodType": {
+            "type": "string"
+          },
+          "prodName": {
+            "type": "string"
+          },
+          "ccy": {
+            "type": "string"
+          },
+          "referenceNo": {
+            "type": "string"
+          },
+          "referRef": {
+            "type": "string"
+          },
+          "balanceAmt": {
+            "type": "string"
+          },
+          "midRateBot": {
+            "type": "string"
+          },
+          "thbEquivalent": {
+            "type": "string"
+          },
+          "customerRef": {
+            "type": "string"
+          },
+          "eventDate": {
+            "type": "string"
+          },
+          "dueExpiry": {
+            "type": "string"
+          },
+          "days": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "intRate": {
+            "type": "string"
+          },
+          "lastIntDate": {
+            "type": "string"
+          },
+          "intAmt": {
+            "type": "string"
+          }
+        }
+      },
+      "InterestChangeSummary": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "interestRate": {
+            "type": "number"
+          },
+          "principalBalance": {
+            "type": "number"
+          }
+        }
+      },
+      "InterestSummary": {
+        "type": "object",
+        "properties": {
+          "currentRate": {
+            "type": "number"
+          },
+          "accrualInterest": {
+            "type": "number"
+          },
+          "interestIndex": {
+            "type": "string"
+          },
+          "lastAmountAccrued": {
+            "type": "number"
+          },
+          "interestSpread": {
+            "type": "string"
+          },
+          "lateCharge": {
+            "type": "number"
+          },
+          "relatedDeposit": {
+            "type": "string"
+          },
+          "miscCharge": {
+            "type": "number"
+          },
+          "fixedRateDifferential": {
+            "type": "string"
+          }
+        }
+      },
+      "LoanAccountInterest": {
+        "type": "object",
+        "properties": {
+          "interestPaymentStartDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "defaultInterestPaymentDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "loanAccountInterestDetails": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LoanAccountInterestDetails"
+            }
+          }
+        }
+      },
+      "LoanAccountInterestDetails": {
+        "type": "object",
+        "properties": {
+          "fromDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "toDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "balance": {
+            "type": "number"
+          },
+          "intRate": {
+            "type": "number"
+          },
+          "calInterest": {
+            "type": "number"
+          },
+          "lateCharge": {
+            "type": "number"
+          },
+          "intBalance": {
+            "type": "number"
+          },
+          "penaltyRate": {
+            "type": "number"
+          },
+          "calLateCharge": {
+            "type": "number"
+          }
+        }
+      },
+      "PaymentRecord": {
+        "type": "object",
+        "properties": {
+          "dueDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "total": {
+            "type": "number"
+          },
+          "unpaid": {
+            "type": "number"
+          },
+          "unpaidInterest": {
+            "type": "number"
+          },
+          "unpaidPrincipal": {
+            "type": "number"
+          }
+        }
+      },
+      "PaymentSummary": {
+        "type": "object",
+        "properties": {
+          "frequency": {
+            "type": "string"
+          },
+          "principalInterest": {
+            "type": "number"
+          },
+          "calculateMethod": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nextDueDate": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
+      "ProfileDirectResponse": {
+        "type": "object",
+        "properties": {
+          "accountListReportDto": {
+            "$ref": "#/components/schemas/AccountListReportDto"
+          },
+          "accountDetailDto": {
+            "$ref": "#/components/schemas/AccountDetailDto"
+          },
+          "tfsOutstandingReportDto": {
+            "$ref": "#/components/schemas/TfsOutstandingReportDto"
+          }
+        }
+      },
+      "RateDetermination": {
+        "type": "object",
+        "properties": {
+          "interestRate": {
+            "type": "number"
+          },
+          "interestIndex": {
+            "type": "string"
+          },
+          "index": {
+            "type": "string"
+          },
+          "interestSpread": {
+            "type": "number"
+          },
+          "spread": {
+            "type": "number"
+          },
+          "rateChangeMthod": {
+            "type": "string"
+          },
+          "rate": {
+            "type": "number"
+          },
+          "originalIndexValue": {
+            "type": "number"
+          },
+          "originalInterestRate": {
+            "type": "number"
+          },
+          "asOfDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "interestChangeFrequency": {
+            "type": "string"
+          },
+          "nextInterestRateChangeDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "lastInterestRateChangeDate": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
+      "SummaryByCcy": {
+        "type": "object",
+        "properties": {
+          "ccy": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          }
+        }
+      },
+      "SummaryByProdType": {
+        "type": "object",
+        "properties": {
+          "prodType": {
+            "type": "string"
+          },
+          "totalTxnByCcy": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SummaryByCcy"
+            }
+          },
+          "balanceAmtByCcy": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SummaryByCcy"
+            }
+          },
+          "thbEquivalentByCcy": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SummaryByCcy"
+            }
+          },
+          "totalTxnByProdType": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "thbEquivalentByprodType": {
+            "type": "number"
+          }
+        }
+      },
+      "TfsOutstandingReportDto": {
+        "type": "object",
+        "properties": {
+          "customerCifAndName": {
+            "type": "string"
+          },
+          "reportDate": {
+            "type": "string"
+          },
+          "createdBy": {
+            "type": "string"
+          },
+          "billNoAndCustomerName": {
+            "type": "string"
+          },
+          "inqOutStandingReportDto": {
+            "$ref": "#/components/schemas/InqOutStandingReportDto"
+          }
+        }
+      },
+      "PageBatchDataDto": {
+        "type": "object",
+        "properties": {
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BatchDataDto"
+            }
+          },
+          "number": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sort": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SortObject"
+            }
+          },
+          "numberOfElements": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageable": {
+            "$ref": "#/components/schemas/PageableObject"
+          },
+          "first": {
+            "type": "boolean"
+          },
+          "last": {
+            "type": "boolean"
+          },
+          "empty": {
+            "type": "boolean"
+          }
+        }
+      },
+      "PageableObject": {
+        "type": "object",
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "sort": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SortObject"
+            }
+          },
+          "paged": {
+            "type": "boolean"
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "unpaged": {
+            "type": "boolean"
+          }
+        }
+      },
+      "SortObject": {
+        "type": "object",
+        "properties": {
+          "direction": {
+            "type": "string"
+          },
+          "nullHandling": {
+            "type": "string"
+          },
+          "ascending": {
+            "type": "boolean"
+          },
+          "property": {
+            "type": "string"
+          },
+          "ignoreCase": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Account": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string"
+          },
+          "accountNo": {
+            "type": "string"
+          },
+          "billNo": {
+            "type": "string"
+          },
+          "customerId": {
+            "type": "string"
+          },
+          "accountName": {
+            "type": "string"
+          },
+          "accountStatus": {
+            "type": "string"
+          },
+          "writeOffStatus": {
+            "type": "string"
+          },
+          "outstandingBalance": {
+            "type": "number"
+          },
+          "outstandingAccruedInterest": {
+            "type": "number"
+          },
+          "outstandingInterestNonBook": {
+            "type": "number"
+          },
+          "limitAmount": {
+            "type": "number"
+          },
+          "lateChargeAmount": {
+            "type": "number"
+          },
+          "miscCharge": {
+            "type": "number"
+          },
+          "amountInArrears": {
+            "type": "number"
+          },
+          "tamcFlag": {
+            "type": "string"
+          },
+          "samFlag": {
+            "type": "string"
+          },
+          "tdrStatus": {
+            "type": "string"
+          },
+          "tdrTrackingResult": {
+            "type": "string"
+          },
+          "subAccountType": {
+            "type": "string"
+          },
+          "subAccountOption": {
+            "type": "string"
+          },
+          "primaryAccountNumber": {
+            "type": "string"
+          },
+          "productType": {
+            "type": "string"
+          },
+          "marketCode": {
+            "type": "string"
+          },
+          "marketDescription": {
+            "type": "string"
+          },
+          "expiryDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "lastPaidDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "lastDisburseDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "lastTransactionDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "deliquencyDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "openDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "firstDisbursementDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "contractDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "dpd": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "writeDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "stageFinal": {
+            "type": "string"
+          },
+          "closeDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "bookingCode": {
+            "type": "string"
+          },
+          "responseBranchCode": {
+            "type": "string"
+          },
+          "projectName": {
+            "type": "string"
+          },
+          "directDebitAccountNumber": {
+            "type": "string"
+          },
+          "accountNote": {
+            "type": "string"
+          },
+          "lgAccountNumber": {
+            "type": "string"
+          },
+          "lgAccountName": {
+            "type": "string"
+          },
+          "partialWriteOffFlag": {
+            "type": "string"
+          },
+          "partialWriteOffStatus": {
+            "type": "string"
+          },
+          "sourceSystem": {
+            "type": "string"
+          },
+          "lastUpdate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "tdrContractDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "fleetCardAccount": {
+            "type": "string"
+          },
+          "prescriptionDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "estimatePrescriptionFlag": {
+            "type": "boolean"
+          },
+          "subAccount": {
+            "type": "boolean"
+          },
+          "commitmentAccountNo": {
+            "type": "string"
+          },
+          "litigationId": {
+            "type": "string"
+          },
+          "litigationDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "accountType": {
+            "type": "string",
+            "enum": [
+              "OTHER",
+              "FCS",
+              "FLEET_CARD",
+              "OD",
+              "PN",
+              "SUNDRY_FOREIGN_EXCHANGE",
+              "SUNDRY_ACCEPTANCE",
+              "SUNDRY_AVAL",
+              "SUNDRY_INSURANCE",
+              "SUNDRY_LG",
+              "SUNDRY_OTHER",
+              "SUNDRY_TCG",
+              "TL",
+              "TFS",
+              "LBD",
+              "HOME_LOAN",
+              "PERSONAL_LOAN",
+              "HOME_FOR_CASH",
+              "THANAWAT"
+            ]
+          },
+          "isClosed": {
+            "type": "boolean"
+          },
+          "insertFlag": {
+            "type": "boolean"
+          },
+          "specialImport": {
+            "type": "string"
+          },
+          "onlineUpdateDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "partialWriteOffFirstDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "partialWriteOffLastDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "partialWriteOffAmt": {
+            "type": "number"
+          },
+          "recoveryAmt": {
+            "type": "number"
+          },
+          "stopFullWriteOffDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "cfinal": {
+            "type": "string"
+          }
+        }
+      },
+      "DocumentSearchResponse": {
+        "type": "object",
+        "properties": {
+          "imageSource": {
+            "type": "string",
+            "enum": [
+              "LEXS",
+              "IMP",
+              "DIMS",
+              "LG",
+              "PN",
+              "FCS",
+              "TFS",
+              "LCS",
+              "RLS"
+            ]
+          },
+          "imageId": {
+            "type": "string"
+          },
+          "imageName": {
+            "type": "string"
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "storeOrganization": {
+            "type": "string"
+          },
+          "storeOrganizationName": {
+            "type": "string"
+          },
+          "docRefId": {
+            "type": "string"
+          },
+          "docOwnerType": {
+            "type": "string"
+          },
+          "hasOriginalCopy": {
+            "type": "boolean"
+          },
+          "handlingOrganization": {
+            "type": "string"
+          },
+          "ownerOrganization": {
+            "type": "string"
+          }
+        }
+      },
+      "AttributeModel": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        }
+      },
+      "DocumentMetadata": {
+        "type": "object",
+        "properties": {
+          "uploadSessionId": {
+            "type": "string"
+          },
+          "chronicleId": {
+            "type": "string"
+          },
+          "systemName": {
+            "type": "string"
+          },
+          "docType": {
+            "type": "string"
+          },
+          "applicationId": {
+            "type": "string"
+          },
+          "identificationNo": {
+            "type": "string"
+          },
+          "cif": {
+            "type": "string"
+          },
+          "cusTitle": {
+            "type": "string"
+          },
+          "cusName": {
+            "type": "string"
+          },
+          "cusSurname": {
+            "type": "string"
+          },
+          "costCenter": {
+            "type": "string"
+          },
+          "effectiveDateFrom": {
+            "type": "string",
+            "format": "date"
+          },
+          "pageCount": {
+            "type": "string"
+          },
+          "attributes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AttributeModel"
+            }
+          },
+          "refId": {
+            "type": "string"
+          },
+          "version": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "filePath": {
+            "type": "string"
+          },
+          "fileName": {
+            "type": "string"
+          },
+          "fileNameOrg": {
+            "type": "string"
+          },
+          "fileSize": {
+            "type": "string"
+          },
+          "callBackRefId": {
+            "type": "string"
+          },
+          "seqId": {
+            "type": "string"
+          },
+          "contentType": {
+            "type": "string"
+          },
+          "docVersion": {
+            "type": "string"
+          }
+        }
+      },
+      "DimsDocumentResponse": {
+        "type": "object",
+        "properties": {
+          "storeOrganization": {
+            "type": "string"
+          },
+          "storeOrganizationName": {
+            "type": "string"
+          },
+          "handlingOrganization": {
+            "type": "string"
+          },
+          "ownerOrganization": {
+            "type": "string"
+          }
+        }
+      },
+      "DimsTicketDocument": {
+        "type": "object",
+        "properties": {
+          "imageId": {
+            "type": "string"
+          }
+        }
+      },
+      "DimsTicketResponse": {
+        "type": "object",
+        "properties": {
+          "dimsTicketBarcode": {
+            "type": "string"
+          },
+          "documents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DimsTicketDocument"
+            }
+          }
+        }
+      }
+    }
+  }
+}

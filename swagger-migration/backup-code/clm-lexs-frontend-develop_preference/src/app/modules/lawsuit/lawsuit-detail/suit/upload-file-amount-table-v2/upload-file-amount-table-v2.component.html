@@ -1,0 +1,84 @@
+<!-- app-upload-multi-file-content -->
+<!-- app-upload-file-amount-table -->
+<!-- <p>upload-file-amount-table-v2 works!</p> -->
+<input type="file" #fileUpload name="fileUpload" [accept]="acceptFile.toString()" class="hidden" />
+
+<ng-container *ngIf="!!uploadForm && (documents.controls?.length ?? 0) > 0" [formGroup]="uploadForm">
+  <ng-container formArrayName="documents">
+    <!-- [dataSource]="documents.controls" -->
+    <table mat-table [dataSource]="documents.controls" class="pb-16 upload-table" #uploadTable>
+      <ng-container matColumnDef="order">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'COMMON.LABEL_NO' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let formRow; let i = index">
+          {{ i + 1 }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="amount">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'UPLOAD_FILE_DIALOG.COLUMN_HEADER_AMOUNT_INPUT' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let formRow; let i = index">
+          <ng-container *ngIf="!isViewMode; else viewModeContainer">
+            <mat-form-field class="full-width">
+              <input
+                matInput
+                appNumberOnly="integer"
+                type="text"
+                [formControl]="formRow.controls['amount']"
+                (change)="onAmountChange()" />
+              <mat-label>{{ 'UPLOAD_FILE_DIALOG.PLACE_HOLDER_AMOUNT_INPUT' | translate }}</mat-label>
+            </mat-form-field>
+            <spig-error-msg [control]="getAmountAtIndex(i)" [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED'">
+            </spig-error-msg>
+          </ng-container>
+          <ng-template #viewModeContainer>
+            {{ (getAmountAtIndex(i).value | numberDecimal) || '-' }}
+          </ng-template>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="file">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'UPLOAD_FILE_DIALOG.COLUMN_HEADER_AMOUNT_UPLOAD_FILE' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let formRow; let i = index">
+          <!-- (click)="selectDocument(i)" -->
+          <ng-container *ngIf="!formRow.controls['imageId'].value">
+            <button
+              mat-flat-button
+              color="primary"
+              type="button"
+              (click)="onUploadDocument(i)"
+              class="medium-aw-button overflow-ellipsis primary-button full-width">
+              <mat-icon svgIcon="icon-Arrow-Upload" class="icon-xmedium"></mat-icon>
+              {{ 'COMMON.BUTTON_UPLOAD' | translate }}
+            </button>
+            <spig-error-msg
+              [control]="getImageIdAtIndex(i)"
+              [customErrorMsg]="'UPLOAD_FILE_DIALOG.MSG_ERROR_AMOUNT_UPLOAD_FILE'">
+            </spig-error-msg>
+          </ng-container>
+
+          <div fxLayout="row" fxFlexLayout="start center" fxLayoutGap="4" *ngIf="formRow.controls['imageId'].value">
+            <div fxLayout="row" fxFlex="80" class="receipt-name">
+              <span (click)="onDownloadDocument(i)" class="link overflow-ellipsis">{{
+                formRow.controls['fileName'].value
+              }}</span>
+            </div>
+            <!-- (click)="removeDocumentAtIndex(i)" -->
+            <button mat-raised-button type="button" class="secondary-button" (click)="onRemoveDocument(i)">
+              <mat-icon svgIcon="icon-Bin" class="fill-red"></mat-icon>
+            </button>
+            <!-- (click)="selectDocument(i)" -->
+            <button mat-raised-button type="button" class="secondary-button" (click)="onUploadDocument(i)">
+              <mat-icon svgIcon="icon-Arrow-Upload"></mat-icon>
+            </button>
+          </div>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="isViewMode ? fileUploadViewColumns : fileUploadColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: isViewMode ? fileUploadViewColumns : fileUploadColumns"></tr>
+    </table>
+  </ng-container>
+</ng-container>

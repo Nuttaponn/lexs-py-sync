@@ -1,0 +1,158 @@
+<div class="content-container">
+  <div class="title-content" fxLayout="row" fxLayoutAlign="space-between center">
+    <h5 class="mt-12 mb-12">{{ 'AUCTION_REVOKE.TITLE_ORDER_DETAIL' | translate }}</h5>
+    <div fxLayout="row">
+      <div class="description" (click)="isOpened = !isOpened">
+        <mat-icon
+          [svgIcon]="isOpened ? 'icon-Slide-Hide' : 'icon-Expand'"
+          class="icon icon-xmedium icon-hide-show fill-blue mr-5">
+        </mat-icon
+        >{{ isOpened ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate) }}
+      </div>
+    </div>
+  </div>
+  <mat-accordion>
+    <mat-expansion-panel [expanded]="expandedCollateralDetail">
+      <mat-divider class="no-margin"></mat-divider>
+      <div fxLayout="row" fxLayoutAlign="space-between center">
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16">
+          <div class="circular-number">1</div>
+          <h6>{{ 'AUCTION_REVOKE.LABEL_PROPERTY_LIST' | translate }}</h6>
+        </div>
+        <button mat-stroked-button class="medium-aw-button" *ngIf="isEditMode" (click)="onAddCollateralClick()">
+          <mat-icon svgIcon="icon-Plus" class="mr-8"></mat-icon>
+          <span>{{ 'AUCTION_REVOKE.BUTTON_ADD_PROPERTY' | translate }}</span>
+        </button>
+      </div>
+      <app-document-header
+        [isMain]="true"
+        title="รายการชุดทรัพย์"
+        [expanded]="expandedCollateralSets"
+        [details]="collateralSetsHeaderDetail"
+        [forGeneral]="true"
+        [ready]="isReasonReady"
+        [customIcon]="'icon-Information'"
+        [detailsAtFlexEnd]="true"></app-document-header>
+      <app-auction-revoke-table
+        [data]="collaterals"
+        [editMode]="isEditMode"
+        (dataChange)="onCollateralChange($event)"></app-auction-revoke-table>
+      <div fxLayout="row" fxLayoutAlign="space-between center" class="mt-24">
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16">
+          <div class="circular-number">2</div>
+          <h6>รายการเอกสารที่เกี่ยวข้อง</h6>
+        </div>
+      </div>
+      <app-document-header
+        [isMain]="true"
+        title="สัญญาสินเชื่อ"
+        [expanded]="expandedDocuments[0]"
+        [forGeneral]="true"
+        [ready]="true"
+        [customIcon]="'icon-Document-Text'"
+        [showDropdown]="true"
+        [dropdownOptions]="dropdownOptions1"
+        [hideDropdownIcon]="true"
+        classInput="input-s"></app-document-header>
+      <div class="mt-8">
+        <app-upload-multi-file-content
+          [uploadMultiInfo]="uploadMultiInfo"
+          [list]="documentList1"
+          [column]="documentColumns"
+          [readonly]="true"
+          labelAcceptFile=""></app-upload-multi-file-content>
+      </div>
+
+      <app-document-header
+        [isMain]="true"
+        title="บันทึกข้อตกลงแก้ไขเพิ่มเติมสัญญาสินเชื่อ"
+        [expanded]="expandedDocuments[1]"
+        [forGeneral]="true"
+        [ready]="true"
+        [customIcon]="'icon-Document-Text'"
+        [showDropdown]="true"
+        [dropdownOptions]="dropdownOptions2"
+        [hideDropdownIcon]="true"
+        classInput="input-s"></app-document-header>
+      <div class="mt-8">
+        <app-upload-multi-file-content
+          [uploadMultiInfo]="uploadMultiInfo"
+          [list]="documentList2"
+          [column]="documentColumns"
+          [readonly]="true"
+          labelAcceptFile=""></app-upload-multi-file-content>
+      </div>
+
+      <app-document-header
+        [isMain]="true"
+        title="สัญญาปรับปรุงโครงสร้างหนี้"
+        [expanded]="expandedDocuments[2]"
+        [forGeneral]="true"
+        [ready]="true"
+        [customIcon]="'icon-Document-Text'"
+        [showDropdown]="true"
+        [dropdownOptions]="dropdownOptions3"
+        [hideDropdownIcon]="true"
+        classInput="input-s"></app-document-header>
+      <div class="mt-8">
+        <app-upload-multi-file-content
+          [uploadMultiInfo]="uploadMultiInfo"
+          [list]="documentList3"
+          [column]="documentColumns"
+          [readonly]="true"
+          labelAcceptFile=""></app-upload-multi-file-content>
+      </div>
+
+      <app-document-header
+        [isMain]="true"
+        title="สัญญาสินเชื่อ"
+        [expanded]="expandedDocuments[3]"
+        [forGeneral]="true"
+        [ready]="true"
+        [customIcon]="'icon-Document-Text'"
+        [showDropdown]="true"
+        [dropdownOptions]="dropdownOptions4"
+        [hideDropdownIcon]="true"
+        classInput="input-s"></app-document-header>
+      <div class="table-scroll mt-8" table-scroll>
+        <table mat-table [dataSource]="appraisalDocuments">
+          <ng-container matColumnDef="order" sticky>
+            <th mat-header-cell *matHeaderCellDef class="text-center" columnElevationLeft>
+              {{ 'COMMON.LABEL_NO' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let element; let i = index" class="text-center" columnElevationLeft>
+              {{ i + 1 }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="documentName">
+            <th mat-header-cell *matHeaderCellDef>{{ 'AUCTION_REVOKE.LABEL_DOCUMENT_NAME' | translate }}</th>
+            <td mat-cell *matCellDef="let element; let i = index">
+              <span class="link" (onClick)="onViewDocument(i)">{{ element.documentName }}</span>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="collateralId">
+            <th mat-header-cell *matHeaderCellDef>{{ 'AUCTION_REVOKE.LABEL_COLLATERAL_NO' | translate }}</th>
+            <td mat-cell *matCellDef="let element; let i = index">
+              {{ element.collateralId }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="documentNo">
+            <th mat-header-cell *matHeaderCellDef>{{ 'AUCTION_REVOKE.LABEL_DOCUMENT_NO' | translate }}</th>
+            <td mat-cell *matCellDef="let element; let i = index">
+              {{ element.documentNo }}
+              <app-tooltip [params]="[{ content: 'รายละเอียด: ' + element.description }]"></app-tooltip>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="appraisalDate">
+            <th mat-header-cell *matHeaderCellDef>{{ 'AUCTION_REVOKE.LABEL_APPRAISAL_DATE' | translate }}</th>
+            <td mat-cell *matCellDef="let element; let i = index">
+              {{ element.appraisalDate | buddhistEra: 'DD/MM/yyyy' }}
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="appraisalColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: appraisalColumns"></tr>
+        </table>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

@@ -1,0 +1,102 @@
+<app-action-bar
+  (backButtonHandler)="onBack()"
+  [backButtonText]="actionBar.backText || ''"
+  [showNavBarInformation]="true"
+  [hasCancelButton]="actionBar.hasCancel"
+  (editButtonHandler)="onEdit()"
+  [hasSaveButton]="actionBar.hasSave"
+  [saveButtonText]="actionBar.saveText || 'COMMON.BUTTON_SAVE'"
+  (saveButtonHandler)="onSave()"
+  [hasPrimaryButton]="actionBar.hasPrimary"
+  [primaryButtonText]="actionBar.primaryText || ''"
+  [primaryButtonIcon]="actionBar.primaryIcon || 'icon-Selected'"
+  (primaryButtonHandler)="onSubmit()"
+  [hasRejectButton]="actionBar.hasReject"
+  [rejectButtonText]="actionBar.rejectText || ''"
+  [rejectButtonIcon]="actionBar.rejectIcon || ''"
+  (rejectButtonHandler)="onReject()"
+  [subButtonList]="subButtonList"
+  [hasEditButton]="actionBar.hasEdit || false"
+  [editButtonText]="actionBar.editText || ''"
+  [editButtonIcon]="actionBar.editIcon || ''"
+  (subButtonHandler)="subButtonHandler($event)"
+  [cancelButtonText]="actionBar.cancelText || ''"
+  (cancelButtonHandler)="cancel()"
+  [cancelButtonIcon]="actionBar.cancelButtonIcon || ''"
+  [maxSubButton]="maxSubButton">
+  <ng-container navBarInformationTemplate>
+    <ng-container>
+      <mat-icon [svgIcon]="taskIcon" class="icon icon-xmedium default-cursor"></mat-icon>
+    </ng-container>
+    <span class="ml-8">{{ title | translate }}</span>
+    <ng-container *ngIf="isDisplayTitleStatus">
+      <span
+        *ngIf="!!statusName"
+        [ngClass]="statusCode | taskStatus: '' : taskCode"
+        class="ml-12 status-label font-normal"
+        >{{ statusName }}</span
+      >
+    </ng-container>
+  </ng-container>
+</app-action-bar>
+
+<div class="content-below-action-bar-area">
+  <ng-container *ngIf="!IsHideHeaerContent">
+    <div *ngIf="isInNewAuctionActionEdit(actionCode)">
+      <app-auc-manual-announcement-stepper></app-auc-manual-announcement-stepper>
+    </div>
+    <div class="m-25">
+      <app-message-banner *ngIf="messageBanner" type="black-info" [message]="messageBanner"></app-message-banner>
+      <app-message-banner *ngIf="errorBannerMsg" type="fail" icon="icon-Error" [message]="errorBannerMsg">
+      </app-message-banner>
+    </div>
+    <div class="margin-title ml-24 mr-24">
+      <div fxLayout="row" fxLayoutAlign="start center" class="mt-24">
+        <div fxLayout="row" fxLayoutAlign="start center">
+          <div>
+            <h3 class="m-0">{{ auctionDetailTitle }}</h3>
+          </div>
+          <ng-container *ngIf="hasAdditionalTitle">
+            <span class="divider-vertical mr-20"></span>
+            <h3 class="m-0">{{ additionalTitle }}</h3>
+          </ng-container>
+          <ng-container *ngIf="auctionStatus">
+            <div
+              [ngClass]="{
+                'status-pending': isAuctionPendingStatusGroup,
+                'status-success': isAuctionSuccessStatusGroup,
+                'status-info': isAuctionInfoStatusGroup,
+                'status-normal': isAuctionNormalStatusGroup,
+                'status-failed': isAuctionFailedStatusGroup,
+              }"
+              class="ml-12 status-label">
+              <mat-icon
+                *ngIf="
+                  ['VIEW_PAYMENT', 'VIEW_CASHIER', 'ACCOUNT_DOCUMENT'].includes(auctionMenu) &&
+                  isAuctionSuccessStatusGroup
+                "
+                svgIcon="icon-Mark"
+                class="icon-xmedium fill-green"></mat-icon>
+              {{ prefixAuctionStatus | translate }}: {{ auctionStatus | translate }}
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+
+    <!-- รายละเอียดคดี-->
+    <ng-container *ngIf="!hideLitigationDetail">
+      <app-case-details
+        [auctionCaseTypeCode]="auctionCaseTypeCode"
+        [title]="caseDetailTitle"
+        [data]="litigationCaseShortDetail"
+        [hidelawyer]="true"></app-case-details>
+    </ng-container>
+
+    <!-- รายการ LG ID ที่เกี่ยวข้องทั้งหมด -->
+    <ng-container *ngIf="!hideRelatedLitigationDetail">
+      <app-law-details [defaultExpand]="false" [litigationCaseId]="litigationCaseId"></app-law-details>
+    </ng-container>
+  </ng-container>
+  <router-outlet></router-outlet>
+</div>

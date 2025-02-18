@@ -1,0 +1,146 @@
+<mat-card appearance="outlined" class="audit-log-info-card">
+  <mat-card-content>
+    <mat-card-header>
+      <mat-card-title>
+        <h5>{{ 'CUSTOMER.AUDIT_LOG.AUDIT_LOG_TITLE' | translate }}</h5>
+      </mat-card-title>
+      <div fxLayout="row" fxLayoutAlign="space-between center">
+        <div fxLayout="row">
+          <div class="ml-1em" *ngIf="dropDownActionFilterOption && dropDownActionFilterOption.length > 0">
+            <spig-dropdown
+              [classInput]="classInput"
+              [options]="dropDownUserFilterOption"
+              [config]="dropDownFilterConfig"
+              [formControl]="selectedUser"
+              (ngModelChange)="filterAuditLog()">
+            </spig-dropdown>
+          </div>
+          <div class="ml-1em" *ngIf="dropDownActionFilterOption && dropDownActionFilterOption.length > 0">
+            <spig-dropdown
+              [classInput]="classInput"
+              [options]="dropDownActionFilterOption"
+              [config]="dropDownFilterConfig"
+              [formControl]="selectedAction"
+              (ngModelChange)="filterAuditLog()">
+            </spig-dropdown>
+          </div>
+          <div class="ml-1em mb-05em mr-16" *ngIf="dropDownObjectFilterOption && dropDownObjectFilterOption.length > 0">
+            <spig-dropdown
+              [classInput]="classInput"
+              [options]="dropDownObjectFilterOption"
+              [config]="dropDownFilterConfig"
+              [formControl]="selectedObject"
+              (ngModelChange)="filterAuditLog()">
+            </spig-dropdown>
+          </div>
+          <spig-dropdown
+            *ngIf="logType === 'FINANCE_EXPENSE' || logType === 'FINANCE_RECEIPT' || logType === 'FINANCE_ADVANCE'"
+            classInput="input-xsm icon no-border"
+            [config]="sortingConfig"
+            [options]="sortingOptions"
+            (selectedOption)="sortSelected($event)"
+            [formControl]="sortingCtrl"></spig-dropdown>
+        </div>
+      </div>
+    </mat-card-header>
+    <div class="table-content">
+      <div class="table-scroll" *ngIf="customerAuditLogList && customerAuditLogList.length > 0">
+        <table mat-table [dataSource]="customerAuditLogList">
+          <ng-container matColumnDef="seq">
+            <th mat-header-cell *matHeaderCellDef class="text-center">{{ 'COMMON.LABEL_NO' | translate }}</th>
+            <td mat-cell *matCellDef="let element; let i = index" class="text-center">
+              {{ ((pageActionConfig.currentPage ?? 1) - 1) * pageSize + i + 1 }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="userId">
+            <th mat-header-cell *matHeaderCellDef>{{ 'CUSTOMER.AUDIT_LOG.USER_ID' | translate }}</th>
+            <td mat-cell *matCellDef="let element">
+              <ng-container
+                *ngIf="
+                  logType === 'FINANCE_EXPENSE' || logType === 'FINANCE_RECEIPT' || logType === 'FINANCE_ADVANCE';
+                  else otherUserTemplate
+                ">
+                <ng-container *ngIf="element.userId === 'System'">
+                  {{ element.userId }}
+                </ng-container>
+                <ng-container *ngIf="element.userId !== 'System'">
+                  {{ element.userId || element.userName ? element.userId + ' - ' + element.userName : '-' }}
+                </ng-container>
+              </ng-container>
+              <ng-template #otherUserTemplate>
+                {{ element.userId || '-' }}
+              </ng-template>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef>{{ 'CUSTOMER.AUDIT_LOG.ACTION' | translate }}</th>
+            <td mat-cell *matCellDef="let element">{{ element.action || '-' }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="objectType">
+            <th mat-header-cell *matHeaderCellDef>{{ 'CUSTOMER.AUDIT_LOG.OBJECT_TYPE' | translate }}</th>
+            <td mat-cell *matCellDef="let element">{{ element.objectType || '-' }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="details">
+            <th mat-header-cell *matHeaderCellDef>{{ 'CUSTOMER.AUDIT_LOG.DETAILS' | translate }}</th>
+            <td mat-cell *matCellDef="let element">
+              <div [innerHTML]="getDetail(element.details)"></div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="timestamp">
+            <th mat-header-cell *matHeaderCellDef>{{ 'CUSTOMER.AUDIT_LOG.TIMESTAMP' | translate }}</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.timestamp | buddhistEra: 'DD/MM/yyyy HH:mm:ss' || '-' }}
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="auditLogColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: auditLogColumns"></tr>
+        </table>
+        <spig-paginator [result]="pageResultConfig" [action]="pageActionConfig" (pageEvent)="pageEvent($event)">
+        </spig-paginator>
+      </div>
+      <ng-container
+        *ngIf="!customerAuditLogList || customerAuditLogList.length === 0"
+        [ngTemplateOutlet]="dataNotFound">
+      </ng-container>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<ng-template #dataNotFound>
+  <div>
+    <div class="table-scroll">
+      <table mat-table>
+        <ng-container matColumnDef="seq">
+          <th mat-header-cell *matHeaderCellDef class="text-center">{{ 'COMMON.LABEL_NO' | translate }}</th>
+        </ng-container>
+
+        <ng-container matColumnDef="userId">
+          <th mat-header-cell *matHeaderCellDef>{{ 'CUSTOMER.AUDIT_LOG.USER_ID' | translate }}</th>
+        </ng-container>
+
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef>{{ 'CUSTOMER.AUDIT_LOG.ACTION' | translate }}</th>
+        </ng-container>
+
+        <ng-container matColumnDef="objectType">
+          <th mat-header-cell *matHeaderCellDef>{{ 'CUSTOMER.AUDIT_LOG.OBJECT_TYPE' | translate }}</th>
+        </ng-container>
+
+        <ng-container matColumnDef="details">
+          <th mat-header-cell *matHeaderCellDef>{{ 'CUSTOMER.AUDIT_LOG.DETAILS' | translate }}</th>
+        </ng-container>
+
+        <ng-container matColumnDef="timestamp">
+          <th mat-header-cell *matHeaderCellDef>{{ 'CUSTOMER.AUDIT_LOG.TIMESTAMP' | translate }}</th>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="auditLogColumns"></tr>
+      </table>
+    </div>
+  </div>
+  <app-message-empty [message]="'CUSTOMER.AUDIT_LOG.AUDIT_LOG_NOT_FOUND'"></app-message-empty>
+</ng-template>

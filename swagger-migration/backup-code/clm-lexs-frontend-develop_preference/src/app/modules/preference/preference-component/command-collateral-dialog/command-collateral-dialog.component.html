@@ -1,0 +1,82 @@
+<div class="container">
+  <mat-card appearance="outlined" class="mat-elevation-z0 p-0">
+    <div class="header">
+      <div class="title" fxLayout="row" fxLayoutAlign="space-between center">
+        <div fxLayout="row" fxLayoutGap="16px">
+          <h5 class="pt-16 pb-16 pl-16 pr-16">{{ 'รายละเอียดหลักประกัน ของ เลขที่บัญชี : ' | translate }} {{ accountNo }}</h5>
+        </div>
+      </div>
+    </div>
+    <mat-card-content>
+      <ng-container *ngTemplateOutlet="collateralTable"></ng-container>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<ng-template #collateralTable>
+  <div class="table-container">
+    <div class="table-scroll" table-scroll>
+      <table mat-table [dataSource]="collateralTableDataSource" class="mat-elevation-z8">
+
+        <!-- Collateral Number Column -->
+        <ng-container matColumnDef="collateralNumber">
+          <th mat-header-cell *matHeaderCellDef>เลขที่หลักประกัน</th>
+          <td mat-cell *matCellDef="let element">{{ element.collateralId || '-' }}</td>
+        </ng-container>
+
+        <!-- Main Type Column -->
+        <ng-container matColumnDef="mainType">
+          <th mat-header-cell *matHeaderCellDef>ประเภทหลัก</th>
+          <td mat-cell *matCellDef="let element">{{ element.collateralTypeDesc || '-' }}</td>
+        </ng-container>
+
+        <!-- Subtype Column -->
+        <ng-container matColumnDef="subType">
+          <th mat-header-cell *matHeaderCellDef>ประเภทย่อย</th>
+          <td mat-cell *matCellDef="let element">{{ element.collateralSubTypeDesc || '-' }}</td>
+        </ng-container>
+
+        <!-- Document Number Column -->
+        <ng-container matColumnDef="documentNumber">
+          <th mat-header-cell *matHeaderCellDef>เลขที่เอกสารสิทธิ์</th>
+          <td mat-cell *matCellDef="let element">{{ element.documentNo || '-' }}</td>
+        </ng-container>
+
+        <!-- Asset Details Column -->
+        <ng-container matColumnDef="assetDetails">
+          <th mat-header-cell *matHeaderCellDef>รายละเอียดทรัพย์</th>
+          <td mat-cell *matCellDef="let element">{{ element.description || '-' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="statuscms">
+          <th mat-header-cell *matHeaderCellDef>สถานะหลักประกัน(CMS)</th>
+          <td mat-cell *matCellDef="let element">{{ element.collateralCmsStatus
+            ? ('COLLATERAL_CMS_STATUS.' + (element.collateralCmsStatus | uppercase) | translate)
+            : '-'}}</td>
+        </ng-container>
+
+        <!-- Collateral Status Column -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>สถานะหลักประกัน</th>
+          <td mat-cell *matCellDef="let element">
+            <div
+            [class]="element.collateralCaseLexStatus?'status-label size-xl status-normal text-left':''"
+            fxLayout="row"
+            fxLayoutAlign="space-between center">
+            {{ element.collateralCaseLexStatus
+            ? ('COLLATERAL_LEXS_STATUS.' + (element.collateralCaseLexStatus | uppercase) | translate)
+            : '-'}}
+
+          </div>
+          </td>
+        </ng-container>
+
+        <!-- Header Row -->
+        <tr mat-header-row *matHeaderRowDef="collateralColumns"></tr>
+
+        <!-- Data Rows -->
+        <tr mat-row *matRowDef="let row; columns: collateralColumns;"></tr>
+      </table>
+    </div>
+  </div>
+</ng-template>

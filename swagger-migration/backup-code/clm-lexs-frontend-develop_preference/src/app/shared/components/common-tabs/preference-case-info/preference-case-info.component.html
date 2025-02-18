@@ -1,0 +1,14 @@
+<div class="mt-24 mb-24">
+    <nav mat-tab-nav-bar [tabPanel]="tabPanel">
+        <a mat-tab-link
+        *ngFor="let tab of tabsInfo; let i = index"
+        (click)="onRouterLink(tab)"
+        [active]="tab.index === tabIndex"
+        >{{ tab.label | translate }}
+        </a>
+    </nav>
+    <mat-tab-nav-panel #tabPanel>
+        <router-outlet></router-outlet>
+    </mat-tab-nav-panel>
+</div>
+  

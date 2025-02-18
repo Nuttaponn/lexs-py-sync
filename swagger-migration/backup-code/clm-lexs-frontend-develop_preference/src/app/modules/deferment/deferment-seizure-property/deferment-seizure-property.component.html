@@ -1,0 +1,168 @@
+<app-action-bar
+  (backButtonHandler)="onBack($event)"
+  [hasSaveButton]="actionBar.hasSave"
+  [saveButtonText]="actionBar.saveText || ''"
+  [hasPrimaryButton]="actionBar.hasPrimary"
+  [primaryButtonText]="actionBar.primaryText || ''"
+  [showNavBarInformation]="true"
+  [primaryButtonIcon]="actionBar.primaryIcon || 'icon-Selected'"
+  (primaryButtonHandler)="onSubmit()">
+  <ng-container navBarInformationTemplate>
+    <mat-icon svgIcon="icon-Search" class="icon icon-xmedium default-cursor"></mat-icon
+    ><span class="ml-8"> {{ title | translate }}</span>
+  </ng-container>
+</app-action-bar>
+
+<div class="content-below-action-bar-area deferment-seizure-property-content">
+  <div class="content-container" [formGroup]="sortingForm">
+    <div class="inner-container-padding pb-0">
+      <div fxLayout="row" fxLayoutAlign="space-between center">
+        <div class="title-text">
+          <h5 class="mt-12 mb-12">
+            {{
+              hasAnnounceAuction
+                ? ('LAWSUIT.DEFERMENT.SELECT_PROPERTY_INFO_ANNOUNCE_AUCTION' | translate)
+                : ('LAWSUIT.DEFERMENT.SELECT_PROPERTY_INFO_NO_ANNOUNCE_AUCTION' | translate)
+            }}
+          </h5>
+        </div>
+      </div>
+    </div>
+
+    <div class="inner-container-padding">
+      <div *ngIf="!hasAnnounceAuction" class="search-filter-content">
+        <div class="second-section" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="12px">
+          <div fxFlex="25">
+            <spig-dropdown
+              classInput="input-xsm  icon"
+              [config]="lgConfig"
+              [options]="lgOptions"
+              formControlName="lgId"
+              (selectedOption)="onFilter('lgId', $event)"></spig-dropdown>
+          </div>
+          <div fxFlex="25">
+            <spig-dropdown
+              classInput="input-xsm  icon"
+              [config]="collateralTypeConfig"
+              [options]="collateralTypeOptions"
+              formControlName="collateralTypeCode"
+              (selectedOption)="onFilter('collateralTypeCode', $event)"></spig-dropdown>
+          </div>
+          <div fxFlex="25">
+            <spig-dropdown
+              classInput="input-xsm  icon"
+              [config]="provinceConfig"
+              [options]="provinceOptions"
+              formControlName="provinceCode"
+              (selectedOption)="onFilter('provinceCode', $event)"></spig-dropdown>
+          </div>
+          <div fxFlex="25">
+            <spig-dropdown
+              classInput="input-xsm  icon"
+              [config]="districtConfig"
+              [options]="districtOptions"
+              formControlName="districtCode"
+              (selectedOption)="onFilter('districtCode', $event)"></spig-dropdown>
+          </div>
+        </div>
+        <div class="second-section mt-10" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="12px">
+          <div fxFlex="33">
+            <spig-dropdown
+              classInput="input-xsm  icon"
+              [config]="collateralStatusConfig"
+              [options]="collateralStatusOptions"
+              formControlName="status"
+              (selectedOption)="onFilter('status', $event)"></spig-dropdown>
+          </div>
+          <div fxFlex="33">
+            <mat-form-field class="no-label input-sm full-width search-input-field">
+              <input
+                type="text"
+                matInput
+                placeholder="{{ 'AUCTION_LED_CARD.DEFERMENT_DEBT.TITLE_DOCUMENT_NUMBER' | translate }}"
+                maxlength="6"
+                formControlName="searchString"
+                autocomplete="off"
+                (keydown.enter)="onSearch()" />
+              <mat-icon matSuffix class="icon icon-small-xm" svgIcon="icon-Search" (click)="onSearch()"></mat-icon>
+            </mat-form-field>
+          </div>
+          <div fxFlex="33">
+            <spig-dropdown
+              classInput="input-xsm  icon"
+              [config]="sortingConfig"
+              [options]="sortingOptions"
+              formControlName="sort"
+              (selectedOption)="onSortSelected($event)"></spig-dropdown>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="hasAnnounceAuction" class="search-filter-content">
+        <div class="second-section" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1%">
+          <div fxFlex="33">
+            <spig-dropdown
+              classInput="input-xsm  icon"
+              [config]="lgConfig"
+              [options]="lgOptions"
+              formControlName="lgId"
+              (selectedOption)="onFilter('lgId', $event)"></spig-dropdown>
+          </div>
+          <div fxFlex="32">
+            <spig-dropdown
+              classInput="input-xsm  icon"
+              [config]="saleTypeConfig"
+              [options]="saleTypeOptions"
+              formControlName="saleType"
+              (selectedOption)="onFilter('collateralTypeCode', $event)"></spig-dropdown>
+          </div>
+          <div fxFlex="33">
+            <spig-dropdown
+              classInput="input-xsm  icon"
+              [config]="ledConfig"
+              [options]="ledOptions"
+              formControlName="ledId"
+              (selectedOption)="onFilter('ledId', $event)"></spig-dropdown>
+          </div>
+        </div>
+        <div class="second-section mt-10" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1%">
+          <div fxFlex="66">
+            <mat-form-field class="no-label input-sm full-width search-input-field">
+              <input
+                type="text"
+                matInput
+                placeholder="{{ 'LAWSUIT.DEFERMENT.ANNOUNCE_AUCTION_SEARCH_PLACEHOLDER' | translate }}"
+                formControlName="searchString"
+                autocomplete="off"
+                (keydown.enter)="onSearch()" />
+              <mat-icon matSuffix class="icon icon-small-xm" svgIcon="icon-Search" (click)="onSearch()"></mat-icon>
+            </mat-form-field>
+          </div>
+          <div fxFlex="33">
+            <spig-dropdown
+              classInput="input-xsm  icon"
+              [config]="sortingConfig"
+              [options]="sortingAnnounceOptions"
+              formControlName="sort"
+              (selectedOption)="onSortSelected($event)"></spig-dropdown>
+          </div>
+        </div>
+      </div>
+
+      <app-seizure-property-list
+        [list]="dataSource.filteredData"
+        [showSelectAll]="!hasAnnounceAuction"
+        [showSelectCount]="true"
+        [showTotal]="true"
+        [hasAnnounceAuction]="hasAnnounceAuction"
+        [initSelection]="initSelectedSeizureProperties"
+        [tableColumns]="hasAnnounceAuction ? tableColumnssale : tableColumns"
+        [hasUpload]="hasUpload"
+        (onSelectionChange)="onSelectionChange($event)"
+        (onClick)="onClick($event)"></app-seizure-property-list>
+    </div>
+  </div>
+</div>
+
+<ng-template #dataNotFound>
+  <app-message-empty [message]="'DOC_PREP.NOT_FOUND_DOC'"></app-message-empty>
+</ng-template>

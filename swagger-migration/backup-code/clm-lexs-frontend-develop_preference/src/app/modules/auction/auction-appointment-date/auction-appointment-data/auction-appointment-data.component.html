@@ -1,0 +1,37 @@
+<ng-container *ngIf="dataInfo">
+  <app-auction-detail-date [data]="dataInfo"></app-auction-detail-date>
+</ng-container>
+
+<div class="content-container">
+  <ng-container *ngIf="data">
+    <app-auction-property
+      [isOpened]="isOpened"
+      [data]="data"
+      [actionCode]="actionCode"
+      [fsubbidNumDefault]="fsubbidnum"
+      [collateralColumns]="collateralUnmatchedColumns"
+      [config]="tableConfig"></app-auction-property>
+  </ng-container>
+</div>
+<ng-container *ngIf="auctionResultForm">
+  <app-auction-result
+    [defaultExpand]="defaultExpandAuctionResult"
+    [isView]="true"
+    [formGroup]="auctionResultForm"></app-auction-result>
+</ng-container>
+<ng-container *ngIf="(isPaymentResult || isItemPaymentResult) && auctionBiddingDeedGroupResponse">
+  <app-auciton-payment-result
+    [form]="collateralGroupForm"
+    [extendTimeList]="
+      isPaymentResult ? auctionBiddingDeedGroupResponse.extendInfos : collateralGroupForm.get('extendInfos')?.value
+    "
+    [isViewMode]="isViewModeAuctionPaymentResult"
+    [isFromDateDetail]="true"
+    [defaultExpanded]="true"
+    [trackingRound]="trackingRound"
+    [data]="
+      isPaymentResult
+        ? auctionBiddingDeedGroupResponse
+        : collateralGroupForm.get('externalPaymentTrackingDocuments')?.value
+    "></app-auciton-payment-result>
+</ng-container>

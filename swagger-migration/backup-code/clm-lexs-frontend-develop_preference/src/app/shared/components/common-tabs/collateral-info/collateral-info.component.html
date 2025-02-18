@@ -1,0 +1,384 @@
+<mat-card appearance="outlined" class="collateral-info-card">
+  <h5 class="collateral-info card-title mx-width-pct-60">{{ 'CUSTOMER.MORTGAGE_ASSETS' | translate }}</h5>
+  <ng-container *ngIf="collaterals.length > 0">
+    <ng-container class="mt-10" *ngFor="let item of collaterals; let index = index">
+      <mat-accordion class="accordion-headers-align">
+        <div fxLayout="row" fxLayoutAlign="space-between center" class="mt-16 ml-12 mr-12">
+          <div>
+            {{ item.collateralTypeDesc }}
+          </div>
+          <div fxLayout="row" fxLayoutGap="24px" class="align-items-baseline">
+            <spig-dropdown
+              [classInput]="'input-s icon border-black-40'"
+              *ngIf="!!!item.hide"
+              [config]="statusConfig"
+              [options]="statusOption"
+              (selectedOption)="filter($event, item)">
+            </spig-dropdown>
+            <div class="mt-10 cur-pointer" (click)="expandPanel(index, 'Collateral')">
+              <div fxLayoutAlign=" center">
+                <mat-icon
+                  [svgIcon]="!!!item.hide ? 'icon-Slide-Hide' : 'icon-Expand'"
+                  class="icon icon-hide-show fill-blue"></mat-icon
+                >
+                <span>
+                  {{
+                    !!!item.hide ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate)
+                  }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <mat-expansion-panel [expanded]="!!!item.hide">
+          <div class="data-table-content">
+            <div class="table-scroll" *ngIf="item.data.length > 0" table-scroll>
+              <table mat-table [dataSource]="item.data">
+                <ng-container matColumnDef="no" sticky>
+                  <th mat-header-cell *matHeaderCellDef class="text-center">{{ 'COMMON.LABEL_NO' | translate }}</th>
+                  <td mat-cell *matCellDef="let element; let i = index" class="text-center">
+                    {{ (item!.currentPage !== 1 ? (item!.currentPage - 1) * 10 + i : i) + 1 }}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="collateralId" sticky>
+                  <th mat-header-cell *matHeaderCellDef columnElevationLeft>
+                    {{ 'CUSTOMER.COLUMN_COLLATERAL_NO' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let element" columnElevationLeft>{{ element.collateralId }}</td>
+                </ng-container>
+                <ng-container matColumnDef="collateralSubTypeDesc">
+                  <th mat-header-cell *matHeaderCellDef>{{ 'CUSTOMER.COLUMN_SUBTYPE' | translate }}</th>
+                  <td mat-cell *matCellDef="let element">{{ element.collateralSubTypeDesc }}</td>
+                </ng-container>
+                <ng-container matColumnDef="docCollateralId">
+                  <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_DOCUMENT_NUMBER' | translate }}</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.documentNo || '-' }}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="description">
+                  <th mat-header-cell *matHeaderCellDef>{{ 'CUSTOMER.COLUMN_MARGIN_DETAILS' | translate }}</th>
+                  <td mat-cell *matCellDef="let element">
+                    <div class="mt-12 mb-12">
+                      {{ element.description || '-' }}
+                    </div>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="totalAppraisalValue">
+                  <th mat-header-cell *matHeaderCellDef class="text-right">
+                    {{ 'CUSTOMER.COLUMN_AVERAGE_COST' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let element" class="text-right">
+                    {{ (element.totalAppraisalValue | numberDecimal) || '-' }}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="appraisalDate">
+                  <th mat-header-cell *matHeaderCellDef>{{ 'CUSTOMER.COLUMN_AVERAGE_DATE' | translate }}</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ (element.appraisalDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="ownership">
+                  <th mat-header-cell *matHeaderCellDef>{{ 'CUSTOMER.COLUMN_OWNERSHIP' | translate }}</th>
+                  <td mat-cell *matCellDef="let element">{{ element.ownerName }} - {{ element.ownerId }}</td>
+                </ng-container>
+                <ng-container matColumnDef="insurancePolicyNumber">
+                  <th mat-header-cell *matHeaderCellDef>{{ 'CUSTOMER.COLUMN_INSURANCE_NO' | translate }}</th>
+                  <td mat-cell *matCellDef="let element">{{ element.insurancePolicyNumber || '-' }}</td>
+                </ng-container>
+                <ng-container matColumnDef="lgId">
+                  <th mat-header-cell *matHeaderCellDef>{{ 'CUSTOMER.COLUMN_LG_ID' | translate }}</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.otherLitigationId || '-' }}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="calculatedCollateralStatus" stickyEnd>
+                  <th mat-header-cell *matHeaderCellDef columnElevationRight>
+                    {{ 'CUSTOMER.COLUMN_COLLATERAL_STATUS' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let element" columnElevationRight>
+                    {{ element.calculatedCollateralStatus || '-' }}
+                  </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="assetsColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: assetsColumns"></tr>
+              </table>
+            </div>
+
+            <ng-container *ngIf="item.data.length === 0">
+              <div class="table-content mt-10">
+                <ng-container>
+                  <table mat-table>
+                    <ng-container matColumnDef="no" sticky>
+                      <th mat-header-cell *matHeaderCellDef class="text-center">{{ 'COMMON.LABEL_NO' | translate }}</th>
+                    </ng-container>
+                    <ng-container matColumnDef="collateralId" sticky>
+                      <th mat-header-cell *matHeaderCellDef>{{ 'CUSTOMER.COLUMN_COLLATERAL_NO' | translate }}</th>
+                    </ng-container>
+                    <ng-container matColumnDef="collateralSubTypeDesc">
+                      <th mat-header-cell *matHeaderCellDef>{{ 'CUSTOMER.COLUMN_SUBTYPE' | translate }}</th>
+                    </ng-container>
+                    <ng-container matColumnDef="docCollateralId">
+                      <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_DOCUMENT_NUMBER' | translate }}</th>
+                    </ng-container>
+                    <ng-container matColumnDef="description">
+                      <th mat-header-cell *matHeaderCellDef>{{ 'CUSTOMER.COLUMN_MARGIN_DETAILS' | translate }}</th>
+                    </ng-container>
+                    <ng-container matColumnDef="totalAppraisalValue">
+                      <th mat-header-cell *matHeaderCellDef>{{ 'CUSTOMER.COLUMN_AVERAGE_COST' | translate }}</th>
+                    </ng-container>
+                    <ng-container matColumnDef="appraisalDate">
+                      <th mat-header-cell *matHeaderCellDef>{{ 'CUSTOMER.COLUMN_AVERAGE_DATE' | translate }}</th>
+                    </ng-container>
+                    <ng-container matColumnDef="ownership">
+                      <th mat-header-cell *matHeaderCellDef>{{ 'CUSTOMER.COLUMN_OWNERSHIP' | translate }}</th>
+                    </ng-container>
+                    <ng-container matColumnDef="insurancePolicyNumber">
+                      <th mat-header-cell *matHeaderCellDef>{{ 'CUSTOMER.COLUMN_INSURANCE_NO' | translate }}</th>
+                    </ng-container>
+                    <ng-container matColumnDef="lgId">
+                      <th mat-header-cell *matHeaderCellDef>{{ 'CUSTOMER.COLUMN_LG_ID' | translate }}</th>
+                    </ng-container>
+                    <ng-container matColumnDef="calculatedCollateralStatus" stickyEnd>
+                      <th mat-header-cell *matHeaderCellDef>{{ 'CUSTOMER.COLUMN_COLLATERAL_STATUS' | translate }}</th>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="assetsColumns"></tr>
+                  </table>
+                </ng-container>
+              </div>
+              <ng-container [ngTemplateOutlet]="dataNotFound"></ng-container>
+            </ng-container>
+          </div>
+          <spig-paginator
+            *ngIf="
+              item._data &&
+              item._data.length > 10 &&
+              item.data &&
+              item.data.length > 0 &&
+              item.dataFilter &&
+              item.dataFilter.length > 10
+            "
+            [result]="{
+              fromIndex: item.fromIndex,
+              toIndex: item.toIndex,
+              totalElements: item.totalElements,
+            }"
+            [action]="{
+              totalPages: item.totalPages,
+              currentPage: item.currentPage,
+              fromPage: 1,
+              toPage: item.totalPages,
+            }"
+            (pageEvent)="pageEvent($event, item)">
+          </spig-paginator>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </ng-container>
+  </ng-container>
+  <ng-container *ngIf="collaterals.length === 0">
+    <div class="table-content mt-10">
+      <ng-container>
+        <table mat-table>
+          <ng-container matColumnDef="no" sticky>
+            <th mat-header-cell *matHeaderCellDef class="text-center">{{ 'COMMON.LABEL_NO' | translate }}</th>
+          </ng-container>
+          <ng-container matColumnDef="collateralId" sticky>
+            <th mat-header-cell *matHeaderCellDef>{{ 'CUSTOMER.COLUMN_COLLATERAL_NO' | translate }}</th>
+          </ng-container>
+          <ng-container matColumnDef="collateralSubTypeDesc">
+            <th mat-header-cell *matHeaderCellDef>{{ 'CUSTOMER.COLUMN_SUBTYPE' | translate }}</th>
+          </ng-container>
+          <ng-container matColumnDef="docCollateralId">
+            <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_DOCUMENT_NUMBER' | translate }}</th>
+          </ng-container>
+          <ng-container matColumnDef="description">
+            <th mat-header-cell *matHeaderCellDef>{{ 'CUSTOMER.COLUMN_MARGIN_DETAILS' | translate }}</th>
+          </ng-container>
+          <ng-container matColumnDef="totalAppraisalValue">
+            <th mat-header-cell *matHeaderCellDef>{{ 'CUSTOMER.COLUMN_AVERAGE_COST' | translate }}</th>
+          </ng-container>
+          <ng-container matColumnDef="appraisalDate">
+            <th mat-header-cell *matHeaderCellDef>{{ 'CUSTOMER.COLUMN_AVERAGE_DATE' | translate }}</th>
+          </ng-container>
+          <ng-container matColumnDef="ownership">
+            <th mat-header-cell *matHeaderCellDef>{{ 'CUSTOMER.COLUMN_OWNERSHIP' | translate }}</th>
+          </ng-container>
+          <ng-container matColumnDef="insurancePolicyNumber">
+            <th mat-header-cell *matHeaderCellDef>{{ 'CUSTOMER.COLUMN_INSURANCE_NO' | translate }}</th>
+          </ng-container>
+          <ng-container matColumnDef="lgId">
+            <th mat-header-cell *matHeaderCellDef>{{ 'CUSTOMER.COLUMN_LG_ID' | translate }}</th>
+          </ng-container>
+          <ng-container matColumnDef="calculatedCollateralStatus" stickyEnd>
+            <th mat-header-cell *matHeaderCellDef>{{ 'CUSTOMER.COLUMN_COLLATERAL_STATUS' | translate }}</th>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="assetsColumns"></tr>
+        </table>
+      </ng-container>
+    </div>
+    <ng-container
+      [ngTemplateOutlet]="dataNotFound"
+      [ngTemplateOutletContext]="{ value: ('CUSTOMER.MORTGAGE_ASSETS' | translate) }"></ng-container>
+  </ng-container>
+</mat-card>
+
+<!-- NON - Collateral -->
+
+<mat-card appearance="outlined" class="card" *ngIf="hasAsset">
+  <div fxLayout="row" fxLayoutAlign="space-between center">
+    <h5 class="collateral-info card-title mx-width-pct-60">{{ 'CUSTOMER.NON_MORTGAGE_ASSETS' | translate }}</h5>
+    <button
+      id="btn-col-info-add"
+      mat-stroked-button
+      [disabled]="!!!permissionsOnScreen.canAdd"
+      (click)="openDialog('ADD')"
+      class="medium-aw-button mat-gray">
+      <mat-icon svgIcon="icon-Plus" class="icon-small"></mat-icon
+      >{{ 'CUSTOMER.MARGIN_NON_MORTGAGE_TITLE_ADD' | translate }}
+    </button>
+  </div>
+  <ng-container *ngIf="colService?.currentAssets && colService.currentAssets.length > 0">
+    <ng-container class="mt-10" *ngFor="let item of colService?.currentAssets; let index = index">
+      <mat-accordion class="accordion-headers-align">
+        <div fxLayout="row" fxLayoutAlign="space-between center" class="mt-16 ml-12 mr-12">
+          <div>
+            {{ item.collateralTypeDesc }}
+          </div>
+          <div fxLayout="row" fxLayoutGap="24px" class="align-items-baseline">
+            <spig-dropdown
+              [classInput]="'input-s icon border-black-40'"
+              *ngIf="!!!item.hide"
+              [config]="statusConfig"
+              [options]="statusOptionAsset">
+            </spig-dropdown>
+            <div class="description cur-pointer" (click)="expandPanel(index, 'NonCollateral')">
+              <mat-icon
+                [svgIcon]="!!!item.hide ? 'icon-Slide-Hide' : 'icon-Expand'"
+                class="icon icon-hide-show fill-blue"></mat-icon
+              >{{
+                !!!item.hide ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate)
+              }}
+            </div>
+          </div>
+        </div>
+        <mat-expansion-panel [expanded]="!!!item.hide">
+          <div class="data-table-content">
+            <div class="table-scroll" *ngIf="item.data.length > 0">
+              <table mat-table [dataSource]="item.data">
+                <ng-container matColumnDef="no">
+                  <th mat-header-cell *matHeaderCellDef class="text-center">{{ 'COMMON.LABEL_NO' | translate }}</th>
+                  <td mat-cell *matCellDef="let element; let i = index" class="text-center">
+                    {{ (item!.currentPage !== 1 ? (item!.currentPage - 1) * 10 + i : i) + 1 }}
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="description">
+                  <th mat-header-cell *matHeaderCellDef>
+                    {{ 'CUSTOMER.COLUMN_MARGIN_DETAILS' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let element">
+                    <u class="cur-pointer" (click)="openDialog('VIEW', element)">{{
+                      'CUSTOMER.COLUMN_DETAIL' | translate
+                    }}</u>
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="ownership">
+                  <th mat-header-cell *matHeaderCellDef>{{ 'CUSTOMER.COLUMN_OWNERSHIP' | translate }}</th>
+                  <td mat-cell *matCellDef="let element">{{ element.ownerName }} - {{ element.ownerId }}</td>
+                </ng-container>
+                <ng-container matColumnDef="calculatedCollateralStatus">
+                  <th mat-header-cell *matHeaderCellDef>{{ 'CUSTOMER.COLUMN_COLLATERAL_STATUS' | translate }}</th>
+                  <td mat-cell *matCellDef="let element">
+                    ไม่ถูกอายัด/ยึด/ขาย
+                    <!-- {{element.calculatedCollateralStatus}}  -->
+                  </td>
+                </ng-container>
+                <ng-container matColumnDef="externalAssetStatusDesc">
+                  <th mat-header-cell *matHeaderCellDef>
+                    {{ 'CUSTOMER.COMMON_LABEL_MARGIN_STATUS_FOUND' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let element">{{ element.externalAssetStatusDesc || '-' }}</td>
+                </ng-container>
+                <ng-container matColumnDef="actions">
+                  <th mat-header-cell *matHeaderCellDef class="text-center">
+                    {{ 'COMMON.LABEL_COMMAND' | translate }}
+                  </th>
+                  <td mat-cell *matCellDef="let element; let i = index" class="text-center">
+                    <u class="cur-pointer" *ngIf="permissionsOnScreen.canDelete" (click)="removeDialog(i, element)">{{
+                      'COMMON.BUTTON_DELETE' | translate
+                    }}</u>
+                    &nbsp;
+                    <u class="cur-pointer" *ngIf="permissionsOnScreen.canEdit" (click)="openDialog('EDIT', element)">{{
+                      'COMMON.BUTTON_EDIT' | translate
+                    }}</u>
+                    &nbsp;
+                  </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="nonAssetColumns"></tr>
+                <tr
+                  mat-row
+                  *matRowDef="let row; columns: nonAssetColumns"
+                  [ngClass]="{
+                    'pending-add': currentUser.subRoleCode === 'APPROVER' && row.updateFlag === 'A',
+                    'pending-update': currentUser.subRoleCode === 'APPROVER' && row.updateFlag === 'U',
+                    'pending-delete': currentUser.subRoleCode === 'APPROVER' && row.updateFlag === 'D',
+                  }"></tr>
+              </table>
+            </div>
+
+            <spig-paginator
+              *ngIf="item._data && item._data.length > 10 && item.data && item.data.length > 0"
+              [result]="{
+                fromIndex: item.fromIndex,
+                toIndex: item.toIndex,
+                totalElements: item.totalElements,
+              }"
+              [action]="{
+                totalPages: item.totalPages,
+                currentPage: item.currentPage,
+                fromPage: 1,
+                toPage: item.totalPages,
+              }"
+              (pageEvent)="pageEvent($event, item)">
+            </spig-paginator>
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </ng-container>
+  </ng-container>
+  <ng-container *ngIf="colService?.currentAssets && colService.currentAssets.length === 0">
+    <div class="table-content mt-10">
+      <ng-container>
+        <table mat-table>
+          <ng-container matColumnDef="no">
+            <th mat-header-cell *matHeaderCellDef class="text-center">{{ 'COMMON.LABEL_NO' | translate }}</th>
+          </ng-container>
+          <ng-container matColumnDef="description">
+            <th mat-header-cell *matHeaderCellDef>{{ 'CUSTOMER.COLUMN_DETAIL' | translate }}</th>
+          </ng-container>
+          <ng-container matColumnDef="ownership">
+            <th mat-header-cell *matHeaderCellDef>{{ 'CUSTOMER.COLUMN_OWNERSHIP' | translate }}</th>
+          </ng-container>
+          <ng-container matColumnDef="calculatedCollateralStatus">
+            <th mat-header-cell *matHeaderCellDef>{{ 'CUSTOMER.COLUMN_COLLATERAL_STATUS' | translate }}</th>
+          </ng-container>
+          <ng-container matColumnDef="externalAssetStatusDesc">
+            <th mat-header-cell *matHeaderCellDef>{{ 'CUSTOMER.COMMON_LABEL_MARGIN_STATUS_FOUND' | translate }}</th>
+          </ng-container>
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_COMMAND' | translate }}</th></ng-container
+          >
+          <tr mat-header-row *matHeaderRowDef="nonAssetColumns"></tr>
+        </table>
+      </ng-container>
+    </div>
+    <ng-container
+      *ngIf="colService?.currentAssets && colService.currentAssets.length === 0"
+      [ngTemplateOutlet]="dataNotFound"
+      [ngTemplateOutletContext]="{ value: ('CUSTOMER.NON_MORTGAGE_ASSETS' | translate) }">
+    </ng-container>
+  </ng-container>
+</mat-card>
+
+<ng-template let-value="value" #dataNotFound>
+  <app-message-empty message="{{ 'COMMON.LABEL_PREFIX_NOT_FOUND' | translate }}{{ value }}"></app-message-empty>
+</ng-template>

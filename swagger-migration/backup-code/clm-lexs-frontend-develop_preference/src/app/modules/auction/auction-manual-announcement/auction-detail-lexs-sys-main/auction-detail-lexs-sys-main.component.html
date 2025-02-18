@@ -1,0 +1,21 @@
+<!-- action-bar -->
+<app-action-bar (backButtonHandler)="onBack()" [showNavBarInformation]="true">
+  <ng-container navBarInformationTemplate>
+    <mat-icon svgIcon="icon-List-Property" class="icon icon-xmedium default-cursor"></mat-icon
+    ><span class="ml-8"
+      >{{ ('PROPERTY.PROPERTY_SET_NUMBER' | translate) + ' ' + fsubbidnum }}
+    </span>
+  </ng-container>
+</app-action-bar>
+<div class="body-container action-bar-margin">
+  <div class="margin-zero mt-55">
+    <app-auction-detail-panel
+      [title]="'รายละเอียดทรัพย์ที่เพิ่มจากระบบ LEXS'"
+      [isOpened]="true"
+    >
+      <app-auction-detail-lexs-sys-table
+        [mode]="mode"
+      ></app-auction-detail-lexs-sys-table>
+    </app-auction-detail-panel>
+  </div>
+</div>

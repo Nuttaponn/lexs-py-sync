@@ -1,0 +1,299 @@
+<div *ngFor="let element of trialObj; let i = index" class="card-container content-container">
+  <mat-accordion class="accordion-headers-align">
+    <mat-card appearance="outlined" class="bg-blue-00 mat-elevation-z0">
+      <div fxLayout="row" fxLayoutAlign="space-between center" class="title-content bg-blue-00">
+        <div fxLayout="row">
+          <mat-icon svgIcon="icon-Stack" class="icon icon-medium"></mat-icon>
+          <div class="title-text">
+            <!-- คดีความ -->
+            <h5>{{ 'LAWSUIT.SUIT.LIGITATION_CASE_TITLE' | translate }} {{ i + 1 }}</h5>
+          </div>
+        </div>
+        <div fxLayout="row">
+          <div class="description" (click)="isOpenedList[i] = !isOpenedList[i]">
+            <mat-icon
+              [svgIcon]="isOpenedList[i] ? 'icon-Slide-Hide' : 'icon-Expand'"
+              class="icon icon-hide-show fill-blue">
+            </mat-icon
+            >{{
+              isOpenedList[i] ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate)
+            }}
+          </div>
+        </div>
+      </div>
+    </mat-card>
+  </mat-accordion>
+
+  <mat-expansion-panel [expanded]="isOpenedList[i]" *ngFor="let item of [element]" hideToggle>
+    <ng-container>
+      <div class="mat-elevation-z0 no-horizontal-padding">
+        <div fxLayout="row" class="title-content no-horizontal-padding" fxLayoutGap="5px">
+          <div fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="5px" class="p-0">
+            <h6 class="text-gray-900 opacity-70-percent">
+              <!-- สำนักงานทนาย -->
+              {{ 'COMMON.LABEL_OFFICE_LAWYER' | translate }}:
+            </h6>
+            <h5>{{ (item.lawyerOfficeCode ?? '') + ' - ' + (item.lawyerOfficeName ?? '') }}</h5>
+            <span class="divider-vertical"></span>
+          </div>
+          <div fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="5px">
+            <h6 class="text-gray-900 opacity-70-percent">
+              <!-- ทนายความปัจจุบัน -->
+              {{ 'LAWSUIT.SUIT.LAWYER' | translate }}:
+            </h6>
+            <h5>{{ (item.lawyerId ?? '') + ' - ' + (item.lawyerName ?? '') }}</h5>
+          </div>
+        </div>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <div class="mat-elevation-z0 no-horizontal-padding">
+        <div fxLayout="row" class="title-content no-horizontal-padding" fxLayoutGap="5px">
+          <div fxLayout="row" fxLayoutAlign=" center">
+            <mat-icon svgIcon="icon-Window" class="icon icon-medium"></mat-icon>
+            <div class="title-text">
+              <h6>
+                <!-- รายการวันนัดพิจารณา -->
+                {{ 'LAWSUIT.TRIAL.LIST_TRIAL_DATE' | translate }}
+              </h6>
+            </div>
+          </div>
+          <div fxFlex></div>
+          <!-- บันทึกวันนัดพิจารณาคดี -->
+          <button
+            *ngIf="
+              (taskId && item.litigationCaseId === litigationCaseIdFromTask && item.taskCompleted !== true) ||
+              (!taskId && item.taskCompleted)
+            "
+            type="button"
+            mat-flat-button
+            color="primary"
+            class="medium-button"
+            (click)="
+              onSaveTrialDetail(false, false, true, element.courtLevel, null, i, null, taskId, item.lawyerName, item)
+            ">
+            <mat-icon [svgIcon]="'icon-save-primary'" class="icon icon-medium mr-10"></mat-icon>
+            {{ 'LAWSUIT.TRIAL.BTN_SAVE_TRIAL_DATE' | translate }}
+          </button>
+        </div>
+      </div>
+      <!-- table -->
+      <div class="sub-container">
+        <div
+          class="table-scroll"
+          table-scroll
+          *ngIf="
+            item.courtTrialDetails &&
+            item.courtTrialDetails?.length !== 0 &&
+            !!isActionable(item.litigationCaseId, item.taskCompleted)
+          ">
+          <table mat-table [dataSource]="item.courtTrialDetails || []">
+            <ng-container matColumnDef="no">
+              <th class="text-center" mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_NO' | translate }}</th>
+              <td class="text-center" mat-cell *matCellDef="let element; let i = index">
+                {{ i + 1 }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="hearingDate">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'COMMON.LABEL_DATE' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element; let j = index">
+                <span
+                  class="link"
+                  (click)="
+                    onSaveTrialDetail(
+                      true,
+                      false,
+                      false,
+                      item.courtLevel,
+                      item.courtTrialDetails,
+                      i,
+                      j,
+                      undefined,
+                      undefined,
+                      item
+                    )
+                  ">
+                  {{ element.appointmentDate | buddhistEra: 'DD/MM/yyyy' || '-' }}
+                </span>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="hearingType">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'LAWSUIT.TRIAL.HEARING_TYPE_TITLE' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element">
+                <div *ngIf="element.appointment.length === 1">{{ element.appointment || '-' }}</div>
+                <div *ngIf="element.appointment.length > 1">
+                  <div *ngFor="let hearing of element.appointment; let i = index">
+                    {{ hearing }} {{ i + 1 === element.appointment.length ? ' ' : '/' }}
+                  </div>
+                </div>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="court">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'COMMON.LABEL_COURT' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element">
+                {{
+                  item.courtLevel === courtLevelEnum.Civil
+                    ? 'ศาลชั้นต้น'
+                    : item.courtLevel === courtLevelEnum.Appeal
+                      ? 'ศาลชั้นอุทธรณ์'
+                      : item.courtLevel === courtLevelEnum.Supreme
+                        ? 'ศาลชั้นฏีกา'
+                        : '-'
+                }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="note">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'COMMON.LABEL_REMARKS' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.remark || '-' }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef class="text-center">
+                {{ 'LAWSUIT.TRIAL.STATUS' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element">
+                <div
+                  class="status-label pd-12 m-auto"
+                  [ngClass]="element.saveStatus === saveStatus ? 'status-success' : ''">
+                  <mat-icon
+                    *ngIf="element.saveStatus === saveStatus"
+                    svgIcon="icon-Mark"
+                    class="icon icon-small"></mat-icon>
+                  {{ element.saveStatus === saveStatus ? 'บันทึกแล้ว' : '-' }}
+                </div>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="source">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'LAWSUIT.TRIAL.SOURCE' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element">
+                <ng-container *ngIf="!!element.source; else emptySource">
+                  <div *ngIf="element.source === 'CIOS'">
+                    {{ element.source }}
+                  </div>
+                  <div *ngIf="!(element.source === 'CIOS')">
+                    <div>{{ item.lawyerId || '-' }}</div>
+                    <div>{{ splitSource(element.source, 1) }}</div>
+                    <div>{{ splitSource(element.source, 2) }}</div>
+                  </div>
+                </ng-container>
+                <ng-template #emptySource>-</ng-template>
+              </td>
+            </ng-container>
+            <ng-container
+              *ngIf="
+                (taskId && item.litigationCaseId === litigationCaseIdFromTask && item.taskCompleted !== true) ||
+                (!taskId && item.taskCompleted)
+              "
+              matColumnDef="command"
+              stickyEnd>
+              <th class="text-center" columnElevationRight mat-header-cell *matHeaderCellDef>
+                {{ 'COMMON.LABEL_COMMAND' | translate }}
+              </th>
+              <td mat-cell *matCellDef="let element; let j = index" columnElevationRight>
+                <div fxLayout="row" fxLayoutAlign="center center">
+                  <div
+                    class="link"
+                    (click)="
+                      onSaveTrialDetail(
+                        false,
+                        true,
+                        false,
+                        item.courtLevel,
+                        item.courtTrialDetails || undefined,
+                        i,
+                        j,
+                        taskId,
+                        undefined,
+                        item
+                      )
+                    ">
+                    เเก้ไข
+                  </div>
+                </div>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="isActionable(item.litigationCaseId, item.taskCompleted)"></tr>
+            <tr mat-row *matRowDef="let row; columns: isActionable(item.litigationCaseId, item.taskCompleted)"></tr>
+          </table>
+        </div>
+        <ng-container
+          *ngIf="!item.courtTrialDetails || item.courtTrialDetails.length === 0"
+          [ngTemplateOutlet]="dataNotFound">
+        </ng-container>
+      </div>
+    </ng-container>
+
+    <!-- dataNotFound -->
+    <ng-template #dataNotFound>
+      <div class="table-content">
+        <div class="table-scroll" table-scroll>
+          <table mat-table>
+            <ng-container matColumnDef="no">
+              <th class="text-center" mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_NO' | translate }}</th>
+            </ng-container>
+            <ng-container matColumnDef="hearingDate">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'COMMON.LABEL_DATE' | translate }}
+              </th>
+            </ng-container>
+
+            <ng-container matColumnDef="hearingType">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'LAWSUIT.TRIAL.HEARING_TYPE' | translate }}
+              </th>
+            </ng-container>
+            <ng-container matColumnDef="court">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'COMMON.LABEL_COURT' | translate }}
+              </th>
+            </ng-container>
+            <ng-container matColumnDef="note">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'COMMON.LABEL_REMARKS' | translate }}
+              </th>
+            </ng-container>
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'LAWSUIT.TRIAL.STATUS' | translate }}
+              </th>
+            </ng-container>
+            <ng-container matColumnDef="source">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ 'LAWSUIT.TRIAL.SOURCE' | translate }}
+              </th>
+            </ng-container>
+            <ng-container
+              *ngIf="
+                (taskId && item.litigationCaseId === litigationCaseIdFromTask && item.taskCompleted !== true) ||
+                (!taskId && item.taskCompleted)
+              "
+              matColumnDef="command"
+              stickyEnd>
+              <th class="text-center" columnElevationRight mat-header-cell *matHeaderCellDef>
+                {{ 'COMMON.LABEL_COMMAND' | translate }}
+              </th>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="isActionable(item.litigationCaseId, item.taskCompleted)"></tr>
+          </table>
+        </div>
+        <app-message-empty [message]="'LAWSUIT.TRIAL.HEARING_DATE_NOT_FOUND'"></app-message-empty>
+      </div>
+    </ng-template>
+  </mat-expansion-panel>
+</div>

@@ -1,0 +1,101 @@
+@import '/src/styles/colors';
+@import '/src/styles/typography';
+
+.app-document-header {
+  &.pa-8 {
+    padding: 8px;
+  }
+
+  &.bg-l-green {
+    width: 100%;
+    height: 72px;
+    background: map_get($ktb-palette-green, 50);
+    border-radius: 8px;
+    padding: 16px;
+  }
+
+  &.bg-l-gray {
+    width: 100%;
+    height: 72px;
+    background: map_get($ktb-palette-biz-gray, 50);
+    border-radius: 8px;
+    padding: 16px;
+  }
+
+  .header-detail {
+    .vertical-divider {
+      height: 100%;
+      width: 1px;
+      background-color: map_get($ktb-palette-biz-gray, 200);
+    }
+
+    &:last-child {
+      .vertical-divider {
+        display: none;
+      }
+    }
+  }
+
+  .expand-button {
+    font-size: $font-description; // change after ui defect https://ktbinnovation.atlassian.net/browse/LEX2-34836
+    min-width: 70px;
+
+    &.completed {
+      color: $krungthai-green;
+    }
+
+    &.incompleted {
+      color: map-get($ktb-palette-golden-yellow, 600);
+    }
+
+    &.black {
+      color: $black;
+    }
+  }
+
+  .flex-align-self-center {
+    align-self: center;
+  }
+
+  .my-0 {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  .text-color-gray {
+    color: map-get($ktb-palette-biz-black, 60);
+  }
+}
+
+::ng-deep .app-document-header spig-dropdown {
+  .mat-icon {
+    margin-right: 12px;
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
+
+.icon-wrapper {
+  width: 28px;
+  height: 28px;
+  color: $white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+
+  &.fill-gold {
+    background-color: map-get($ktb-palette-golden-yellow, 600);
+  }
+
+  &.fill-green {
+    background-color: map_get($ktb-palette-green, 500);
+  }
+
+  .pl-20{
+    padding-left: 20px;
+  }
+}

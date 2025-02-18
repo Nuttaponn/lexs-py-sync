@@ -1,0 +1,40 @@
+@import '/src/styles/colors';
+
+.container {
+  padding: 24px;
+
+  .header .title {
+    padding: 0 12px 20px 12px;
+  }
+  .related-info-box {
+    padding: 24px 16px;
+    border-radius: 8px;
+    background: map-get($ktb-palette-biz-gray, 200);
+    height: 72px;
+    .related-info-box-tail {
+      .related-info-box-tail-add {
+        color: $krungthai-blue;
+        &:hover {
+          cursor: pointer;
+        }
+        .icon {
+          transform: scale(0.7);
+        }
+      }
+      .related-info-box-tail-delete {
+        color: $krungthai-red;
+        &:hover {
+          cursor: pointer;
+        }
+        .icon {
+          transform: scale(0.7);
+        }
+      }
+    }
+  }
+  .table-content {
+    .mat-icon-button-delete {
+      color: $krungthai-red;
+    }
+  }
+}

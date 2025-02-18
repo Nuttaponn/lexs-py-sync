@@ -1,0 +1,296 @@
+<div class="content-below-action-bar-area" *ngIf="refundInfoFormKcorp">
+  <div class="pr-24 pl-24 pt-24">
+    <app-message-banner *ngIf="!isDownLoad" type="black-info" [message]="bannerMessage"> </app-message-banner>
+    <app-message-banner *ngIf="isDownLoad && !isViewCreditNote" type="black-info" [message]="bannerMessage">
+    </app-message-banner>
+  </div>
+  <div class="content-container p-16 pt-24 pb-24" [formGroup]="refundInfoFormKcorp">
+    <div fxLayout="row" fxLayoutGap="24">
+      <span fxFlex="60" fxLayoutAlign="start">
+        <h2 class="title">
+          เลขที่หนังสือ
+          <span class="divider-vertical"></span>
+          {{ getControl('receiveNo')?.value || '-' }}
+        </h2>
+        <div class="title mt-15" *ngIf="!!!getControl('receiveNo')?.value">
+          <app-tooltip [params]="tooltipParams"> </app-tooltip>
+        </div>
+        <div
+          [class]="
+            'status-label h-fit ' +
+            (!!isDownLoad ? 'status-pending' : (receiveStatus | financeStatusBtn: 'RECEIPT_STATUS'))
+          "
+          *ngIf="!addMode">
+          {{ getControl('receiveStatusName')?.value || '-' }}
+        </div>
+      </span>
+      <div fxFlex="66" fxLayoutAlign="end" *ngIf="(!isViewMode || taskUnprocess || isEditReason) && !isDownLoad">
+        <span fxlayout="row" fxLayoutGap="8">
+          <button
+            mat-stroked-button
+            type="button"
+            [disabled]="outboundTransferT && outboundTransferT.length === 1"
+            class="medium-aw-button neutral"
+            (click)="onClickOutbound()">
+            <mat-icon class="icon icon-medium" svgIcon="icon-Book-Add"></mat-icon>
+            สร้างรายการคืนเงินนอกธนาคาร
+          </button>
+          <button
+            mat-stroked-button
+            [disabled]="isEditReason"
+            type="button"
+            class="medium-aw-button neutral"
+            (click)="addList()">
+            <mat-icon class="icon icon-medium" svgIcon="icon-Plus"></mat-icon>
+            เพิ่มรายการ
+          </button>
+          <spig-error-msg
+            [control]="getControl('transferOrders')"
+            customErrorMsg="กรุณา “สร้างรายการคืนเงินนอกธนาคาร” หรือ “เพิ่มรายการ”">
+          </spig-error-msg>
+        </span>
+      </div>
+    </div>
+
+    <div class="mb-24" fxLayout="row" fxLayoutAlign="space-between">
+      <span class="thin-letter">Reference No. {{ getControl('referenceNo')?.value || '-' }}</span>
+    </div>
+
+    <div fxLayout="row" fxLayoutGap="24" class="mb-24">
+      <div fxFlex="33" fxLayout="column" fxLayoutGap="24">
+        <div fxLayout="column" fxLayoutGap="8">
+          <span class="thin-letter">วันที่ตั้ง Suspense A/C</span>
+          <span [class.link]="!!getControl('suspenseAccountDate')?.value" (click)="navigate()">
+            {{ (getControl('suspenseAccountDate')?.value | buddhistEra: 'DD/MM/yyyy') || '-' }}
+          </span>
+        </div>
+        <div fxLayout="column" fxLayoutGap="8">
+          <span class="thin-letter">ศาล</span>
+          <span>{{ getControl('courtName')?.value || '-' }}</span>
+        </div>
+      </div>
+      <div fxFlex="33" fxLayout="column" fxLayoutGap="24">
+        <div fxLayout="column" fxLayoutGap="8">
+          <span class="thin-letter">เลขที่ Wash Account</span>
+          <span>{{ getControl('washAccountNo')?.value || '-' }}</span>
+        </div>
+        <div fxLayout="column" fxLayoutGap="8">
+          <span class="thin-letter">จำนวนเงินตามรายการโอนเงิน (บาท)</span>
+          <span>{{ (getControl('payAmount')?.value | numberDecimal) || '-' }}</span>
+        </div>
+      </div>
+      <div fxFlex="33" fxLayout="column" fxLayoutGap="24">
+        <div fxLayout="column" fxLayoutGap="8">
+          <span class="thin-letter">วิธีการรับเงิน</span>
+          <span>
+            <app-tooltip [params]="getContractToolTip('รหัสหัวบัญชี', [getControl('accountCode')?.value])">
+            </app-tooltip>
+            {{ getControl('receiveTypeName')?.value || '-' }}</span
+          >
+        </div>
+        <div fxLayout="column" fxLayoutGap="8">
+          <span class="thin-letter">Ref2/Ref1</span>
+          <span>{{ getControl('ref2')?.value || '-' }} / {{ getControl('ref1')?.value || '-' }} </span>
+        </div>
+      </div>
+    </div>
+
+    <app-message-banner
+      type="info"
+      *ngIf="!isDownLoad"
+      [message]="
+        'จำนวนเงินตามรายการโอนคงเหลือ(​บาท): ' + ((getControl('referenceAmount')?.value | numberDecimal) || '')
+      "></app-message-banner>
+
+    <div fxLayout="row" fxLayoutGap="24" class="mb-24">
+      <div fxFlex="33" fxLayout="column" fxLayoutGap="24"></div>
+      <div fxFlex="66" fxLayout="column" fxLayoutGap="24">
+        <app-message-banner
+          type="fail"
+          *ngIf="receiptService?.receiveOrderError?.receiveType"
+          [message]="
+            outboundTransferT &&
+            outboundTransferT.length === 1 &&
+            refundInfoFormKcorp.get('transferOrders')?.value?.length === 0
+              ? 'จำนวนเงินที่คืน มากกว่า เงินคงเหลือ'
+              : '“จำนวนเงินล้างรายการสุทธิ” รวมกับ “จำนวนเงินที่คืนสุทธิ” มากกว่า “จำนวนเงินตามรายการโอนเงินคงเหลือ”'
+          ">
+        </app-message-banner>
+      </div>
+    </div>
+
+    <mat-accordion class="accordion-headers-align" *ngIf="taskUnprocess || isEditReason">
+      <div fxLayout="row" fxLayoutAlign="space-between center" class="title-content">
+        <div class="color-biz-black-70">{{ 'COMMON.LABEL_REASON_CONSIDERATION' | translate }}</div>
+        <div fxLayout="row">
+          <div class="description" (click)="isOpened = !isOpened">
+            <mat-icon [svgIcon]="isOpened ? 'icon-Slide-Hide' : 'icon-Expand'" class="icon icon-hide-show fill-blue">
+            </mat-icon
+            >{{ isOpened ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate) }}
+          </div>
+        </div>
+      </div>
+      <mat-expansion-panel [expanded]="isOpened" hideToggle>
+        <div fxLayout="row" fxLayoutGap="24" class="mb-24">
+          <div fxFlex="15" fxLayout="column" fxLayoutGap="24"></div>
+          <div fxFlex="66" fxLayout="column" fxLayoutGap="24">
+            <ng-container *ngIf="isEditReason">
+              <span class="thin-letter">{{ 'COMMON.LABEL_REASON_REVISION' | translate }}</span>
+              <div>
+                {{ this.receiptService.receiveOrdersKcorp.editReason || '' }}
+              </div>
+            </ng-container>
+            <ng-container *ngIf="isViewMode && taskUnprocess">
+              <span class="thin-letter">สาเหตุที่ไม่สามารถดำเดินการได้(เกิน 10 วันทำการหลังจากที่ได้รับงาน)</span>
+              <div>
+                {{ this.receiptService.receiveOrdersKcorp.unprocessReason || '' }}
+              </div>
+            </ng-container>
+            <ng-container *ngIf="!isViewMode && taskUnprocess">
+              <mat-form-field class="full-width">
+                <mat-label>สาเหตุที่ไม่สามารถดำเดินการได้(เกิน 10 วันทำการหลังจากที่ได้รับงาน)</mat-label>
+                <textarea
+                  matInput
+                  maxlength="500"
+                  [rows]="5"
+                  [cols]="5"
+                  formControlName="unprocessReason"
+                  class="no-resize"></textarea>
+              </mat-form-field>
+
+              <spig-error-msg
+                [control]="getControl('unprocessReason')"
+                [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED_2'">
+              </spig-error-msg>
+            </ng-container>
+          </div>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+    <div class="container pt-20" *ngIf="outboundTransferT && outboundTransferT.length > 0">
+      <ng-container>
+        <mat-card appearance="outlined" class="card info-container mt-20">
+          <mat-accordion class="accordion-headers-align">
+            <div fxLayout="row" fxLayoutAlign="space-between center" class="title-content">
+              <div fxLayout="row" fxLayoutAlign="center">
+                <mat-icon svgIcon="icon-Window" class="icon icon-medium"></mat-icon>
+                <div class="title-text" fxLayout="row" fxLayoutAlign="start center">
+                  <h6>รายการคืนเงินนอกธนาคาร</h6>
+                </div>
+              </div>
+              <div fxLayout="row">
+                <div class="mr-28 description" *ngIf="!isViewMode && !isDownLoad" (click)="deleleOutbound()">
+                  <mat-icon svgIcon="icon-Bin" class="icon-md btn-icon fill-red"></mat-icon>
+                  <span class="fill-red bold cursor-pointer"> ลบ </span>
+                </div>
+                <div class="description" (click)="expandPanel()">
+                  <mat-icon
+                    [svgIcon]="hided ? 'icon-Slide-Hide' : 'icon-Expand'"
+                    class="icon-md icon-hide-show fill-blue mr-2">
+                  </mat-icon>
+                  <span class="bold cursor-pointer">
+                    {{
+                      hided ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate)
+                    }}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <!-- รายการคืนเงินนอกธนาคาร -->
+            <mat-expansion-panel [expanded]="hided">
+              <div class="data-table-content">
+                <div class="table-scroll">
+                  <div formArrayName="outboundTransferTransaction">
+                    <table mat-table [dataSource]="outboundTransferT" id="ref-table">
+                      <ng-container matColumnDef="creditNoteReceiverOrgCode" sticky>
+                        <th mat-header-cell *matHeaderCellDef>หน่วยงานที่รับ Credit Note</th>
+                        <td mat-cell *matCellDef="let element; let rowIndex = index" [formGroupName]="rowIndex">
+                          <ng-container *ngIf="!isViewMode">
+                            <spig-dropdown
+                              classInput="input-xsm icon"
+                              formControlName="creditNoteReceiverOrgCode"
+                              [required]="true"
+                              [config]="ktbOrgConfig"
+                              [options]="ktbOrgOptions">
+                            </spig-dropdown>
+                            <spig-error-msg
+                              [control]="getArray('creditNoteReceiverOrgCode')"
+                              [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'">
+                            </spig-error-msg>
+                          </ng-container>
+                          <ng-container *ngIf="isViewMode">
+                            {{ outboundTransferT[0].creditNoteReceiverOrgName || '-' }}
+                          </ng-container>
+                        </td>
+                      </ng-container>
+                      <ng-container matColumnDef="sendAmount">
+                        <th mat-header-cell *matHeaderCellDef>จำนวนเงินที่คืน (บาท)</th>
+                        <td mat-cell *matCellDef="let element; let rowIndex = index" [formGroupName]="rowIndex">
+                          <ng-container *ngIf="!isViewMode">
+                            <mat-form-field class="no-label input-sm-icon search-input-field">
+                              <input
+                                type="text"
+                                matInput
+                                autocomplete="off"
+                                placeholder="จำนวน"
+                                [required]="true"
+                                formControlName="sendAmount" />
+                            </mat-form-field>
+                            <spig-error-msg
+                              [control]="getArray('sendAmount')"
+                              [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'">
+                            </spig-error-msg>
+                          </ng-container>
+                          <ng-container *ngIf="isViewMode">
+                            {{ outboundTransferT[0].sendAmount || '-' }}
+                          </ng-container>
+                        </td>
+                      </ng-container>
+                      <ng-container matColumnDef="creditNoteDescription">
+                        <th mat-header-cell *matHeaderCellDef>รายละเอียดใน Credit Note</th>
+                        <td mat-cell *matCellDef="let element; let rowIndex = index" [formGroupName]="rowIndex">
+                          <ng-container *ngIf="!isViewMode">
+                            <mat-form-field class="no-label input-full-field">
+                              <textarea
+                                maxlength="10000"
+                                matInput
+                                formControlName="creditNoteDescription"
+                                class="form-control no-resize"
+                                placeholder="รายละเอียด"></textarea>
+                            </mat-form-field>
+                            <spig-error-msg
+                              [control]="getArray('creditNoteDescription')"
+                              [customErrorMsg]="'FORM_ERROR_MSG.REQUIRED'">
+                            </spig-error-msg>
+                          </ng-container>
+                          <ng-container *ngIf="isViewMode">
+                            {{ outboundTransferT[0].creditNoteDescription || '-' }}
+                          </ng-container>
+                        </td>
+                      </ng-container>
+                      <tr mat-header-row *matHeaderRowDef="creditNoteColums"></tr>
+                      <tr mat-row *matRowDef="let row; columns: creditNoteColums"></tr>
+                      <div>
+                        <app-message-empty [message]="'COMMON.SEARCH_EMPTY'"></app-message-empty>
+                      </div>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </mat-expansion-panel>
+          </mat-accordion>
+        </mat-card>
+        <br />
+      </ng-container>
+    </div>
+    <app-message-empty
+      *ngIf="refundInfoFormKcorp?.get('transferOrders')?.value?.length === 0 && outboundTransferT.length === 0"
+      message="ยังไม่มีรายการ"></app-message-empty>
+    <app-refund-info-by-lg-id
+      *ngIf="refundInfoFormKcorp?.get('transferOrders')?.value?.length > 0"
+      [isViewMode]="isViewMode"
+      [refundInfoForm]="refundInfoFormKcorp"
+      [isDownLoad]="isDownLoad"
+      [isViewCreditNote]="isViewCreditNote"></app-refund-info-by-lg-id>
+  </div>
+</div>

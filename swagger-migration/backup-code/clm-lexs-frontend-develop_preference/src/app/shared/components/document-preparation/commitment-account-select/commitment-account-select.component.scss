@@ -1,0 +1,17 @@
+.wrap-tile {
+  display: flex;
+}
+
+.mat-mdc-dialog-title {
+  display: flex;
+}
+
+/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
+.mat-mdc-form-field .mat-form-field-wrapper {
+  padding-right: 30px !important;
+}
+
+.justify-content-end {
+  justify-content: end;
+  padding-bottom: 1.5rem;
+}

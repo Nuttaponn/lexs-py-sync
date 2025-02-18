@@ -1,0 +1,37 @@
+@import '/src/styles/colors';
+@import '/src/styles/typography';
+
+.task-detail-container {
+  padding: 24px;
+
+  &:not(:first-child) {
+    padding-top: 0;
+  }
+
+  .info-container {
+    background: $white;
+    border-radius: 16px;
+    padding: 0 16px;
+
+    .info-section {
+      padding: 16px;
+    }
+
+    .status-section {
+      padding: 16px;
+      font-size: $font-sub-description;
+    }
+  }
+
+  .tab-group-container {
+    margin: 24px 0;
+  }
+}
+
+::ng-deep app-expense-payment-detail.content-pt-0 .content-below-action-bar-area {
+  padding-top: 0;
+}
+
+.text-gray {
+  color: map-get($ktb-palette-biz-gray, 700);
+}

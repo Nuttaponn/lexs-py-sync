@@ -1,0 +1,157 @@
+<div class="container">
+  <!-- <mat-card appearance="outlined" class="mat-elevation-z0 p-0"> -->
+    <!-- <div class="header">
+      <div class="title" fxLayout="row" fxLayoutAlign="space-between center">
+        <div fxLayout="row" fxLayoutGap="16px">
+          <h5 class="pt-16 pb-16 pl-16 pr-16">{{ 'เลือกบัญชี' | translate }}</h5>
+        </div>
+      </div>
+    </div> -->
+
+    <mat-card-content>
+      <div
+        fxLayout="row"
+        fxLayoutAlign="end stretch"
+        fxLayoutGap="8">
+        <span class="sub-title">เลือก: </span>
+        <h6>{{ selection.selected ? selection.selected.length : 0 }}</h6>
+        <h6>จาก</h6>
+        <h6>{{ accountTableDataSource.length }}</h6>
+      </div>
+      <br>
+      <ng-container *ngTemplateOutlet="accountTable"></ng-container>
+    </mat-card-content>
+ <!-- </mat-card>
+ </div> -->
+<ng-template #accountTable>
+  <div class="table-container">
+    <div class="table-scroll" table-scroll>
+      <table mat-table [dataSource]="accountTableDataSource" class="mat-elevation-z8">
+
+        <ng-container matColumnDef="select">
+          <th mat-header-cell *matHeaderCellDef>
+            <mat-checkbox
+              (change)="$event ? selectAllRows() : null"
+              [checked]="isAllSelected()"
+              [indeterminate]="selection.hasValue() && !isAllSelected()">
+            </mat-checkbox>
+          </th>
+          <td mat-cell *matCellDef="let row">
+            <mat-checkbox
+              (click)="$event.stopPropagation()"
+              (change)="$event ? toggleRowSelection(row) : null"
+              [checked]="selection.isSelected(row)">
+            </mat-checkbox>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="no">
+          <th mat-header-cell *matHeaderCellDef>ลำดับ</th>
+          <td mat-cell *matCellDef="let element; let i = index">
+            {{ i + 1 }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="accountNo">
+          <th mat-header-cell *matHeaderCellDef>เลขที่บัญชี</th>
+          <td mat-cell *matCellDef="let element">{{ element.accountNo || '-' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="billNo">
+          <th mat-header-cell *matHeaderCellDef>เลขที่ Bill</th>
+          <td mat-cell *matCellDef="let element">{{ element.billNo || '-' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="dpd">
+          <th mat-header-cell *matHeaderCellDef>DPD</th>
+          <td mat-cell *matCellDef="let element">{{ (element.dpd| number) || '-'}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="cfinalStage">
+          <th mat-header-cell *matHeaderCellDef>C-Final/Stage</th>
+          <td mat-cell *matCellDef="let element">
+            <div *ngIf="element.cfinalStage && element.cfinalStage !=='N/A'">{{ element.cfinalStage || '-' }}/{{ element.stageAccount || '-' }}</div>
+            <div *ngIf="!element.cfinalStage || element.cfinalStage ==='N/A'">{{element.cfinalStage}}</div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="marketCode">
+          <th mat-header-cell *matHeaderCellDef>ประเภทหนี้</th>
+          <td mat-cell *matCellDef="let element">{{ element.marketCode || '-' }} - {{ element.marketDescription || '-' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="totalAmount">
+          <th mat-header-cell *matHeaderCellDef>ภาระหนี้รวม</th>
+          <td mat-cell *matCellDef="let element">{{ element.totalAmount| numberDecimal }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="prescriptionDate">
+          <th mat-header-cell *matHeaderCellDef>วันแรกที่อาจครบอายุความ</th>
+          <td mat-cell *matCellDef="let element">{{ (element.prescriptionDate| buddhistEra: 'DD/MM/yyyy') || '-' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="bookingCode">
+          <th mat-header-cell *matHeaderCellDef>สาขา (Booking/Cost Center)</th>
+          <td mat-cell *matCellDef="let element">{{ element.bookingCode|| '-' }} {{ element.bookingCodeName|| '-' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="responseBranchCode">
+          <th mat-header-cell *matHeaderCellDef>หน่วยงานผู้ดูแล (Response Unit)</th>
+          <td mat-cell *matCellDef="let element">{{ element.responseBranchCode|| '-' }} {{ element.responseBranchCodeName|| '-' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="tdrInfo">
+          <th mat-header-cell *matHeaderCellDef>{{ 'LAWSUIT.ACC_DETAIL.TDR_INFO' | translate }}</th>
+          <td mat-cell *matCellDef="let element">
+            <ng-container *ngIf="element.tdrTrackingResult; else noTdr">
+              <app-tooltip
+                [icon]="[]"
+                [params]="[
+                  { header: 'ข้อมูลจาก CBS', title: 'TDR Tracking History', content: element.tdrTrackingResult },
+                  { title: 'วันที่ดึงข้อมูล TDR ล่าสุด', content: element.totalDebtDate },
+                ]">
+                <div bodytoggle class="status-label status-pending">TDR</div>
+              </app-tooltip>
+            </ng-container>
+            <ng-template #noTdr>-</ng-template>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="litigationId">
+          <th mat-header-cell *matHeaderCellDef  class="new-line">
+            เลขที่กฎหมาย/ <br> หมายเลขคดีดํา/หมายเลขคดีแดง
+          </th>
+          <td mat-cell *matCellDef="let element" class="new-line">
+            <span
+              *ngIf="element.litigationId && element.litigationId !== '-'" >{{ element.litigationId }}</span
+            >
+            <span class="newLine"
+              >{{ element.blackCaseNo || '-' }}/ <span class="fill-red">{{ element.redCaseNo || '-' }}</span></span
+            >
+            <span *ngIf="!element.litigationId || element.litigationId === '-'">-</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="litigationStatus">
+          <th mat-header-cell *matHeaderCellDef>สถานะดำเนินคดี</th>
+          <td mat-cell *matCellDef="let element">{{ element.litigationStatusName || '-' }}</td>
+        </ng-container>
+
+        <!-- Header Row -->
+        <tr mat-header-row *matHeaderRowDef="accountColumns"></tr>
+
+        <!-- Data Rows -->
+        <tr mat-row *matRowDef="let row; columns: accountColumns;"></tr>
+      </table>
+
+      <!-- Display Selected Items -->
+      <!-- <div *ngIf="selection.selected.length > 0" class="selected-items">
+        <p>Selected Accounts:</p>
+        <ul>
+          <li *ngFor="let account of selection.selected">{{ account.accountName }}</li>
+        </ul>
+      </div> -->
+    </div>
+  </div>
+  <!-- TODO: paging table? -->
+</ng-template>

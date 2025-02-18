@@ -1,0 +1,17 @@
+<div class="mt-24 ml-2 mr-2">
+  <div fxLayout="row" fxLayoutGap="8">
+    <button mat-stroked-button class="medium-aw-button" (click)="onRevoke()">
+      <mat-icon svgIcon="icon-Money-Cancel" class="icon-xmedium"></mat-icon>
+      {{ 'AUCTION_LED_CARD.REVOKE_SALE.REVOKE_SALE_LABEL' | translate }}
+    </button>
+
+    <button mat-stroked-button class="medium-aw-button" (click)="onRejectReInvoke()">
+      <mat-icon svgIcon="icon-Document-Cancel" class="icon-xmedium"></mat-icon>
+      {{ 'AUCTION_LED_CARD.REVOKE_SALE.OBJECT_REVOKE_SALE' | translate }}
+    </button>
+  </div>
+
+  <div class="mt-24">
+    <app-auction-led-card-order-table></app-auction-led-card-order-table>
+  </div>
+</div>

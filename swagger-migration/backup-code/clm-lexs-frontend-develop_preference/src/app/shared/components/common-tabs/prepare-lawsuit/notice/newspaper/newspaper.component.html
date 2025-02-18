@@ -1,0 +1,203 @@
+<div fxLayout="column">
+  <mat-accordion class="accordion-headers-align">
+    <div fxLayout="row" class="title-content" fxLayoutGap="4">
+      <div class="title-text">
+        <h6>{{ 'LAWSUIT.NOTICE.ANNOUNCE_DEFENDANT' | translate }} {{ dataSource[0].personName }}</h6>
+      </div>
+      <!-- <div *ngIf="dataSource[0]?.relation" class="status-label status-info">
+        {{ 'LAWSUIT.MAPPING.RELATION.' + dataSource[0]?.relation | translate }}
+      </div> -->
+      <ng-container *ngIf="hasRelationList">
+        <ng-container *ngFor="let relation of dataSource[0].relationList">
+          <div class="status-label status-info">
+            {{ 'LAWSUIT.MAPPING.RELATION.' + relation | translate }}
+          </div>
+        </ng-container>
+      </ng-container>
+      <span *ngIf="!hasRelationList">-</span>
+
+      <div *ngIf="dataSource[0]?.personStatus === 'DEATH'" class="status-label status-failed">
+        {{ 'CUSTOMER.MAPPING.PERSON_STATUS.DEATH' | translate }}
+      </div>
+      <div fxFlex></div>
+      <div *ngIf="dataSource[0]?.noticeId" class="description" (click)="isOpened1 = !isOpened1">
+        <mat-icon [svgIcon]="isOpened1 ? 'icon-Slide-Hide' : 'icon-Expand'" class="icon icon-hide-show fill-blue">
+        </mat-icon
+        >{{ isOpened1 ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate) }}
+      </div>
+    </div>
+
+    <mat-expansion-panel *ngIf="dataSource[0]?.noticeId" [expanded]="isOpened1" hideToggle>
+      <div class="data-table-content">
+        <ng-container [ngTemplateOutlet]="newspaperTable" [ngTemplateOutletContext]="{ list: dataSource }">
+        </ng-container>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>
+
+<ng-template #newspaperTable let-dataSource="list">
+  <div class="table-scroll" table-scroll>
+    <table mat-table [dataSource]="dataSource">
+      <ng-container matColumnDef="no" sticky>
+        <th class="text-center" mat-header-cell *matHeaderCellDef>
+          {{ 'COMMON.LABEL_NO' | translate }}
+        </th>
+        <td class="text-center" mat-cell *matCellDef="let element; let i = index">
+          {{ i + 1 }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="noticeNo" sticky>
+        <th mat-header-cell *matHeaderCellDef columnElevationLeft>{{ 'LAWSUIT.NOTICE.ANNOUNCE_NO' | translate }}</th>
+        <td mat-cell *matCellDef="let element" columnElevationLeft>
+          {{ element?.noticeNo || '-' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="noticeDate">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'LAWSUIT.NOTICE.NOTICE_DATE' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <!-- {{ element?.prescriptionDate | buddhistEra: "DD/MM/yyyy" || "-" }} -->
+          {{ (element?.noticeDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="firstNoticeDate">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'LAWSUIT.NOTICE.FIRST_NOTICE_DATE' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <!-- {{(element.dpd | number) || '-'}} -->
+          {{ (element?.firstNoticeDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="lastNoticeDate">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'LAWSUIT.NOTICE.LAST_NOTICE_DATE' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <!-- <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="3px">
+            <div fxFlex>{{ (element.lawyerId || '') + '-' + (element.lawyerName || '') }}</div>
+          </div> -->
+          {{ (element?.lastNoticeDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="noticeDueDate">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'LAWSUIT.NOTICE.NOTICE_DUE_DATE' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <!-- <div fxLayout="column" fxLayoutAlign="center start" fxLayoutGap="3px">
+            <div fxFlex>{{ (element.ownerBranchCode || '') + '-' + (element.ownerBranchName || '') }}</div>
+            <div fxFlex>{{ (element.amdResponseUnitCode || '') + '-' + (element.amdResponseUnitName || '') }}</div>
+          </div> -->
+          {{ (element?.noticeDueDate | buddhistEra: 'DD/MM/yyyy') || '-' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="trackingStatusName" stickyEnd>
+        <th class="text-center" columnElevationRight mat-header-cell *matHeaderCellDef>
+          {{ 'LAWSUIT.NOTICE.TRACKING_STATUS' | translate }}
+        </th>
+        <td columnElevationRight mat-cell *matCellDef="let element">
+          <div fxLayout="row" fxLayoutAlign="center center">
+            <div
+              *ngIf="element.trackingStatusName && element.trackingStatusName !== '-'"
+              class="status-label"
+              [ngClass]="{
+                'status-success': element.trackingStatusName === NEWSPAPER_TRACKING_STATUS_TEXTS.success,
+                'status-pending': element.trackingStatusName === NEWSPAPER_TRACKING_STATUS_TEXTS.pending,
+              }">
+              <mat-icon
+                *ngIf="element.trackingStatusName === NEWSPAPER_TRACKING_STATUS_TEXTS.success"
+                svgIcon="icon-Mark"
+                class="icon icon-small"></mat-icon>
+              {{ element?.trackingStatusName || '-' }}
+            </div>
+            <span *ngIf="!element.trackingStatusName || element.trackingStatusName === '-'"> - </span>
+          </div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="btnCol" stickyEnd>
+        <th class="text-center" mat-header-cell *matHeaderCellDef>
+          {{ 'LAWSUIT.NOTICE.ANNOUNCE_NEWS' | translate }}
+        </th>
+        <td mat-cell class="cur-pointer fil-blue" *matCellDef="let element">
+          <div class="table-btn-group" fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="20px">
+            <button
+              id="btn-news-download-news-0"
+              *ngIf="
+                element?.actionFlag === true &&
+                (element?.noticeStatus === NOTICE_STATUS.Downloaded ||
+                  element?.noticeStatus === NOTICE_STATUS.SuccessNotice)
+              "
+              class="medium-aw-button mat-fab mat-primary"
+              (click)="onClickDownloadNews(element)">
+              <mat-icon svgIcon="icon-Download" class="icon btn-icon"></mat-icon>
+            </button>
+            <button
+              id="btn-news-upload-news-0"
+              *ngIf="element?.actionFlag === true && element?.noticeStatus === NOTICE_STATUS.SuccessNotice"
+              class="medium-aw-button mat-fab mat-primary"
+              (click)="onClickUploadNews(element)">
+              <mat-icon svgIcon="icon-Arrow-Upload" class="icon btn-icon"></mat-icon>
+            </button>
+            <div
+              *ngIf="
+                element?.actionFlag === true &&
+                [NOTICE_STATUS.DraftNotice, NOTICE_STATUS.Downloaded].includes(element?.noticeStatus)
+              "
+              fxFlex>
+              <button
+                id="btn-news-download-news-1"
+                *ngIf="element?.noticeStatus === NOTICE_STATUS.DraftNotice"
+                type="button"
+                mat-flat-button
+                color="primary"
+                class="medium-button"
+                (click)="onClickDownloadNews(element)"
+                fxFlex>
+                {{ 'LAWSUIT.NOTICE.DOWNLOAD_AND_ANNOUCE_NEWS' | translate }}
+              </button>
+              <button
+                id="btn-news-upload-news-1"
+                *ngIf="element?.noticeStatus === NOTICE_STATUS.Downloaded"
+                type="button"
+                mat-flat-button
+                color="accent"
+                class="medium-button"
+                (click)="onClickUploadNews(element)"
+                fxFlex>
+                {{ 'LAWSUIT.NOTICE.SAVE_NEWS_DATA' | translate }}
+              </button>
+            </div>
+            <span
+              *ngIf="element?.actionFlag === true && element?.noticeStatus === NOTICE_STATUS.SuccessNotice"
+              class="link"
+              (click)="onClickDownloadDocNews(element)">
+              {{ 'LAWSUIT.NOTICE.ANNOUNCE_NEWS' | translate }}
+            </span>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+          <ng-container [ngTemplateOutlet]="dataNotFound"></ng-container>
+        </td>
+      </tr>
+    </table>
+  </div>
+</ng-template>
+
+<ng-template #dataNotFound>
+  <app-message-empty [message]="'COMMON.LABEL_PREFIX_NOT_FOUND'"></app-message-empty>
+</ng-template>

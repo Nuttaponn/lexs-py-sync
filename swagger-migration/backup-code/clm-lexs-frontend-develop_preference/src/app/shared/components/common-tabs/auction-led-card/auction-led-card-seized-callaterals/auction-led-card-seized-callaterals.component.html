@@ -1,0 +1,110 @@
+<div class="data-table-content mt-16">
+  <ng-container *ngTemplateOutlet="auctionLEDCardSeizedCallateralsTable"></ng-container>
+  <ng-container *ngIf="isEmptyInfo" [ngTemplateOutlet]="dataNotFound"></ng-container>
+  <ng-container *ngIf="isPreferential; else seizurePageTemplate">
+    <app-paginator *ngIf="preferentialOrderInfo.data.length > 0" #paginator [pageSize]="pageSize"
+      [length]="preferentialOrderInfo.data.length" (page)="onPaging($event)"></app-paginator>
+  </ng-container>
+  <ng-template #seizurePageTemplate>
+    <app-paginator *ngIf="seizureInfo.data.length > 0" #paginator [pageSize]="pageSize" [length]="seizureInfo.data.length"
+      (page)="onPaging($event)"></app-paginator>
+  </ng-template>
+</div>
+
+<ng-template #auctionLEDCardSeizedCallateralsTable>
+  <ng-container *ngIf="isPreferential; else seizureTemplate">
+    <div class="table">
+      <table mat-table [dataSource]="preferentialOrderInfo.filteredData" [class.empty]="preferentialOrderInfo.data.length === 0">
+        <!-- ลำดับ Column -->
+        <ng-container matColumnDef="col0">
+          <th class="text-center width-pct-5" mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_NO' | translate }}</th>
+          <td class="text-center width-pct-5" mat-cell *matCellDef="let element; let i = index">
+            {{ i + 1 }}
+          </td>
+        </ng-container>
+        <!-- เลขที่หนังสือสั่งการ Column -->
+        <ng-container matColumnDef="col1">
+          <th mat-header-cell *matHeaderCellDef class="new-line width-pct-12">
+            {{ 'AUCTION_LED_CARD.SEIZED_CALLATERALS.ORDER_NO_LABEL' | translate }}
+          </th>
+          <td mat-cell *matCellDef="let element" class="width-pct-12">
+            <ng-container *ngIf="element.preferenceGroupNo; else preferenceGroupNoEmpty">
+              <span class="link" (click)="navigateToPreferentialOrder(element)">{{ element.preferenceGroupNo }}</span>
+              <!-- TODO: Pending confirm with BA -->
+              <!-- <app-tooltip [params]="[{ title: 'เลขที่หนังสือสั่งการ', content: '00000000002', contentClasses: 'bold' }, { content: '00000000003', contentClasses: 'bold' }, { content: '00000000004', contentClasses: 'bold' }]"></app-tooltip> -->
+            </ng-container>
+            <ng-template #preferenceGroupNoEmpty>-</ng-template>
+          </td>
+        </ng-container>
+        <!-- วันที่สั่งการ Column -->
+        <ng-container matColumnDef="col2">
+          <th mat-header-cell *matHeaderCellDef>
+            {{ 'AUCTION_LED_CARD.SEIZED_CALLATERALS.ORDER_TIMESTAMP_LABEL' | translate }}
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.executeDate || '-' }}
+          </td>
+        </ng-container>
+        <!-- ทนายความผู้รับผิดชอบ Column -->
+        <ng-container matColumnDef="col3">
+          <th mat-header-cell *matHeaderCellDef>
+            {{ 'AUCTION_LED_CARD.SEIZED_CALLATERALS.RESPONSIBLE_LAWYER' | translate }}
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.auctionLawyerName || '-' }}
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+  </ng-container>
+  <ng-template #seizureTemplate>
+    <div class="table">
+      <table mat-table [dataSource]="seizureInfo.filteredData" [class.empty]="seizureInfo.data.length === 0">
+        <!-- ลำดับ Column -->
+        <ng-container matColumnDef="col0">
+          <th class="text-center width-pct-5" mat-header-cell *matHeaderCellDef>{{ 'COMMON.LABEL_NO' | translate }}</th>
+          <td class="text-center width-pct-5" mat-cell *matCellDef="let element; let i = index">
+            {{ i + 1 }}
+          </td>
+        </ng-container>
+        <!-- วันที่ยึดทรัพย์ / เลขที่หนังสือสั่งการ Column -->
+        <ng-container matColumnDef="col1">
+          <th mat-header-cell *matHeaderCellDef class="new-line width-pct-12">
+            {{ 'AUCTION_LED_CARD.SEIZED_CALLATERALS.SEIZURE_TIMESTAMP' | translate }}
+          </th>
+          <td mat-cell *matCellDef="let element" class="width-pct-12">
+            {{ element.seizureTimestamp || '-' }}
+          </td>
+        </ng-container>
+        <!-- ประเภทสำนักงานบังคับคดี / วันที่สั่งการ Column -->
+        <ng-container matColumnDef="col2">
+          <th mat-header-cell *matHeaderCellDef>
+            {{ 'AUCTION_LED_CARD.SEIZED_CALLATERALS.LEGAL_EXECUTION_OFFICE_TYPE' | translate }}
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="link" (click)="navigateToSeizureProperty(element)">
+              {{ ('SEIZURE_OFFICE_TYPE.' + element.ledType | translate) || '-' }}
+            </span>
+          </td>
+        </ng-container>
+        <!-- ทนายความผู้รับผิดชอบ Column -->
+        <ng-container matColumnDef="col3">
+          <th mat-header-cell *matHeaderCellDef>
+            {{ 'AUCTION_LED_CARD.SEIZED_CALLATERALS.RESPONSIBLE_LAWYER' | translate }}
+          </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.auctionLawyerName || '-' }}
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+  </ng-template>
+</ng-template>
+
+<ng-template #dataNotFound>
+  <app-message-empty [message]="'AUCTION_LED_CARD.SEIZED_CALLATERALS.NOT_FOUND'"></app-message-empty>
+</ng-template>

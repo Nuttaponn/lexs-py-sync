@@ -1,0 +1,100 @@
+<div class="content-container" [formGroup]="form">
+  <div class="inner-container-padding-24">
+    <div fxLayout="row" fxLayoutAlign="space-between center">
+      <div class="title-text">
+        <h5 class="mt-12 mb-12 mr-12">
+          <span *ngIf="isViewMode">{{ 'WITHDRAWN_SEIZURE_PROPERTY.DETAIL_WITHDRAWN_VIEW' | translate }}</span>
+          <span *ngIf="!isViewMode">{{ 'WITHDRAWN_SEIZURE_PROPERTY.DETAIL_WITHDRAWN' | translate }}</span>
+        </h5>
+      </div>
+      <div fxLayout="row">
+        <div class="description" (click)="isOpened = !isOpened">
+          <mat-icon
+            [svgIcon]="isOpened ? 'icon-Slide-Hide' : 'icon-Expand'"
+            class="icon icon-xmedium icon-hide-show fill-blue mr-5">
+          </mat-icon
+          >{{ isOpened ? ('COMMON.ICON_EXPANSION_HIDE' | translate) : ('COMMON.ICON_EXPANSION_SHOW' | translate) }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <mat-accordion>
+    <mat-expansion-panel [expanded]="isOpened" hideToggle>
+      <mat-divider class="no-margin"></mat-divider>
+      <div class="mb-24 mt-24 ml-16" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px">
+        <div fxLayout="column" fxFlex="15">
+          <h6>
+            <span *ngIf="isViewMode">{{ 'WITHDRAWN_SEIZURE_PROPERTY.REASON_WITHDRAWN_VIEW' | translate }}</span>
+            <span *ngIf="!isViewMode">{{ 'WITHDRAWN_SEIZURE_PROPERTY.REASON_WITHDRAWN' | translate }}</span>
+          </h6>
+        </div>
+        <div fxLayout="column" fxFlex="50">
+          <div *ngIf="!isViewMode">
+            <spig-dropdown
+              [classInput]="classInput"
+              [options]="dropDownReasonWithdrawnOption"
+              [config]="reasonConfig"
+              [formControl]="getControl('reasonWithdrawSeizures')"
+              (ngModelChange)="onReasonWithdrawnDDLChange()">
+            </spig-dropdown>
+            <spig-error-msg
+              [control]="getControl('reasonWithdrawSeizures')"
+              [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED_REASON'">
+            </spig-error-msg>
+          </div>
+          <div *ngIf="isViewMode">
+            <div fxLayout="column" fxFlex="50">
+              <span class="thin-letter mb-12">{{
+                'WITHDRAWN_SEIZURE_PROPERTY.REASON_WITHDRAWN_LABEL_VIEW' | translate
+              }}</span>
+              <div>{{ reasonWithdrawSeizuresLabel | coerceString }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="hideDetail">
+        <ng-container *ngIf="isShowInputForm">
+          <div class="ml-16 mb-24" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+            <div fxLayout="column" fxFlex="15"></div>
+            <div *ngIf="!isViewMode" fxLayout="column" fxFlex="50">
+              <mat-form-field>
+                <mat-label>{{ placeholder | translate }}</mat-label>
+                <input
+                  type="text"
+                  [mask]="'separator.2'"
+                  [thousandSeparator]="','"
+                  matInput
+                  autocomplete="off"
+                  formControlName="debtPaidAmount"
+                  required />
+              </mat-form-field>
+              <spig-error-msg
+                [control]="getControl('debtPaidAmount')"
+                [customErrorMsg]="'COMMON.ERROR_MSG_REQUIRED_PAID'">
+              </spig-error-msg>
+            </div>
+            <div *ngIf="isViewMode" fxLayout="column" fxFlex="50">
+              <span class="thin-letter mb-12">{{ 'WITHDRAWN_SEIZURE_PROPERTY.PAY_OFF_DEBT_AMOUNT' | translate }}</span>
+              <div>{{ getControl('debtPaidAmount').value | numberDecimal | coerceString }}</div>
+            </div>
+          </div>
+          <div class="ml-16 mb-24" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+            <div fxLayout="column" fxFlex="15"></div>
+            <div fxLayout="column" fxFlex="86">
+              <div class="elm-form">
+                <input class="elm-radio-check elm-check mr-1em inactive" type="checkbox" checked [disabled]="true" />
+                <label
+                  >{{ 'WITHDRAWN_SEIZURE_PROPERTY.REASON_WITHDRAWN_text1' | translate }}
+                  <span class="bold">{{ 'WITHDRAWN_SEIZURE_PROPERTY.FEE_WITHDRAWN' | translate }}</span>
+                  {{ 'WITHDRAWN_SEIZURE_PROPERTY.AND' | translate }}
+                  <span class="bold">{{ 'WITHDRAWN_SEIZURE_PROPERTY.SAVE_SELL_BACK' | translate }}</span>
+                  <br />{{ 'WITHDRAWN_SEIZURE_PROPERTY.REASON_WITHDRAWN_TEXT2' | translate }}
+                </label>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

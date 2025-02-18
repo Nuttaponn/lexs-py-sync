@@ -1,0 +1,14 @@
+<div *ngIf="canDownloadExpenseDoc" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="16px" class="mt-45">
+  <div fxLayout="column" fxFlex="25">
+    <h6>
+      <!-- หนังสือเบิกจ่ายเงิน -->
+      {{ 'LAWSUIT.SUIT.DOWNLOAD_PAYMENT_REQUEST_BOOK' | translate }}
+    </h6>
+  </div>
+  <div fxLayout="column">
+    <button type="button" mat-stroked-button class="medium-aw-button" (click)="downloadExpenseDoc()">
+      <mat-icon svgIcon="icon-Download" class="icon-xmedium"></mat-icon>
+      {{ 'COMMON.BUTTON_DOWNLOAD' | translate }}
+    </button>
+  </div>
+</div>

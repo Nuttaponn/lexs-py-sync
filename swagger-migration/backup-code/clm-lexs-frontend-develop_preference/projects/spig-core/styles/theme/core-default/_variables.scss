@@ -1,0 +1,482 @@
+$krungthai-blue:            #00A6E6;
+$krungthai-light-blue:      #bddbec;
+$krungthai-precious-blue:   #002240;
+$krungthai-golden-yellow:   #FFDC00;
+$krungthai-green:           #279400;
+$krungthai-red:             #D0082C;
+
+$white:    #fff;
+$black:    #000;
+
+$ktb-palette-blue: (
+    30 : #CDF1FC,
+    50 : #f4faff,
+    80: #00446B,
+    100 : #e1f7fd,
+    200 : #a6e5fa,
+    300 : #81cff4,
+    400 : #04baee,
+    500 : $krungthai-blue,
+    600 : #008ec4,
+    700 : #00446b,
+    800 : #003154,
+    900 : #002240,
+    A100 : #5ed4f3,
+    A200 : #65d2f6,
+    A400 : #7fdcf6,
+    A700 : #5a94b5,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #ffffff,
+        400 : #ffffff,
+        500 : #ffffff,
+        600 : #ffffff,
+        700 : #ffffff,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #ffffff,
+        A400 : #ffffff,
+        A700 : #ffffff,
+    )
+);
+
+$ktb-palette-precious-blue: (
+    00: #F9FCFF,
+    50 : #00A6E6,
+    100 : #2494d3,
+    200 : #1472a7,
+    300 : #095c8b,
+    400 : #00446b,
+    500 : #003154,
+    600 :$krungthai-precious-blue,
+    700 : #001835,
+    800 : #000b28,
+    900 : #000616,
+    A100 : #9fe1ed,
+    A200 : #86dde8,
+    A400 : #5a94b5,
+    A700 : #4d6f9a,
+    disabled : #C3D8DF,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #ffffff,
+        400 : #ffffff,
+        500 : #ffffff,
+        600 : #ffffff,
+        700 : #ffffff,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #ffffff,
+        A400 : #ffffff,
+        A700 : #ffffff,
+    )
+);
+
+$ktb-palette-light-blue: (
+    50 : #fafaff,
+    100 : #f7fbff,
+    200 : #f2f8fb,
+    300 : #ebf4f9,
+    400 : #dff1fc,
+    500 : $krungthai-light-blue,
+    600 : #98c0d2,
+    700 : #6fa2b9,
+    800 : #528397,
+    900 : #3f7389,
+    A100 : #77bbff,
+    A200 : #5aa0c3,
+    A400 : #5bb7ee,
+    A700 : #31708d,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #000000,
+        400 : #000000,
+        500 : #000000,
+        600 : #000000,
+        700 : #000000,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #000000,
+        A700 : #ffffff,
+    )
+);
+
+$ktb-palette-biz-gray: (
+    50 : #f9f9f9,
+    100 : #f5f5f5,
+    200 : #eeeeee,
+    300 : #e3e3e3,
+    400 : #d3d3d3,
+    500 : #bbbbbb,
+    600 : #868686,
+    700 : #4a4a49,
+    800 : #242424,
+    900 : #121212,
+    A100 : #757575,
+    A200 : #6e6e6e,
+    A400 : #535353,
+    A700 : #0a0a0a,
+    A800: #00001F,
+    A900: #BBBBBB,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #000000,
+        400 : #000000,
+        500 : #ffffff,
+        600 : #ffffff,
+        700 : #ffffff,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #ffffff,
+        A200 : #ffffff,
+        A400 : #ffffff,
+        A700 : #ffffff,
+    )
+);
+
+$ktb-palette-golden-yellow: (
+    50 : #fef8e6,
+    100 : #fdeab2,
+    200 : #ffe692,
+    300 : #ffe85a,
+    400 : $krungthai-golden-yellow,
+    500 : #fab900,
+    600 : #f49b00,
+    700 : #f08700,
+    800 : #d27601,
+    900 : #b75900,
+    A100 : #fbd871,
+    A200 : #ffd752,
+    A400 : #ffed7f,
+    A700 : #f7c17b,
+    disabled: #807532,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #000000,
+        400 : #000000,
+        500 : #000000,
+        600 : #000000,
+        700 : #000000,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #000000,
+        A700 : #000000,
+    )
+);
+
+$ktb-palette-green: (
+    50 : #F7FBF6,
+    100 : #E9F4E6,
+    200 : #BEDFB3,
+    300 : #7DBF66,
+    400 : #52A933,
+    500 :  $krungthai-green,
+    600 : #238500,
+    700 : #1F7600,
+    800 : #175900,
+    900 : #103B00,
+    disabled: #081E00,
+    A100 : #388930,
+    A200 : #5ec858,
+    A400 : #278025,
+    A700 : #053208,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #000000,
+        400 : #000000,
+        500 : #ffffff,
+        600 : #ffffff,
+        700 : #ffffff,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #ffffff,
+        A700 : #000000,
+    )
+);
+
+$ktb-palette-red: (
+    50 : #FFF2F5,
+    100 : #FAE6EA,
+    200 : #F1B5C0,
+    300 : #E88496,
+    400 : #DE526B,
+    500 : #D93956,
+    600 : $krungthai-red,
+    700 : #B00020,
+    800 : #960721,
+    900 : #790000,
+    disabled : #5f0404,
+    A100 : #e6655d,
+    A200 : #ff4134,
+    A400 : #E10E0D,
+    A700 : #cd7081,
+    A800: #f05f61,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #000000,
+        400 : #000000,
+        500 : #ffffff,
+        600 : #ffffff,
+        700 : #ffffff,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #ffffff,
+        A200 : #ffffff,
+        A400 : #ffffff,
+        A700 : #ffffff,
+    )
+);
+
+$ktb-palette-biz-black: (
+    5: hsla(0, 0%, 7%, 0.05),
+    10: hsla(0, 0%, 7%, 0.1),
+    20: hsla(0, 0%, 7%, 0.2),
+    30: hsla(0, 0%, 7%, 0.3),
+    40: hsla(0, 0%, 7%, 0.4),
+    50: hsla(0, 0%, 7%, 0.5),
+    60: hsla(0, 0%, 7%, 0.6),
+    70: hsla(0, 0%, 7%, 0.7),
+    80: hsla(0, 0%, 7%, 0.8),
+    90: hsla(0, 0%, 7%, 0.9),
+    100: hsla(0, 0%, 7%, 1),
+);
+
+$palette-primary:   $ktb-palette-blue;
+$palette-biznow-primary: $ktb-palette-precious-blue;
+$palette-accent:    $ktb-palette-blue;
+$palette-warn:      $ktb-palette-golden-yellow;
+$palette-secondary:     $ktb-palette-golden-yellow;
+$primary:   map_get($ktb-palette-blue, 500) !default;
+$secondary: map_get($ktb-palette-golden-yellow, 400) !default;
+$success:   map_get($ktb-palette-green, 500) !default;
+$info:      map_get($ktb-palette-biz-gray, 600) !default;
+$warning:   map_get($ktb-palette-golden-yellow, 400) !default;
+$danger:    map_get($ktb-palette-red, 500) !default;
+
+
+$body-bg:   map_get($ktb-palette-biz-gray, 50) !default;
+$body-font: 'KrungthaiFastRegular';
+$body-font-fallback: 'ThonburiRegular';
+
+/* for -lg and -sm, use default from Bootstrap , may be changed for override in the future */
+$border-radius:     4px !default;
+$border-radius-lg:  .3rem !default;
+$border-radius-sm:  .2rem !default;
+
+/* for login screen:
+    $login-bg-style
+        image : means use image as background of screen (use image identify by $login-bg-image),
+        color : means use color as background of screen
+
+    in case to use 'color' as background:
+        $login-bg-gradient
+            true : means use gradient color (from $login-bg-gradient-color-left to $login-bg-gradient-color-right) as a background,
+            false : means use solid color (identify by $login-bg-color as a background
+*/
+$login-bg-style: image !default;
+$login-bg-image: url(/assets/images/retail-login-bg.png) center/cover no-repeat !default;
+$login-bg-gradient: true !default;
+$login-bg-gradient-color-right: map_get($ktb-palette-blue, 600) !default;
+$login-bg-gradient-color-left: map_get($ktb-palette-blue, 400) !default;
+$login-bg-color: $krungthai-blue !default;
+$login-campaign-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAAAAAA6fptVAAAACklEQVR4nGP6DwABBQECz6AuzQAAAABJRU5ErkJggg==) repeat !default;
+$login-area-bg-color: map_get($ktb-palette-biz-gray, 50) !default;
+$login-area-border-radius: 6px !default;
+$login-area-drop-shadow: false !default;
+$login-campaign-width: 495px !default;
+$login-form-width: 490px !default;
+$login-form-area-width: 57% !default;
+$login-form-logo: url(/assets/images/logo/ktb-logo-circle-100px.png) center/contain no-repeat !default;
+$login-height-logo: 150px !default;
+$login-head-text-color-welcome: map_get($ktb-palette-biz-gray, 700) !default;
+$login-head-text-color-title: map_get($ktb-palette-blue, 800) !default;
+$login-form-input-border-color: map_get($ktb-palette-biz-gray, 500) !default;
+$login-form-input-border-radius: 8px !default;
+$login-remark-text-color: map_get($ktb-palette-biz-gray, 700) !default;
+$login-contact-text-color: map_get($ktb-palette-biz-gray, 700) !default;
+
+/* For Title bar */
+$title-bar-bg-gradient: true !default;
+$title-bar-gradient-color-left: map_get($ktb-palette-blue, 400) !default;
+$title-bar-gradient-color-right: map_get($ktb-palette-blue, 600) !default;
+/* in case not gradient then use solid color */
+$title-bar-bg-color: $krungthai-blue !default;
+$title-bar-logo: url(/assets/images/logo/ktb-white.svg) left/contain no-repeat !default;
+$title-bar-logo-height: 40px !default;
+$title-bar-icon-height-lg: 32px !default;
+$title-bar-icon-height-md: 24px !default;
+$title-bar-icon-color: $white !default;
+$title-bar-text-color: $white !default;
+$title-bar-text-size: 22px !default;
+$title-bar-show-separator: true !default;
+
+$menu-item-font-size: 16px !default;
+
+/* For Nav bar */
+$nav-bar-bg-gradient: true !default;
+$nav-bar-gradient-color-left: map_get($ktb-palette-blue, 600) !default;
+$nav-bar-gradient-color-right: map_get($ktb-palette-blue, 700) !default;
+$nav-bar-bg-color: map_get($ktb-palette-blue, 700) !default;
+
+/* Color values as per style guide*/
+$krungthai-biz-gray: map_get($ktb-palette-biz-gray, 0);
+$krungthai-biz-gray-50: map_get($ktb-palette-biz-gray, 50);
+
+$krungthai-biz-gray-100: map_get($ktb-palette-biz-gray, 100);
+
+$krungthai-biz-gray-200: map_get($ktb-palette-biz-gray, 200);
+
+$krungthai-biz-gray-300: map_get($ktb-palette-biz-gray, 300);
+
+$krungthai-biz-gray-400: map_get($ktb-palette-biz-gray, 400);
+
+$krungthai-biz-gray-500: map_get($ktb-palette-biz-gray, 500);
+
+$krungthai-biz-gray-600: map_get($ktb-palette-biz-gray, 600);
+
+$krungthai-biz-gray-700: map_get($ktb-palette-biz-gray, 700);
+
+$krungthai-biz-gray-800: map_get($ktb-palette-biz-gray, 800);
+
+$krungthai-biz-gray-900: map_get($ktb-palette-biz-gray, 900);
+
+$krungthai-biz-gray-A800: map-get($map: $ktb-palette-biz-gray, $key: A800);
+
+$krungthai-biz-gray-A900: map-get($map: $ktb-palette-biz-gray, $key: A900);
+
+$krungthai-golden-yellow: map_get($ktb-palette-golden-yellow, 0);
+
+$krungthai-golden-yellow-50: map_get($ktb-palette-golden-yellow, 50);
+
+$krungthai-golden-yellow-100: map_get($ktb-palette-golden-yellow, 100);
+
+$krungthai-golden-yellow-200: map_get($ktb-palette-golden-yellow, 200);
+
+$krungthai-golden-yellow-300: map_get($ktb-palette-golden-yellow, 300);
+
+$krungthai-golden-yellow-400: map_get($ktb-palette-golden-yellow, 400);
+
+$krungthai-golden-yellow-500: map_get($ktb-palette-golden-yellow, 500);
+
+$krungthai-golden-yellow-600: map_get($ktb-palette-golden-yellow, 600);
+
+$krungthai-golden-yellow-700: map_get($ktb-palette-golden-yellow, 700);
+
+$krungthai-golden-yellow-800: map_get($ktb-palette-golden-yellow, 800);
+
+$krungthai-golden-yellow-900: map_get($ktb-palette-golden-yellow, 900);
+
+$krungthai-blue: map_get($ktb-palette-blue, 0);
+
+$krungthai-blue-50: map_get($ktb-palette-blue, 50);
+
+$krungthai-blue-100: map_get($ktb-palette-blue, 100);
+
+$krungthai-blue-200: map_get($ktb-palette-blue, 200);
+
+$krungthai-blue-300: map_get($ktb-palette-blue, 300);
+
+$krungthai-blue-400: map_get($ktb-palette-blue, 400);
+
+$krungthai-blue-500: map_get($ktb-palette-blue, 500);
+
+$krungthai-blue-600: map_get($ktb-palette-blue, 600);
+
+$krungthai-blue-700: map_get($ktb-palette-blue, 700);
+
+$krungthai-blue-800: map_get($ktb-palette-blue, 800);
+
+$krungthai-blue-900: map_get($ktb-palette-blue, 900);
+
+$krungthai-light-blue: map_get($ktb-palette-light-blue, 0);
+
+$krungthai-light-blue-50: map_get($ktb-palette-light-blue, 50);
+
+$krungthai-light-blue-100: map_get($ktb-palette-light-blue, 100);
+
+$krungthai-light-blue-200: map_get($ktb-palette-light-blue, 200);
+
+$krungthai-light-blue-300: map_get($ktb-palette-light-blue, 300);
+
+$krungthai-light-blue-400: map_get($ktb-palette-light-blue, 400);
+
+$krungthai-light-blue-500: map_get($ktb-palette-light-blue, 500);
+
+$krungthai-light-blue-600: map_get($ktb-palette-light-blue, 600);
+
+$krungthai-light-blue-700: map_get($ktb-palette-light-blue, 700);
+
+$krungthai-light-blue-800: map_get($ktb-palette-light-blue, 800);
+
+$krungthai-light-blue-900: map_get($ktb-palette-light-blue, 900);
+
+$krungthai-green:    map_get($ktb-palette-green, 0);
+$krungthai-green-50:    map_get($ktb-palette-green, 50);
+
+$krungthai-green-100: map_get($ktb-palette-green, 100);
+
+$krungthai-green-200: map_get($ktb-palette-green, 200);
+
+$krungthai-green-300: map_get($ktb-palette-green, 300);
+
+$krungthai-green-400: map_get($ktb-palette-green, 400);
+
+$krungthai-green-500: map_get($ktb-palette-green, 500);
+
+$krungthai-green-600: map_get($ktb-palette-green, 600);
+
+$krungthai-green-700: map_get($ktb-palette-green, 700);
+
+$krungthai-green-800: map_get($ktb-palette-green, 800);
+
+$krungthai-green-900: map_get($ktb-palette-green, 900);
+
+$krungthai-red: map_get($ktb-palette-red, 0);
+$krungthai-red-50: map_get($ktb-palette-red, 50);
+
+$krungthai-red-100: map_get($ktb-palette-red, 100);
+
+$krungthai-red-200: map_get($ktb-palette-red, 200);
+
+$krungthai-red-300: map_get($ktb-palette-red, 300);
+
+$krungthai-red-400: map_get($ktb-palette-red, 400);
+
+$krungthai-red-500: map_get($ktb-palette-red, 500);
+
+$krungthai-red-600: map_get($ktb-palette-red, 600);
+
+$krungthai-red-700: map_get($ktb-palette-red, 700);
+
+$krungthai-red-800: map_get($ktb-palette-red, 800);
+
+$krungthai-red-900: map_get($ktb-palette-red, 900);
+
+/* For Button */
+$button-disabled-color: #C3D8DF !default;
+$button-allow-gradient: true !default;
+$button-flat-force-drop-shadow: false !default;
+
+$bg-almost-white: #e6f8fd;

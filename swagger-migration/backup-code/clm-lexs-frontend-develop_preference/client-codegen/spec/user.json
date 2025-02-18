@@ -1,0 +1,2027 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "KTB Backend for Frontend APIs.",
+    "description": "Microservice: user",
+    "contact": {
+      "name": "Krungthai Bank Public Company Limited",
+      "url": "https://krungthai.com",
+      "email": ""
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://lexsdev.krungthai/ktb/rest/lexs",
+      "description": "Generated server url"
+    }
+  ],
+  "tags": [
+    {
+      "name": "PhonebookController",
+      "description": "/v1/phonebook"
+    }
+  ],
+  "paths": {
+    "/v1/user": {
+      "get": {
+        "tags": [
+          "user-controller"
+        ],
+        "operationId": "inquiryUsers",
+        "parameters": [
+          {
+            "name": "filterKeyword",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "role",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "subRole",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dataScope",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageLexsUserDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "user-controller"
+        ],
+        "operationId": "saveMultipleUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "maxItems": 2147483647,
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/LexsUserRequest"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/user/{userId}": {
+      "get": {
+        "tags": [
+          "user-controller"
+        ],
+        "operationId": "getUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MeLexsUserDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "user-controller"
+        ],
+        "operationId": "saveUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "userId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LexsUserRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "user-controller"
+        ],
+        "operationId": "revokeUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "userId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v2/user/options": {
+      "get": {
+        "tags": [
+          "user-controller-v-2"
+        ],
+        "operationId": "inquiryUserOptions",
+        "parameters": [
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "roleCode",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "subRoleCode",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "fractionCode",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LexsUserOption"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/user/role-permissions/excel": {
+      "get": {
+        "tags": [
+          "user-controller"
+        ],
+        "operationId": "inquiryRoleExcelDownload",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageLexsRolePermissionTemplateDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/user/options": {
+      "get": {
+        "tags": [
+          "user-controller"
+        ],
+        "operationId": "inquiryUserOptions_1",
+        "parameters": [
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "roleCode",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LexsUserOption"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/user/me": {
+      "get": {
+        "tags": [
+          "user-controller"
+        ],
+        "operationId": "getCurrentUser",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MeLexsUserDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/user/ktb-boss": {
+      "get": {
+        "tags": [
+          "user-controller"
+        ],
+        "operationId": "getKtbBoss",
+        "parameters": [
+          {
+            "name": "organizationCode",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LexsUserDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/user/excel": {
+      "get": {
+        "tags": [
+          "user-controller"
+        ],
+        "operationId": "inquiryUsersExcelDownload",
+        "parameters": [
+          {
+            "name": "filterKeyword",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "role",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "subRole",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dataScope",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageLexsDocExportDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/phonebook": {
+      "get": {
+        "tags": [
+          "PhonebookController"
+        ],
+        "operationId": "getPhonebookUser",
+        "parameters": [
+          {
+            "name": "keyword",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PhoneBookDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/phonebook/options": {
+      "get": {
+        "tags": [
+          "PhonebookController"
+        ],
+        "operationId": "getPhonebookOptions",
+        "parameters": [
+          {
+            "name": "keyword",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PhoneBookDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "LexsUserRequest": {
+        "required": [
+          "mobileNumber",
+          "roleCode",
+          "subRoleCode",
+          "updateFlag"
+        ],
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "mobileNumber": {
+            "type": "string"
+          },
+          "roleCode": {
+            "type": "string"
+          },
+          "subRoleCode": {
+            "type": "string"
+          },
+          "dataScopeCode": {
+            "type": "string"
+          },
+          "levelCode": {
+            "type": "string"
+          },
+          "organizationCode": {
+            "type": "string"
+          },
+          "groupCode": {
+            "type": "string"
+          },
+          "factionCode": {
+            "type": "string"
+          },
+          "teamCode": {
+            "type": "string"
+          },
+          "authorityCode": {
+            "type": "string"
+          },
+          "updateFlag": {
+            "type": "string"
+          },
+          "supervisorId": {
+            "type": "string"
+          },
+          "lawyerCode": {
+            "type": "string"
+          }
+        }
+      },
+      "LexsUserOption": {
+        "type": "object",
+        "properties": {
+          "organizationCode": {
+            "type": "string"
+          },
+          "organizationName": {
+            "type": "string"
+          },
+          "groupCode": {
+            "type": "string"
+          },
+          "groupName": {
+            "type": "string"
+          },
+          "factionCode": {
+            "type": "string"
+          },
+          "factionName": {
+            "type": "string"
+          },
+          "teamCode": {
+            "type": "string"
+          },
+          "teamName": {
+            "type": "string"
+          },
+          "authorityCode": {
+            "type": "string"
+          },
+          "authorityName": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "surname": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "roleCode": {
+            "type": "string"
+          },
+          "subRoleCode": {
+            "type": "string"
+          },
+          "mobileNumber": {
+            "type": "string"
+          }
+        }
+      },
+      "LexsUserDto": {
+        "type": "object",
+        "properties": {
+          "organizationCode": {
+            "type": "string"
+          },
+          "organizationName": {
+            "type": "string"
+          },
+          "groupCode": {
+            "type": "string"
+          },
+          "groupName": {
+            "type": "string"
+          },
+          "factionCode": {
+            "type": "string"
+          },
+          "factionName": {
+            "type": "string"
+          },
+          "teamCode": {
+            "type": "string"
+          },
+          "teamName": {
+            "type": "string"
+          },
+          "authorityCode": {
+            "type": "string"
+          },
+          "authorityName": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "titleEng": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "surname": {
+            "type": "string"
+          },
+          "nameEng": {
+            "type": "string"
+          },
+          "surnameEng": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "supervisorId": {
+            "type": "string"
+          },
+          "supervisorName": {
+            "type": "string"
+          },
+          "supervisorEmail": {
+            "type": "string"
+          },
+          "supervisorMobileNumber": {
+            "type": "string"
+          },
+          "originalOrganizationCode": {
+            "type": "string"
+          },
+          "originalOrganizationName": {
+            "type": "string"
+          },
+          "position": {
+            "type": "string"
+          },
+          "mobileNumber": {
+            "type": "string"
+          },
+          "roleCode": {
+            "type": "string"
+          },
+          "roleName": {
+            "type": "string"
+          },
+          "subRoleCode": {
+            "type": "string"
+          },
+          "subRoleName": {
+            "type": "string"
+          },
+          "dataScopeCode": {
+            "type": "string"
+          },
+          "levelCode": {
+            "type": "string"
+          },
+          "levelName": {
+            "type": "string"
+          },
+          "lastLogin": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lawyerCode": {
+            "type": "string"
+          },
+          "disable": {
+            "type": "boolean"
+          }
+        }
+      },
+      "PageLexsUserDto": {
+        "type": "object",
+        "properties": {
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LexsUserDto"
+            }
+          },
+          "number": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sort": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SortObject"
+            }
+          },
+          "numberOfElements": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageable": {
+            "$ref": "#/components/schemas/PageableObject"
+          },
+          "first": {
+            "type": "boolean"
+          },
+          "last": {
+            "type": "boolean"
+          },
+          "empty": {
+            "type": "boolean"
+          }
+        }
+      },
+      "PageableObject": {
+        "type": "object",
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "sort": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SortObject"
+            }
+          },
+          "paged": {
+            "type": "boolean"
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "unpaged": {
+            "type": "boolean"
+          }
+        }
+      },
+      "SortObject": {
+        "type": "object",
+        "properties": {
+          "direction": {
+            "type": "string"
+          },
+          "nullHandling": {
+            "type": "string"
+          },
+          "ascending": {
+            "type": "boolean"
+          },
+          "property": {
+            "type": "string"
+          },
+          "ignoreCase": {
+            "type": "boolean"
+          }
+        }
+      },
+      "MeLexsUserDto": {
+        "type": "object",
+        "properties": {
+          "organizationCode": {
+            "type": "string"
+          },
+          "organizationName": {
+            "type": "string"
+          },
+          "groupCode": {
+            "type": "string"
+          },
+          "groupName": {
+            "type": "string"
+          },
+          "factionCode": {
+            "type": "string"
+          },
+          "factionName": {
+            "type": "string"
+          },
+          "teamCode": {
+            "type": "string"
+          },
+          "teamName": {
+            "type": "string"
+          },
+          "authorityCode": {
+            "type": "string"
+          },
+          "authorityName": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "titleEng": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "surname": {
+            "type": "string"
+          },
+          "nameEng": {
+            "type": "string"
+          },
+          "surnameEng": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "supervisorId": {
+            "type": "string"
+          },
+          "supervisorName": {
+            "type": "string"
+          },
+          "supervisorEmail": {
+            "type": "string"
+          },
+          "supervisorMobileNumber": {
+            "type": "string"
+          },
+          "originalOrganizationCode": {
+            "type": "string"
+          },
+          "originalOrganizationName": {
+            "type": "string"
+          },
+          "position": {
+            "type": "string"
+          },
+          "mobileNumber": {
+            "type": "string"
+          },
+          "roleCode": {
+            "type": "string"
+          },
+          "roleName": {
+            "type": "string"
+          },
+          "subRoleCode": {
+            "type": "string"
+          },
+          "subRoleName": {
+            "type": "string"
+          },
+          "dataScopeCode": {
+            "type": "string"
+          },
+          "levelCode": {
+            "type": "string"
+          },
+          "levelName": {
+            "type": "string"
+          },
+          "lastLogin": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lawyerCode": {
+            "type": "string"
+          },
+          "permissions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "attributes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserAttribute"
+            }
+          },
+          "disable": {
+            "type": "boolean"
+          }
+        }
+      },
+      "UserAttribute": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        }
+      },
+      "LexsRolePermissionTemplateDto": {
+        "type": "object",
+        "properties": {
+          "roleName": {
+            "type": "string"
+          },
+          "subRoleName": {
+            "type": "string"
+          },
+          "viewCustomer": {
+            "type": "string"
+          },
+          "viewLitigationCustomer": {
+            "type": "string"
+          },
+          "viewNoticeReceiver": {
+            "type": "string"
+          },
+          "viewLitigationCase": {
+            "type": "string"
+          },
+          "viewHoldingLitigationCase": {
+            "type": "string"
+          },
+          "viewKlawFinancial": {
+            "type": "string"
+          },
+          "viewCourtFee": {
+            "type": "string"
+          },
+          "viewDefermentExecution": {
+            "type": "string"
+          },
+          "viewCollateralLexsStatus": {
+            "type": "string"
+          },
+          "viewAccountDocumentStatus": {
+            "type": "string"
+          },
+          "allDashboard": {
+            "type": "string"
+          },
+          "transferTask": {
+            "type": "string"
+          },
+          "updateDopa": {
+            "type": "string"
+          },
+          "allTaskAction": {
+            "type": "string"
+          },
+          "createLitigationCustomer": {
+            "type": "string"
+          },
+          "verifyDocument": {
+            "type": "string"
+          },
+          "uploadCustomerDocument": {
+            "type": "string"
+          },
+          "createNameChangeNotice": {
+            "type": "string"
+          },
+          "startLitigationCase": {
+            "type": "string"
+          },
+          "updateCustomerRealtime": {
+            "type": "string"
+          },
+          "updateCollateralRealtime": {
+            "type": "string"
+          },
+          "allCustomerAction": {
+            "type": "string"
+          },
+          "createLegalAssignment": {
+            "type": "string"
+          },
+          "createLawsuit": {
+            "type": "string"
+          },
+          "createLitigationCase": {
+            "type": "string"
+          },
+          "createNoticeEvent": {
+            "type": "string"
+          },
+          "addLegalRelatedPerson": {
+            "type": "string"
+          },
+          "addSubAccount": {
+            "type": "string"
+          },
+          "verifyLegalDocument": {
+            "type": "string"
+          },
+          "uploadLegalDocument": {
+            "type": "string"
+          },
+          "createIndictmentRecord": {
+            "type": "string"
+          },
+          "createLegalComment": {
+            "type": "string"
+          },
+          "appealApproval": {
+            "type": "string"
+          },
+          "createDecree": {
+            "type": "string"
+          },
+          "closeLegalId": {
+            "type": "string"
+          },
+          "saveFollowStatus": {
+            "type": "string"
+          },
+          "addRelatedPersonAfterUndicidedCase": {
+            "type": "string"
+          },
+          "updateLitigationInfo": {
+            "type": "string"
+          },
+          "addCourtProcessdingsAppointment": {
+            "type": "string"
+          },
+          "deleteLitigationAccount": {
+            "type": "string"
+          },
+          "uploadDocumentNoticeClosedJuristic": {
+            "type": "string"
+          },
+          "viewDocumentFromProfileDirectAndStatement": {
+            "type": "string"
+          },
+          "allLegalAction": {
+            "type": "string"
+          },
+          "createPaymentDocument": {
+            "type": "string"
+          },
+          "verifyExpense": {
+            "type": "string"
+          },
+          "createPaymentRecord": {
+            "type": "string"
+          },
+          "verifyPayment": {
+            "type": "string"
+          },
+          "paymentApproval": {
+            "type": "string"
+          },
+          "uploadFinancialDocument": {
+            "type": "string"
+          },
+          "verifyFinancialDocument": {
+            "type": "string"
+          },
+          "downloadTaxDocument": {
+            "type": "string"
+          },
+          "financialTransfer": {
+            "type": "string"
+          },
+          "deleteUploadDocument": {
+            "type": "string"
+          },
+          "allExpense": {
+            "type": "string"
+          },
+          "createReceipt": {
+            "type": "string"
+          },
+          "verifyReceipt": {
+            "type": "string"
+          },
+          "downloadCreditNote": {
+            "type": "string"
+          },
+          "allReceive": {
+            "type": "string"
+          },
+          "financialAdvanceTransfer": {
+            "type": "string"
+          },
+          "verifyAdvanceTransfer": {
+            "type": "string"
+          },
+          "allAdvanceReceive": {
+            "type": "string"
+          },
+          "viewSlaReport": {
+            "type": "string"
+          },
+          "viewSlaExecutionReport": {
+            "type": "string"
+          },
+          "withholdingTaxReport": {
+            "type": "string"
+          },
+          "allReport": {
+            "type": "string"
+          },
+          "manageConfig": {
+            "type": "string"
+          },
+          "allConfig": {
+            "type": "string"
+          },
+          "manageUser": {
+            "type": "string"
+          },
+          "allUam": {
+            "type": "string"
+          },
+          "allCalendarActivities": {
+            "type": "string"
+          },
+          "allCommonAction": {
+            "type": "string"
+          },
+          "assignTaskPool": {
+            "type": "string"
+          },
+          "allTaskPoolAssignment": {
+            "type": "string"
+          },
+          "submitDebtLegalEnforcement": {
+            "type": "string"
+          },
+          "debtEnforcementAssignment": {
+            "type": "string"
+          },
+          "submitEnforcementResult": {
+            "type": "string"
+          },
+          "allWarrant": {
+            "type": "string"
+          },
+          "assetSeizurePrep": {
+            "type": "string"
+          },
+          "assignLawyerAssetSeizure": {
+            "type": "string"
+          },
+          "documentInspectionAssetSeizure": {
+            "type": "string"
+          },
+          "recordSeizureResult": {
+            "type": "string"
+          },
+          "allAssetSeizure": {
+            "type": "string"
+          },
+          "cancelAssetSeizure": {
+            "type": "string"
+          },
+          "confirmCancelAssetSeizure": {
+            "type": "string"
+          },
+          "returnOriginalDocuments": {
+            "type": "string"
+          },
+          "allCancelAssetSeizure": {
+            "type": "string"
+          },
+          "withdrawAssetSeizure": {
+            "type": "string"
+          },
+          "editWithdrawAssetSeizure": {
+            "type": "string"
+          },
+          "approveWithdrawAssetSeizure": {
+            "type": "string"
+          },
+          "verifyDocWithdrawSeizure": {
+            "type": "string"
+          },
+          "assignWithdrawSeizure": {
+            "type": "string"
+          },
+          "saveResultWithdrawSeizure": {
+            "type": "string"
+          },
+          "allWithdrawAssetSeizure": {
+            "type": "string"
+          },
+          "withdrawExecution": {
+            "type": "string"
+          },
+          "editWithdrawExecution": {
+            "type": "string"
+          },
+          "approveWithdrawExecution": {
+            "type": "string"
+          },
+          "verifyDocWithdrawExecution": {
+            "type": "string"
+          },
+          "assignWithdrawExecution": {
+            "type": "string"
+          },
+          "saveWithdrawExecution": {
+            "type": "string"
+          },
+          "allWithdrawExecution": {
+            "type": "string"
+          },
+          "submitDelayExecution": {
+            "type": "string"
+          },
+          "approveDelayExecution": {
+            "type": "string"
+          },
+          "extendDelayExecution": {
+            "type": "string"
+          },
+          "editDelayExecution": {
+            "type": "string"
+          },
+          "cancelDelayExecution": {
+            "type": "string"
+          },
+          "allDelayExecution": {
+            "type": "string"
+          },
+          "assignAuction": {
+            "type": "string"
+          },
+          "submitAuctionExpense": {
+            "type": "string"
+          },
+          "submitAuctionCashierChequeExpense": {
+            "type": "string"
+          },
+          "verifyAuctionCashierChequeExpense": {
+            "type": "string"
+          },
+          "approveAuctionCashierChequeExpense": {
+            "type": "string"
+          },
+          "submitAuctionCheckInfo": {
+            "type": "string"
+          },
+          "verifyAuctionCheckInfo": {
+            "type": "string"
+          },
+          "approveAuctionCheckInfo": {
+            "type": "string"
+          },
+          "submitAuctionDayResult": {
+            "type": "string"
+          },
+          "submitAuctionCheckStampDuty": {
+            "type": "string"
+          },
+          "verifyAuctionCheckStampDuty": {
+            "type": "string"
+          },
+          "approveAuctionCheckStampDuty": {
+            "type": "string"
+          },
+          "trackPaymentRecord": {
+            "type": "string"
+          },
+          "submitAdditionDepositCheck": {
+            "type": "string"
+          },
+          "verifyAdditionDepositCheck": {
+            "type": "string"
+          },
+          "approveAdditionDepositCheck": {
+            "type": "string"
+          },
+          "acquiredAssetDocumentUpload": {
+            "type": "string"
+          },
+          "assetTransferAppointment": {
+            "type": "string"
+          },
+          "submitCheckAssetTransfer": {
+            "type": "string"
+          },
+          "approveCheckAssetTransfer": {
+            "type": "string"
+          },
+          "submitDebtPaymentReduction": {
+            "type": "string"
+          },
+          "approveDebtPaymentReduction": {
+            "type": "string"
+          },
+          "submitAccountAuditCertification": {
+            "type": "string"
+          },
+          "approveAccountAuditCertification": {
+            "type": "string"
+          },
+          "allAuctionExceptMatch": {
+            "type": "string"
+          },
+          "matchAssetAuction": {
+            "type": "string"
+          },
+          "allAuctionOnlyMatch": {
+            "type": "string"
+          },
+          "orderInvestigationAsset": {
+            "type": "string"
+          },
+          "allInvestigationAsset": {
+            "type": "string"
+          }
+        }
+      },
+      "PageLexsRolePermissionTemplateDto": {
+        "type": "object",
+        "properties": {
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LexsRolePermissionTemplateDto"
+            }
+          },
+          "number": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sort": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SortObject"
+            }
+          },
+          "numberOfElements": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageable": {
+            "$ref": "#/components/schemas/PageableObject"
+          },
+          "first": {
+            "type": "boolean"
+          },
+          "last": {
+            "type": "boolean"
+          },
+          "empty": {
+            "type": "boolean"
+          }
+        }
+      },
+      "LexsDocExportDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "ktbFieldMapName": {
+            "type": "string"
+          },
+          "organization": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "mobileNumber": {
+            "type": "string"
+          },
+          "roleName": {
+            "type": "string"
+          },
+          "subRoleName": {
+            "type": "string"
+          },
+          "lastLogin": {
+            "type": "string"
+          },
+          "isDeleted": {
+            "type": "string"
+          },
+          "dataScopeCode": {
+            "type": "string"
+          },
+          "levelCode": {
+            "type": "string"
+          },
+          "levelName": {
+            "type": "string"
+          },
+          "viewCustomer": {
+            "type": "string"
+          },
+          "viewLitigationCustomer": {
+            "type": "string"
+          },
+          "viewNoticeReceiver": {
+            "type": "string"
+          },
+          "viewLitigationCase": {
+            "type": "string"
+          },
+          "viewHoldingLitigationCase": {
+            "type": "string"
+          },
+          "viewKlawFinancial": {
+            "type": "string"
+          },
+          "viewCourtFee": {
+            "type": "string"
+          },
+          "viewDefermentExecution": {
+            "type": "string"
+          },
+          "viewCollateralLexsStatus": {
+            "type": "string"
+          },
+          "viewAccountDocumentStatus": {
+            "type": "string"
+          },
+          "allDashboard": {
+            "type": "string"
+          },
+          "transferTask": {
+            "type": "string"
+          },
+          "updateDopa": {
+            "type": "string"
+          },
+          "allTaskAction": {
+            "type": "string"
+          },
+          "createLitigationCustomer": {
+            "type": "string"
+          },
+          "verifyDocument": {
+            "type": "string"
+          },
+          "uploadCustomerDocument": {
+            "type": "string"
+          },
+          "createNameChangeNotice": {
+            "type": "string"
+          },
+          "startLitigationCase": {
+            "type": "string"
+          },
+          "updateCustomerRealtime": {
+            "type": "string"
+          },
+          "updateCollateralRealtime": {
+            "type": "string"
+          },
+          "allCustomerAction": {
+            "type": "string"
+          },
+          "createLegalAssignment": {
+            "type": "string"
+          },
+          "createLawsuit": {
+            "type": "string"
+          },
+          "createLitigationCase": {
+            "type": "string"
+          },
+          "createNoticeEvent": {
+            "type": "string"
+          },
+          "addLegalRelatedPerson": {
+            "type": "string"
+          },
+          "addSubAccount": {
+            "type": "string"
+          },
+          "verifyLegalDocument": {
+            "type": "string"
+          },
+          "uploadLegalDocument": {
+            "type": "string"
+          },
+          "createIndictmentRecord": {
+            "type": "string"
+          },
+          "createLegalComment": {
+            "type": "string"
+          },
+          "appealApproval": {
+            "type": "string"
+          },
+          "createDecree": {
+            "type": "string"
+          },
+          "closeLegalId": {
+            "type": "string"
+          },
+          "saveFollowStatus": {
+            "type": "string"
+          },
+          "addRelatedPersonAfterUndicidedCase": {
+            "type": "string"
+          },
+          "updateLitigationInfo": {
+            "type": "string"
+          },
+          "addCourtProcessdingsAppointment": {
+            "type": "string"
+          },
+          "deleteLitigationAccount": {
+            "type": "string"
+          },
+          "uploadDocumentNoticeClosedJuristic": {
+            "type": "string"
+          },
+          "viewDocumentFromProfileDirectAndStatement": {
+            "type": "string"
+          },
+          "allLegalAction": {
+            "type": "string"
+          },
+          "createPaymentDocument": {
+            "type": "string"
+          },
+          "verifyExpense": {
+            "type": "string"
+          },
+          "createPaymentRecord": {
+            "type": "string"
+          },
+          "verifyPayment": {
+            "type": "string"
+          },
+          "paymentApproval": {
+            "type": "string"
+          },
+          "uploadFinancialDocument": {
+            "type": "string"
+          },
+          "verifyFinancialDocument": {
+            "type": "string"
+          },
+          "downloadTaxDocument": {
+            "type": "string"
+          },
+          "financialTransfer": {
+            "type": "string"
+          },
+          "deleteUploadDocument": {
+            "type": "string"
+          },
+          "allExpense": {
+            "type": "string"
+          },
+          "createReceipt": {
+            "type": "string"
+          },
+          "verifyReceipt": {
+            "type": "string"
+          },
+          "downloadCreditNote": {
+            "type": "string"
+          },
+          "allReceive": {
+            "type": "string"
+          },
+          "financialAdvanceTransfer": {
+            "type": "string"
+          },
+          "verifyAdvanceTransfer": {
+            "type": "string"
+          },
+          "allAdvanceReceive": {
+            "type": "string"
+          },
+          "viewSlaReport": {
+            "type": "string"
+          },
+          "viewSlaExecutionReport": {
+            "type": "string"
+          },
+          "withholdingTaxReport": {
+            "type": "string"
+          },
+          "allReport": {
+            "type": "string"
+          },
+          "manageConfig": {
+            "type": "string"
+          },
+          "allConfig": {
+            "type": "string"
+          },
+          "manageUser": {
+            "type": "string"
+          },
+          "allUam": {
+            "type": "string"
+          },
+          "allCalendarActivities": {
+            "type": "string"
+          },
+          "allCommonAction": {
+            "type": "string"
+          },
+          "assignTaskPool": {
+            "type": "string"
+          },
+          "allTaskPoolAssignment": {
+            "type": "string"
+          },
+          "submitDebtLegalEnforcement": {
+            "type": "string"
+          },
+          "debtEnforcementAssignment": {
+            "type": "string"
+          },
+          "submitEnforcementResult": {
+            "type": "string"
+          },
+          "allWarrant": {
+            "type": "string"
+          },
+          "assetSeizurePrep": {
+            "type": "string"
+          },
+          "assignLawyerAssetSeizure": {
+            "type": "string"
+          },
+          "documentInspectionAssetSeizure": {
+            "type": "string"
+          },
+          "recordSeizureResult": {
+            "type": "string"
+          },
+          "allAssetSeizure": {
+            "type": "string"
+          },
+          "cancelAssetSeizure": {
+            "type": "string"
+          },
+          "confirmCancelAssetSeizure": {
+            "type": "string"
+          },
+          "returnOriginalDocuments": {
+            "type": "string"
+          },
+          "allCancelAssetSeizure": {
+            "type": "string"
+          },
+          "withdrawAssetSeizure": {
+            "type": "string"
+          },
+          "editWithdrawAssetSeizure": {
+            "type": "string"
+          },
+          "approveWithdrawAssetSeizure": {
+            "type": "string"
+          },
+          "verifyDocWithdrawSeizure": {
+            "type": "string"
+          },
+          "assignWithdrawSeizure": {
+            "type": "string"
+          },
+          "saveResultWithdrawSeizure": {
+            "type": "string"
+          },
+          "allWithdrawAssetSeizure": {
+            "type": "string"
+          },
+          "withdrawExecution": {
+            "type": "string"
+          },
+          "editWithdrawExecution": {
+            "type": "string"
+          },
+          "approveWithdrawExecution": {
+            "type": "string"
+          },
+          "verifyDocWithdrawExecution": {
+            "type": "string"
+          },
+          "assignWithdrawExecution": {
+            "type": "string"
+          },
+          "saveWithdrawExecution": {
+            "type": "string"
+          },
+          "allWithdrawExecution": {
+            "type": "string"
+          },
+          "submitDelayExecution": {
+            "type": "string"
+          },
+          "approveDelayExecution": {
+            "type": "string"
+          },
+          "extendDelayExecution": {
+            "type": "string"
+          },
+          "editDelayExecution": {
+            "type": "string"
+          },
+          "cancelDelayExecution": {
+            "type": "string"
+          },
+          "allDelayExecution": {
+            "type": "string"
+          },
+          "assignAuction": {
+            "type": "string"
+          },
+          "submitAuctionExpense": {
+            "type": "string"
+          },
+          "submitAuctionCashierChequeExpense": {
+            "type": "string"
+          },
+          "verifyAuctionCashierChequeExpense": {
+            "type": "string"
+          },
+          "approveAuctionCashierChequeExpense": {
+            "type": "string"
+          },
+          "submitAuctionCheckInfo": {
+            "type": "string"
+          },
+          "verifyAuctionCheckInfo": {
+            "type": "string"
+          },
+          "approveAuctionCheckInfo": {
+            "type": "string"
+          },
+          "submitAuctionDayResult": {
+            "type": "string"
+          },
+          "submitAuctionCheckStampDuty": {
+            "type": "string"
+          },
+          "verifyAuctionCheckStampDuty": {
+            "type": "string"
+          },
+          "approveAuctionCheckStampDuty": {
+            "type": "string"
+          },
+          "trackPaymentRecord": {
+            "type": "string"
+          },
+          "submitAdditionDepositCheck": {
+            "type": "string"
+          },
+          "verifyAdditionDepositCheck": {
+            "type": "string"
+          },
+          "approveAdditionDepositCheck": {
+            "type": "string"
+          },
+          "acquiredAssetDocumentUpload": {
+            "type": "string"
+          },
+          "assetTransferAppointment": {
+            "type": "string"
+          },
+          "submitCheckAssetTransfer": {
+            "type": "string"
+          },
+          "approveCheckAssetTransfer": {
+            "type": "string"
+          },
+          "submitDebtPaymentReduction": {
+            "type": "string"
+          },
+          "approveDebtPaymentReduction": {
+            "type": "string"
+          },
+          "submitAccountAuditCertification": {
+            "type": "string"
+          },
+          "approveAccountAuditCertification": {
+            "type": "string"
+          },
+          "allAuctionExceptMatch": {
+            "type": "string"
+          },
+          "matchAssetAuction": {
+            "type": "string"
+          },
+          "allAuctionOnlyMatch": {
+            "type": "string"
+          },
+          "orderInvestigationAsset": {
+            "type": "string"
+          },
+          "allInvestigationAsset": {
+            "type": "string"
+          }
+        }
+      },
+      "PageLexsDocExportDto": {
+        "type": "object",
+        "properties": {
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LexsDocExportDto"
+            }
+          },
+          "number": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sort": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SortObject"
+            }
+          },
+          "numberOfElements": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageable": {
+            "$ref": "#/components/schemas/PageableObject"
+          },
+          "first": {
+            "type": "boolean"
+          },
+          "last": {
+            "type": "boolean"
+          },
+          "empty": {
+            "type": "boolean"
+          }
+        }
+      },
+      "PhoneBookDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "titleEng": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "surname": {
+            "type": "string"
+          },
+          "nameEng": {
+            "type": "string"
+          },
+          "surnameEng": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "originalOrganizationCode": {
+            "type": "string"
+          },
+          "originalOrganizationName": {
+            "type": "string"
+          },
+          "position": {
+            "type": "string"
+          },
+          "supervisorId": {
+            "type": "string"
+          },
+          "supervisorName": {
+            "type": "string"
+          },
+          "officePhoneNumber": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

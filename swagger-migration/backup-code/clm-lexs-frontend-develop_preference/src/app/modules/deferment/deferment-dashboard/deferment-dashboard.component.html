@@ -1,0 +1,181 @@
+<app-action-bar [disabledBackButton]="false" (backButtonHandler)="onBack($event)" [showNavBarInformation]="true">
+  <ng-container navBarInformationTemplate>
+    <ng-container *ngIf="_btnAction === 'DEFERMENT'; else notDefermentBtn">
+      <mat-icon svgIcon="icon-Pause" class="icon icon-xmedium"></mat-icon>
+      <span class="ml-05em bold" *ngIf="defermentCategory === 'PROSECUTE'">{{
+        'LAWSUIT.DEFERMENT.CASE' | translate
+      }}</span>
+      <span class="ml-05em bold" *ngIf="defermentCategory === 'EXECUTION'">{{
+        'LAWSUIT.DEFERMENT.EXECUTION' | translate
+      }}</span>
+    </ng-container>
+    <ng-template #notDefermentBtn>
+      <mat-icon svgIcon="icon-Record-Stop" class="icon icon-xmedium"></mat-icon>
+      <span class="ml-05em bold">{{ 'LAWSUIT.DEFERMENT.CESSATION' | translate }}</span>
+    </ng-template>
+  </ng-container>
+</app-action-bar>
+
+<div class="body-container mt-72">
+  <div fxLayout="row" fxLayoutGap="10" class="mt-32 mb-5">
+    <h3 fxLayout="row" class="mb-0 mt-0">
+      <div>{{ data.customerName || customerDetail.name }}</div>
+    </h3>
+  </div>
+
+  <div class="main-info-container pt-10">
+    <div fxLayout="row" class="body-container">
+      <div fxLayout="row" fxFlex="35" fxLayoutGap="10px">
+        <div fxLayout="row" fxLayoutAlign="left center">
+          <mat-icon class="icon icon-medium default-cursor fill-blue" svgIcon="icon-Person-Board"></mat-icon>
+        </div>
+        <div fxLayout="column">
+          <div class="label">{{ 'COMMON.LABEL_CIF_NO' | translate }}</div>
+          <div class="sub-label-bold">{{ data.customerId || '-' }}</div>
+        </div>
+      </div>
+      <div fxLayout="row" fxFlex="35" fxLayoutGap="10px">
+        <div fxLayout="row" fxLayoutAlign="left center">
+          <mat-icon class="icon icon-medium default-cursor fill-blue" svgIcon="icon-rd-Party"></mat-icon>
+        </div>
+        <div fxLayout="column">
+          <div class="label">
+            {{ 'LAWSUIT.INFO_LABEL_RESPONSE_UNIT' | translate }}
+          </div>
+          <div class="sub-label-bold" *ngIf="flagCustomer">
+            <ng-container
+              [ngTemplateOutlet]="
+                customerDetail.amdResponseUnitCode && customerDetail.amdResponseUnitName
+                  ? amdResponseUnitTemplate
+                  : responseUnitTemplate
+              "
+              [ngTemplateOutletContext]="{ data: customerDetail }">
+            </ng-container>
+          </div>
+          <div class="sub-label-bold" *ngIf="!!!flagCustomer">
+            <ng-container
+              [ngTemplateOutlet]="
+                data.amdResponseUnitCode && data.amdResponseUnitName ? amdResponseUnitTemplate : responseUnitTemplate
+              "
+              [ngTemplateOutletContext]="{ data: data }">
+            </ng-container>
+            <app-tooltip
+              [params]="[
+                {
+                  title: 'TASK.TOOLTIP_TITLE_RESPONSE_UNIT' | translate,
+                  content: data.responseUnitCode + ' - ' + data.responseUnitName,
+                },
+              ]"
+              [iconClass]="['icon-small', 'fill-blue']"></app-tooltip>
+          </div>
+        </div>
+      </div>
+      <div fxLayout="row" fxFlex="35" fxLayoutGap="10px">
+        <div fxLayout="row" fxLayoutAlign="left center">
+          <mat-icon class="icon icon-medium default-cursor fill-blue" svgIcon="icon-Home-Person"></mat-icon>
+        </div>
+        <div fxLayout="column">
+          <div class="label">{{ 'COMMON.LABEL_BOOKING_COST_CENTER' | translate }}</div>
+          <div class="sub-label-bold" *ngIf="flagCustomer">
+            {{
+              (customerDetail.branchCode | emptyFormat) +
+                (!customerDetail.branchCode || customerDetail.branchName ? ' - ' : '') +
+                (customerDetail.branchName | emptyFormat)
+            }}
+          </div>
+          <div class="sub-label-bold" *ngIf="!flagCustomer || flagCustomer === undefined">
+            {{
+              (data.branchCode | emptyFormat) +
+                (!data.branchCode || data.branchName ? ' - ' : '') +
+                (data.branchName | emptyFormat)
+            }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <mat-divider class="ml-16 mr-16"></mat-divider>
+    <div fxLayout="row" class="status-container">
+      <div fxLayout="row" fxFlex="30" fxLayoutGap="10px">
+        <div class="status-label">{{ 'SEARCH_CONTROL.LABEL_ALL_CUSTOMER_STATUS' | translate }}:</div>
+        <div fxLayout="row">
+          <div *ngIf="data?.customerStatus">
+            <div class="status-label status-normal">
+              {{ data.customerStatusName || '-' }}
+            </div>
+          </div>
+          <div *ngIf="data?.defermentStatus">
+            <div class="status-label status-pending ml-1em">
+              {{ data.defermentStatusName || '-' }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="body-container">
+  <mat-tab-group
+    class="tab-group-content"
+    mat-align-tabs="start"
+    (selectedTabChange)="onTabChanged($event)"
+    [selectedIndex]="tabIndex">
+    <!-- รายการนำเสนอ -->
+    <mat-tab
+      label="0"
+      *ngIf="defermentRole !== DefermentRoleEnum.Other"
+      [aria-labelledby]="actionOnScreen.canSeePresent ? '' : 'hidden'">
+      <ng-template mat-tab-label>{{ 'LAWSUIT.DEFERMENT.PRESENTATION_LIST' | translate }}</ng-template>
+      <app-deferment-info
+        [_btnAction]="_btnAction"
+        [dataTable]="dataTable"
+        [litigationId]="litigationId"
+        [hasCeased]="hasCeased"
+        [tabIndex]="tabIndex"
+        [defermentCategory]="defermentCategory"
+        [initialDataTable]="initialDataTable"></app-deferment-info>
+    </mat-tab>
+    <!-- รายการอนุมัติ -->
+    <mat-tab label="1">
+      <ng-template mat-tab-label>{{ 'LAWSUIT.DEFERMENT.APPROVE_LIST' | translate }}</ng-template>
+      <app-deferment-info
+        [_btnAction]="_btnAction"
+        [dataTable]="dataTable"
+        [litigationId]="litigationId"
+        [hasCeased]="hasCeased"
+        [tabIndex]="tabIndex"
+        [defermentCategory]="defermentCategory"
+        [initialDataTable]="initialDataTable"></app-deferment-info>
+    </mat-tab>
+    <!-- ประวัติการขออนุมัติ -->
+    <mat-tab
+      label="2"
+      *ngIf="defermentRole !== DefermentRoleEnum.Other"
+      [aria-labelledby]="actionOnScreen.canSeeHistory ? '' : 'hidden'">
+      <ng-template mat-tab-label>{{ 'LAWSUIT.DEFERMENT.APPROVE_HISTORY' | translate }}</ng-template>
+      <app-deferment-info
+        [_btnAction]="_btnAction"
+        [dataTable]="dataTable"
+        [litigationId]="litigationId"
+        [hasCeased]="hasCeased"
+        [tabIndex]="tabIndex"
+        [defermentCategory]="defermentCategory"
+        [initialDataTable]="initialDataTable"></app-deferment-info>
+    </mat-tab>
+  </mat-tab-group>
+</div>
+
+<ng-template let-data="data" #amdResponseUnitTemplate>
+  {{
+    (data?.amdResponseUnitCode | emptyFormat) +
+      (!data?.amdResponseUnitCode || data?.amdResponseUnitName ? ' - ' : '') +
+      (data?.amdResponseUnitName | emptyFormat)
+  }}
+</ng-template>
+<ng-template let-data="data" #responseUnitTemplate>
+  {{
+    (data?.responseUnitCode | emptyFormat) +
+      (!data?.responseUnitCode || data?.responseUnitName ? ' - ' : '') +
+      (data?.responseUnitName | emptyFormat)
+  }}
+</ng-template>

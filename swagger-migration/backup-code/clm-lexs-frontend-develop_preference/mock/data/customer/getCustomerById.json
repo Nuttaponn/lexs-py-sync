@@ -1,0 +1,151 @@
+{
+    "accountInfo": {
+      "accounts": [
+        {
+          "accountId": "string",
+          "accountNo": "string",
+          "billNo": "string",
+          "bookingCode": "string",
+          "bookingName": "string",
+          "branchCode": "string",
+          "branchName": "string",
+          "cfinal": "string",
+          "contractDate": "2022-06-16",
+          "deliquencyDate": "2022-06-16",
+          "dpd": 0,
+          "expiryDate": "2022-06-16",
+          "interestNonBook": 0,
+          "lastPaidDate": "2022-06-16",
+          "lastUpdate": "2022-06-16T03:27:39.639Z",
+          "lateChargeAmount": 0,
+          "litigationId": "string",
+          "litigationStatus": "string",
+          "loanTypeCode": "string",
+          "loanTypeName": "string",
+          "outstandingAccruedInterest": 0,
+          "outstandingPrincipal": 0,
+          "prescriptionDate": "2022-06-16",
+          "stageAccount": "string",
+          "tdrDate": "2022-06-16",
+          "tdrTrackingResult": "string",
+          "totalDebt": 0
+        }
+      ],
+      "summaryAll": 0,
+      "summaryBadDebt": 0,
+      "summaryDebt": 0,
+      "totalBadInterestNonBook": 0,
+      "totalBadLateChargeAmount": 0,
+      "totalBadOutstandingAccruedInterest": 0,
+      "totalBadOutstandingPrincipal": 0,
+      "totalInterestNonBook": 0,
+      "totalLateChargeAmount": 0,
+      "totalOutstandingAccruedInterest": 0,
+      "totalOutstandingPrincipal": 0
+    },
+    "amdResponseUnitCode": "string",
+    "amdResponseUnitName": "string",
+    "amdUserId": "string",
+    "branchCode": "string",
+    "branchName": "string",
+    "cases": [
+      {
+        "amdResponseUnitCode": "string",
+        "amdResponseUnitName": "string",
+        "amdUserId": "string",
+        "blackCaseNo": "string",
+        "customerId": "string",
+        "customerName": "string",
+        "defermentStatus": "CESSATION",
+        "dpd": 0,
+        "expireDate": "2022-06-16",
+        "flag": "string",
+        "kbdUserId": "string",
+        "lawyerId": "string",
+        "lawyerName": "string",
+        "lawyerOfficeCode": "string",
+        "lawyerOfficeName": "string",
+        "litigationId": "string",
+        "litigationStatus": "string",
+        "ownerBranchCode": "string",
+        "ownerBranchName": "string",
+        "redCaseNo": "string"
+      }
+    ],
+    "collateralInfo": {},
+    "customerId": "string",
+    "customerStatus": "CESSATION",
+    "defermentStatus": "CESSATION",
+    "editStatus": "NONE",
+    "kbdUserId": "string",
+    "kdnUserId": "string",
+    "personInfo": {
+      "additionalPersons": [
+        {
+          "address": [
+            {
+              "address": "string",
+              "addressType": "string",
+              "lastUpdate": "2022-06-16",
+              "personId": "string",
+              "source": "string"
+            }
+          ],
+          "bankruptcy": [
+            {
+              "absProtDate": "2022-06-16",
+              "brsStatus": "string",
+              "identificationNo": "string",
+              "lastUpdate": "2022-06-16",
+              "redCaseNo": "string"
+            }
+          ],
+          "birthDate": "string",
+          "grade": "string",
+          "identificationNo": "string",
+          "name": "string",
+          "nameChanged": true,
+          "personId": "string",
+          "personStatus": "string",
+          "personType": "INDIVIDUAL",
+          "referencePersonId": "string",
+          "relation": "string"
+        }
+      ],
+      "persons": [
+        {
+          "address": [
+            {
+              "address": "string",
+              "addressType": "string",
+              "lastUpdate": "2022-06-16",
+              "personId": "string",
+              "source": "string"
+            }
+          ],
+          "bankruptcy": [
+            {
+              "absProtDate": "2022-06-16",
+              "brsStatus": "string",
+              "identificationNo": "string",
+              "lastUpdate": "2022-06-16",
+              "redCaseNo": "string"
+            }
+          ],
+          "birthDate": "string",
+          "grade": "string",
+          "identificationNo": "string",
+          "name": "string",
+          "nameChanged": true,
+          "personId": "string",
+          "personStatus": "string",
+          "personType": "INDIVIDUAL",
+          "referencePersonId": "string",
+          "relation": "string"
+        }
+      ]
+    },
+    "responseUnitCode": "string",
+    "responseUnitName": "string",
+    "rmUserId": "string"
+  }
